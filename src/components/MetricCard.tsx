@@ -16,17 +16,17 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
   const changeColors = {
     positive: 'text-accent',
     negative: 'text-destructive',
-    neutral: 'text-muted-foreground'
+    neutral: 'text-gray-400'
   };
 
   return (
     <Card className="p-6 border-border/50 backdrop-blur-sm bg-gradient-to-br from-card/90 to-card/60 border-primary/20 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20">
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">
+          <p className="text-sm font-medium text-gray-400">
             {title}
           </p>
-          <p className="text-3xl font-bold text-foreground">
+          <p className="text-3xl font-bold text-white">
             {value}
           </p>
           {change && (

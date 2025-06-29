@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Database, Users, TrendingUp, Server, Activity, AlertTriangle, Cpu, HardDrive, Zap } from 'lucide-react';
 import Logo from '@/components/Logo';
@@ -185,7 +186,7 @@ const Index = () => {
           {/* Expanded Activity Log */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Atividade Recente</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">Atividade Recente</h3>
               <div className="space-y-4">
                 {[
                   { action: 'Backup completo realizado', company: 'Empresa A', time: '2 min atrás', status: 'success', details: 'Todos os dados salvos com sucesso' },
@@ -197,12 +198,12 @@ const Index = () => {
                 ].map((activity, index) => (
                   <div key={index} className="flex items-start justify-between p-3 bg-background/20 rounded-lg">
                     <div className="flex-1">
-                      <p className="font-medium text-sm">{activity.action}</p>
-                      <p className="text-xs text-muted-foreground">{activity.company}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{activity.details}</p>
+                      <p className="font-medium text-sm text-white">{activity.action}</p>
+                      <p className="text-xs text-gray-400">{activity.company}</p>
+                      <p className="text-xs text-gray-400 mt-1">{activity.details}</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">{activity.time}</p>
+                      <p className="text-xs text-gray-400">{activity.time}</p>
                       <div className={`w-2 h-2 rounded-full mt-1 ml-auto ${
                         activity.status === 'success' ? 'bg-accent' :
                         activity.status === 'warning' ? 'bg-yellow-500' :
@@ -216,7 +217,7 @@ const Index = () => {
 
             {/* System Health Monitor */}
             <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6">
-              <h3 className="text-lg font-semibold mb-4">Monitor de Sistema</h3>
+              <h3 className="text-lg font-semibold mb-4 text-white">Monitor de Sistema</h3>
               <div className="space-y-4">
                 {[
                   { metric: 'CPU', value: '45%', status: 'good', icon: Cpu },
@@ -230,7 +231,7 @@ const Index = () => {
                         item.status === 'good' ? 'text-accent' :
                         item.status === 'warning' ? 'text-yellow-500' : 'text-destructive'
                       }`} />
-                      <span className="font-medium">{item.metric}</span>
+                      <span className="font-medium text-white">{item.metric}</span>
                     </div>
                     <span className={`font-bold ${
                       item.status === 'good' ? 'text-accent' :
