@@ -13,7 +13,7 @@ const Logo = ({ size = "large" }: { size?: "small" | "large" }) => {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-1">
+    <div className="flex flex-col items-center space-y-0">
       <div className={`${logoSizes[size]} relative`}>
         <img 
           src="/lovable-uploads/8928f70c-40df-4a62-9951-4de2ec819de0.png" 
@@ -22,7 +22,7 @@ const Logo = ({ size = "large" }: { size?: "small" | "large" }) => {
         />
       </div>
       {size === "large" && (
-        <div className="text-center">
+        <div className="text-center -mt-4">
           <p className={`${textSizes[size]} font-medium text-white leading-relaxed`}>
             <span className="text-primary">Automatize</span> com lógica.
             <br />
