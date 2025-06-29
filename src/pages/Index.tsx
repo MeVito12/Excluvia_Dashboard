@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Database, Users, TrendingUp, Server, Activity, AlertTriangle, Cpu, HardDrive, Zap } from 'lucide-react';
 import Logo from '@/components/Logo';
@@ -57,20 +56,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dashboard-darker))] to-[hsl(var(--dashboard-dark))] text-white">
-      {/* Header */}
-      <header className="p-6 border-b border-border/20 backdrop-blur-sm bg-card/5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Logo size="small" />
-          <div className="flex items-center space-x-6">
-            <CompanySelector value={selectedCompany} onValueChange={setSelectedCompany} />
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Última atualização</p>
-              <p className="text-sm font-medium">Agora há pouco</p>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto space-y-8">
