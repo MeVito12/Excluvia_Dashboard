@@ -22,7 +22,7 @@ const Logo = ({ size = "large" }: { size?: "small" | "large" }) => {
         />
       </div>
       {size === "large" && (
-        <div className="text-center">
+        <div className="text-center -mt-16">
           <p className={`${textSizes[size]} font-medium text-white leading-relaxed`}>
             <span className="text-primary">Automatize</span> com lógica.
             <br />
