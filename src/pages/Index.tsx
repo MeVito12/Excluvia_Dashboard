@@ -65,9 +65,6 @@ const Index = () => {
             <h1 className="text-4xl font-bold mt-8 mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Dashboard de Controle de Dados
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Monitore e gerencie bancos de dados de múltiplas empresas com precisão e clareza
-            </p>
           </div>
 
           {/* Search and Filters */}
