@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
@@ -20,23 +21,39 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
   };
 
   return (
-    <Card className={`p-6 border-border/50 backdrop-blur-sm ${gradient ? 'gradient-purple-green text-white' : 'bg-card/80'} hover:scale-105 transition-transform duration-200`}>
+    <Card className={`p-6 border-border/50 backdrop-blur-sm ${
+      gradient 
+        ? 'gradient-purple-green text-white' 
+        : 'bg-gradient-to-br from-card/90 to-card/60 border-primary/20'
+    } hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20`}>
       <div className="flex items-start justify-between">
         <div className="space-y-2">
-          <p className={`text-sm font-medium ${gradient ? 'text-white/80' : 'text-muted-foreground'}`}>
+          <p className={`text-sm font-medium ${
+            gradient ? 'text-white/80' : 'text-muted-foreground'
+          }`}>
             {title}
           </p>
-          <p className={`text-3xl font-bold ${gradient ? 'text-white' : 'text-foreground'}`}>
+          <p className={`text-3xl font-bold ${
+            gradient ? 'text-white' : 'text-foreground'
+          }`}>
             {value}
           </p>
           {change && (
-            <p className={`text-sm ${gradient ? 'text-white/70' : changeColors[changeType]}`}>
+            <p className={`text-sm ${
+              gradient ? 'text-white/70' : changeColors[changeType]
+            }`}>
               {change}
             </p>
           )}
         </div>
-        <div className={`p-3 rounded-lg ${gradient ? 'bg-white/20' : 'bg-primary/10'}`}>
-          <Icon className={`h-6 w-6 ${gradient ? 'text-white' : 'text-primary'}`} />
+        <div className={`p-3 rounded-lg ${
+          gradient 
+            ? 'bg-white/20' 
+            : 'bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30'
+        }`}>
+          <Icon className={`h-6 w-6 ${
+            gradient ? 'text-white' : 'text-primary'
+          }`} />
         </div>
       </div>
     </Card>
@@ -44,3 +61,4 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
 };
 
 export default MetricCard;
+
