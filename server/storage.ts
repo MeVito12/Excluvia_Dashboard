@@ -154,8 +154,127 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async getAppointments(userId: number): Promise<Appointment[]> {
-    // Implementation will query appointments from appropriate Supabase database
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+    // Mock data diversificado para agendamentos até integração Supabase estar completa
+    const mockAppointments = [
+      // Pet Shop / Veterinário
+      {
+        id: 1,
+        userId: 1,
+        title: 'Consulta Veterinária - Rex',
+        description: 'Consulta de rotina e vacinação do cachorro Rex',
+        startTime: new Date('2024-07-01T10:00:00'),
+        endTime: new Date('2024-07-01T11:00:00'),
+        location: 'Clínica Veterinária Bichos & Cia',
+        clientName: 'Ana Maria Oliveira',
+        clientEmail: 'ana.oliveira@email.com',
+        clientPhone: '(11) 99999-1111',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-06-30T12:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        userId: 1,
+        title: 'Cirurgia - Gata Mimi',
+        description: 'Castração da gata Mimi',
+        startTime: new Date('2024-07-02T14:30:00'),
+        endTime: new Date('2024-07-02T16:00:00'),
+        location: 'Hospital Veterinário Central',
+        clientName: 'Carlos Santos',
+        clientEmail: 'carlos.santos@email.com',
+        clientPhone: '(21) 98888-2222',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-06-30T10:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      // Médico / Saúde
+      {
+        id: 3,
+        userId: 1,
+        title: 'Consulta Cardiologia',
+        description: 'Consulta de acompanhamento cardiológico',
+        startTime: new Date('2024-07-01T15:00:00'),
+        endTime: new Date('2024-07-01T16:00:00'),
+        location: 'Hospital São Lucas',
+        clientName: 'Maria Silva',
+        clientEmail: 'maria.silva@email.com',
+        clientPhone: '(31) 97777-3333',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-06-29T14:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 4,
+        userId: 1,
+        title: 'Exame de Rotina',
+        description: 'Check-up anual completo',
+        startTime: new Date('2024-07-03T09:00:00'),
+        endTime: new Date('2024-07-03T10:30:00'),
+        location: 'Clínica Dr. Carlos Mendes',
+        clientName: 'João Pereira',
+        clientEmail: 'joao.pereira@email.com',
+        clientPhone: '(11) 96666-4444',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-06-28T16:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      // Alimentício / Restaurante
+      {
+        id: 5,
+        userId: 1,
+        title: 'Entrega Ingredientes',
+        description: 'Entrega semanal de ingredientes frescos',
+        startTime: new Date('2024-07-01T08:00:00'),
+        endTime: new Date('2024-07-01T09:00:00'),
+        location: 'Restaurante Bella Vista',
+        clientName: 'Restaurante Bella Vista',
+        clientEmail: 'pedidos@bellavista.com.br',
+        clientPhone: '(48) 95555-5555',
+        status: 'completed' as const,
+        scheduledAt: new Date('2024-06-25T12:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      // Tecnologia
+      {
+        id: 6,
+        userId: 1,
+        title: 'Suporte Técnico',
+        description: 'Manutenção preventiva dos sistemas',
+        startTime: new Date('2024-07-02T13:00:00'),
+        endTime: new Date('2024-07-02T17:00:00'),
+        location: 'TechFix Informática',
+        clientName: 'TechFix Informática',
+        clientEmail: 'vendas@techfix.com.br',
+        clientPhone: '(51) 94444-6666',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-06-27T09:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 7,
+        userId: 1,
+        title: 'Instalação iPhone',
+        description: 'Configuração e transferência de dados do iPhone 15 Pro',
+        startTime: new Date('2024-06-30T16:00:00'),
+        endTime: new Date('2024-06-30T17:00:00'),
+        location: 'Loja TechStore',
+        clientName: 'Pedro Santos Silva',
+        clientEmail: 'pedro.santos@email.com',
+        clientPhone: '(11) 93333-7777',
+        status: 'completed' as const,
+        scheduledAt: new Date('2024-06-29T11:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+    
+    return mockAppointments;
   }
 
   async getAppointmentsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Appointment[]> {
@@ -204,8 +323,39 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async getIntegrationSettings(userId: number): Promise<IntegrationSettings[]> {
-    // Implementation will query integration settings from Supabase
-    throw new Error('Integration settings will be implemented with Supabase integration');
+    // Mock data para configurações de integração
+    const mockIntegrations = [
+      {
+        id: 1,
+        userId: 1,
+        platform: 'google_calendar' as const,
+        accessToken: 'mock_google_token',
+        refreshToken: 'mock_google_refresh',
+        expiresAt: new Date('2024-12-31'),
+        isActive: true,
+        settings: {
+          calendarId: 'primary',
+          syncEnabled: true,
+          autoCreateEvents: true
+        },
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 2,
+        userId: 1,
+        platform: 'doctoralia' as const,
+        isActive: false,
+        settings: {
+          clinicId: '',
+          syncEnabled: false
+        },
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+    
+    return mockIntegrations;
   }
 
   async getIntegrationSettingsByPlatform(userId: number, platform: string): Promise<IntegrationSettings | undefined> {
@@ -224,8 +374,22 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async getNotificationSettings(userId: number): Promise<NotificationSettings | undefined> {
-    // Implementation will query notification settings from Supabase
-    throw new Error('Notification settings will be implemented with Supabase integration');
+    // Mock data para configurações de notificação
+    const mockNotificationSettings = {
+      id: 1,
+      userId: 1,
+      emailEnabled: true,
+      emailAddress: 'admin@empresa.com',
+      telegramEnabled: true,
+      telegramChatId: '-123456789',
+      whatsappEnabled: false,
+      whatsappNumber: '',
+      defaultReminderTime: 60,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    return mockNotificationSettings;
   }
 
   async createNotificationSettings(settings: InsertNotificationSettings): Promise<NotificationSettings> {

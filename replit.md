@@ -123,6 +123,7 @@ Changelog:
 - June 30, 2025. Removed current database implementation and prepared codebase for Supabase multi-database integration
 - June 30, 2025. Implemented complete inventory management system with stock control, sales tracking, client management, and real-time notifications. Added new Estoque section with products, sales, clients, and reports management. Enhanced Dashboard with appointment reminders and instant notifications. Updated Reports section with daily/weekly sales reports.
 - June 30, 2025. Implemented comprehensive customer service system with new Atendimento section featuring: WhatsApp integration with menu access, AI assistant 24/7 for automatic responses, automated order processing with secure payments, customer loyalty campaigns, and intelligent human support escalation. All systems are prepared for Supabase multi-database integration.
+- June 30, 2025. Created comprehensive mock data across all business categories (pet, medical, food, technology) with advanced filtering capabilities. Updated inventory section with 12 diverse products, 8 categorized sales, 9 clients from different segments, and 7 scheduled appointments. Implemented category-based filters for products, sales, and clients with search functionality. Enhanced Dashboard metrics to reflect multi-category business operations.
 ```
 
 ## User Preferences

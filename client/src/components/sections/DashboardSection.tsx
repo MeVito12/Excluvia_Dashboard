@@ -12,38 +12,58 @@ const DashboardSection = () => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
-  // Dados de métricas baseados na empresa selecionada
+  // Dados de métricas baseados na empresa/categoria selecionada
   const getMetricsForCompany = (companyId: string) => {
     const metrics = {
       all: {
-        totalRecords: '2.4M',
-        activeUsers: '18.2K',
-        transactionsPerMin: '1,247',
-        onlineServers: '28/30',
+        totalRecords: '12',
+        activeUsers: '9',
+        transactionsPerMin: '8 vendas',
+        onlineServers: '7 agendamentos',
         performance: '98.7%',
-        activeAlerts: '3',
-        totalRevenue: '263.5K',
+        activeAlerts: '2',
+        totalRevenue: 'R$ 12.317',
         avgResponseTime: '127ms'
       },
       'empresa-a': {
-        totalRecords: '540K',
-        activeUsers: '1.24K',
-        transactionsPerMin: '89',
-        onlineServers: '4/4',
+        totalRecords: '3',
+        activeUsers: '2',
+        transactionsPerMin: '2 vendas',
+        onlineServers: '2 agendamentos',
         performance: '98.7%',
         activeAlerts: '0',
-        totalRevenue: '45K',
+        totalRevenue: 'R$ 404,80',
         avgResponseTime: '98ms'
       },
       'empresa-b': {
-        totalRecords: '380K',
-        activeUsers: '980',
-        transactionsPerMin: '120',
-        onlineServers: '3/4',
+        totalRecords: '3',
+        activeUsers: '2',
+        transactionsPerMin: '2 vendas',
+        onlineServers: '2 agendamentos',
         performance: '94.2%',
         activeAlerts: '1',
-        totalRevenue: '38K',
+        totalRevenue: 'R$ 522,70',
         avgResponseTime: '156ms'
+      },
+      'empresa-c': {
+        totalRecords: '2',
+        activeUsers: '2',
+        transactionsPerMin: '2 vendas',
+        onlineServers: '1 agendamento',
+        performance: '96.5%',
+        activeAlerts: '0',
+        totalRevenue: 'R$ 140,00',
+        avgResponseTime: '145ms'
+      },
+      'empresa-d': {
+        totalRecords: '2',
+        activeUsers: '2',
+        transactionsPerMin: '2 vendas',
+        onlineServers: '2 agendamentos',
+        performance: '99.1%',
+        activeAlerts: '1',
+        totalRevenue: 'R$ 11.249',
+        avgResponseTime: '89ms'
       }
     };
     return metrics[companyId as keyof typeof metrics] || metrics.all;
@@ -74,7 +94,7 @@ const DashboardSection = () => {
       {/* Primary Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          title="Total de Registros"
+          title="Total de Produtos"
           value={currentMetrics.totalRecords}
           change="+12% este mês"
           changeType="positive"
@@ -82,25 +102,25 @@ const DashboardSection = () => {
           gradient={true}
         />
         <MetricCard
-          title="Usuários Ativos"
+          title="Clientes Ativos"
           value={currentMetrics.activeUsers}
           change="+8% esta semana"
           changeType="positive"
           icon={Users}
         />
         <MetricCard
-          title="Transações/Min"
+          title="Vendas Recentes"
           value={currentMetrics.transactionsPerMin}
           change="+23% hoje"
           changeType="positive"
           icon={TrendingUp}
         />
         <MetricCard
-          title="Servidores Online"
+          title="Agendamentos"
           value={currentMetrics.onlineServers}
-          change="2 em manutenção"
+          change="2 pendentes"
           changeType="neutral"
-          icon={Server}
+          icon={Calendar}
         />
       </div>
 
@@ -114,9 +134,9 @@ const DashboardSection = () => {
           icon={Activity}
         />
         <MetricCard
-          title="Alertas Ativos"
+          title="Estoque Baixo"
           value={currentMetrics.activeAlerts}
-          change="Atenção necessária"
+          change="Produtos precisam reposição"
           changeType={currentMetrics.activeAlerts === '0' ? 'positive' : 'negative'}
           icon={AlertTriangle}
         />
@@ -234,19 +254,27 @@ const DashboardSection = () => {
 
       {/* Recent Activity Summary */}
       <div className="bg-white border border-border/50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-4 text-black">Painel de Desempenho</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h3 className="text-lg font-semibold mb-4 text-black">Painel de Desempenho por Categoria</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">127</div>
-            <div className="text-sm text-green-700">Vendas concluídas hoje</div>
+            <div className="text-2xl font-bold text-green-600">3</div>
+            <div className="text-sm text-green-700">Produtos Pet Shop</div>
+            <div className="text-xs text-green-500 mt-1">R$ 404,80 em vendas</div>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">23</div>
-            <div className="text-sm text-blue-700">Pedidos em andamento</div>
+            <div className="text-2xl font-bold text-blue-600">3</div>
+            <div className="text-sm text-blue-700">Produtos Médicos</div>
+            <div className="text-xs text-blue-500 mt-1">R$ 522,70 em vendas</div>
           </div>
           <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">5</div>
-            <div className="text-sm text-orange-700">Clientes inativos (30 dias)</div>
+            <div className="text-2xl font-bold text-orange-600">3</div>
+            <div className="text-sm text-orange-700">Produtos Alimentícios</div>
+            <div className="text-xs text-orange-500 mt-1">R$ 140,00 em vendas</div>
+          </div>
+          <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <div className="text-2xl font-bold text-purple-600">3</div>
+            <div className="text-sm text-purple-700">Produtos Tecnologia</div>
+            <div className="text-xs text-purple-500 mt-1">R$ 11.249 em vendas</div>
           </div>
         </div>
       </div>
