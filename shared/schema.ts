@@ -154,3 +154,125 @@ export const supabaseConfigSchema = z.object({
 });
 
 export type InsertSupabaseConfig = z.infer<typeof supabaseConfigSchema>;
+
+// Product/Inventory Types
+export interface Product {
+  id: number;
+  name: string;
+  description?: string;
+  sku: string;
+  category: string;
+  price: number;
+  cost?: number;
+  currentStock: number;
+  minimumStock: number;
+  maximumStock?: number;
+  unit: string; // 'unit', 'kg', 'liter', etc.
+  supplier?: string;
+  expirationDate?: Date;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertProductSchema = z.object({
+  name: z.string().min(1, "Nome do produto é obrigatório"),
+  description: z.string().optional(),
+  sku: z.string().min(1, "SKU é obrigatório"),
+  category: z.string().min(1, "Categoria é obrigatória"),
+  price: z.number().min(0, "Preço deve ser positivo"),
+  cost: z.number().min(0, "Custo deve ser positivo").optional(),
+  currentStock: z.number().min(0, "Estoque atual deve ser positivo"),
+  minimumStock: z.number().min(0, "Estoque mínimo deve ser positivo"),
+  maximumStock: z.number().min(0, "Estoque máximo deve ser positivo").optional(),
+  unit: z.string().default("unit"),
+  supplier: z.string().optional(),
+  expirationDate: z.date().optional(),
+  isActive: z.boolean().default(true),
+});
+
+export type InsertProduct = z.infer<typeof insertProductSchema>;
+
+// Sale Types
+export interface Sale {
+  id: number;
+  productId: number;
+  clientName?: string;
+  clientEmail?: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
+  saleDate: Date;
+  deliveryDate?: Date;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertSaleSchema = z.object({
+  productId: z.number(),
+  clientName: z.string().optional(),
+  clientEmail: z.string().email().optional().or(z.literal("")),
+  quantity: z.number().min(1, "Quantidade deve ser maior que zero"),
+  unitPrice: z.number().min(0, "Preço unitário deve ser positivo"),
+  totalPrice: z.number().min(0, "Preço total deve ser positivo"),
+  status: z.enum(['pending', 'confirmed', 'shipped', 'delivered', 'cancelled']).default('pending'),
+  saleDate: z.date().default(() => new Date()),
+  deliveryDate: z.date().optional(),
+  notes: z.string().optional(),
+});
+
+export type InsertSale = z.infer<typeof insertSaleSchema>;
+
+// Stock Movement Types
+export interface StockMovement {
+  id: number;
+  productId: number;
+  type: 'in' | 'out' | 'adjustment';
+  quantity: number;
+  reason: string;
+  reference?: string; // Sale ID, Purchase Order, etc.
+  userId?: number;
+  movementDate: Date;
+  createdAt: Date;
+}
+
+export const insertStockMovementSchema = z.object({
+  productId: z.number(),
+  type: z.enum(['in', 'out', 'adjustment']),
+  quantity: z.number(),
+  reason: z.string().min(1, "Motivo é obrigatório"),
+  reference: z.string().optional(),
+  userId: z.number().optional(),
+  movementDate: z.date().default(() => new Date()),
+});
+
+export type InsertStockMovement = z.infer<typeof insertStockMovementSchema>;
+
+// Client Types
+export interface Client {
+  id: number;
+  name: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  isActive: boolean;
+  lastPurchaseDate?: Date;
+  totalPurchases: number;
+  totalSpent: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertClientSchema = z.object({
+  name: z.string().min(1, "Nome do cliente é obrigatório"),
+  email: z.string().email().optional().or(z.literal("")),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  city: z.string().optional(),
+  isActive: z.boolean().default(true),
+});
+
+export type InsertClient = z.infer<typeof insertClientSchema>;

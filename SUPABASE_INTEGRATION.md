@@ -103,6 +103,80 @@ CREATE TABLE notification_settings (
 );
 ```
 
+#### Tabela: products
+```sql
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  sku TEXT NOT NULL UNIQUE,
+  category TEXT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  cost DECIMAL(10,2),
+  current_stock INTEGER NOT NULL DEFAULT 0,
+  minimum_stock INTEGER NOT NULL DEFAULT 0,
+  maximum_stock INTEGER,
+  unit TEXT DEFAULT 'unit',
+  supplier TEXT,
+  expiration_date DATE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: sales
+```sql
+CREATE TABLE sales (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER REFERENCES products(id),
+  client_name TEXT,
+  client_email TEXT,
+  quantity INTEGER NOT NULL,
+  unit_price DECIMAL(10,2) NOT NULL,
+  total_price DECIMAL(10,2) NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
+  sale_date TIMESTAMP NOT NULL,
+  delivery_date TIMESTAMP,
+  notes TEXT,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: stock_movements
+```sql
+CREATE TABLE stock_movements (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER REFERENCES products(id),
+  type TEXT CHECK (type IN ('in', 'out', 'adjustment')),
+  quantity INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  reference TEXT,
+  user_id INTEGER REFERENCES users(id),
+  movement_date TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: clients
+```sql
+CREATE TABLE clients (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  last_purchase_date TIMESTAMP,
+  total_purchases INTEGER DEFAULT 0,
+  total_spent DECIMAL(10,2) DEFAULT 0,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
 ## Implementação
 
 ### 1. Instalar Dependências

@@ -8,6 +8,7 @@ import {
   Database, 
   Activity, 
   Calendar,
+  Package,
   Menu,
   X,
   LogOut
@@ -46,6 +47,12 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       label: 'Agendamentos',
       icon: Calendar,
       description: 'Sistema de agendamento e lembretes'
+    },
+    {
+      id: 'estoque',
+      label: 'Estoque',
+      icon: Package,
+      description: 'Controle de estoque, vendas e clientes'
     }
   ];
 

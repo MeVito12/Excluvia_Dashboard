@@ -4,6 +4,7 @@ import DashboardSection from '@/components/sections/DashboardSection';
 import GraficosSection from '@/components/sections/GraficosSection';
 import AtividadeSection from '@/components/sections/AtividadeSection';
 import AgendamentosSection from '@/components/sections/AgendamentosSection';
+import EstoqueSection from '@/components/sections/EstoqueSection';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -18,6 +19,8 @@ const Index = () => {
         return <AtividadeSection />;
       case 'agendamentos':
         return <AgendamentosSection />;
+      case 'estoque':
+        return <EstoqueSection />;
       default:
         return <DashboardSection />;
     }

@@ -55,6 +55,9 @@ This is a full-stack database management application built with React, Express, 
 - **Notification System**: Email and Telegram reminder delivery
 - **Platform Integrations**: Support for Google Calendar, Doctoralia, and Outlook
 - **Simple CRM**: Basic client information management without complexity
+- **Inventory Management**: Complete stock control with low stock alerts and expiration tracking
+- **Sales Management**: Sales tracking with daily/weekly reports and client management
+- **Real-time Notifications**: Instant alerts for stock, sales, and client activity
 
 ## Data Flow
 
@@ -113,6 +116,7 @@ Changelog:
 - June 30, 2025. Migrated from SQLite to PostgreSQL with Neon serverless driver for production scalability
 - June 30, 2025. Implemented complete appointment management system with automatic reminders, platform integrations (Google Calendar, Doctoralia, Outlook), and notification settings (Email/Telegram)
 - June 30, 2025. Removed current database implementation and prepared codebase for Supabase multi-database integration
+- June 30, 2025. Implemented complete inventory management system with stock control, sales tracking, client management, and real-time notifications. Added new Estoque section with products, sales, clients, and reports management. Enhanced Dashboard with appointment reminders and instant notifications. Updated Reports section with daily/weekly sales reports.
 ```
 
 ## User Preferences

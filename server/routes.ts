@@ -66,6 +66,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         appointmentId: appointment.id,
         reminderTime,
         reminderType: "email",
+        sent: false,
       });
       
       res.json(appointment);
