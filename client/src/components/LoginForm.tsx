@@ -135,12 +135,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
               </Button>
             </form>
 
-            {/* Credenciais de teste */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-600 mb-2 font-medium">Credenciais de teste:</p>
-              <p className="text-xs text-gray-500">Email: auxiliar@ldsnews.com.br</p>
-              <p className="text-xs text-gray-500">Senha: aux@lds2025</p>
-            </div>
+
           </CardContent>
         </Card>
       </div>
