@@ -65,8 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createReminder({
         appointmentId: appointment.id,
         reminderTime,
-        type: "email",
-        message: `Lembrete: Você tem um agendamento às ${appointment.startTime.toLocaleTimeString()} - ${appointment.title}`,
+        reminderType: "email",
       });
       
       res.json(appointment);

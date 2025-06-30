@@ -1,15 +1,22 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
-import * as schema from "@shared/schema";
+// Database configuration for multiple Supabase connections
+// This will be configured to connect to multiple Supabase databases
 
-neonConfig.webSocketConstructor = ws;
-
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+export interface DatabaseConfig {
+  id: string;
+  name: string;
+  connectionString: string;
+  isActive: boolean;
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Database connections will be managed here
+export const databases: Map<string, any> = new Map();
+
+// Initialize database connections from environment variables
+export function initializeDatabases() {
+  // This function will be implemented to connect to multiple Supabase databases
+  // based on environment configuration
+  console.log('Database connections will be initialized here for Supabase integration');
+}
+
+// Placeholder for database connection
+export const db = null;

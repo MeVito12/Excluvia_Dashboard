@@ -1,157 +1,156 @@
-import { pgTable, text, serial, timestamp, boolean, integer } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
+// Schema definitions for Supabase integration
+// These types will be used to interface with multiple Supabase databases
 import { z } from "zod";
-import { relations } from "drizzle-orm";
 
-export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+// User Types
+export interface User {
+  id: number;
+  username: string;
+  password: string;
+}
+
+export const insertUserSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export const appointments = pgTable("appointments", {
-  id: serial("id").primaryKey(),
-  title: text("title").notNull(),
-  description: text("description"),
-  startTime: timestamp("start_time").notNull(),
-  endTime: timestamp("end_time").notNull(),
-  location: text("location"),
-  clientName: text("client_name"),
-  clientEmail: text("client_email"),
-  clientPhone: text("client_phone"),
-  status: text("status").notNull().default("scheduled"), // scheduled, completed, cancelled
-  userId: integer("user_id").references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const reminders = pgTable("reminders", {
-  id: serial("id").primaryKey(),
-  appointmentId: integer("appointment_id").references(() => appointments.id),
-  reminderTime: timestamp("reminder_time").notNull(),
-  type: text("type").notNull(), // email, telegram
-  message: text("message"),
-  sent: boolean("sent").default(false),
-  sentAt: timestamp("sent_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const integrationSettings = pgTable("integration_settings", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  platform: text("platform").notNull(), // google_calendar, doctoralia, outlook
-  accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  calendarId: text("calendar_id"),
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const notificationSettings = pgTable("notification_settings", {
-  id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  emailEnabled: boolean("email_enabled").default(true),
-  telegramEnabled: boolean("telegram_enabled").default(false),
-  telegramChatId: text("telegram_chat_id"),
-  emailAddress: text("email_address"),
-  reminderMinutesBefore: integer("reminder_minutes_before").default(60), // 1 hour before
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Relations
-export const usersRelations = relations(users, ({ many }) => ({
-  appointments: many(appointments),
-  integrationSettings: many(integrationSettings),
-  notificationSettings: many(notificationSettings),
-}));
-
-export const appointmentsRelations = relations(appointments, ({ one, many }) => ({
-  user: one(users, {
-    fields: [appointments.userId],
-    references: [users.id],
-  }),
-  reminders: many(reminders),
-}));
-
-export const remindersRelations = relations(reminders, ({ one }) => ({
-  appointment: one(appointments, {
-    fields: [reminders.appointmentId],
-    references: [appointments.id],
-  }),
-}));
-
-export const integrationSettingsRelations = relations(integrationSettings, ({ one }) => ({
-  user: one(users, {
-    fields: [integrationSettings.userId],
-    references: [users.id],
-  }),
-}));
-
-export const notificationSettingsRelations = relations(notificationSettings, ({ one }) => ({
-  user: one(users, {
-    fields: [notificationSettings.userId],
-    references: [users.id],
-  }),
-}));
-
-// Insert schemas
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
-});
-
-export const insertAppointmentSchema = createInsertSchema(appointments).pick({
-  title: true,
-  description: true,
-  startTime: true,
-  endTime: true,
-  location: true,
-  clientName: true,
-  clientEmail: true,
-  clientPhone: true,
-  status: true,
-  userId: true,
-});
-
-export const insertReminderSchema = createInsertSchema(reminders).pick({
-  appointmentId: true,
-  reminderTime: true,
-  type: true,
-  message: true,
-});
-
-export const insertIntegrationSettingsSchema = createInsertSchema(integrationSettings).pick({
-  userId: true,
-  platform: true,
-  accessToken: true,
-  refreshToken: true,
-  calendarId: true,
-  isActive: true,
-});
-
-export const insertNotificationSettingsSchema = createInsertSchema(notificationSettings).pick({
-  userId: true,
-  emailEnabled: true,
-  telegramEnabled: true,
-  telegramChatId: true,
-  emailAddress: true,
-  reminderMinutesBefore: true,
-});
-
-// Types
 export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = typeof users.$inferSelect;
+
+// Appointment Types
+export interface Appointment {
+  id: number;
+  title: string;
+  description?: string;
+  startTime: Date;
+  endTime: Date;
+  location?: string;
+  clientName?: string;
+  clientEmail?: string;
+  clientPhone?: string;
+  status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled';
+  userId: number;
+  scheduledAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertAppointmentSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  startTime: z.date(),
+  endTime: z.date(),
+  location: z.string().optional(),
+  clientName: z.string().optional(),
+  clientEmail: z.string().email().optional().or(z.literal("")),
+  clientPhone: z.string().optional(),
+  status: z.enum(['scheduled', 'confirmed', 'completed', 'cancelled']).default('scheduled'),
+  userId: z.number(),
+  scheduledAt: z.date(),
+});
 
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
-export type Appointment = typeof appointments.$inferSelect;
+
+// Reminder Types
+export interface Reminder {
+  id: number;
+  appointmentId: number;
+  reminderType: 'email' | 'telegram' | 'whatsapp';
+  reminderTime: Date;
+  sent: boolean;
+  createdAt: Date;
+}
+
+export const insertReminderSchema = z.object({
+  appointmentId: z.number(),
+  reminderType: z.enum(['email', 'telegram', 'whatsapp']),
+  reminderTime: z.date(),
+  sent: z.boolean().default(false),
+});
 
 export type InsertReminder = z.infer<typeof insertReminderSchema>;
-export type Reminder = typeof reminders.$inferSelect;
+
+// Integration Settings Types
+export interface IntegrationSettings {
+  id: number;
+  userId: number;
+  platform: 'google_calendar' | 'doctoralia' | 'outlook';
+  accessToken?: string;
+  refreshToken?: string;
+  expiresAt?: Date;
+  isActive: boolean;
+  settings: Record<string, any>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertIntegrationSettingsSchema = z.object({
+  userId: z.number(),
+  platform: z.enum(['google_calendar', 'doctoralia', 'outlook']),
+  accessToken: z.string().optional(),
+  refreshToken: z.string().optional(),
+  expiresAt: z.date().optional(),
+  isActive: z.boolean().default(false),
+  settings: z.record(z.any()).default({}),
+});
 
 export type InsertIntegrationSettings = z.infer<typeof insertIntegrationSettingsSchema>;
-export type IntegrationSettings = typeof integrationSettings.$inferSelect;
+
+// Notification Settings Types
+export interface NotificationSettings {
+  id: number;
+  userId: number;
+  emailEnabled: boolean;
+  telegramEnabled: boolean;
+  whatsappEnabled: boolean;
+  emailAddress?: string;
+  telegramChatId?: string;
+  whatsappNumber?: string;
+  defaultReminderTime: number; // minutes before appointment
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertNotificationSettingsSchema = z.object({
+  userId: z.number(),
+  emailEnabled: z.boolean().default(false),
+  telegramEnabled: z.boolean().default(false),
+  whatsappEnabled: z.boolean().default(false),
+  emailAddress: z.string().email().optional().or(z.literal("")),
+  telegramChatId: z.string().optional(),
+  whatsappNumber: z.string().optional(),
+  defaultReminderTime: z.number().default(60), // 1 hour default
+});
 
 export type InsertNotificationSettings = z.infer<typeof insertNotificationSettingsSchema>;
-export type NotificationSettings = typeof notificationSettings.$inferSelect;
+
+// Supabase Database Configuration Types
+export interface SupabaseConfig {
+  id: string;
+  name: string;
+  url: string;
+  anonKey: string;
+  serviceKey?: string;
+  isActive: boolean;
+  description?: string;
+}
+
+// Multi-database connection manager types
+export interface DatabaseConnection {
+  id: string;
+  config: SupabaseConfig;
+  client: any; // Will be Supabase client instance
+  lastConnected: Date;
+  isHealthy: boolean;
+}
+
+export const supabaseConfigSchema = z.object({
+  id: z.string().min(1, "Database ID is required"),
+  name: z.string().min(1, "Database name is required"),
+  url: z.string().url("Must be a valid URL"),
+  anonKey: z.string().min(1, "Anonymous key is required"),
+  serviceKey: z.string().optional(),
+  isActive: z.boolean().default(true),
+  description: z.string().optional(),
+});
+
+export type InsertSupabaseConfig = z.infer<typeof supabaseConfigSchema>;

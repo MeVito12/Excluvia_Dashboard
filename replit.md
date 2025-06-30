@@ -17,9 +17,9 @@ This is a full-stack database management application built with React, Express, 
 ### Backend Architecture
 - **Runtime**: Node.js with Express server
 - **Language**: TypeScript with ES modules
-- **Database ORM**: Drizzle ORM for type-safe database operations
-- **Database**: PostgreSQL with Neon serverless driver
-- **Session Management**: PostgreSQL session store with connect-pg-simple
+- **Database Integration**: Prepared for multiple Supabase database connections
+- **Database**: Multiple Supabase PostgreSQL databases (configured via environment)
+- **Session Management**: Will be configured for Supabase authentication
 
 ### Development Architecture
 - **Hot Reloading**: Vite middleware integration with Express
@@ -29,13 +29,13 @@ This is a full-stack database management application built with React, Express, 
 ## Key Components
 
 ### Database Layer
-- **ORM**: Drizzle ORM provides type-safe database operations
-- **Schema**: Centralized schema definition in `shared/schema.ts`
-- **Database**: PostgreSQL with Neon serverless driver
-- **Connection**: Automatic connection pooling with environment-based configuration
+- **Integration**: Multiple Supabase database connections
+- **Schema**: TypeScript interfaces in `shared/schema.ts` prepared for Supabase
+- **Database**: Multiple Supabase PostgreSQL databases
+- **Connection**: Multi-database connection manager with environment-based configuration
 
 ### API Layer
-- **Storage Interface**: Abstracted storage layer with both memory and database implementations
+- **Storage Interface**: Abstracted storage layer prepared for Supabase multi-database integration
 - **Route Registration**: Modular route organization in `server/routes.ts`
 - **Error Handling**: Centralized error middleware with proper status codes
 - **Logging**: Request/response logging with performance metrics
@@ -112,6 +112,7 @@ Changelog:
 - June 30, 2025. Migrated from Supabase to SQLite internal database for better reliability
 - June 30, 2025. Migrated from SQLite to PostgreSQL with Neon serverless driver for production scalability
 - June 30, 2025. Implemented complete appointment management system with automatic reminders, platform integrations (Google Calendar, Doctoralia, Outlook), and notification settings (Email/Telegram)
+- June 30, 2025. Removed current database implementation and prepared codebase for Supabase multi-database integration
 ```
 
 ## User Preferences

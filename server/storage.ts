@@ -1,9 +1,4 @@
 import { 
-  users, 
-  appointments,
-  reminders,
-  integrationSettings,
-  notificationSettings,
   type User, 
   type InsertUser,
   type Appointment,
@@ -15,8 +10,7 @@ import {
   type NotificationSettings,
   type InsertNotificationSettings
 } from "@shared/schema";
-import { db } from "./db";
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { DatabaseConfig, databases } from "./db";
 
 export interface IStorage {
   // User operations
@@ -50,148 +44,116 @@ export interface IStorage {
   updateNotificationSettings(id: number, settings: Partial<InsertNotificationSettings>): Promise<NotificationSettings>;
 }
 
-export class DatabaseStorage implements IStorage {
-  // User operations
+// Supabase Multi-Database Storage Implementation
+// This class will be configured to read from multiple Supabase databases
+export class SupabaseMultiStorage implements IStorage {
+  
+  // This will be implemented to connect to multiple Supabase databases
+  private async getDatabase(databaseId?: string) {
+    // Implementation for selecting the appropriate Supabase database
+    // Will return the specific database connection based on databaseId
+    throw new Error('Supabase multi-database connection not yet implemented');
+  }
+
   async getUser(id: number): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.id, id));
-    return result[0];
+    // Implementation will query from appropriate Supabase database
+    throw new Error('User operations will be implemented with Supabase integration');
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username));
-    return result[0];
+    // Implementation will query from appropriate Supabase database
+    throw new Error('User operations will be implemented with Supabase integration');
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const result = await db.insert(users).values(insertUser).returning();
-    return result[0];
+    // Implementation will create user in appropriate Supabase database
+    throw new Error('User operations will be implemented with Supabase integration');
   }
 
-  // Appointment operations
   async getAppointments(userId: number): Promise<Appointment[]> {
-    const result = await db.select().from(appointments)
-      .where(eq(appointments.userId, userId))
-      .orderBy(desc(appointments.startTime));
-    return result;
+    // Implementation will query appointments from appropriate Supabase database
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async getAppointmentsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Appointment[]> {
-    const result = await db.select().from(appointments)
-      .where(
-        and(
-          eq(appointments.userId, userId),
-          gte(appointments.startTime, startDate),
-          lte(appointments.startTime, endDate)
-        )
-      )
-      .orderBy(appointments.startTime);
-    return result;
+    // Implementation will query appointments by date range from Supabase
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async getAppointment(id: number): Promise<Appointment | undefined> {
-    const result = await db.select().from(appointments).where(eq(appointments.id, id));
-    return result[0];
+    // Implementation will query specific appointment from Supabase
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
-    const result = await db.insert(appointments).values(appointment).returning();
-    return result[0];
+    // Implementation will create appointment in appropriate Supabase database
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment> {
-    const result = await db.update(appointments)
-      .set({ ...appointment, updatedAt: new Date() })
-      .where(eq(appointments.id, id))
-      .returning();
-    return result[0];
+    // Implementation will update appointment in Supabase
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async deleteAppointment(id: number): Promise<void> {
-    await db.delete(appointments).where(eq(appointments.id, id));
+    // Implementation will delete appointment from Supabase
+    throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
-  // Reminder operations
   async getReminders(appointmentId: number): Promise<Reminder[]> {
-    const result = await db.select().from(reminders)
-      .where(eq(reminders.appointmentId, appointmentId))
-      .orderBy(reminders.reminderTime);
-    return result;
+    // Implementation will query reminders from Supabase
+    throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async getPendingReminders(): Promise<Reminder[]> {
-    const now = new Date();
-    const result = await db.select().from(reminders)
-      .where(
-        and(
-          eq(reminders.sent, false),
-          lte(reminders.reminderTime, now)
-        )
-      )
-      .orderBy(reminders.reminderTime);
-    return result;
+    // Implementation will query pending reminders from Supabase
+    throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async createReminder(reminder: InsertReminder): Promise<Reminder> {
-    const result = await db.insert(reminders).values(reminder).returning();
-    return result[0];
+    // Implementation will create reminder in Supabase
+    throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async markReminderSent(id: number): Promise<void> {
-    await db.update(reminders)
-      .set({ sent: true, sentAt: new Date() })
-      .where(eq(reminders.id, id));
+    // Implementation will mark reminder as sent in Supabase
+    throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
-  // Integration settings
   async getIntegrationSettings(userId: number): Promise<IntegrationSettings[]> {
-    const result = await db.select().from(integrationSettings)
-      .where(eq(integrationSettings.userId, userId));
-    return result;
+    // Implementation will query integration settings from Supabase
+    throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async getIntegrationSettingsByPlatform(userId: number, platform: string): Promise<IntegrationSettings | undefined> {
-    const result = await db.select().from(integrationSettings)
-      .where(
-        and(
-          eq(integrationSettings.userId, userId),
-          eq(integrationSettings.platform, platform)
-        )
-      );
-    return result[0];
+    // Implementation will query platform-specific integration settings from Supabase
+    throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async createIntegrationSettings(settings: InsertIntegrationSettings): Promise<IntegrationSettings> {
-    const result = await db.insert(integrationSettings).values(settings).returning();
-    return result[0];
+    // Implementation will create integration settings in Supabase
+    throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async updateIntegrationSettings(id: number, settings: Partial<InsertIntegrationSettings>): Promise<IntegrationSettings> {
-    const result = await db.update(integrationSettings)
-      .set({ ...settings, updatedAt: new Date() })
-      .where(eq(integrationSettings.id, id))
-      .returning();
-    return result[0];
+    // Implementation will update integration settings in Supabase
+    throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
-  // Notification settings
   async getNotificationSettings(userId: number): Promise<NotificationSettings | undefined> {
-    const result = await db.select().from(notificationSettings)
-      .where(eq(notificationSettings.userId, userId));
-    return result[0];
+    // Implementation will query notification settings from Supabase
+    throw new Error('Notification settings will be implemented with Supabase integration');
   }
 
   async createNotificationSettings(settings: InsertNotificationSettings): Promise<NotificationSettings> {
-    const result = await db.insert(notificationSettings).values(settings).returning();
-    return result[0];
+    // Implementation will create notification settings in Supabase
+    throw new Error('Notification settings will be implemented with Supabase integration');
   }
 
   async updateNotificationSettings(id: number, settings: Partial<InsertNotificationSettings>): Promise<NotificationSettings> {
-    const result = await db.update(notificationSettings)
-      .set({ ...settings, updatedAt: new Date() })
-      .where(eq(notificationSettings.id, id))
-      .returning();
-    return result[0];
+    // Implementation will update notification settings in Supabase
+    throw new Error('Notification settings will be implemented with Supabase integration');
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new SupabaseMultiStorage();
