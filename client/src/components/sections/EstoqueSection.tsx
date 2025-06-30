@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import UnifiedFilters from '@/components/UnifiedFilters';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -580,35 +581,28 @@ const EstoqueSection = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filtros */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Buscar produtos..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 bg-white text-gray-900"
-                  />
-                </div>
-                
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-white text-gray-900">
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
-                    {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value} className="text-gray-900 hover:bg-gray-50">
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Button variant="outline" className="bg-white text-gray-900">
-                  <Filter className="w-4 h-4 mr-2" />
-                  Mais Filtros
-                </Button>
+              {/* Filtros Unificados */}
+              <div className="mb-4">
+                <UnifiedFilters
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  searchPlaceholder="Buscar produtos, SKU..."
+                  title="Filtros de Produtos"
+                  filters={[
+                    {
+                      id: 'category',
+                      label: 'Categoria',
+                      value: selectedCategory,
+                      onChange: setSelectedCategory,
+                      options: categories
+                    }
+                  ]}
+                  onClearFilters={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('all');
+                  }}
+                  showClearButton={true}
+                />
               </div>
 
               {/* Lista de produtos */}
@@ -685,35 +679,28 @@ const EstoqueSection = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filtros para vendas */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Buscar vendas..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 bg-white text-gray-900"
-                  />
-                </div>
-                
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-white text-gray-900">
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
-                    {categories.map((category) => (
-                      <SelectItem key={category.value} value={category.value} className="text-gray-900 hover:bg-gray-50">
-                        {category.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Button variant="outline" className="bg-white text-gray-900">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Período
-                </Button>
+              {/* Filtros Unificados para Vendas */}
+              <div className="mb-4">
+                <UnifiedFilters
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  searchPlaceholder="Buscar vendas, clientes..."
+                  title="Filtros de Vendas"
+                  filters={[
+                    {
+                      id: 'category',
+                      label: 'Categoria',
+                      value: selectedCategory,
+                      onChange: setSelectedCategory,
+                      options: categories
+                    }
+                  ]}
+                  onClearFilters={() => {
+                    setSearchTerm('');
+                    setSelectedCategory('all');
+                  }}
+                  showClearButton={true}
+                />
               </div>
 
               <div className="space-y-4">
@@ -767,46 +754,40 @@ const EstoqueSection = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filtros para clientes */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Buscar clientes..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 bg-white text-gray-900"
-                  />
-                </div>
-                
-                <Select value={selectedSegment} onValueChange={setSelectedSegment}>
-                  <SelectTrigger className="bg-white text-gray-900">
-                    <SelectValue placeholder="Segmento" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
-                    {segments.map((segment) => (
-                      <SelectItem key={segment.value} value={segment.value} className="text-gray-900 hover:bg-gray-50">
-                        {segment.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="bg-white text-gray-900">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border border-gray-200">
-                    <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos</SelectItem>
-                    <SelectItem value="active" className="text-gray-900 hover:bg-gray-50">Ativos</SelectItem>
-                    <SelectItem value="inactive" className="text-gray-900 hover:bg-gray-50">Inativos</SelectItem>
-                  </SelectContent>
-                </Select>
-                
-                <Button variant="outline" className="bg-white text-gray-900">
-                  <Users className="w-4 h-4 mr-2" />
-                  Relatório
-                </Button>
+              {/* Filtros Unificados para Clientes */}
+              <div className="mb-4">
+                <UnifiedFilters
+                  searchTerm={searchTerm}
+                  onSearchChange={setSearchTerm}
+                  searchPlaceholder="Buscar clientes, email..."
+                  title="Filtros de Clientes"
+                  filters={[
+                    {
+                      id: 'segment',
+                      label: 'Segmento',
+                      value: selectedSegment,
+                      onChange: setSelectedSegment,
+                      options: segments
+                    },
+                    {
+                      id: 'status',
+                      label: 'Status',
+                      value: selectedStatus,
+                      onChange: setSelectedStatus,
+                      options: [
+                        { value: 'all', label: 'Todos' },
+                        { value: 'active', label: 'Ativos' },
+                        { value: 'inactive', label: 'Inativos' }
+                      ]
+                    }
+                  ]}
+                  onClearFilters={() => {
+                    setSearchTerm('');
+                    setSelectedSegment('all');
+                    setSelectedStatus('all');
+                  }}
+                  showClearButton={true}
+                />
               </div>
 
               <div className="space-y-4">

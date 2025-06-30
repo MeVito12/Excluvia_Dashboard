@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import UnifiedFilters from '@/components/UnifiedFilters';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -489,74 +490,53 @@ const AgendamentosSection = () => {
             </Card>
           </div>
 
-          {/* Filtros */}
-          <Card className="bg-white border border-border/50">
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <Label htmlFor="search" className="text-sm font-medium text-gray-700">Buscar</Label>
-                  <Input
-                    id="search"
-                    placeholder="Buscar por título, cliente, local..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="category" className="text-sm font-medium text-gray-700">Categoria</Label>
-                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Selecionar categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas as categorias</SelectItem>
-                      <SelectItem value="veterinario">Veterinário</SelectItem>
-                      <SelectItem value="medico">Médico/Clínico</SelectItem>
-                      <SelectItem value="design">Design Gráfico</SelectItem>
-                      <SelectItem value="sites">Criação de Sites</SelectItem>
-                      <SelectItem value="vendas">Vendas/Comercial</SelectItem>
-                      <SelectItem value="outros">Outros</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="status" className="text-sm font-medium text-gray-700">Status</Label>
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="mt-1">
-                      <SelectValue placeholder="Selecionar status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todos os status</SelectItem>
-                      <SelectItem value="scheduled">Agendado</SelectItem>
-                      <SelectItem value="completed">Concluído</SelectItem>
-                      <SelectItem value="cancelled">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="flex items-end">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      setSearchTerm('');
-                      setCategoryFilter('all');
-                      setStatusFilter('all');
-                    }}
-                    className="w-full"
-                  >
-                    Limpar Filtros
-                  </Button>
-                </div>
-              </div>
-              
-              <div className="mt-3 text-sm text-gray-500">
-                Mostrando {filteredAppointments.length} de {appointments.length} agendamentos
-              </div>
-            </CardContent>
-          </Card>
+          {/* Filtros Unificados */}
+          <UnifiedFilters
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            searchPlaceholder="Buscar por título, cliente, local..."
+            title="Filtros de Agendamentos"
+            filters={[
+              {
+                id: 'category',
+                label: 'Categoria',
+                value: categoryFilter,
+                onChange: setCategoryFilter,
+                options: [
+                  { value: 'all', label: 'Todas as categorias' },
+                  { value: 'veterinario', label: 'Veterinário' },
+                  { value: 'medico', label: 'Médico/Clínico' },
+                  { value: 'design', label: 'Design Gráfico' },
+                  { value: 'sites', label: 'Criação de Sites' },
+                  { value: 'vendas', label: 'Vendas/Comercial' },
+                  { value: 'outros', label: 'Outros' }
+                ]
+              },
+              {
+                id: 'status',
+                label: 'Status',
+                value: statusFilter,
+                onChange: setStatusFilter,
+                options: [
+                  { value: 'all', label: 'Todos os status' },
+                  { value: 'scheduled', label: 'Agendado' },
+                  { value: 'completed', label: 'Concluído' },
+                  { value: 'cancelled', label: 'Cancelado' }
+                ]
+              }
+            ]}
+            onClearFilters={() => {
+              setSearchTerm('');
+              setCategoryFilter('all');
+              setStatusFilter('all');
+            }}
+            showClearButton={true}
+          />
+          
+          {/* Contador de resultados */}
+          <div className="text-sm text-gray-500 px-2">
+            Mostrando {filteredAppointments.length} de {appointments.length} agendamentos
+          </div>
 
           {/* Appointments List */}
           <Card>

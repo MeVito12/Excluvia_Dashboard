@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import UnifiedFilters from '@/components/UnifiedFilters';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -395,31 +396,23 @@ const AtendimentoSection = () => {
 
         {/* Tab Mensagens */}
         <TabsContent value="mensagens" className="space-y-4">
-          {/* Filtros de Categoria */}
-          <Card className="bg-white border border-border/50">
-            <CardHeader>
-              <CardTitle className="text-black text-lg">Filtrar por Categoria</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((category) => (
-                  <Button
-                    key={category.value}
-                    variant={selectedCategory === category.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setSelectedCategory(category.value)}
-                    className={`${
-                      selectedCategory === category.value 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-white text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    {category.label}
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          {/* Filtros Unificados */}
+          <UnifiedFilters
+            title="Filtros de Atendimento"
+            filters={[
+              {
+                id: 'category',
+                label: 'Categoria',
+                value: selectedCategory,
+                onChange: setSelectedCategory,
+                options: categories
+              }
+            ]}
+            onClearFilters={() => {
+              setSelectedCategory('all');
+            }}
+            showClearButton={true}
+          />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="bg-white border border-border/50">
