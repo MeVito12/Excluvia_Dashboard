@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
-import sloganImage from "@assets/image_1751286772775.png";
 
 interface LoginFormProps {
   onLogin: (user: { name: string; email: string }) => void;
@@ -52,12 +51,15 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
               className="w-80 h-20 object-contain mx-auto"
             />
           </div>
-          <div>
-            <img 
-              src={sloganImage} 
-              alt="Automatize com lógica. Organize com clareza." 
-              className="w-72 h-auto object-contain mx-auto"
-            />
+          <div className="space-y-2">
+            <p className="text-2xl font-semibold">
+              <span className="text-purple-400">Automatize</span>
+              <span className="text-white"> com lógica.</span>
+            </p>
+            <p className="text-2xl font-semibold">
+              <span className="text-green-400">Organize</span>
+              <span className="text-white"> com clareza.</span>
+            </p>
           </div>
         </div>
 
