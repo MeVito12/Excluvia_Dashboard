@@ -66,8 +66,8 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
             <div className="mb-4">
               <UserAvatar username={user?.name || 'Usuário'} size="medium" />
             </div>
-            <h2 className="text-lg font-bold text-white">{user?.name}</h2>
-            <p className="text-xs text-blue-200 mt-1">{user?.email}</p>
+            <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
+            <p className="text-xs text-blue-200 mt-1">Sistema de Gerenciamento</p>
           </div>
 
           {/* Navigation */}
