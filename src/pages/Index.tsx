@@ -185,7 +185,7 @@ const Index = () => {
 
           {/* Expanded Activity Log */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6">
+            <div className="bg-white border border-border/50 rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4 text-black">Atividade Recente</h3>
               <div className="space-y-4">
                 {[
@@ -196,7 +196,7 @@ const Index = () => {
                   { action: 'Transação de alto valor', company: 'Empresa F', time: '2h atrás', status: 'success', details: 'R$ 15.000 processados' },
                   { action: 'Falha de conexão', company: 'Empresa G', time: '3h atrás', status: 'warning', details: 'Conexão restaurada' },
                 ].map((activity, index) => (
-                  <div key={index} className="flex items-start justify-between p-3 bg-background/20 rounded-lg">
+                  <div key={index} className="flex items-start justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex-1">
                       <p className="font-medium text-sm text-black">{activity.action}</p>
                       <p className="text-xs text-gray-600">{activity.company}</p>
@@ -216,7 +216,7 @@ const Index = () => {
             </div>
 
             {/* System Health Monitor */}
-            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6">
+            <div className="bg-white border border-border/50 rounded-lg p-6">
               <h3 className="text-lg font-semibold mb-4 text-black">Monitor de Sistema</h3>
               <div className="space-y-4">
                 {[
@@ -225,7 +225,7 @@ const Index = () => {
                   { metric: 'Disco', value: '38%', status: 'good', icon: Database },
                   { metric: 'Rede', value: '156 Mbps', status: 'good', icon: Activity },
                 ].map((item, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-background/10 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center space-x-3">
                       <item.icon className={`h-5 w-5 ${
                         item.status === 'good' ? 'text-accent' :

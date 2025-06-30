@@ -20,7 +20,7 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
   };
 
   return (
-    <Card className="p-6 border-border/50 backdrop-blur-sm bg-gradient-to-br from-card/90 to-card/60 border-primary/20 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20">
+    <Card className="p-6 bg-white border-border/50 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20">
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-600">

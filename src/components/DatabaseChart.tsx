@@ -180,7 +180,7 @@ const DatabaseChart = ({ type, title, selectedCompany = 'all' }: DatabaseChartPr
   };
 
   return (
-    <Card className="p-6 bg-card/80 backdrop-blur-sm border-border/50">
+    <Card className="p-6 bg-white border-border/50">
       <h3 className="text-lg font-semibold mb-4 text-foreground">{title}</h3>
       {renderChart()}
     </Card>

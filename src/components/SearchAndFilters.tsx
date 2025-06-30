@@ -42,7 +42,7 @@ const SearchAndFilters = ({
   onDateToChange
 }: SearchAndFiltersProps) => {
   return (
-    <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6 space-y-4">
+    <div className="bg-white border border-border/50 rounded-lg p-6 space-y-4">
       <h3 className="text-lg font-semibold text-black mb-4">Filtros e Pesquisa</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -69,7 +69,7 @@ const SearchAndFilters = ({
                 searchTerm === ''
               )
               .map((company) => (
-                <SelectItem key={company.id} value={company.id} className="text-black">
+                <SelectItem key={company.id} value={company.id} className="text-gray-600">
                   {company.name}
                 </SelectItem>
               ))
