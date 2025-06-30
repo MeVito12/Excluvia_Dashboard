@@ -31,8 +31,8 @@ This is a full-stack database management application built with React, Express, 
 ### Database Layer
 - **ORM**: Drizzle ORM provides type-safe database operations
 - **Schema**: Centralized schema definition in `shared/schema.ts`
-- **Migrations**: Automated schema migrations with drizzle-kit
-- **Connection**: Neon serverless PostgreSQL database
+- **Database**: SQLite local database (database.sqlite)
+- **Initialization**: Automatic table creation on server startup
 
 ### API Layer
 - **Storage Interface**: Abstracted storage layer with both memory and database implementations
@@ -64,7 +64,7 @@ This is a full-stack database management application built with React, Express, 
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: Serverless PostgreSQL driver for Neon
+- **better-sqlite3**: SQLite database driver for Node.js
 - **drizzle-orm**: Type-safe ORM with excellent TypeScript support
 - **@tanstack/react-query**: Powerful data synchronization for React
 - **express**: Fast, unopinionated web framework for Node.js
@@ -105,6 +105,7 @@ This is a full-stack database management application built with React, Express, 
 Changelog:
 - June 30, 2025. Initial setup
 - June 30, 2025. Added mock authentication system with login form, user context, and logout functionality
+- June 30, 2025. Migrated from Supabase to SQLite internal database for better reliability
 ```
 
 ## User Preferences

@@ -1,40 +1,31 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import Database from "better-sqlite3";
+import { users } from "@shared/schema";
+import path from "path";
 
-let db: any;
-let isConnected = false;
+// Criar banco SQLite na pasta do projeto
+const dbPath = path.join(process.cwd(), "database.sqlite");
+const sqlite = new Database(dbPath);
 
-async function initializeDatabase() {
-  if (!process.env.DATABASE_URL) {
-    console.warn("DATABASE_URL não encontrada, usando storage em memória");
-    return null;
-  }
+// Inicializar Drizzle com SQLite
+export const db = drizzle(sqlite);
 
+// Criar tabelas se não existirem
+function initializeTables() {
   try {
-    const client = postgres(process.env.DATABASE_URL, {
-      connect_timeout: 10,
-      idle_timeout: 20,
-      max_lifetime: 60 * 30
-    });
-    
-    // Testar conexão
-    await client`SELECT 1`;
-    console.log("✅ Conexão com Supabase estabelecida com sucesso");
-    isConnected = true;
-    return drizzle(client);
+    // Criar tabela de usuários
+    sqlite.exec(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+      )
+    `);
+    console.log("✅ Banco de dados SQLite inicializado com sucesso");
   } catch (error) {
-    console.error("❌ Erro ao conectar com Supabase:", error instanceof Error ? error.message : String(error));
-    console.log("🔄 Usando storage em memória como fallback");
-    return null;
+    console.error("❌ Erro ao criar tabelas:", error);
   }
 }
 
-// Inicializar conexão
-initializeDatabase().then(result => {
-  if (result) {
-    db = result;
-  }
-});
-
-export { db, isConnected };
-export const isDatabaseAvailable = () => isConnected;
+// Inicializar as tabelas
+initializeTables();
