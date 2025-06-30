@@ -43,7 +43,7 @@ const SearchAndFilters = ({
 }: SearchAndFiltersProps) => {
   return (
     <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-lg p-6 space-y-4">
-      <h3 className="text-lg font-semibold text-foreground mb-4">Filtros e Pesquisa</h3>
+      <h3 className="text-lg font-semibold text-black mb-4">Filtros e Pesquisa</h3>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Search Input */}
@@ -53,23 +53,23 @@ const SearchAndFilters = ({
             placeholder="Pesquisar empresas..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-background/50"
+            className="pl-10 bg-background/50 text-black"
           />
         </div>
 
         {/* Company Select */}
         <Select value={selectedCompany} onValueChange={onCompanyChange}>
-          <SelectTrigger className="bg-background/50">
+          <SelectTrigger className="bg-background/50 text-black">
             <SelectValue placeholder="Selecione uma empresa" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-popover">
             {companies
               .filter(company => 
                 company.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 searchTerm === ''
               )
               .map((company) => (
-                <SelectItem key={company.id} value={company.id}>
+                <SelectItem key={company.id} value={company.id} className="text-black">
                   {company.name}
                 </SelectItem>
               ))
@@ -83,7 +83,7 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50",
+                "justify-start text-left font-normal bg-background/50 text-black",
                 !dateFrom && "text-muted-foreground"
               )}
             >
@@ -108,7 +108,7 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50",
+                "justify-start text-left font-normal bg-background/50 text-black",
                 !dateTo && "text-muted-foreground"
               )}
             >
