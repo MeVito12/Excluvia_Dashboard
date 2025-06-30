@@ -3,6 +3,7 @@ import Sidebar from '@/components/Sidebar';
 import DashboardSection from '@/components/sections/DashboardSection';
 import GraficosSection from '@/components/sections/GraficosSection';
 import AtividadeSection from '@/components/sections/AtividadeSection';
+import AgendamentosSection from '@/components/sections/AgendamentosSection';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -15,6 +16,8 @@ const Index = () => {
         return <GraficosSection />;
       case 'atividade':
         return <AtividadeSection />;
+      case 'agendamentos':
+        return <AgendamentosSection />;
       default:
         return <DashboardSection />;
     }

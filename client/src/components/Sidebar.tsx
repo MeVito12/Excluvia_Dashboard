@@ -7,6 +7,7 @@ import {
   BarChart3, 
   Database, 
   Activity, 
+  Calendar,
   Menu,
   X,
   LogOut
@@ -39,6 +40,12 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       label: 'Atividade',
       icon: Activity,
       description: 'Log de atividades'
+    },
+    {
+      id: 'agendamentos',
+      label: 'Agendamentos',
+      icon: Calendar,
+      description: 'Sistema de agendamento e lembretes'
     }
   ];
 

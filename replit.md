@@ -51,6 +51,10 @@ This is a full-stack database management application built with React, Express, 
 - **Real-time Metrics**: Performance monitoring and alerting
 - **Search and Filtering**: Advanced data filtering capabilities
 - **Dashboard Analytics**: Comprehensive business intelligence views
+- **Appointment Management**: Complete scheduling system with automatic reminders
+- **Notification System**: Email and Telegram reminder delivery
+- **Platform Integrations**: Support for Google Calendar, Doctoralia, and Outlook
+- **Simple CRM**: Basic client information management without complexity
 
 ## Data Flow
 
@@ -107,6 +111,7 @@ Changelog:
 - June 30, 2025. Added mock authentication system with login form, user context, and logout functionality
 - June 30, 2025. Migrated from Supabase to SQLite internal database for better reliability
 - June 30, 2025. Migrated from SQLite to PostgreSQL with Neon serverless driver for production scalability
+- June 30, 2025. Implemented complete appointment management system with automatic reminders, platform integrations (Google Calendar, Doctoralia, Outlook), and notification settings (Email/Telegram)
 ```
 
 ## User Preferences
