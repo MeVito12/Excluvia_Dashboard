@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import Logo from '@/components/Logo';
+import UserAvatar from '@/components/UserAvatar';
 import { 
   BarChart3, 
   Database, 
@@ -61,7 +61,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           {/* Header */}
           <div className="p-6 border-b border-[hsl(var(--dashboard-darker))]">
             <div className="mb-4">
-              <Logo size="small" />
+              <UserAvatar username="João Silva" size="medium" />
             </div>
             <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
             <p className="text-xs text-blue-200 mt-1">Sistema de Gerenciamento</p>
@@ -80,7 +80,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                       variant="ghost"
                       className={cn(
                         "w-full justify-start text-left h-auto p-3 text-white transition-all duration-200",
-                        "hover:bg-[hsl(var(--dashboard-darker))] hover:text-white",
+                        "hover:bg-green-400 hover:text-white",
                         isActive && "bg-primary text-primary-foreground"
                       )}
                       onClick={() => onSectionChange(item.id)}
