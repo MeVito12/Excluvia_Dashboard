@@ -85,6 +85,20 @@ const AgendamentosSection = () => {
       return 'medico';
     }
     
+    if (title.includes('design') || title.includes('logo') || title.includes('identidade visual') || 
+        title.includes('branding') || title.includes('gráfico') || title.includes('ui/ux') ||
+        title.includes('apresentação') || title.includes('material gráfico') ||
+        location.includes('agência') || location.includes('estúdio')) {
+      return 'design';
+    }
+    
+    if (title.includes('site') || title.includes('website') || title.includes('e-commerce') || 
+        title.includes('loja online') || title.includes('landing page') || title.includes('sistema') ||
+        title.includes('aplicativo') || title.includes('app') || title.includes('desenvolvimento') ||
+        location.includes('desenvolvimento') || location.includes('software')) {
+      return 'sites';
+    }
+    
     if (title.includes('entrega') || title.includes('demonstração') || title.includes('degustação') || 
         title.includes('corporativa') || title.includes('vendas') || title.includes('macbook') ||
         location.includes('loja') || location.includes('empresa') || location.includes('adega')) {
@@ -236,6 +250,10 @@ const AgendamentosSection = () => {
         return <Badge className="bg-green-100 text-green-800">Veterinário</Badge>;
       case 'medico':
         return <Badge className="bg-blue-100 text-blue-800">Médico</Badge>;
+      case 'design':
+        return <Badge className="bg-pink-100 text-pink-800">Design</Badge>;
+      case 'sites':
+        return <Badge className="bg-indigo-100 text-indigo-800">Sites</Badge>;
       case 'vendas':
         return <Badge className="bg-purple-100 text-purple-800">Vendas</Badge>;
       default:
@@ -496,6 +514,8 @@ const AgendamentosSection = () => {
                       <SelectItem value="all">Todas as categorias</SelectItem>
                       <SelectItem value="veterinario">Veterinário</SelectItem>
                       <SelectItem value="medico">Médico/Clínico</SelectItem>
+                      <SelectItem value="design">Design Gráfico</SelectItem>
+                      <SelectItem value="sites">Criação de Sites</SelectItem>
                       <SelectItem value="vendas">Vendas/Comercial</SelectItem>
                       <SelectItem value="outros">Outros</SelectItem>
                     </SelectContent>

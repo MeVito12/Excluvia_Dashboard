@@ -46,7 +46,9 @@ const AtendimentoSection = () => {
     { value: 'pet', label: 'Pet & Veterinário' },
     { value: 'saude', label: 'Saúde & Medicamentos' },
     { value: 'alimenticio', label: 'Alimentício' },
-    { value: 'tecnologia', label: 'Tecnologia' }
+    { value: 'tecnologia', label: 'Tecnologia' },
+    { value: 'design', label: 'Design Gráfico' },
+    { value: 'sites', label: 'Criação de Sites' }
   ];
 
   // Mock data para conversas de mensagens categorizadas
@@ -104,6 +106,33 @@ const AtendimentoSection = () => {
       status: 'completed',
       unread: 0,
       category: 'alimenticio'
+    },
+    {
+      id: 7,
+      clientName: 'Design Studio Pro',
+      lastMessage: 'Preciso de um logo para startup',
+      timestamp: '11:45',
+      status: 'bot',
+      unread: 2,
+      category: 'design'
+    },
+    {
+      id: 8,
+      clientName: 'WebDev Client',
+      lastMessage: 'Site do e-commerce está pronto?',
+      timestamp: '11:20',
+      status: 'human',
+      unread: 1,
+      category: 'sites'
+    },
+    {
+      id: 9,
+      clientName: 'Agência Visual',
+      lastMessage: 'Material gráfico aprovado!',
+      timestamp: '10:30',
+      status: 'completed',
+      unread: 0,
+      category: 'design'
     }
   ];
 
@@ -148,6 +177,30 @@ const AtendimentoSection = () => {
       items: ['Consultas', 'Cirurgias', 'Vacinas', 'Exames'],
       description: 'Serviços veterinários completos',
       active: false
+    },
+    {
+      id: 6,
+      name: 'Portfólio Design Gráfico',
+      category: 'design',
+      items: ['Logos', 'Identidade Visual', 'Material Gráfico', 'UI/UX'],
+      description: 'Serviços completos de design e branding',
+      active: true
+    },
+    {
+      id: 7,
+      name: 'Catálogo Desenvolvimento Web',
+      category: 'sites',
+      items: ['Sites Institucionais', 'E-commerce', 'Landing Pages', 'Sistemas Web'],
+      description: 'Desenvolvimento completo de websites',
+      active: true
+    },
+    {
+      id: 8,
+      name: 'Pacotes Design Premium',
+      category: 'design',
+      items: ['Branding Completo', 'Apresentações', 'Social Media', 'Impressos'],
+      description: 'Pacotes premium de design',
+      active: true
     }
   ];
 
@@ -222,6 +275,8 @@ const AtendimentoSection = () => {
       case 'saude': return 'bg-blue-100 text-blue-800';
       case 'alimenticio': return 'bg-green-100 text-green-800';
       case 'tecnologia': return 'bg-orange-100 text-orange-800';
+      case 'design': return 'bg-pink-100 text-pink-800';
+      case 'sites': return 'bg-indigo-100 text-indigo-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
