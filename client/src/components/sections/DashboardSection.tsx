@@ -52,8 +52,8 @@ const DashboardSection = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-400">Visão geral das métricas do sistema</p>
+        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+        <p className="text-gray-300">Visão geral das métricas do sistema</p>
       </div>
 
       {/* Search and Filters */}

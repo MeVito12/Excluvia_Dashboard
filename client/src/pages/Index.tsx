@@ -24,7 +24,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dashboard-darker))] to-[hsl(var(--dashboard-dark))] text-white">
       {/* Sidebar */}
       <Sidebar 
         activeSection={activeSection} 

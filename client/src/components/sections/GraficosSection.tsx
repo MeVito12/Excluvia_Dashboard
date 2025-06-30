@@ -12,8 +12,8 @@ const GraficosSection = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gráficos</h1>
-        <p className="text-gray-600 dark:text-gray-400">Análises e relatórios</p>
+        <h1 className="text-3xl font-bold text-white">Gráficos</h1>
+        <p className="text-gray-300">Análises e relatórios</p>
       </div>
 
       {/* Search and Filters */}

@@ -195,8 +195,8 @@ const AgendamentosSection = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Agendamentos</h1>
-          <p className="text-gray-600 dark:text-gray-400">Gerencie seus agendamentos e lembretes</p>
+          <h1 className="text-3xl font-bold text-white">Agendamentos</h1>
+          <p className="text-gray-300">Gerencie seus agendamentos e lembretes</p>
         </div>
         <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
           <DialogTrigger asChild>

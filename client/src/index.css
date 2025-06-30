@@ -93,6 +93,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(var(--dashboard-darker)) 0%, hsl(var(--dashboard-dark)) 100%);
   }
 }
 
