@@ -34,13 +34,13 @@ import {
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
-  const [activeTab, setActiveTab] = useState('whatsapp');
+  const [activeTab, setActiveTab] = useState('mensagens');
   const [botEnabled, setBotEnabled] = useState(true);
   const [autoPayment, setAutoPayment] = useState(true);
   const [humanSupport, setHumanSupport] = useState(true);
 
-  // Mock data para conversas do WhatsApp
-  const whatsappChats = [
+  // Mock data para conversas de mensagens
+  const messageChats = [
     {
       id: 1,
       clientName: 'João Silva',
@@ -156,7 +156,7 @@ const AtendimentoSection = () => {
       {/* Header */}
       <div>
         <h2 className="text-3xl font-bold text-white mb-2">Central de Atendimento</h2>
-        <p className="text-gray-300">WhatsApp, assistente virtual, pedidos automáticos e fidelização</p>
+        <p className="text-gray-300">Mensagens, assistente virtual, pedidos automáticos e fidelização</p>
       </div>
 
       {/* Cards de Status */}
@@ -213,9 +213,9 @@ const AtendimentoSection = () => {
       {/* Tabs principais */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5 bg-white">
-          <TabsTrigger value="whatsapp" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
+          <TabsTrigger value="mensagens" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
             <MessageCircle className="w-4 h-4 mr-2" />
-            WhatsApp
+            Mensagens
           </TabsTrigger>
           <TabsTrigger value="bot" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
             <Bot className="w-4 h-4 mr-2" />
@@ -235,14 +235,14 @@ const AtendimentoSection = () => {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab WhatsApp */}
-        <TabsContent value="whatsapp" className="space-y-4">
+        {/* Tab Mensagens */}
+        <TabsContent value="mensagens" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="bg-white border border-border/50">
               <CardHeader>
                 <CardTitle className="text-black flex items-center gap-2">
                   <MessageCircle className="h-5 w-5 text-green-600" />
-                  Cardápio pelo WhatsApp
+                  Cardápio por Mensagens
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -250,7 +250,7 @@ const AtendimentoSection = () => {
                   <Alert className="bg-green-50 border-green-200">
                     <CheckCircle className="h-4 w-4" />
                     <AlertDescription className="text-gray-700">
-                      <strong>Configurado:</strong> Clientes podem acessar o cardápio completo via WhatsApp e fazer pedidos sem sair do app.
+                      <strong>Configurado:</strong> Clientes podem acessar o cardápio completo via mensagens e fazer pedidos sem sair do app.
                     </AlertDescription>
                   </Alert>
                   
@@ -285,9 +285,12 @@ const AtendimentoSection = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {whatsappChats.map((chat) => (
-                    <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
+                  {messageChats.map((chat) => (
+                    <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <div 
+                        className="flex-1 cursor-pointer"
+                        onClick={() => window.open(`https://wa.me/5511999999999?text=Olá ${chat.clientName}, como posso ajudar?`, '_blank')}
+                      >
                         <div className="flex items-center gap-2 mb-1">
                           <p className="font-medium text-gray-900">{chat.clientName}</p>
                           <Badge className={`${getStatusColor(chat.status)} text-white text-xs`}>
@@ -302,16 +305,27 @@ const AtendimentoSection = () => {
                         <p className="text-sm text-gray-600">{chat.lastMessage}</p>
                         <p className="text-xs text-gray-500">{chat.timestamp}</p>
                       </div>
-                      <Button variant="outline" size="sm" className="bg-white text-gray-900">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="bg-white text-gray-900"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`https://wa.me/5511999999999?text=Olá ${chat.clientName}, como posso ajudar?`, '_blank');
+                        }}
+                      >
                         <Eye className="w-4 h-4" />
                       </Button>
                     </div>
                   ))}
                 </div>
                 
-                <Button className="w-full mt-4 bg-green-500 hover:bg-green-600 text-white">
+                <Button 
+                  className="w-full mt-4 bg-green-500 hover:bg-green-600 text-white"
+                  onClick={() => window.open('https://web.whatsapp.com/', '_blank')}
+                >
                   <MessageCircle className="w-4 h-4 mr-2" />
-                  Abrir WhatsApp Web
+                  Abrir Mensagens Web
                 </Button>
               </CardContent>
             </Card>
