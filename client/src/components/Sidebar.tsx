@@ -53,18 +53,18 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-purple-600 border-r border-purple-500/30 transition-transform duration-300",
+        "fixed left-0 top-0 z-40 h-full bg-white border-r border-border/50 transition-transform duration-300",
         "w-64 shadow-lg",
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-purple-500/30">
+          <div className="p-6 border-b border-border/50">
             <div className="mb-4">
               <Logo size="small" />
             </div>
-            <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
-            <p className="text-xs text-purple-200 mt-1">Sistema de Gerenciamento</p>
+            <h2 className="text-lg font-bold text-gray-900">Controle de Dados</h2>
+            <p className="text-xs text-gray-600 mt-1">Sistema de Gerenciamento</p>
           </div>
 
           {/* Navigation */}
@@ -77,11 +77,10 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                 return (
                   <li key={item.id}>
                     <Button
-                      variant="ghost"
+                      variant={isActive ? "default" : "ghost"}
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-200",
-                        "hover:bg-green-500 hover:text-white",
-                        isActive && "bg-blue-900 text-white"
+                        "w-full justify-start text-left h-auto p-3",
+                        isActive && "bg-primary text-primary-foreground"
                       )}
                       onClick={() => onSectionChange(item.id)}
                     >
@@ -90,7 +89,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                         <div className="font-medium">{item.label}</div>
                         <div className={cn(
                           "text-xs mt-0.5",
-                          isActive ? "text-white/80" : "text-purple-200"
+                          isActive ? "text-primary-foreground/80" : "text-gray-500"
                         )}>
                           {item.description}
                         </div>
@@ -103,8 +102,8 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           </nav>
 
           {/* Footer */}
-          <div className="p-4 border-t border-purple-500/30">
-            <div className="text-xs text-purple-200 text-center">
+          <div className="p-4 border-t border-border/50">
+            <div className="text-xs text-gray-500 text-center">
               Sistema v1.0
             </div>
           </div>
