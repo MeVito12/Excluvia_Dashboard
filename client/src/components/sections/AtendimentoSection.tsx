@@ -38,32 +38,116 @@ const AtendimentoSection = () => {
   const [botEnabled, setBotEnabled] = useState(true);
   const [autoPayment, setAutoPayment] = useState(true);
   const [humanSupport, setHumanSupport] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
-  // Mock data para conversas de mensagens
+  // Categorias de negócio
+  const categories = [
+    { value: 'all', label: 'Todas as Categorias' },
+    { value: 'pet', label: 'Pet & Veterinário' },
+    { value: 'saude', label: 'Saúde & Medicamentos' },
+    { value: 'alimenticio', label: 'Alimentício' },
+    { value: 'tecnologia', label: 'Tecnologia' }
+  ];
+
+  // Mock data para conversas de mensagens categorizadas
   const messageChats = [
     {
       id: 1,
       clientName: 'João Silva',
-      lastMessage: 'Gostaria de fazer um pedido',
+      lastMessage: 'Preciso de ração para meu gato',
       timestamp: '14:32',
       status: 'bot',
-      unread: 2
+      unread: 2,
+      category: 'pet'
     },
     {
       id: 2,
       clientName: 'Maria Santos',
-      lastMessage: 'Qual o preço do produto XYZ?',
+      lastMessage: 'Preciso de vitamina D urgente',
       timestamp: '14:15',
       status: 'human',
-      unread: 0
+      unread: 1,
+      category: 'saude'
     },
     {
       id: 3,
       clientName: 'Pedro Costa',
-      lastMessage: 'Obrigado pelo atendimento!',
+      lastMessage: 'Obrigado pelo hambúrguer!',
       timestamp: '13:45',
       status: 'completed',
-      unread: 0
+      unread: 0,
+      category: 'alimenticio'
+    },
+    {
+      id: 4,
+      clientName: 'Ana Silva',
+      lastMessage: 'Qual o melhor smartphone?',
+      timestamp: '13:20',
+      status: 'bot',
+      unread: 3,
+      category: 'tecnologia'
+    },
+    {
+      id: 5,
+      clientName: 'Carlos Lima',
+      lastMessage: 'Vacina para cão disponível?',
+      timestamp: '12:30',
+      status: 'human',
+      unread: 0,
+      category: 'pet'
+    },
+    {
+      id: 6,
+      clientName: 'Lucia Rocha',
+      lastMessage: 'Pizza margherita pronta?',
+      timestamp: '12:15',
+      status: 'completed',
+      unread: 0,
+      category: 'alimenticio'
+    }
+  ];
+
+  // Mock data para cardápios e catálogos categorizados
+  const menuCatalogs = [
+    {
+      id: 1,
+      name: 'Cardápio Pet Shop',
+      category: 'pet',
+      items: ['Ração Premium', 'Brinquedos', 'Medicamentos Vet', 'Acessórios'],
+      description: 'Produtos completos para pets',
+      active: true
+    },
+    {
+      id: 2,
+      name: 'Catálogo Farmácia',
+      category: 'saude',
+      items: ['Medicamentos', 'Vitaminas', 'Suplementos', 'Primeiros Socorros'],
+      description: 'Medicamentos e produtos de saúde',
+      active: true
+    },
+    {
+      id: 3,
+      name: 'Menu Restaurante',
+      category: 'alimenticio',
+      items: ['Hambúrguers', 'Pizzas', 'Bebidas', 'Sobremesas'],
+      description: 'Cardápio completo do restaurante',
+      active: true
+    },
+    {
+      id: 4,
+      name: 'Catálogo Tech',
+      category: 'tecnologia',
+      items: ['Smartphones', 'Notebooks', 'Acessórios', 'Games'],
+      description: 'Produtos de tecnologia',
+      active: true
+    },
+    {
+      id: 5,
+      name: 'Serviços Veterinários',
+      category: 'pet',
+      items: ['Consultas', 'Cirurgias', 'Vacinas', 'Exames'],
+      description: 'Serviços veterinários completos',
+      active: false
     }
   ];
 
@@ -122,6 +206,25 @@ const AtendimentoSection = () => {
       timestamp: '13:55'
     }
   ];
+
+  // Funções de filtro
+  const filteredChats = selectedCategory === 'all' 
+    ? messageChats 
+    : messageChats.filter(chat => chat.category === selectedCategory);
+
+  const filteredCatalogs = selectedCategory === 'all' 
+    ? menuCatalogs 
+    : menuCatalogs.filter(catalog => catalog.category === selectedCategory);
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'pet': return 'bg-purple-100 text-purple-800';
+      case 'saude': return 'bg-blue-100 text-blue-800';
+      case 'alimenticio': return 'bg-green-100 text-green-800';
+      case 'tecnologia': return 'bg-orange-100 text-orange-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -237,55 +340,103 @@ const AtendimentoSection = () => {
 
         {/* Tab Mensagens */}
         <TabsContent value="mensagens" className="space-y-4">
+          {/* Filtros de Categoria */}
+          <Card className="bg-white border border-border/50">
+            <CardHeader>
+              <CardTitle className="text-black text-lg">Filtrar por Categoria</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((category) => (
+                  <Button
+                    key={category.value}
+                    variant={selectedCategory === category.value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedCategory(category.value)}
+                    className={`${
+                      selectedCategory === category.value 
+                        ? "bg-blue-500 text-white" 
+                        : "bg-white text-gray-700 hover:bg-gray-50"
+                    }`}
+                  >
+                    {category.label}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="bg-white border border-border/50">
               <CardHeader>
                 <CardTitle className="text-black flex items-center gap-2">
                   <MessageCircle className="h-5 w-5 text-green-600" />
-                  Cardápio por Mensagens
+                  Cardápios e Catálogos
+                  <Badge className="ml-2 bg-blue-100 text-blue-800">
+                    {filteredCatalogs.length} item{filteredCatalogs.length !== 1 ? 's' : ''}
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <Alert className="bg-green-50 border-green-200">
-                    <CheckCircle className="h-4 w-4" />
-                    <AlertDescription className="text-gray-700">
-                      <strong>Configurado:</strong> Clientes podem acessar o cardápio completo via mensagens e fazer pedidos sem sair do app.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">QR Code do Cardápio</p>
-                      <p className="text-sm text-gray-600">Para imprimir e divulgar</p>
+                <div className="space-y-3">
+                  {filteredCatalogs.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500">Nenhum cardápio encontrado para esta categoria</p>
                     </div>
-                    <Button variant="outline" size="sm" className="bg-white text-gray-900">
-                      <QrCode className="w-4 h-4 mr-2" />
-                      Gerar QR
-                    </Button>
-                  </div>
-                  
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">Link do Cardápio</p>
-                      <p className="text-sm text-gray-600">https://wa.me/5511999999999</p>
-                    </div>
-                    <Button variant="outline" size="sm" className="bg-white text-gray-900">
-                      <Smartphone className="w-4 h-4 mr-2" />
-                      Copiar
-                    </Button>
-                  </div>
+                  ) : (
+                    filteredCatalogs.map((catalog) => (
+                      <div key={catalog.id} className="p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium text-gray-900">{catalog.name}</h4>
+                            <Badge className={getCategoryColor(catalog.category)}>
+                              {categories.find(c => c.value === catalog.category)?.label}
+                            </Badge>
+                            <Badge className={catalog.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                              {catalog.active ? 'Ativo' : 'Inativo'}
+                            </Badge>
+                          </div>
+                          <Button variant="outline" size="sm" className="bg-white text-gray-900">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{catalog.description}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {catalog.items.slice(0, 3).map((item, idx) => (
+                            <span key={idx} className="text-xs bg-white px-2 py-1 rounded border">
+                              {item}
+                            </span>
+                          ))}
+                          {catalog.items.length > 3 && (
+                            <span className="text-xs text-gray-500">
+                              +{catalog.items.length - 3} mais
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
 
             <Card className="bg-white border border-border/50">
               <CardHeader>
-                <CardTitle className="text-black">Conversas Recentes</CardTitle>
+                <CardTitle className="text-black flex items-center gap-2">
+                  Conversas Recentes
+                  <Badge className="ml-2 bg-blue-100 text-blue-800">
+                    {filteredChats.length} conversa{filteredChats.length !== 1 ? 's' : ''}
+                  </Badge>
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {messageChats.map((chat) => (
+                  {filteredChats.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500">Nenhuma conversa encontrada para esta categoria</p>
+                    </div>
+                  ) : (
+                    filteredChats.map((chat) => (
                     <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                       <div 
                         className="flex-1 cursor-pointer"
@@ -293,6 +444,9 @@ const AtendimentoSection = () => {
                       >
                         <div className="flex items-center gap-2 mb-1">
                           <p className="font-medium text-gray-900">{chat.clientName}</p>
+                          <Badge className={getCategoryColor(chat.category)}>
+                            {categories.find(c => c.value === chat.category)?.label}
+                          </Badge>
                           <Badge className={`${getStatusColor(chat.status)} text-white text-xs`}>
                             {getStatusLabel(chat.status)}
                           </Badge>
@@ -317,7 +471,8 @@ const AtendimentoSection = () => {
                         <Eye className="w-4 h-4" />
                       </Button>
                     </div>
-                  ))}
+                  ))
+                  )}
                 </div>
                 
                 <Button 
