@@ -59,7 +59,7 @@ const SearchAndFilters = ({
 
         {/* Company Select */}
         <Select value={selectedCompany} onValueChange={onCompanyChange}>
-          <SelectTrigger className="bg-background/50 text-black">
+          <SelectTrigger className="bg-background/50 text-muted-foreground">
             <SelectValue placeholder="Selecione uma empresa" />
           </SelectTrigger>
           <SelectContent className="bg-popover">
@@ -83,7 +83,7 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50 text-black",
+                "justify-start text-left font-normal bg-background/50 text-muted-foreground",
                 !dateFrom && "text-muted-foreground"
               )}
             >
@@ -108,7 +108,7 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50 text-black",
+                "justify-start text-left font-normal bg-background/50 text-muted-foreground",
                 !dateTo && "text-muted-foreground"
               )}
             >
