@@ -29,7 +29,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     // Verificar credenciais mock
     if (email === 'auxiliar@ldsnews.com.br' && password === 'aux@lds2025') {
       onLogin({
-        name: 'Vitor Santos',
+        name: 'EXCLUVI.IA',
         email: 'auxiliar@ldsnews.com.br'
       });
     } else {
