@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Database, Users, TrendingUp, Server, Activity, AlertTriangle, Zap } from 'lucide-react';
 import MetricCard from '@/components/MetricCard';
 import SearchAndFilters from '@/components/SearchAndFilters';
-import Logo from '@/components/Logo';
 
 const DashboardSection = () => {
   const [selectedCompany, setSelectedCompany] = useState('all');
@@ -50,16 +49,11 @@ const DashboardSection = () => {
   const currentMetrics = getMetricsForCompany(selectedCompany);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="text-center py-8">
-        <div className="mb-6">
-          <Logo size="large" />
-        </div>
-        <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Dashboard de Controle
-        </h1>
-        <p className="text-gray-600">Visão geral das métricas do sistema</p>
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-400">Visão geral das métricas do sistema</p>
       </div>
 
       {/* Search and Filters */}

@@ -9,13 +9,11 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="text-center py-8">
-        <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-          Análises e Gráficos
-        </h1>
-        <p className="text-gray-600">Visualizações detalhadas dos dados do sistema</p>
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Gráficos</h1>
+        <p className="text-gray-600 dark:text-gray-400">Análises e relatórios</p>
       </div>
 
       {/* Search and Filters */}
