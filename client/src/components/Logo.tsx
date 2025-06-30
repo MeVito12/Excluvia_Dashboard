@@ -1,33 +1,29 @@
 
-import React from 'react';
+import logoImage from "@assets/Design sem nome_1751285815327.png";
+import sloganImage from "@assets/image_1751285887113.png";
 
 const Logo = ({ size = "large" }: { size?: "small" | "large" }) => {
   const logoSizes = {
-    small: "w-40 h-40",
-    large: "w-[32rem] h-[32rem]"
-  };
-
-  const textSizes = {
-    small: "text-lg",
-    large: "text-4xl"
+    small: "w-64 h-16",
+    large: "w-96 h-24"
   };
 
   return (
     <div className="flex flex-col items-center">
-      <div className={`${logoSizes[size]} relative`}>
+      <div className={`${logoSizes[size]} relative mb-4`}>
         <img 
-          src="/lovable-uploads/e2dbfbed-df11-4909-8abd-69c4e6d3fcd7.png" 
-          alt="Logo" 
+          src={logoImage} 
+          alt="excluv.ia Logo" 
           className="w-full h-full object-contain"
         />
       </div>
       {size === "large" && (
-        <div className="text-center -mt-16">
-          <p className={`${textSizes[size]} font-medium text-white leading-relaxed`}>
-            <span className="text-primary">Automatize</span> com lógica.
-            <br />
-            <span className="text-accent">Organize</span> com clareza.
-          </p>
+        <div className="text-center">
+          <img 
+            src={sloganImage} 
+            alt="Automatize com lógica. Organize com clareza." 
+            className="w-80 h-auto object-contain"
+          />
         </div>
       )}
     </div>

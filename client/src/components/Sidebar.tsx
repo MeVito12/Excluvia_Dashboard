@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/Logo';
 import { 
   BarChart3, 
   Database, 
@@ -59,8 +60,11 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="p-6 border-b border-border/50">
-            <h2 className="text-xl font-bold text-gray-900">Controle de Dados</h2>
-            <p className="text-sm text-gray-600 mt-1">Sistema de Gerenciamento</p>
+            <div className="mb-4">
+              <Logo size="small" />
+            </div>
+            <h2 className="text-lg font-bold text-gray-900">Controle de Dados</h2>
+            <p className="text-xs text-gray-600 mt-1">Sistema de Gerenciamento</p>
           </div>
 
           {/* Navigation */}
