@@ -9,6 +9,7 @@ import {
   Activity, 
   Calendar,
   Package,
+  MessageCircle,
   Menu,
   X,
   LogOut
@@ -53,6 +54,12 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       label: 'Estoque',
       icon: Package,
       description: 'Controle de estoque, vendas e clientes'
+    },
+    {
+      id: 'atendimento',
+      label: 'Atendimento',
+      icon: MessageCircle,
+      description: 'WhatsApp, assistente virtual e fidelização'
     }
   ];
 

@@ -276,3 +276,110 @@ export const insertClientSchema = z.object({
 });
 
 export type InsertClient = z.infer<typeof insertClientSchema>;
+
+// WhatsApp Chat Types
+export interface WhatsAppChat {
+  id: number;
+  clientName: string;
+  clientPhone: string;
+  lastMessage: string;
+  timestamp: Date;
+  status: 'bot' | 'human' | 'completed';
+  unreadCount: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertWhatsAppChatSchema = z.object({
+  clientName: z.string().min(1, "Nome do cliente é obrigatório"),
+  clientPhone: z.string().min(1, "Telefone é obrigatório"),
+  lastMessage: z.string(),
+  status: z.enum(['bot', 'human', 'completed']).default('bot'),
+  unreadCount: z.number().default(0),
+  isActive: z.boolean().default(true),
+});
+
+export type InsertWhatsAppChat = z.infer<typeof insertWhatsAppChatSchema>;
+
+// Bot Configuration Types
+export interface BotConfig {
+  id: number;
+  name: string;
+  isActive: boolean;
+  autoResponse: boolean;
+  escalationRules: Record<string, any>;
+  responseTemplates: Record<string, any>;
+  businessHours: Record<string, any>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertBotConfigSchema = z.object({
+  name: z.string().min(1, "Nome da configuração é obrigatório"),
+  isActive: z.boolean().default(true),
+  autoResponse: z.boolean().default(true),
+  escalationRules: z.record(z.any()).default({}),
+  responseTemplates: z.record(z.any()).default({}),
+  businessHours: z.record(z.any()).default({}),
+});
+
+export type InsertBotConfig = z.infer<typeof insertBotConfigSchema>;
+
+// Loyalty Campaign Types
+export interface LoyaltyCampaign {
+  id: number;
+  name: string;
+  type: 'discount' | 'cashback' | 'birthday' | 'points';
+  status: 'active' | 'scheduled' | 'paused' | 'completed';
+  discountPercent?: number;
+  cashbackPercent?: number;
+  targetAudience: Record<string, any>;
+  reach: number;
+  conversions: number;
+  startDate?: Date;
+  endDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertLoyaltyCampaignSchema = z.object({
+  name: z.string().min(1, "Nome da campanha é obrigatório"),
+  type: z.enum(['discount', 'cashback', 'birthday', 'points']),
+  status: z.enum(['active', 'scheduled', 'paused', 'completed']).default('scheduled'),
+  discountPercent: z.number().min(0).max(100).optional(),
+  cashbackPercent: z.number().min(0).max(100).optional(),
+  targetAudience: z.record(z.any()).default({}),
+  reach: z.number().default(0),
+  conversions: z.number().default(0),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
+});
+
+export type InsertLoyaltyCampaign = z.infer<typeof insertLoyaltyCampaignSchema>;
+
+// Support Agent Types
+export interface SupportAgent {
+  id: number;
+  name: string;
+  email: string;
+  status: 'online' | 'offline' | 'busy' | 'away';
+  currentChats: number;
+  maxChats: number;
+  totalChatsToday: number;
+  averageResponseTime: number; // in seconds
+  satisfaction: number; // rating from 1-5
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertSupportAgentSchema = z.object({
+  name: z.string().min(1, "Nome do agente é obrigatório"),
+  email: z.string().email("Email inválido"),
+  status: z.enum(['online', 'offline', 'busy', 'away']).default('offline'),
+  maxChats: z.number().default(5),
+  isActive: z.boolean().default(true),
+});
+
+export type InsertSupportAgent = z.infer<typeof insertSupportAgentSchema>;

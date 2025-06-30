@@ -16,7 +16,15 @@ import {
   type StockMovement,
   type InsertStockMovement,
   type Client,
-  type InsertClient
+  type InsertClient,
+  type WhatsAppChat,
+  type InsertWhatsAppChat,
+  type BotConfig,
+  type InsertBotConfig,
+  type LoyaltyCampaign,
+  type InsertLoyaltyCampaign,
+  type SupportAgent,
+  type InsertSupportAgent
 } from "@shared/schema";
 import { DatabaseConfig, databases } from "./db";
 
@@ -86,6 +94,37 @@ export interface IStorage {
   deleteClient(id: number): Promise<void>;
   getInactiveClients(days: number): Promise<Client[]>;
   getNewClients(days: number): Promise<Client[]>;
+  
+  // WhatsApp Chat operations
+  getWhatsAppChats(): Promise<WhatsAppChat[]>;
+  getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined>;
+  getActiveChats(): Promise<WhatsAppChat[]>;
+  createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat>;
+  updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat>;
+  markChatAsRead(id: number): Promise<void>;
+  
+  // Bot Configuration operations
+  getBotConfigs(): Promise<BotConfig[]>;
+  getBotConfig(id: number): Promise<BotConfig | undefined>;
+  getActiveBotConfig(): Promise<BotConfig | undefined>;
+  createBotConfig(config: InsertBotConfig): Promise<BotConfig>;
+  updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig>;
+  
+  // Loyalty Campaign operations
+  getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]>;
+  getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined>;
+  getActiveCampaigns(): Promise<LoyaltyCampaign[]>;
+  createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign>;
+  updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign>;
+  deleteLoyaltyCampaign(id: number): Promise<void>;
+  
+  // Support Agent operations
+  getSupportAgents(): Promise<SupportAgent[]>;
+  getSupportAgent(id: number): Promise<SupportAgent | undefined>;
+  getOnlineAgents(): Promise<SupportAgent[]>;
+  createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent>;
+  updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent>;
+  updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent>;
 }
 
 // Supabase Multi-Database Storage Implementation
@@ -341,6 +380,125 @@ export class SupabaseMultiStorage implements IStorage {
   async getNewClients(days: number): Promise<Client[]> {
     // Implementation will query new clients from Supabase
     throw new Error('Client operations will be implemented with Supabase integration');
+  }
+
+  // WhatsApp Chat operations
+  async getWhatsAppChats(): Promise<WhatsAppChat[]> {
+    // Implementation will query WhatsApp chats from Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  async getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined> {
+    // Implementation will query specific WhatsApp chat from Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  async getActiveChats(): Promise<WhatsAppChat[]> {
+    // Implementation will query active WhatsApp chats from Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  async createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat> {
+    // Implementation will create WhatsApp chat in Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  async updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat> {
+    // Implementation will update WhatsApp chat in Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  async markChatAsRead(id: number): Promise<void> {
+    // Implementation will mark chat as read in Supabase
+    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
+  }
+
+  // Bot Configuration operations
+  async getBotConfigs(): Promise<BotConfig[]> {
+    // Implementation will query bot configurations from Supabase
+    throw new Error('Bot configuration operations will be implemented with Supabase integration');
+  }
+
+  async getBotConfig(id: number): Promise<BotConfig | undefined> {
+    // Implementation will query specific bot configuration from Supabase
+    throw new Error('Bot configuration operations will be implemented with Supabase integration');
+  }
+
+  async getActiveBotConfig(): Promise<BotConfig | undefined> {
+    // Implementation will query active bot configuration from Supabase
+    throw new Error('Bot configuration operations will be implemented with Supabase integration');
+  }
+
+  async createBotConfig(config: InsertBotConfig): Promise<BotConfig> {
+    // Implementation will create bot configuration in Supabase
+    throw new Error('Bot configuration operations will be implemented with Supabase integration');
+  }
+
+  async updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig> {
+    // Implementation will update bot configuration in Supabase
+    throw new Error('Bot configuration operations will be implemented with Supabase integration');
+  }
+
+  // Loyalty Campaign operations
+  async getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]> {
+    // Implementation will query loyalty campaigns from Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  async getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined> {
+    // Implementation will query specific loyalty campaign from Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  async getActiveCampaigns(): Promise<LoyaltyCampaign[]> {
+    // Implementation will query active loyalty campaigns from Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  async createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> {
+    // Implementation will create loyalty campaign in Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  async updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign> {
+    // Implementation will update loyalty campaign in Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  async deleteLoyaltyCampaign(id: number): Promise<void> {
+    // Implementation will delete loyalty campaign from Supabase
+    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
+  }
+
+  // Support Agent operations
+  async getSupportAgents(): Promise<SupportAgent[]> {
+    // Implementation will query support agents from Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
+  }
+
+  async getSupportAgent(id: number): Promise<SupportAgent | undefined> {
+    // Implementation will query specific support agent from Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
+  }
+
+  async getOnlineAgents(): Promise<SupportAgent[]> {
+    // Implementation will query online support agents from Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
+  }
+
+  async createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent> {
+    // Implementation will create support agent in Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
+  }
+
+  async updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent> {
+    // Implementation will update support agent in Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
+  }
+
+  async updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent> {
+    // Implementation will update agent status in Supabase
+    throw new Error('Support agent operations will be implemented with Supabase integration');
   }
 }
 

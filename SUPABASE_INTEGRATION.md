@@ -206,6 +206,74 @@ A classe `SupabaseMultiStorage` no arquivo `server/storage.ts` implementa a inte
 - **Health Monitoring**: Monitorização do estado das conexões
 - **Configuration Management**: Gestão centralizada de configurações
 
+#### Tabela: whatsapp_chats
+```sql
+CREATE TABLE whatsapp_chats (
+  id SERIAL PRIMARY KEY,
+  client_name TEXT NOT NULL,
+  client_phone TEXT NOT NULL,
+  last_message TEXT,
+  timestamp TIMESTAMP DEFAULT NOW(),
+  status TEXT DEFAULT 'bot' CHECK (status IN ('bot', 'human', 'completed')),
+  unread_count INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: bot_configs
+```sql
+CREATE TABLE bot_configs (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  auto_response BOOLEAN DEFAULT TRUE,
+  escalation_rules JSONB DEFAULT '{}',
+  response_templates JSONB DEFAULT '{}',
+  business_hours JSONB DEFAULT '{}',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: loyalty_campaigns
+```sql
+CREATE TABLE loyalty_campaigns (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  type TEXT CHECK (type IN ('discount', 'cashback', 'birthday', 'points')),
+  status TEXT DEFAULT 'scheduled' CHECK (status IN ('active', 'scheduled', 'paused', 'completed')),
+  discount_percent INTEGER CHECK (discount_percent >= 0 AND discount_percent <= 100),
+  cashback_percent INTEGER CHECK (cashback_percent >= 0 AND cashback_percent <= 100),
+  target_audience JSONB DEFAULT '{}',
+  reach INTEGER DEFAULT 0,
+  conversions INTEGER DEFAULT 0,
+  start_date TIMESTAMP,
+  end_date TIMESTAMP,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+#### Tabela: support_agents
+```sql
+CREATE TABLE support_agents (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  status TEXT DEFAULT 'offline' CHECK (status IN ('online', 'offline', 'busy', 'away')),
+  current_chats INTEGER DEFAULT 0,
+  max_chats INTEGER DEFAULT 5,
+  total_chats_today INTEGER DEFAULT 0,
+  average_response_time INTEGER DEFAULT 0,
+  satisfaction DECIMAL(2,1) DEFAULT 5.0,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
 ## Próximos Passos
 
 1. Instalar o cliente Supabase (`@supabase/supabase-js`)
