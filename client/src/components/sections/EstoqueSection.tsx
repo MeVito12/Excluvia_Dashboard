@@ -34,43 +34,34 @@ const EstoqueSection = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [activeTab, setActiveTab] = useState('produtos');
 
-  // Categories available
+  // Categorias simplificadas e unificadas
   const categories = [
     { value: 'all', label: 'Todas as Categorias' },
-    { value: 'Pet Shop', label: 'Pet Shop' },
-    { value: 'Pet Shop - Veterinário', label: 'Pet Shop - Veterinário' },
-    { value: 'Medicamentos', label: 'Medicamentos' },
-    { value: 'Material Hospitalar', label: 'Material Hospitalar' },
-    { value: 'Equipamentos Médicos', label: 'Equipamentos Médicos' },
-    { value: 'Laticínios', label: 'Laticínios' },
-    { value: 'Panificados', label: 'Panificados' },
-    { value: 'Massas', label: 'Massas' },
-    { value: 'Smartphones', label: 'Smartphones' },
-    { value: 'Notebooks', label: 'Notebooks' },
-    { value: 'Componentes', label: 'Componentes' }
+    { value: 'pet', label: 'Pet & Veterinário' },
+    { value: 'saude', label: 'Saúde & Medicamentos' },
+    { value: 'alimenticio', label: 'Alimentício' },
+    { value: 'tecnologia', label: 'Tecnologia' }
   ];
 
-  // Segments for clients
+  // Segmentos simplificados para clientes
   const segments = [
     { value: 'all', label: 'Todos os Segmentos' },
-    { value: 'Pet Shop', label: 'Pet Shop' },
-    { value: 'Pet Shop - Veterinário', label: 'Pet Shop - Veterinário' },
-    { value: 'Saúde', label: 'Saúde' },
-    { value: 'Varejo Alimentício', label: 'Varejo Alimentício' },
-    { value: 'Alimentício', label: 'Alimentício' },
-    { value: 'Tecnologia', label: 'Tecnologia' }
+    { value: 'pet', label: 'Pet & Veterinário' },
+    { value: 'saude', label: 'Saúde & Medicamentos' },
+    { value: 'alimenticio', label: 'Alimentício' },
+    { value: 'tecnologia', label: 'Tecnologia' }
   ];
 
 
 
   // Mock data para produtos diversificados
   const products = [
-    // Pet Shop
+    // Pet & Veterinário
     {
       id: 1,
       name: 'Ração Premium Golden para Cães',
       sku: 'PET001',
-      category: 'Pet Shop',
+      category: 'pet',
       currentStock: 12,
       minimumStock: 5,
       price: 89.90,
@@ -82,7 +73,7 @@ const EstoqueSection = () => {
       id: 2,
       name: 'Vacina V10 Canina',
       sku: 'PET002',
-      category: 'Pet Shop - Veterinário',
+      category: 'pet',
       currentStock: 3,
       minimumStock: 8,
       price: 45.00,
@@ -94,7 +85,7 @@ const EstoqueSection = () => {
       id: 3,
       name: 'Brinquedo Kong Classic',
       sku: 'PET003',
-      category: 'Pet Shop',
+      category: 'pet',
       currentStock: 25,
       minimumStock: 10,
       price: 35.50,
@@ -102,12 +93,12 @@ const EstoqueSection = () => {
       expirationDate: null,
       status: 'normal'
     },
-    // Médicos
+    // Saúde & Medicamentos
     {
       id: 4,
       name: 'Dipirona 500mg',
       sku: 'MED001',
-      category: 'Medicamentos',
+      category: 'saude',
       currentStock: 150,
       minimumStock: 50,
       price: 8.90,
@@ -119,7 +110,7 @@ const EstoqueSection = () => {
       id: 5,
       name: 'Seringa Descartável 5ml',
       sku: 'MED002',
-      category: 'Material Hospitalar',
+      category: 'saude',
       currentStock: 20,
       minimumStock: 100,
       price: 0.85,
@@ -131,7 +122,7 @@ const EstoqueSection = () => {
       id: 6,
       name: 'Termômetro Digital',
       sku: 'MED003',
-      category: 'Equipamentos Médicos',
+      category: 'saude',
       currentStock: 8,
       minimumStock: 5,
       price: 25.90,
@@ -139,12 +130,12 @@ const EstoqueSection = () => {
       expirationDate: null,
       status: 'normal'
     },
-    // Alimentícios
+    // Alimentício
     {
       id: 7,
       name: 'Leite Integral 1L',
       sku: 'ALI001',
-      category: 'Laticínios',
+      category: 'alimenticio',
       currentStock: 45,
       minimumStock: 20,
       price: 4.50,
@@ -156,7 +147,7 @@ const EstoqueSection = () => {
       id: 8,
       name: 'Pão de Forma Integral',
       sku: 'ALI002',
-      category: 'Panificados',
+      category: 'alimenticio',
       currentStock: 8,
       minimumStock: 15,
       price: 6.90,
@@ -168,7 +159,7 @@ const EstoqueSection = () => {
       id: 9,
       name: 'Macarrão Espaguete 500g',
       sku: 'ALI003',
-      category: 'Massas',
+      category: 'alimenticio',
       currentStock: 35,
       minimumStock: 10,
       price: 3.20,
@@ -181,7 +172,7 @@ const EstoqueSection = () => {
       id: 10,
       name: 'iPhone 15 Pro',
       sku: 'TEC001',
-      category: 'Smartphones',
+      category: 'tecnologia',
       currentStock: 3,
       minimumStock: 5,
       price: 8999.00,
@@ -193,7 +184,7 @@ const EstoqueSection = () => {
       id: 11,
       name: 'MacBook Air M2',
       sku: 'TEC002',
-      category: 'Notebooks',
+      category: 'tecnologia',
       currentStock: 7,
       minimumStock: 3,
       price: 12500.00,
@@ -205,7 +196,7 @@ const EstoqueSection = () => {
       id: 12,
       name: 'SSD Samsung 1TB',
       sku: 'TEC003',
-      category: 'Componentes',
+      category: 'tecnologia',
       currentStock: 15,
       minimumStock: 8,
       price: 450.00,
@@ -217,11 +208,11 @@ const EstoqueSection = () => {
 
   // Mock data para vendas diversificadas
   const sales = [
-    // Pet Shop
+    // Pet & Veterinário
     {
       id: 1,
       productName: 'Ração Premium Golden para Cães',
-      category: 'Pet Shop',
+      category: 'pet',
       clientName: 'Ana Maria Oliveira',
       clientType: 'Particular',
       quantity: 2,
@@ -233,7 +224,7 @@ const EstoqueSection = () => {
     {
       id: 2,
       productName: 'Vacina V10 Canina',
-      category: 'Pet Shop - Veterinário',
+      category: 'pet',
       clientName: 'Clínica Veterinária Bichos & Cia',
       clientType: 'Empresa',
       quantity: 5,
@@ -242,11 +233,11 @@ const EstoqueSection = () => {
       saleDate: new Date('2024-06-29'),
       status: 'confirmed'
     },
-    // Médicos
+    // Saúde & Medicamentos
     {
       id: 3,
       productName: 'Dipirona 500mg',
-      category: 'Medicamentos',
+      category: 'saude',
       clientName: 'Hospital São Lucas',
       clientType: 'Empresa',
       quantity: 50,
@@ -258,7 +249,7 @@ const EstoqueSection = () => {
     {
       id: 4,
       productName: 'Termômetro Digital',
-      category: 'Equipamentos Médicos',
+      category: 'saude',
       clientName: 'Dr. Carlos Mendes',
       clientType: 'Profissional',
       quantity: 3,
@@ -267,11 +258,11 @@ const EstoqueSection = () => {
       saleDate: new Date('2024-06-28'),
       status: 'delivered'
     },
-    // Alimentícios
+    // Alimentício
     {
       id: 5,
       productName: 'Leite Integral 1L',
-      category: 'Laticínios',
+      category: 'alimenticio',
       clientName: 'Supermercado Central',
       clientType: 'Empresa',
       quantity: 24,
@@ -283,7 +274,7 @@ const EstoqueSection = () => {
     {
       id: 6,
       productName: 'Macarrão Espaguete 500g',
-      category: 'Massas',
+      category: 'alimenticio',
       clientName: 'Restaurante Bella Vista',
       clientType: 'Empresa',
       quantity: 10,
@@ -296,7 +287,7 @@ const EstoqueSection = () => {
     {
       id: 7,
       productName: 'iPhone 15 Pro',
-      category: 'Smartphones',
+      category: 'tecnologia',
       clientName: 'Pedro Santos Silva',
       clientType: 'Particular',
       quantity: 1,
@@ -308,7 +299,7 @@ const EstoqueSection = () => {
     {
       id: 8,
       productName: 'SSD Samsung 1TB',
-      category: 'Componentes',
+      category: 'tecnologia',
       clientName: 'TechFix Informática',
       clientType: 'Empresa',
       quantity: 5,
@@ -321,13 +312,13 @@ const EstoqueSection = () => {
 
   // Mock data para clientes diversificados
   const clients = [
-    // Pet Shop
+    // Pet & Veterinário
     {
       id: 1,
       name: 'Ana Maria Oliveira',
       email: 'ana.oliveira@email.com',
       type: 'Particular',
-      segment: 'Pet Shop',
+      segment: 'pet',
       totalPurchases: 8,
       totalSpent: 1450.25,
       lastPurchaseDate: new Date('2024-06-30'),
@@ -339,20 +330,20 @@ const EstoqueSection = () => {
       name: 'Clínica Veterinária Bichos & Cia',
       email: 'contato@bichosecia.com.br',
       type: 'Empresa',
-      segment: 'Pet Shop - Veterinário',
+      segment: 'pet',
       totalPurchases: 25,
       totalSpent: 12500.00,
       lastPurchaseDate: new Date('2024-06-29'),
       status: 'active',
       city: 'Rio de Janeiro'
     },
-    // Médicos
+    // Saúde & Medicamentos
     {
       id: 3,
       name: 'Hospital São Lucas',
       email: 'compras@saolucas.com.br',
       type: 'Empresa',
-      segment: 'Saúde',
+      segment: 'saude',
       totalPurchases: 45,
       totalSpent: 35000.00,
       lastPurchaseDate: new Date('2024-06-30'),
@@ -364,20 +355,20 @@ const EstoqueSection = () => {
       name: 'Dr. Carlos Mendes',
       email: 'carlos.mendes@clinica.com',
       type: 'Profissional',
-      segment: 'Saúde',
+      segment: 'saude',
       totalPurchases: 12,
       totalSpent: 2800.50,
       lastPurchaseDate: new Date('2024-06-28'),
       status: 'active',
       city: 'São Paulo'
     },
-    // Alimentícios
+    // Alimentício
     {
       id: 5,
       name: 'Supermercado Central',
       email: 'compras@central.com.br',
       type: 'Empresa',
-      segment: 'Varejo Alimentício',
+      segment: 'alimenticio',
       totalPurchases: 156,
       totalSpent: 45600.00,
       lastPurchaseDate: new Date('2024-06-30'),
