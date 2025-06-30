@@ -56,12 +56,56 @@ type NotificationFormData = z.infer<typeof notificationSchema>;
 const AgendamentosSection = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Queries
   const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
     queryKey: ['/api/appointments'],
+  });
+
+  // Função para categorizar agendamentos
+  const getAppointmentCategory = (appointment: any) => {
+    const title = appointment.title?.toLowerCase() || '';
+    const description = appointment.description?.toLowerCase() || '';
+    const location = appointment.location?.toLowerCase() || '';
+    
+    if (title.includes('veterinár') || title.includes('pet') || title.includes('vacinação') || 
+        title.includes('cirurgia') || title.includes('banho') || title.includes('tosa') ||
+        location.includes('veterinár') || location.includes('pet')) {
+      return 'veterinario';
+    }
+    
+    if (title.includes('consulta') || title.includes('médic') || title.includes('fisioterapia') || 
+        title.includes('oftalmológ') || title.includes('cirurgia') || title.includes('exame') ||
+        location.includes('hospital') || location.includes('clínica') || location.includes('laboratório')) {
+      return 'medico';
+    }
+    
+    if (title.includes('entrega') || title.includes('demonstração') || title.includes('degustação') || 
+        title.includes('corporativa') || title.includes('vendas') || title.includes('macbook') ||
+        location.includes('loja') || location.includes('empresa') || location.includes('adega')) {
+      return 'vendas';
+    }
+    
+    return 'outros';
+  };
+
+  // Filtrar agendamentos
+  const filteredAppointments = appointments.filter((appointment: any) => {
+    const matchesSearch = !searchTerm || 
+      appointment.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      appointment.location?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCategory = categoryFilter === 'all' || getAppointmentCategory(appointment) === categoryFilter;
+    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
+    
+    return matchesSearch && matchesCategory && matchesStatus;
   });
 
   const { data: integrations = [] } = useQuery({
@@ -182,6 +226,20 @@ const AgendamentosSection = () => {
       case 'completed': return 'Concluído';
       case 'cancelled': return 'Cancelado';
       default: return status;
+    }
+  };
+
+  const getCategoryBadge = (appointment: any) => {
+    const category = getAppointmentCategory(appointment);
+    switch (category) {
+      case 'veterinario':
+        return <Badge className="bg-green-100 text-green-800">Veterinário</Badge>;
+      case 'medico':
+        return <Badge className="bg-blue-100 text-blue-800">Médico</Badge>;
+      case 'vendas':
+        return <Badge className="bg-purple-100 text-purple-800">Vendas</Badge>;
+      default:
+        return <Badge className="bg-gray-100 text-gray-800">Outros</Badge>;
     }
   };
 
@@ -413,10 +471,77 @@ const AgendamentosSection = () => {
             </Card>
           </div>
 
+          {/* Filtros */}
+          <Card className="bg-white border border-border/50">
+            <CardContent className="p-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <Label htmlFor="search" className="text-sm font-medium text-gray-700">Buscar</Label>
+                  <Input
+                    id="search"
+                    placeholder="Buscar por título, cliente, local..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="category" className="text-sm font-medium text-gray-700">Categoria</Label>
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Selecionar categoria" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas as categorias</SelectItem>
+                      <SelectItem value="veterinario">Veterinário</SelectItem>
+                      <SelectItem value="medico">Médico/Clínico</SelectItem>
+                      <SelectItem value="vendas">Vendas/Comercial</SelectItem>
+                      <SelectItem value="outros">Outros</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <Label htmlFor="status" className="text-sm font-medium text-gray-700">Status</Label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue placeholder="Selecionar status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos os status</SelectItem>
+                      <SelectItem value="scheduled">Agendado</SelectItem>
+                      <SelectItem value="completed">Concluído</SelectItem>
+                      <SelectItem value="cancelled">Cancelado</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-end">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setSearchTerm('');
+                      setCategoryFilter('all');
+                      setStatusFilter('all');
+                    }}
+                    className="w-full"
+                  >
+                    Limpar Filtros
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="mt-3 text-sm text-gray-500">
+                Mostrando {filteredAppointments.length} de {appointments.length} agendamentos
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Appointments List */}
           <Card>
             <CardHeader>
-              <CardTitle>Próximos Agendamentos</CardTitle>
+              <CardTitle>Agendamentos Filtrados</CardTitle>
             </CardHeader>
             <CardContent>
               {appointmentsLoading ? (
@@ -431,15 +556,15 @@ const AgendamentosSection = () => {
                     </div>
                   ))}
                 </div>
-              ) : upcomingAppointments.length === 0 ? (
+              ) : filteredAppointments.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <Calendar className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Nenhum agendamento próximo encontrado</p>
-                  <p className="text-sm">Crie seu primeiro agendamento clicando no botão acima</p>
+                  <p>Nenhum agendamento encontrado</p>
+                  <p className="text-sm">Ajuste os filtros ou crie um novo agendamento</p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {upcomingAppointments.map((appointment: any) => (
+                  {filteredAppointments.map((appointment: any) => (
                     <div 
                       key={appointment.id} 
                       className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -462,6 +587,7 @@ const AgendamentosSection = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
+                        {getCategoryBadge(appointment)}
                         <Badge className={getStatusColor(appointment.status)}>
                           {getStatusLabel(appointment.status)}
                         </Badge>
