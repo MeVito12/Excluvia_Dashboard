@@ -104,6 +104,7 @@ This is a full-stack database management application built with React, Express, 
 ```
 Changelog:
 - June 30, 2025. Initial setup
+- June 30, 2025. Added mock authentication system with login form, user context, and logout functionality
 ```
 
 ## User Preferences

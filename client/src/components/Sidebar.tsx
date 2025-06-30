@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import UserAvatar from '@/components/UserAvatar';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   BarChart3, 
   Database, 
   Activity, 
   Menu,
-  X
+  X,
+  LogOut
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -17,6 +19,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
+  const { user, logout } = useAuth();
 
   const menuItems = [
     {
@@ -61,10 +64,10 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           {/* Header */}
           <div className="p-6 border-b border-[hsl(var(--dashboard-darker))]">
             <div className="mb-4">
-              <UserAvatar username="João Silva" size="medium" />
+              <UserAvatar username={user?.name || 'Usuário'} size="medium" />
             </div>
-            <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
-            <p className="text-xs text-blue-200 mt-1">Sistema de Gerenciamento</p>
+            <h2 className="text-lg font-bold text-white">{user?.name}</h2>
+            <p className="text-xs text-blue-200 mt-1">{user?.email}</p>
           </div>
 
           {/* Navigation */}
@@ -104,7 +107,16 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
           {/* Footer */}
           <div className="p-4 border-t border-[hsl(var(--dashboard-darker))]">
-            <div className="text-xs text-blue-200 text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full text-blue-200 hover:text-white hover:bg-red-500/20"
+              onClick={logout}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sair
+            </Button>
+            <div className="text-xs text-blue-200 text-center mt-2">
               Sistema v1.0
             </div>
           </div>

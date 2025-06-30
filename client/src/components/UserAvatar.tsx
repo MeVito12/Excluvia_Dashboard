@@ -1,11 +1,11 @@
 import avatarImage from "@assets/2-_1751286302473.png";
 
 interface UserAvatarProps {
-  username?: string;
+  username: string;
   size?: "small" | "medium";
 }
 
-const UserAvatar = ({ username = "João Silva", size = "medium" }: UserAvatarProps) => {
+const UserAvatar = ({ username, size = "medium" }: UserAvatarProps) => {
   const avatarSizes = {
     small: "w-8 h-8",
     medium: "w-12 h-12"
