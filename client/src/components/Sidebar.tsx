@@ -47,19 +47,19 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       id: 'agendamentos',
       label: 'Agendamentos',
       icon: Calendar,
-      description: 'Sistema de agendamento e lembretes'
+      description: 'Agendamentos e lembretes'
     },
     {
       id: 'estoque',
       label: 'Estoque',
       icon: Package,
-      description: 'Controle de estoque, vendas e clientes'
+      description: 'Estoque, vendas e clientes'
     },
     {
       id: 'atendimento',
       label: 'Atendimento',
       icon: MessageCircle,
-      description: 'WhatsApp, assistente virtual e fidelização'
+      description: 'WhatsApp e assistente virtual'
     }
   ];
 
@@ -103,17 +103,17 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-200",
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-200 min-h-[60px]",
                         "hover:bg-green-400 hover:text-white",
                         isActive && "bg-primary text-primary-foreground"
                       )}
                       onClick={() => onSectionChange(item.id)}
                     >
                       <Icon className="w-5 h-5 mr-3 flex-shrink-0" />
-                      <div className="flex-1">
-                        <div className="font-medium">{item.label}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm leading-tight">{item.label}</div>
                         <div className={cn(
-                          "text-xs mt-0.5",
+                          "text-xs mt-1 leading-tight break-words",
                           isActive ? "text-primary-foreground/80" : "text-blue-200"
                         )}>
                           {item.description}
