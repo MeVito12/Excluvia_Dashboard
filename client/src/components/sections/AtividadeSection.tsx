@@ -154,7 +154,7 @@ const AtividadeSection = () => {
               placeholder="Buscar atividades..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
+              className="pl-9 bg-white text-gray-900 border-border/50"
             />
           </div>
 
@@ -166,28 +166,28 @@ const AtividadeSection = () => {
 
           {/* Status Filter */}
           <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-            <SelectTrigger>
-              <SelectValue placeholder="Status" />
+            <SelectTrigger className="text-gray-900 bg-white">
+              <SelectValue placeholder="Status" className="text-gray-500" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos os Status</SelectItem>
-              <SelectItem value="success">Sucesso</SelectItem>
-              <SelectItem value="warning">Aviso</SelectItem>
-              <SelectItem value="error">Erro</SelectItem>
-              <SelectItem value="info">Informação</SelectItem>
-              <SelectItem value="neutral">Neutro</SelectItem>
+            <SelectContent className="bg-white border border-gray-200">
+              <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos os Status</SelectItem>
+              <SelectItem value="success" className="text-gray-900 hover:bg-gray-50">Sucesso</SelectItem>
+              <SelectItem value="warning" className="text-gray-900 hover:bg-gray-50">Aviso</SelectItem>
+              <SelectItem value="error" className="text-gray-900 hover:bg-gray-50">Erro</SelectItem>
+              <SelectItem value="info" className="text-gray-900 hover:bg-gray-50">Informação</SelectItem>
+              <SelectItem value="neutral" className="text-gray-900 hover:bg-gray-50">Neutro</SelectItem>
             </SelectContent>
           </Select>
 
           {/* Date From */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className="justify-start text-left font-normal">
-                <CalendarIcon className="mr-2 h-4 w-4" />
+              <Button variant="outline" className="justify-start text-left font-normal bg-white text-gray-900 border-border/50 hover:bg-gray-50">
+                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
                 {dateFrom ? format(dateFrom, "dd/MM/yyyy", { locale: ptBR }) : "Data inicial"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0 bg-white border border-gray-200" align="start">
               <Calendar
                 mode="single"
                 selected={dateFrom}
@@ -201,12 +201,12 @@ const AtividadeSection = () => {
           {/* Date To */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" className="justify-start text-left font-normal">
-                <CalendarIcon className="mr-2 h-4 w-4" />
+              <Button variant="outline" className="justify-start text-left font-normal bg-white text-gray-900 border-border/50 hover:bg-gray-50">
+                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
                 {dateTo ? format(dateTo, "dd/MM/yyyy", { locale: ptBR }) : "Data final"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
+            <PopoverContent className="w-auto p-0 bg-white border border-gray-200" align="start">
               <Calendar
                 mode="single"
                 selected={dateTo}
@@ -220,12 +220,12 @@ const AtividadeSection = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-2 mt-4">
-          <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
+          <Button variant="outline" size="sm" className="bg-white text-gray-900 border-border/50 hover:bg-gray-50">
+            <Filter className="w-4 h-4 mr-2 text-gray-500" />
             Filtros Avançados
           </Button>
-          <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 mr-2" />
+          <Button variant="outline" size="sm" className="bg-white text-gray-900 border-border/50 hover:bg-gray-50">
+            <Download className="w-4 h-4 mr-2 text-gray-500" />
             Exportar
           </Button>
         </div>

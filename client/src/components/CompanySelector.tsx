@@ -20,14 +20,14 @@ interface CompanySelectorProps {
 const CompanySelector = ({ value, onValueChange }: CompanySelectorProps) => {
   return (
     <div className="flex items-center space-x-2">
-      <Building2 className="h-5 w-5 text-muted-foreground" />
+      <Building2 className="h-5 w-5 text-gray-500" />
       <Select value={value} onValueChange={onValueChange}>
-        <SelectTrigger className="w-64 bg-card/80 backdrop-blur-sm border-border/50">
-          <SelectValue placeholder="Selecione uma empresa" />
+        <SelectTrigger className="w-64 bg-white text-gray-900 border-border/50">
+          <SelectValue placeholder="Selecione uma empresa" className="text-gray-500" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white border border-gray-200">
           {companies.map((company) => (
-            <SelectItem key={company.id} value={company.id}>
+            <SelectItem key={company.id} value={company.id} className="text-gray-900 hover:bg-gray-50">
               {company.name}
             </SelectItem>
           ))}
