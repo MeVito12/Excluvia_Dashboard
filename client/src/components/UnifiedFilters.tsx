@@ -80,7 +80,7 @@ const UnifiedFilters = ({
                 placeholder={searchPlaceholder}
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-white text-gray-900"
               />
             </div>
           </div>
@@ -93,12 +93,12 @@ const UnifiedFilters = ({
               {filter.label}
             </Label>
             <Select value={filter.value} onValueChange={filter.onChange}>
-              <SelectTrigger className="mt-1" id={filter.id}>
+              <SelectTrigger className="mt-1 bg-white text-gray-900" id={filter.id}>
                 <SelectValue placeholder={`Selecionar ${filter.label.toLowerCase()}`} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-white border border-gray-200">
                 {filter.options.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
+                  <SelectItem key={option.value} value={option.value} className="text-gray-900 hover:bg-gray-50">
                     {option.label}
                   </SelectItem>
                 ))}
