@@ -48,40 +48,40 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Custom dashboard colors */
+    /* Custom dashboard colors - updated to match the blue tone */
     --dashboard-purple: 262 83% 58%;
     --dashboard-green: 158 89% 53%;
-    --dashboard-dark: 234 20% 15%;
-    --dashboard-darker: 234 25% 10%;
+    --dashboard-dark: 220 100% 12%;
+    --dashboard-darker: 220 100% 8%;
   }
 
   .dark {
-    --background: 234 25% 10%;
+    --background: 220 100% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 234 20% 15%;
+    --card: 220 100% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 234 20% 15%;
+    --popover: 220 100% 12%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 234 20% 20%;
+    --secondary: 220 100% 15%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 234 20% 20%;
+    --muted: 220 100% 15%;
     --muted-foreground: 215 20.2% 65.1%;
 
     --accent: 158 89% 53%;
-    --accent-foreground: 234 25% 10%;
+    --accent-foreground: 220 100% 8%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 234 20% 20%;
-    --input: 234 20% 20%;
+    --border: 220 100% 15%;
+    --input: 220 100% 15%;
     --ring: 262 83% 58%;
   }
 }
