@@ -9,7 +9,7 @@ import { CalendarIcon, Filter, Search, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import ModernIcon from '@/components/ui/modern-icon';
+
 
 const AtividadeSection = () => {
   const { selectedCategory } = useCategory();
@@ -576,23 +576,11 @@ const AtividadeSection = () => {
         {/* Action Buttons */}
         <div className="flex gap-2 mt-4">
           <Button className="btn-secondary">
-            <ModernIcon 
-              icon={Filter}
-              size="sm"
-              background={false}
-              contextual={false}
-              animated={true}
-            />
+            <Filter className="h-4 w-4 mr-2" />
             Filtros Avançados
           </Button>
           <Button className="btn-secondary">
-            <ModernIcon 
-              icon={Download}
-              size="sm"
-              background={false}
-              contextual={false}
-              animated={true}
-            />
+            <Download className="h-4 w-4 mr-2" />
             Exportar
           </Button>
         </div>

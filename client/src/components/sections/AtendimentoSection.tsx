@@ -14,7 +14,7 @@ import {
   Zap
 } from 'lucide-react';
 
-const AtendimentoSectionNew = () => {
+const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
@@ -344,4 +344,4 @@ const AtendimentoSectionNew = () => {
   );
 };
 
-export default AtendimentoSectionNew;
+export default AtendimentoSection;

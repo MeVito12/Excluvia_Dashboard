@@ -139,7 +139,14 @@ const DashboardSection = () => {
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-purple-600" />
+              <div className="p-3 rounded-full bg-gray-100" 
+                ><Clock className="h-5 w-5 text-gray-600" /></div>
+                size="md"
+                background={true}
+                contextual={true}
+                animated={true}
+                glow={true}
+              />
               Próximos Compromissos
             </CardTitle>
           </CardHeader>
@@ -184,7 +191,13 @@ const DashboardSection = () => {
                 return appointments.map((apt, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                     <div className="flex items-center gap-3">
-                      <Clock className="h-4 w-4 text-gray-600" />
+                      <div className="p-3 rounded-full bg-gray-100" 
+                        ><Clock className="h-5 w-5 text-gray-600" /></div>
+                        size="sm"
+                        background={true}
+                        contextual={true}
+                        animated={true}
+                      />
                       <div>
                         <p className="font-medium text-gray-900">{apt.title}</p>
                         <p className="text-sm text-gray-600">{apt.time}</p>
@@ -205,7 +218,14 @@ const DashboardSection = () => {
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Bell className="h-5 w-5 text-orange-600" />
+              <div className="p-3 rounded-full bg-gray-100" 
+                ><Clock className="h-5 w-5 text-gray-600" /></div>
+                size="md"
+                background={true}
+                contextual={true}
+                animated={true}
+                glow={true}
+              />
               Notificações Importantes
             </CardTitle>
           </CardHeader>
@@ -249,7 +269,13 @@ const DashboardSection = () => {
                 
                 return notifications.map((notif, index) => (
                   <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <notif.icon className="h-4 w-4 text-gray-600 mt-0.5" />
+                    <div className="p-3 rounded-full bg-gray-100" 
+                      ><Clock className="h-5 w-5 text-gray-600" /></div>
+                      size="sm"
+                      background={true}
+                      contextual={true}
+                      animated={true}
+                    />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <p className="font-medium text-gray-900">{notif.title}</p>

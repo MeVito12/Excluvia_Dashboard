@@ -126,10 +126,9 @@ All colors MUST be HSL.
 
   /* Cards principais */
   .main-card {
-    @apply bg-white rounded-2xl shadow-2xl border-0 overflow-hidden;
-    backdrop-filter: blur(20px);
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    @apply bg-white rounded-2xl shadow-2xl border-0 overflow-hidden p-6;
+    background: #ffffff !important;
+    border: 1px solid rgba(229, 231, 235, 0.3);
   }
 
   /* Navegação por tabs moderna */

@@ -14,7 +14,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
-const EstoqueSectionNew2 = () => {
+const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
@@ -406,4 +406,4 @@ const EstoqueSectionNew2 = () => {
   );
 };
 
-export default EstoqueSectionNew2;
+export default EstoqueSection;
