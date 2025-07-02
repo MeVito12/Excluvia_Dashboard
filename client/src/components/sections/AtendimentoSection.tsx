@@ -50,38 +50,38 @@ const AtendimentoSection = () => {
     switch (selectedCategory) {
       case 'pet':
         return {
-          catalogName: 'Catálogo',
+          catalogName: 'Prateleira',
           chats: [
             { id: 1, clientName: 'Ana Oliveira', lastMessage: 'Quando é a próxima vacina do Max?', timestamp: '14:30', status: 'unread', unread: 2, category: 'pet' },
             { id: 2, clientName: 'Carlos Silva', lastMessage: 'Obrigado pelo atendimento!', timestamp: '14:15', status: 'read', unread: 0, category: 'pet' }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Pet Shop Premium', category: 'pet', items: ['Ração Golden Premium 15kg', 'Brinquedo Kong Classic', 'Medicamento Antiparasitário', 'Coleira Antipulgas'], description: 'Produtos premium para cães e gatos', active: true },
-            { id: 2, name: 'Catálogo Veterinário', category: 'pet', items: ['Vacina V10', 'Exame de Sangue', 'Consulta Veterinária', 'Cirurgia Castração'], description: 'Serviços veterinários completos', active: true }
+            { id: 1, name: 'Prateleira Pet Shop Premium', category: 'pet', items: ['Ração Golden Premium 15kg', 'Brinquedo Kong Classic', 'Medicamento Antiparasitário', 'Coleira Antipulgas'], description: 'Produtos premium para cães e gatos', active: true, qrCode: 'QR_PET_001' },
+            { id: 2, name: 'Prateleira Veterinário', category: 'pet', items: ['Vacina V10', 'Exame de Sangue', 'Consulta Veterinária', 'Cirurgia Castração'], description: 'Serviços veterinários completos', active: true, qrCode: 'QR_PET_002' }
           ]
         };
       case 'saude':
         return {
-          catalogName: 'Catálogo',
+          catalogName: 'Prateleira',
           chats: [
             { id: 1, clientName: 'Maria Santos', lastMessage: 'Preciso renovar minha receita', timestamp: '15:20', status: 'unread', unread: 1, category: 'saude' },
             { id: 2, clientName: 'João Costa', lastMessage: 'Medicamento chegou, obrigado!', timestamp: '14:45', status: 'read', unread: 0, category: 'saude' }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Farmácia Central', category: 'saude', items: ['Dipirona 500mg', 'Vitamina D3', 'Suplemento Ômega 3', 'Kit Primeiros Socorros'], description: 'Medicamentos e produtos de saúde', active: true },
-            { id: 2, name: 'Catálogo Clínica Médica', category: 'saude', items: ['Consulta Clínico Geral', 'Exame Cardiológico', 'Fisioterapia', 'Check-up Completo'], description: 'Serviços médicos especializados', active: true }
+            { id: 1, name: 'Prateleira Farmácia Central', category: 'saude', items: ['Dipirona 500mg', 'Vitamina D3', 'Suplemento Ômega 3', 'Kit Primeiros Socorros'], description: 'Medicamentos e produtos de saúde', active: true, qrCode: 'QR_SAUDE_001' },
+            { id: 2, name: 'Prateleira Clínica Médica', category: 'saude', items: ['Consulta Clínico Geral', 'Exame Cardiológico', 'Fisioterapia', 'Check-up Completo'], description: 'Serviços médicos especializados', active: true, qrCode: 'QR_SAUDE_002' }
           ]
         };
       case 'alimenticio':
         return {
-          catalogName: 'Cardápio',
+          catalogName: 'Cardápio e Menu',
           chats: [
             { id: 1, clientName: 'Restaurante Sabor', lastMessage: 'Pedido #1234 está pronto para entrega', timestamp: '16:10', status: 'unread', unread: 1, category: 'alimenticio' },
             { id: 2, clientName: 'Cliente VIP', lastMessage: 'Excelente como sempre!', timestamp: '15:30', status: 'read', unread: 0, category: 'alimenticio' }
           ],
           catalogs: [
-            { id: 1, name: 'Cardápio Delivery', category: 'alimenticio', items: ['Pizza Margherita', 'Hambúrguer Artesanal', 'Salada Caesar', 'Açaí com Granola'], description: 'Pratos deliciosos para delivery', active: true },
-            { id: 2, name: 'Cardápio Executivo', category: 'alimenticio', items: ['Prato Feito Completo', 'Suco Natural', 'Sobremesa do Dia', 'Café Expresso'], description: 'Almoço executivo completo', active: true }
+            { id: 1, name: 'Cardápio Delivery', category: 'alimenticio', items: ['Pizza Margherita', 'Hambúrguer Artesanal', 'Salada Caesar', 'Açaí com Granola'], description: 'Pratos deliciosos para delivery', active: true, qrCode: 'QR_FOOD_001' },
+            { id: 2, name: 'Menu Executivo', category: 'alimenticio', items: ['Prato Feito Completo', 'Suco Natural', 'Sobremesa do Dia', 'Café Expresso'], description: 'Almoço executivo completo', active: true, qrCode: 'QR_FOOD_002' }
           ]
         };
       case 'vendas':
@@ -106,8 +106,8 @@ const AtendimentoSection = () => {
             { id: 16, clientName: 'Startup InnovaTech', lastMessage: 'Setup completo entregue! Equipe trabalhando com máxima produtividade. Vocês são nossos parceiros oficiais de tecnologia!', timestamp: '13:45', status: 'unread', unread: 4, category: 'vendas' }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Eletrônicos', category: 'vendas', items: ['iPhone 15 Pro', 'Notebook Dell Inspiron', 'Smart TV Samsung 55"', 'Fone Bluetooth Sony'], description: 'Eletrônicos de última geração', active: true },
-            { id: 2, name: 'Catálogo Geral', category: 'vendas', items: ['Roupas Masculinas', 'Produtos para Casa', 'Artigos Esportivos', 'Livros e Revistas'], description: 'Produtos diversificados para todas as necessidades', active: true }
+            { id: 1, name: 'Catálogo Eletrônicos', category: 'vendas', items: ['iPhone 15 Pro', 'Notebook Dell Inspiron', 'Smart TV Samsung 55"', 'Fone Bluetooth Sony'], description: 'Eletrônicos de última geração', active: true, qrCode: 'QR_VENDAS_001' },
+            { id: 2, name: 'Catálogo Geral', category: 'vendas', items: ['Roupas Masculinas', 'Produtos para Casa', 'Artigos Esportivos', 'Livros e Revistas'], description: 'Produtos diversificados para todas as necessidades', active: true, qrCode: 'QR_VENDAS_002' }
           ]
         };
       case 'design':
@@ -118,8 +118,8 @@ const AtendimentoSection = () => {
             { id: 2, clientName: 'Empresa Local', lastMessage: 'Material gráfico aprovado', timestamp: '17:45', status: 'read', unread: 0, category: 'design' }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Design Gráfico', category: 'design', items: ['Logotipo Profissional', 'Identidade Visual Completa', 'Material Gráfico', 'Design para Redes Sociais'], description: 'Serviços de design profissional', active: true },
-            { id: 2, name: 'Catálogo Branding', category: 'design', items: ['Branding Completo', 'Manual da Marca', 'Apresentação Corporativa', 'Papelaria Personalizada'], description: 'Soluções completas de branding', active: true }
+            { id: 1, name: 'Catálogo Design Gráfico', category: 'design', items: ['Logotipo Profissional', 'Identidade Visual Completa', 'Material Gráfico', 'Design para Redes Sociais'], description: 'Serviços de design profissional', active: true, qrCode: 'QR_DESIGN_001' },
+            { id: 2, name: 'Catálogo Branding', category: 'design', items: ['Branding Completo', 'Manual da Marca', 'Apresentação Corporativa', 'Papelaria Personalizada'], description: 'Soluções completas de branding', active: true, qrCode: 'QR_DESIGN_002' }
           ]
         };
       case 'sites':
@@ -130,8 +130,8 @@ const AtendimentoSection = () => {
             { id: 2, clientName: 'Agência Parceira', lastMessage: 'Preciso de uma landing page urgente', timestamp: '18:50', status: 'unread', unread: 1, category: 'sites' }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Desenvolvimento Web', category: 'sites', items: ['Site Institucional', 'E-commerce Completo', 'Landing Page', 'Sistema Web Personalizado'], description: 'Desenvolvimento web profissional', active: true },
-            { id: 2, name: 'Catálogo Marketing Digital', category: 'sites', items: ['SEO Otimização', 'Google Ads', 'Redes Sociais', 'E-mail Marketing'], description: 'Estratégias de marketing digital', active: true }
+            { id: 1, name: 'Catálogo Desenvolvimento Web', category: 'sites', items: ['Site Institucional', 'E-commerce Completo', 'Landing Page', 'Sistema Web Personalizado'], description: 'Desenvolvimento web profissional', active: true, qrCode: 'QR_SITES_001' },
+            { id: 2, name: 'Catálogo Marketing Digital', category: 'sites', items: ['SEO Otimização', 'Google Ads', 'Redes Sociais', 'E-mail Marketing'], description: 'Estratégias de marketing digital', active: true, qrCode: 'QR_SITES_002' }
           ]
         };
       default:
@@ -325,6 +325,14 @@ const AtendimentoSection = () => {
                           <Badge className={catalog.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
                             {catalog.active ? 'Ativo' : 'Inativo'}
                           </Badge>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => setShowQRCode(showQRCode === catalog.id ? null : catalog.id)}
+                          >
+                            <QrCode className="w-4 h-4 mr-1" />
+                            QR Code
+                          </Button>
                           <Button variant="outline" size="sm">
                             <Share className="w-4 h-4 mr-1" />
                             Compartilhar
@@ -338,6 +346,64 @@ const AtendimentoSection = () => {
                           </div>
                         ))}
                       </div>
+                      {showQRCode === catalog.id && (
+                        <div className="mt-4 p-4 bg-gray-50 rounded-lg border">
+                          <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-medium text-gray-900">QR Code - {catalog.name}</h5>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => setShowQRCode(null)}
+                            >
+                              ✕
+                            </Button>
+                          </div>
+                          <div className="flex flex-col items-center space-y-3">
+                            <div className="w-32 h-32 bg-white border-2 border-gray-300 rounded-lg flex items-center justify-center">
+                              <div className="w-24 h-24 bg-black rounded" style={{
+                                backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(`
+                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                                    <rect width="100" height="100" fill="white"/>
+                                    <g fill="black">
+                                      <rect x="0" y="0" width="7" height="7"/>
+                                      <rect x="8" y="0" width="7" height="7"/>
+                                      <rect x="16" y="0" width="7" height="7"/>
+                                      <rect x="32" y="0" width="7" height="7"/>
+                                      <rect x="48" y="0" width="7" height="7"/>
+                                      <rect x="56" y="0" width="7" height="7"/>
+                                      <rect x="72" y="0" width="7" height="7"/>
+                                      <rect x="80" y="0" width="7" height="7"/>
+                                      <rect x="88" y="0" width="7" height="7"/>
+                                      <rect x="0" y="8" width="7" height="7"/>
+                                      <rect x="16" y="8" width="7" height="7"/>
+                                      <rect x="32" y="8" width="7" height="7"/>
+                                      <rect x="56" y="8" width="7" height="7"/>
+                                      <rect x="72" y="8" width="7" height="7"/>
+                                      <rect x="88" y="8" width="7" height="7"/>
+                                    </g>
+                                  </svg>
+                                `)}")`,
+                                backgroundSize: 'cover'
+                              }}></div>
+                            </div>
+                            <div className="text-center">
+                              <p className="text-sm text-gray-600 mb-2">
+                                Escaneie para acessar o {categoryData.catalogName.toLowerCase()}
+                              </p>
+                              <div className="flex gap-2">
+                                <Button variant="outline" size="sm">
+                                  <Copy className="w-4 h-4 mr-1" />
+                                  Copiar Link
+                                </Button>
+                                <Button variant="outline" size="sm">
+                                  <Download className="w-4 h-4 mr-1" />
+                                  Baixar QR
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
