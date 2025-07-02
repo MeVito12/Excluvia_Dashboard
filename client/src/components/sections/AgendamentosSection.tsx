@@ -831,36 +831,15 @@ const AgendamentosSection = () => {
       <Tabs defaultValue="agenda" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="agenda" className="flex items-center gap-2">
-            <ModernIcon 
-              icon={Calendar}
-              variant="category"
-              category={selectedCategory as any}
-              size="sm"
-              background={true}
-              animated={true}
-            />
+            <Calendar className="h-4 w-4" />
             Agenda
           </TabsTrigger>
           <TabsTrigger value="lembretes" className="flex items-center gap-2">
-            <ModernIcon 
-              icon={Clock}
-              variant="category"
-              category={selectedCategory as any}
-              size="sm"
-              background={true}
-              animated={true}
-            />
+            <Clock className="h-4 w-4" />
             Lembretes
           </TabsTrigger>
           <TabsTrigger value="integracoes" className="flex items-center gap-2">
-            <ModernIcon 
-              icon={Settings}
-              variant="category"
-              category={selectedCategory as any}
-              size="sm"
-              background={true}
-              animated={true}
-            />
+            <Settings className="h-4 w-4" />
             Integrações
           </TabsTrigger>
           <TabsTrigger value="notificacoes" className="flex items-center gap-2">
