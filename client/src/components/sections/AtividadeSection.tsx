@@ -8,27 +8,15 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon, Filter, Search, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import CompanySelector from '@/components/CompanySelector';
+import { useCategory, categories } from '@/contexts/CategoryContext';
 
 const AtividadeSection = () => {
+  const { selectedCategory } = useCategory();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCompany, setSelectedCompany] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
-
-  // Categorias de negócio
-  const categories = [
-    { value: 'all', label: 'Todas as Categorias' },
-    { value: 'pet', label: 'Pet & Veterinário' },
-    { value: 'saude', label: 'Saúde & Medicamentos' },
-    { value: 'alimenticio', label: 'Alimentício' },
-    { value: 'tecnologia', label: 'Tecnologia' },
-    { value: 'design', label: 'Design Gráfico' },
-    { value: 'sites', label: 'Criação de Sites' }
-  ];
 
   // Tipos de atividade
   const activityTypes = [
@@ -269,18 +257,17 @@ const AtividadeSection = () => {
     }
   };
 
-  // Filtrar atividades
+  // Filtrar atividades pela categoria selecionada globalmente
   const filteredActivities = activities.filter(activity => {
     const matchesSearch = activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          activity.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          activity.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          activity.user.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCompany = selectedCompany === 'all' || activity.company === selectedCompany;
     const matchesStatus = selectedStatus === 'all' || activity.status === selectedStatus;
-    const matchesCategory = selectedCategory === 'all' || activity.category === selectedCategory;
+    const matchesCategory = activity.category === selectedCategory; // Filtra apenas pela categoria selecionada
     const matchesType = selectedType === 'all' || activity.type === selectedType;
     
-    return matchesSearch && matchesCompany && matchesStatus && matchesCategory && matchesType;
+    return matchesSearch && matchesStatus && matchesCategory && matchesType;
   });
 
   return (
@@ -288,12 +275,14 @@ const AtividadeSection = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-white">Atividade</h1>
-        <p className="text-gray-300">Log de atividades</p>
+        <p className="text-gray-300">
+          Log de atividades - {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'}
+        </p>
       </div>
 
       {/* Filtros específicos da seção */}
       <div className="bg-white border border-border/50 rounded-lg p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -304,12 +293,6 @@ const AtividadeSection = () => {
               className="pl-9 bg-white text-gray-900 border-border/50"
             />
           </div>
-
-          {/* Company Filter */}
-          <CompanySelector
-            value={selectedCompany}
-            onValueChange={setSelectedCompany}
-          />
 
           {/* Status Filter */}
           <Select value={selectedStatus} onValueChange={setSelectedStatus}>
@@ -323,20 +306,6 @@ const AtividadeSection = () => {
               <SelectItem value="error" className="text-gray-900 hover:bg-gray-50">Erro</SelectItem>
               <SelectItem value="info" className="text-gray-900 hover:bg-gray-50">Informação</SelectItem>
               <SelectItem value="neutral" className="text-gray-900 hover:bg-gray-50">Neutro</SelectItem>
-            </SelectContent>
-          </Select>
-
-          {/* Category Filter */}
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="text-gray-900 bg-white">
-              <SelectValue placeholder="Categoria" className="text-gray-500" />
-            </SelectTrigger>
-            <SelectContent className="bg-white border border-gray-200">
-              {categories.map((category) => (
-                <SelectItem key={category.value} value={category.value} className="text-gray-900 hover:bg-gray-50">
-                  {category.label}
-                </SelectItem>
-              ))}
             </SelectContent>
           </Select>
 
