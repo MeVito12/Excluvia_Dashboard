@@ -31,7 +31,11 @@ import {
   Eye,
   Edit,
   Play,
-  Pause
+  Pause,
+  Link,
+  Share2,
+  Copy,
+  Download
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -40,6 +44,63 @@ const AtendimentoSection = () => {
   const [autoPayment, setAutoPayment] = useState(true);
   const [humanSupport, setHumanSupport] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [showQRCode, setShowQRCode] = useState<number | null>(null);
+
+  // Função para gerar link de compartilhamento
+  const generateShareLink = (catalogId: number, catalogName: string) => {
+    const baseUrl = window.location.origin;
+    const shareUrl = `${baseUrl}/catalog/${catalogId}`;
+    return shareUrl;
+  };
+
+  // Função para gerar QR Code SVG
+  const generateQRCode = (text: string) => {
+    // Função simples para gerar QR Code SVG
+    // Em produção, usaria uma biblioteca como qrcode.js
+    const size = 200;
+    const modules = 21; // Tamanho padrão do QR Code
+    const moduleSize = size / modules;
+    
+    // Dados simplificados para demonstração
+    const data = text.split('').map(char => char.charCodeAt(0) % 2);
+    
+    let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
+    svg += `<rect width="${size}" height="${size}" fill="white"/>`;
+    
+    // Gerar padrão baseado no texto
+    for (let i = 0; i < modules; i++) {
+      for (let j = 0; j < modules; j++) {
+        const index = (i * modules + j) % data.length;
+        if (data[index]) {
+          const x = j * moduleSize;
+          const y = i * moduleSize;
+          svg += `<rect x="${x}" y="${y}" width="${moduleSize}" height="${moduleSize}" fill="black"/>`;
+        }
+      }
+    }
+    
+    svg += '</svg>';
+    return svg;
+  };
+
+  // Função para copiar link
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    // Aqui você pode adicionar um toast de sucesso
+  };
+
+  // Função para baixar QR Code
+  const downloadQRCode = (catalogName: string, svgContent: string) => {
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `qrcode-${catalogName.toLowerCase().replace(/\s+/g, '-')}.svg`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   // Categorias de negócio
   const categories = [
@@ -444,12 +505,14 @@ const AtendimentoSection = () => {
                               {catalog.active ? 'Ativo' : 'Inativo'}
                             </Badge>
                           </div>
-                          <Button variant="outline" size="sm" className="bg-white text-gray-900">
-                            <Edit className="w-4 h-4" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <Button variant="outline" size="sm" className="bg-white text-gray-900">
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{catalog.description}</p>
-                        <div className="flex flex-wrap gap-1">
+                        <p className="text-sm text-gray-600 mb-3">{catalog.description}</p>
+                        <div className="flex flex-wrap gap-1 mb-3">
                           {catalog.items.slice(0, 3).map((item, idx) => (
                             <span key={idx} className="text-xs bg-white px-2 py-1 rounded border">
                               {item}
@@ -459,6 +522,83 @@ const AtendimentoSection = () => {
                             <span className="text-xs text-gray-500">
                               +{catalog.items.length - 3} mais
                             </span>
+                          )}
+                        </div>
+                        
+                        {/* Seção de Compartilhamento */}
+                        <div className="border-t pt-3 mt-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
+                                onClick={() => {
+                                  const shareUrl = generateShareLink(catalog.id, catalog.name);
+                                  copyToClipboard(shareUrl);
+                                }}
+                              >
+                                <Link className="w-4 h-4 mr-1" />
+                                Copiar Link
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                                onClick={() => setShowQRCode(showQRCode === catalog.id ? null : catalog.id)}
+                              >
+                                <QrCode className="w-4 h-4 mr-1" />
+                                QR Code
+                              </Button>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="text-gray-500 hover:text-gray-700"
+                                onClick={() => {
+                                  const shareUrl = generateShareLink(catalog.id, catalog.name);
+                                  if (navigator.share) {
+                                    navigator.share({
+                                      title: catalog.name,
+                                      text: catalog.description,
+                                      url: shareUrl,
+                                    });
+                                  }
+                                }}
+                              >
+                                <Share2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {/* QR Code Display */}
+                          {showQRCode === catalog.id && (
+                            <div className="mt-3 p-4 bg-white border rounded-lg text-center">
+                              <div className="flex justify-center mb-3">
+                                <div 
+                                  className="border-2 border-gray-200 rounded-lg p-2"
+                                  dangerouslySetInnerHTML={{ 
+                                    __html: generateQRCode(generateShareLink(catalog.id, catalog.name)) 
+                                  }}
+                                />
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                Escaneie para acessar {catalog.name}
+                              </p>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="bg-gray-50 text-gray-700"
+                                onClick={() => {
+                                  const qrSvg = generateQRCode(generateShareLink(catalog.id, catalog.name));
+                                  downloadQRCode(catalog.name, qrSvg);
+                                }}
+                              >
+                                <Download className="w-4 h-4 mr-1" />
+                                Baixar QR Code
+                              </Button>
+                            </div>
                           )}
                         </div>
                       </div>
