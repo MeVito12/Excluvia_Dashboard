@@ -829,7 +829,7 @@ const AgendamentosSection = () => {
       </div>
 
       <Tabs defaultValue="agenda" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="w-full flex overflow-x-auto scrollbar-hide gap-1">
           <TabsTrigger value="agenda" className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
             Agenda
