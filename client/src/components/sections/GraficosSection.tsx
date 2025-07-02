@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Download, Calendar, TrendingUp, BarChart3, PieChart } from 'lucide-react';
+import ModernIcon from '@/components/ui/modern-icon';
 
 const GraficosSection = () => {
   const [selectedCompany, setSelectedCompany] = useState('all');
@@ -33,73 +34,115 @@ const GraficosSection = () => {
       />
 
       {/* Relatórios de Vendas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-white border border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Vendas Hoje</p>
-                <p className="text-2xl font-bold text-green-600">R$ 8.450</p>
-                <p className="text-xs text-green-600">+12% vs ontem</p>
-              </div>
-              <Calendar className="h-8 w-8 text-green-500" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Vendas Hoje</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">R$ 8.450</p>
+              <p className="text-xs mt-1 text-green-600">+12% vs ontem</p>
             </div>
-          </CardContent>
-        </Card>
+            <ModernIcon 
+              icon={Calendar}
+              size="lg"
+              background={true}
+              contextual={true}
+              animated={true}
+              glow={true}
+            />
+          </div>
+        </div>
 
-        <Card className="bg-white border border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Vendas Esta Semana</p>
-                <p className="text-2xl font-bold text-blue-600">R$ 45.200</p>
-                <p className="text-xs text-blue-600">+8% vs sem. anterior</p>
-              </div>
-              <BarChart3 className="h-8 w-8 text-blue-500" />
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Vendas Esta Semana</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">R$ 45.200</p>
+              <p className="text-xs mt-1 text-green-600">+8% vs sem. anterior</p>
             </div>
-          </CardContent>
-        </Card>
+            <ModernIcon 
+              icon={BarChart3}
+              size="lg"
+              background={true}
+              contextual={true}
+              animated={true}
+              glow={true}
+            />
+          </div>
+        </div>
 
-        <Card className="bg-white border border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Vendas Este Mês</p>
-                <p className="text-2xl font-bold text-purple-600">R$ 165.300</p>
-                <p className="text-xs text-purple-600">+15% vs mês anterior</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-purple-500" />
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Vendas Este Mês</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">R$ 165.300</p>
+              <p className="text-xs mt-1 text-green-600">+15% vs mês anterior</p>
             </div>
-          </CardContent>
-        </Card>
+            <ModernIcon 
+              icon={TrendingUp}
+              size="lg"
+              background={true}
+              contextual={true}
+              animated={true}
+              glow={true}
+            />
+          </div>
+        </div>
 
-        <Card className="bg-white border border-border/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Ticket Médio</p>
-                <p className="text-2xl font-bold text-orange-600">R$ 285</p>
-                <p className="text-xs text-orange-600">+5% vs período anterior</p>
-              </div>
-              <PieChart className="h-8 w-8 text-orange-500" />
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Ticket Médio</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">R$ 285</p>
+              <p className="text-xs mt-1 text-green-600">+5% vs período anterior</p>
             </div>
-          </CardContent>
-        </Card>
+            <ModernIcon 
+              icon={PieChart}
+              size="lg"
+              background={true}
+              contextual={true}
+              animated={true}
+              glow={true}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Botões de Relatórios */}
-      <Card className="bg-white border border-border/50">
+      <Card className="main-card">
         <CardHeader>
-          <CardTitle className="text-black">Relatórios de Vendas</CardTitle>
+          <CardTitle className="text-gray-900 flex items-center gap-2">
+            <ModernIcon 
+              icon={Download}
+              size="md"
+              background={true}
+              contextual={true}
+              animated={true}
+              glow={true}
+            />
+            Relatórios de Vendas
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white justify-start">
-              <Download className="w-4 h-4 mr-2" />
+            <Button className="btn-primary justify-start">
+              <ModernIcon 
+                icon={Download}
+                size="sm"
+                background={false}
+                contextual={false}
+                animated={true}
+              />
               Relatório Diário
             </Button>
-            <Button className="bg-green-500 hover:bg-green-600 text-white justify-start">
-              <Download className="w-4 h-4 mr-2" />
+            <Button className="btn-secondary justify-start">
+              <ModernIcon 
+                icon={Download}
+                size="sm"
+                background={false}
+                contextual={false}
+                animated={true}
+              />
               Relatório Semanal
             </Button>
             <Button className="bg-purple-500 hover:bg-purple-600 text-white justify-start">

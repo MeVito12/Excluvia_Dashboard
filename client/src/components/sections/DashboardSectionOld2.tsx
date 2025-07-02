@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Database, Users, TrendingUp, Calendar, Clock, Bell, AlertTriangle } from 'lucide-react';
+import { Database, Users, TrendingUp, Server, Activity, AlertTriangle, Zap, Calendar, Clock, Bell } from 'lucide-react';
+import MetricCard from '@/components/MetricCard';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,40 +22,82 @@ const DashboardSection = () => {
         totalRecords: '15 Animais',
         activeUsers: '8 Veterinários',
         transactions: '12 Consultas',
-        appointments: '5 Agendamentos Hoje'
+        appointments: '5 Agendamentos Hoje',
+        performance: '97.3%',
+        activeAlerts: '2 Vacinas Pendentes',
+        totalRevenue: 'R$ 1.850,00',
+        avgResponseTime: '15min',
+        mainMetric: 'Atendimentos',
+        secondaryMetric: 'Emergências',
+        alertType: 'Vacinas'
       },
       'saude': {
         totalRecords: '24 Pacientes',
         activeUsers: '6 Médicos',
         transactions: '18 Consultas',
-        appointments: '4 Agendamentos Hoje'
+        appointments: '4 Agendamentos Hoje',
+        performance: '98.1%',
+        activeAlerts: '1 Exame Atrasado',
+        totalRevenue: 'R$ 2.340,00',
+        avgResponseTime: '22min',
+        mainMetric: 'Consultas',
+        secondaryMetric: 'Exames',
+        alertType: 'Exames'
       },
       'alimenticio': {
         totalRecords: '45 Pratos',
         activeUsers: '12 Funcionários',
         transactions: '89 Pedidos',
-        appointments: '3 Reservas Hoje'
+        appointments: '4 Reservas Hoje',
+        performance: '94.8%',
+        activeAlerts: '3 Ingredientes Acabando',
+        totalRevenue: 'R$ 3.420,50',
+        avgResponseTime: '25min',
+        mainMetric: 'Pedidos',
+        secondaryMetric: 'Reservas',
+        alertType: 'Estoque'
       },
       'vendas': {
-        totalRecords: '128 Produtos',
-        activeUsers: '15 Vendedores',
-        transactions: '47 Vendas',
-        appointments: '8 Reuniões Hoje'
+        totalRecords: '21 Produtos',
+        activeUsers: '5 Vendedores',
+        transactions: '19 Vendas',
+        appointments: '5 Reuniões Hoje',
+        performance: '96.7%',
+        activeAlerts: '2 Produtos em Falta',
+        totalRevenue: 'R$ 18.450,00',
+        avgResponseTime: '8min',
+        mainMetric: 'Vendas',
+        secondaryMetric: 'Reuniões',
+        alertType: 'Estoque'
       },
       'design': {
-        totalRecords: '32 Projetos',
-        activeUsers: '5 Designers',
-        transactions: '14 Entregas',
-        appointments: '6 Briefings Hoje'
+        totalRecords: '8 Projetos',
+        activeUsers: '4 Designers',
+        transactions: '12 Entregas',
+        appointments: '3 Briefings Hoje',
+        performance: '99.2%',
+        activeAlerts: '1 Prazo Apertado',
+        totalRevenue: 'R$ 4.200,00',
+        avgResponseTime: '2h',
+        mainMetric: 'Projetos',
+        secondaryMetric: 'Briefings',
+        alertType: 'Prazos'
       },
       'sites': {
-        totalRecords: '18 Sites',
-        activeUsers: '4 Desenvolvedores',
-        transactions: '9 Deploys',
-        appointments: '3 Reuniões Hoje'
+        totalRecords: '6 Sites',
+        activeUsers: '3 Desenvolvedores',
+        transactions: '9 Entregas',
+        appointments: '3 Reuniões Hoje',
+        performance: '98.5%',
+        activeAlerts: '1 Deploy Pendente',
+        totalRevenue: 'R$ 7.800,00',
+        avgResponseTime: '24h',
+        mainMetric: 'Desenvolvimentos',
+        secondaryMetric: 'Reuniões',
+        alertType: 'Deploys'
       }
     };
-    
+
     return categoryData[selectedCategory as keyof typeof categoryData] || categoryData.pet;
   };
 
@@ -85,7 +128,7 @@ const DashboardSection = () => {
         <div className="metric-card gradient-brand text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Total de Registros</p>
+              <p className="text-sm font-medium text-white/80">{currentMetrics.mainMetric}</p>
               <p className="text-2xl font-bold mt-1 text-white">{currentMetrics.totalRecords}</p>
               <p className="text-xs mt-1 text-white/70">+12% este mês</p>
             </div>
@@ -116,7 +159,7 @@ const DashboardSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Transações</p>
+              <p className="text-sm font-medium text-gray-600">{currentMetrics.secondaryMetric}</p>
               <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
               <p className="text-xs mt-1 text-green-600">+23% hoje</p>
             </div>
@@ -171,34 +214,34 @@ const DashboardSection = () => {
               {(() => {
                 const categoryAppointments = {
                   'pet': [
-                    { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã' },
-                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado' }
+                    { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h', color: 'blue' },
+                    { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã', color: 'orange' },
+                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado', color: 'green' }
                   ],
                   'saude': [
-                    { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Fisioterapia - Reabilitação', time: '07/07 às 14:00', status: 'Próxima semana' },
-                    { title: 'Consulta Oftalmológica', time: '08/07 às 10:30', status: 'Agendado' }
+                    { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h', color: 'blue' },
+                    { title: 'Fisioterapia - Reabilitação', time: '07/07 às 14:00', status: 'Próxima semana', color: 'orange' },
+                    { title: 'Consulta Oftalmológica', time: '08/07 às 10:30', status: 'Agendado', color: 'green' }
                   ],
                   'alimenticio': [
-                    { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h' },
-                    { title: 'Evento Corporativo', time: '05/07 às 19:00', status: 'Esta semana' },
-                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado' }
+                    { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h', color: 'blue' },
+                    { title: 'Evento Corporativo', time: '05/07 às 19:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado', color: 'green' }
                   ],
                   'vendas': [
-                    { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h' },
-                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 09:00', status: 'Concluído' },
-                    { title: 'Entrega iPads - Escola', time: '04/07 às 14:00', status: 'Amanhã' }
+                    { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h', color: 'blue' },
+                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 09:00', status: 'Concluído', color: 'green' },
+                    { title: 'Entrega iPads - Escola', time: '04/07 às 14:00', status: 'Amanhã', color: 'orange' }
                   ],
                   'design': [
-                    { title: 'Briefing Logo Startup', time: 'Hoje às 10:00', status: 'Concluído' },
-                    { title: 'Apresentação Branding', time: '05/07 às 15:00', status: 'Esta semana' },
-                    { title: 'Revisão Material Gráfico', time: '06/07 às 14:00', status: 'Agendado' }
+                    { title: 'Briefing Logo Startup', time: 'Hoje às 10:00', status: 'Concluído', color: 'green' },
+                    { title: 'Apresentação Branding', time: '05/07 às 15:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Revisão Material Gráfico', time: '06/07 às 14:00', status: 'Agendado', color: 'blue' }
                   ],
                   'sites': [
-                    { title: 'Kickoff E-commerce', time: 'Hoje às 09:00', status: 'Concluído' },
-                    { title: 'Entrega Landing Page', time: '06/07 às 14:00', status: 'Esta semana' },
-                    { title: 'Reunião Sistema Interno', time: '08/07 às 10:00', status: 'Agendado' }
+                    { title: 'Kickoff E-commerce', time: 'Hoje às 09:00', status: 'Concluído', color: 'green' },
+                    { title: 'Entrega Landing Page', time: '06/07 às 14:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Reunião Sistema Interno', time: '08/07 às 10:00', status: 'Agendado', color: 'blue' }
                   ]
                 };
                 
@@ -250,34 +293,34 @@ const DashboardSection = () => {
               {(() => {
                 const categoryNotifications = {
                   'pet': [
-                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Consulta Atrasada', desc: 'Reagendar consulta do Rex', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Agendamento feito há 10 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Consulta Atrasada', desc: 'Reagendar consulta do Rex', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Agendamento feito há 10 minutos', color: 'green', badge: 'Novo' }
                   ],
                   'saude': [
-                    { icon: AlertTriangle, title: 'Exames Atrasados', desc: '1 exame precisa ser realizado', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Medicamentos', desc: 'Verificar receitas vencidas', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Paciente agendado para amanhã', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Exames Atrasados', desc: '1 exame precisa ser realizado', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Medicamentos', desc: 'Verificar receitas vencidas', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Paciente agendado para amanhã', color: 'green', badge: 'Novo' }
                   ],
                   'alimenticio': [
-                    { icon: AlertTriangle, title: 'Ingredientes Acabando', desc: '3 ingredientes abaixo do mínimo', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Produtos Vencendo', desc: '2 produtos vencem hoje', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pedido #245 há 5 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Ingredientes Acabando', desc: '3 ingredientes abaixo do mínimo', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Produtos Vencendo', desc: '2 produtos vencem hoje', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pedido #245 há 5 minutos', color: 'green', badge: 'Novo' }
                   ],
                   'vendas': [
-                    { icon: AlertTriangle, title: 'Stock Baixo', desc: '5 produtos abaixo do mínimo', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Pagamento Pendente', desc: 'Fatura vence hoje', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Venda', desc: 'MacBook vendido há 15 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Stock Baixo', desc: '5 produtos abaixo do mínimo', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Pagamento Pendente', desc: 'Fatura vence hoje', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Venda', desc: 'MacBook vendido há 15 minutos', color: 'green', badge: 'Novo' }
                   ],
                   'design': [
-                    { icon: AlertTriangle, title: 'Projeto Atrasado', desc: 'Logo entrega hoje', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente precisa aprovar arte', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 30 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Projeto Atrasado', desc: 'Logo entrega hoje', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente precisa aprovar arte', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 30 minutos', color: 'green', badge: 'Novo' }
                   ],
                   'sites': [
-                    { icon: AlertTriangle, title: 'Site Fora do Ar', desc: 'Domínio cliente.com', badge: 'Crítico', color: 'red' },
-                    { icon: Clock, title: 'Backup Pendente', desc: 'Backup automático atrasado', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Lead', desc: 'Orçamento solicitado há 20 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Site Fora do Ar', desc: 'Domínio cliente.com', color: 'red', badge: 'Crítico' },
+                    { icon: Clock, title: 'Backup Pendente', desc: 'Backup automático atrasado', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Lead', desc: 'Orçamento solicitado há 20 minutos', color: 'green', badge: 'Novo' }
                   ]
                 };
                 

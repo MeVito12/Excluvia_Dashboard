@@ -9,6 +9,7 @@ import { CalendarIcon, Filter, Search, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import ModernIcon from '@/components/ui/modern-icon';
 
 const AtividadeSection = () => {
   const { selectedCategory } = useCategory();
@@ -574,21 +575,33 @@ const AtividadeSection = () => {
 
         {/* Action Buttons */}
         <div className="flex gap-2 mt-4">
-          <Button variant="outline" size="sm" className="bg-white text-gray-900 border-border/50 hover:bg-gray-50">
-            <Filter className="w-4 h-4 mr-2 text-gray-500" />
+          <Button className="btn-secondary">
+            <ModernIcon 
+              icon={Filter}
+              size="sm"
+              background={false}
+              contextual={false}
+              animated={true}
+            />
             Filtros Avançados
           </Button>
-          <Button variant="outline" size="sm" className="bg-white text-gray-900 border-border/50 hover:bg-gray-50">
-            <Download className="w-4 h-4 mr-2 text-gray-500" />
+          <Button className="btn-secondary">
+            <ModernIcon 
+              icon={Download}
+              size="sm"
+              background={false}
+              contextual={false}
+              animated={true}
+            />
             Exportar
           </Button>
         </div>
       </div>
 
       {/* Activities List */}
-      <div className="bg-white border border-border/50 rounded-lg p-6">
+      <div className="main-card">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-black">
+          <h3 className="text-lg font-semibold text-gray-900">
             Atividades Recentes ({filteredActivities.length})
           </h3>
         </div>
@@ -634,19 +647,19 @@ const AtividadeSection = () => {
 
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white border border-border/50 rounded-lg p-6 text-center">
+        <div className="metric-card text-center">
           <div className="text-2xl font-bold text-green-600">{activities.filter(a => a.status === 'success').length}</div>
           <div className="text-sm text-gray-600">Operações Bem-sucedidas</div>
         </div>
-        <div className="bg-white border border-border/50 rounded-lg p-6 text-center">
+        <div className="metric-card text-center">
           <div className="text-2xl font-bold text-yellow-600">{activities.filter(a => a.status === 'warning').length}</div>
           <div className="text-sm text-gray-600">Avisos</div>
         </div>
-        <div className="bg-white border border-border/50 rounded-lg p-6 text-center">
+        <div className="metric-card text-center">
           <div className="text-2xl font-bold text-red-600">{activities.filter(a => a.status === 'error').length}</div>
           <div className="text-sm text-gray-600">Erros</div>
         </div>
-        <div className="bg-white border border-border/50 rounded-lg p-6 text-center">
+        <div className="metric-card text-center">
           <div className="text-2xl font-bold text-blue-600">{activities.filter(a => a.status === 'info').length}</div>
           <div className="text-sm text-gray-600">Informações</div>
         </div>
