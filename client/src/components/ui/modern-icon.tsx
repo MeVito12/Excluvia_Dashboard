@@ -69,26 +69,26 @@ const ModernIcon: React.FC<ModernIconProps> = ({
 
   function getCategoryBackground(cat: string): string {
     const categoryBackgrounds = {
-      'pet': 'bg-gradient-to-br from-purple-500 to-purple-700',
-      'saude': 'bg-gradient-to-br from-blue-500 to-blue-700',
-      'alimenticio': 'bg-gradient-to-br from-green-500 to-green-700',
-      'vendas': 'bg-gradient-to-br from-purple-600 to-indigo-700',
-      'design': 'bg-gradient-to-br from-teal-500 to-green-600',
-      'sites': 'bg-gradient-to-br from-indigo-600 to-blue-700'
+      'pet': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo vibrante da imagem
+      'saude': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', // Azul escuro da imagem
+      'alimenticio': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon da imagem
+      'vendas': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo vibrante
+      'design': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon
+      'sites': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]' // Azul escuro
     };
-    return categoryBackgrounds[cat as keyof typeof categoryBackgrounds] || 'bg-gradient-to-br from-gray-500 to-gray-700';
+    return categoryBackgrounds[cat as keyof typeof categoryBackgrounds] || 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]';
   }
 
   function getCategoryGlow(cat: string): string {
     const categoryGlows = {
-      'pet': 'shadow-purple-200/50 hover:shadow-purple-300/70',
-      'saude': 'shadow-blue-200/50 hover:shadow-blue-300/70',
-      'alimenticio': 'shadow-green-200/50 hover:shadow-green-300/70',
-      'vendas': 'shadow-purple-200/50 hover:shadow-indigo-300/70',
-      'design': 'shadow-teal-200/50 hover:shadow-green-300/70',
-      'sites': 'shadow-indigo-200/50 hover:shadow-blue-300/70'
+      'pet': 'shadow-[#9333ea]/30 hover:shadow-[#9333ea]/50',
+      'saude': 'shadow-[#1e3a8a]/30 hover:shadow-[#1e3a8a]/50',
+      'alimenticio': 'shadow-[#00ff88]/30 hover:shadow-[#00ff88]/50',
+      'vendas': 'shadow-[#9333ea]/30 hover:shadow-[#9333ea]/50',
+      'design': 'shadow-[#00ff88]/30 hover:shadow-[#00ff88]/50',
+      'sites': 'shadow-[#1e3a8a]/30 hover:shadow-[#1e3a8a]/50'
     };
-    return categoryGlows[cat as keyof typeof categoryGlows] || 'shadow-gray-200/50';
+    return categoryGlows[cat as keyof typeof categoryGlows] || 'shadow-[#9333ea]/30';
   }
 
   const iconElement = (
@@ -115,9 +115,13 @@ const ModernIcon: React.FC<ModernIconProps> = ({
         animated && 'modern-card-hover transition-all duration-300 hover:scale-110',
         className
       )}>
-        <div className="text-white">
-          {iconElement}
-        </div>
+        <Icon 
+          className={cn(
+            sizes[size],
+            'text-white', // Sempre branco quando tem background
+            animated && 'transition-all duration-300 hover:scale-110'
+          )}
+        />
       </div>
     );
   }

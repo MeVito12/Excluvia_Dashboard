@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import ModernIcon from '@/components/ui/modern-icon';
 import UnifiedFilters from '@/components/UnifiedFilters';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -671,7 +672,14 @@ const AgendamentosSection = () => {
         <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
           <DialogTrigger asChild>
             <Button className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
+              <ModernIcon 
+                icon={Plus}
+                variant="category"
+                category={selectedCategory as any}
+                size="sm"
+                background={true}
+                animated={true}
+              />
               Novo Agendamento
             </Button>
           </DialogTrigger>
@@ -823,15 +831,36 @@ const AgendamentosSection = () => {
       <Tabs defaultValue="agenda" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="agenda" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
+            <ModernIcon 
+              icon={Calendar}
+              variant="category"
+              category={selectedCategory as any}
+              size="sm"
+              background={true}
+              animated={true}
+            />
             Agenda
           </TabsTrigger>
           <TabsTrigger value="lembretes" className="flex items-center gap-2">
-            <Clock className="h-4 w-4" />
+            <ModernIcon 
+              icon={Clock}
+              variant="category"
+              category={selectedCategory as any}
+              size="sm"
+              background={true}
+              animated={true}
+            />
             Lembretes
           </TabsTrigger>
           <TabsTrigger value="integracoes" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
+            <ModernIcon 
+              icon={Settings}
+              variant="category"
+              category={selectedCategory as any}
+              size="sm"
+              background={true}
+              animated={true}
+            />
             Integrações
           </TabsTrigger>
           <TabsTrigger value="notificacoes" className="flex items-center gap-2">

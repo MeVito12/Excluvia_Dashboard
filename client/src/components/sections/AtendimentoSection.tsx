@@ -561,7 +561,12 @@ const AtendimentoSection = () => {
       {/* Filtros */}
       <div className="bg-white border border-border/50 rounded-lg p-6">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <ModernIcon 
+            icon={Search}
+            variant="default"
+            size="sm"
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
           <Input
             placeholder="Buscar conversas, catálogos..."
             value={searchTerm}
@@ -693,7 +698,15 @@ const AtendimentoSection = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <Bot className="h-8 w-8 text-blue-500" />
+                <ModernIcon 
+                  icon={Bot}
+                  variant="category"
+                  category={selectedCategory as any}
+                  size="xl"
+                  background={true}
+                  animated={true}
+                  glow={true}
+                />
                 <div>
                   <h3 className="font-semibold text-gray-900">Bot Inteligente</h3>
                   <p className="text-sm text-gray-500">24/7 atendimento automático</p>
@@ -708,7 +721,15 @@ const AtendimentoSection = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <CreditCard className="h-8 w-8 text-green-500" />
+                <ModernIcon 
+                  icon={CreditCard}
+                  variant="category"
+                  category={selectedCategory as any}
+                  size="xl"
+                  background={true}
+                  animated={true}
+                  glow={true}
+                />
                 <div>
                   <h3 className="font-semibold text-gray-900">Pagamento Automático</h3>
                   <p className="text-sm text-gray-500">PIX e cartão integrados</p>

@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import ModernIcon from '@/components/ui/modern-icon';
 import { 
   Package, 
   AlertTriangle, 
@@ -1264,7 +1265,15 @@ const EstoqueSection = () => {
                 <p className="text-sm text-gray-600">Produtos em Estoque Baixo</p>
                 <p className="text-2xl font-bold text-red-600">3</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-500" />
+              <ModernIcon 
+                icon={AlertTriangle}
+                variant="category"
+                category={selectedCategory as any}
+                size="xl"
+                background={true}
+                animated={true}
+                glow={true}
+              />
             </div>
           </CardContent>
         </Card>
@@ -1276,7 +1285,15 @@ const EstoqueSection = () => {
                 <p className="text-sm text-gray-600">Produtos Vencendo</p>
                 <p className="text-2xl font-bold text-orange-600">2</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500" />
+              <ModernIcon 
+                icon={Clock}
+                variant="category"
+                category={selectedCategory as any}
+                size="xl"
+                background={true}
+                animated={true}
+                glow={true}
+              />
             </div>
           </CardContent>
         </Card>
@@ -1288,7 +1305,15 @@ const EstoqueSection = () => {
                 <p className="text-sm text-gray-600">Vendas Hoje</p>
                 <p className="text-2xl font-bold text-green-600">5</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
+              <ModernIcon 
+                icon={TrendingUp}
+                variant="category"
+                category={selectedCategory as any}
+                size="xl"
+                background={true}
+                animated={true}
+                glow={true}
+              />
             </div>
           </CardContent>
         </Card>
@@ -1300,7 +1325,15 @@ const EstoqueSection = () => {
                 <p className="text-sm text-gray-600">Faturamento Hoje</p>
                 <p className="text-2xl font-bold text-blue-600">R$ 8.999</p>
               </div>
-              <DollarSign className="h-8 w-8 text-blue-500" />
+              <ModernIcon 
+                icon={DollarSign}
+                variant="category"
+                category={selectedCategory as any}
+                size="xl"
+                background={true}
+                animated={true}
+                glow={true}
+              />
             </div>
           </CardContent>
         </Card>
@@ -1635,15 +1668,39 @@ const EstoqueSection = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Relatório Diário de Vendas
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Relatório Semanal de Vendas
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Relatório Mensal de Vendas
                 </Button>
               </CardContent>
@@ -1655,15 +1712,39 @@ const EstoqueSection = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Clientes Novos (30 dias)
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Clientes Inativos
                 </Button>
                 <Button variant="outline" className="w-full justify-start bg-white text-gray-900">
-                  <Download className="w-4 h-4 mr-2" />
+                  <ModernIcon 
+                    icon={Download}
+                    variant="category"
+                    category={selectedCategory as any}
+                    size="sm"
+                    background={true}
+                    animated={true}
+                    className="mr-2"
+                  />
                   Top Clientes por Compras
                 </Button>
               </CardContent>
