@@ -97,16 +97,226 @@ const AtividadeSection = () => {
       type: 'stock',
       category: 'pet'
     },
+    // Atividades de Vendas - Extensas
     { 
       id: 6,
-      action: 'Produto adicionado', 
-      company: 'Tecnologia', 
+      action: 'Venda corporativa fechada', 
+      company: 'Vendas', 
+      time: '15 min atrás', 
+      status: 'success', 
+      details: 'Digital Solutions Corp - 3 MacBook Air M3 vendidos por R$ 28.500,00',
+      user: 'Vendedor Premium',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 7,
+      action: 'Orçamento aprovado', 
+      company: 'Vendas', 
+      time: '25 min atrás', 
+      status: 'success', 
+      details: 'MegaTech - Orçamento de 50 Samsung Galaxy S24 Ultra aprovado (R$ 360.000)',
+      user: 'Gerente Comercial',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 8,
+      action: 'Entrega realizada', 
+      company: 'Vendas', 
+      time: '35 min atrás', 
+      status: 'success', 
+      details: 'Hotel Presidente - 8 Smart TVs Samsung entregues e instaladas',
+      user: 'Equipe Técnica',
+      type: 'delivery',
+      category: 'vendas'
+    },
+    { 
+      id: 9,
+      action: 'Follow-up agendado', 
+      company: 'Vendas', 
+      time: '45 min atrás', 
+      status: 'info', 
+      details: 'GameZone - Follow-up sobre PlayStation 5 agendado para amanhã',
+      user: 'Vendedor Senior',
+      type: 'appointment',
+      category: 'vendas'
+    },
+    { 
+      id: 10,
+      action: 'Produto em destaque', 
+      company: 'Vendas', 
+      time: '1h atrás', 
+      status: 'info', 
+      details: 'iPad Pro 12.9" M2 adicionado às ofertas especiais (desconto 15%)',
+      user: 'Marketing',
+      type: 'product',
+      category: 'vendas'
+    },
+    { 
+      id: 11,
+      action: 'Cliente recomprado', 
+      company: 'Vendas', 
+      time: '1h 15min atrás', 
+      status: 'success', 
+      details: 'Pedro Santos - Segunda compra: iPhone 15 Pro Max por R$ 9.999,00',
+      user: 'Vendedor Especialista',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 12,
+      action: 'Negociação em andamento', 
+      company: 'Vendas', 
+      time: '1h 30min atrás', 
+      status: 'warning', 
+      details: 'Escola Técnica Moderna - Negociando desconto em lote de 15 iPads',
+      user: 'Gerente Regional',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 13,
+      action: 'Catálogo atualizado', 
+      company: 'Vendas', 
       time: '2h atrás', 
       status: 'info', 
-      details: 'Novo produto: Smartphone Galaxy S24 adicionado ao catálogo',
-      user: 'Tech Admin',
+      details: 'Catálogo Eletrônicos: 5 novos produtos adicionados incluindo Xbox Series X',
+      user: 'Gestor de Produtos',
       type: 'product',
-      category: 'tecnologia'
+      category: 'vendas'
+    },
+    { 
+      id: 14,
+      action: 'Estoque reposto', 
+      company: 'Vendas', 
+      time: '2h 20min atrás', 
+      status: 'success', 
+      details: 'AirPods Pro 2ª Geração - 30 unidades recebidas do fornecedor',
+      user: 'Almoxarifado',
+      type: 'stock',
+      category: 'vendas'
+    },
+    { 
+      id: 15,
+      action: 'Demonstração agendada', 
+      company: 'Vendas', 
+      time: '2h 45min atrás', 
+      status: 'info', 
+      details: 'Agência Criativa - Demo dos Monitores LG UltraWide marcada para amanhã',
+      user: 'Especialista Técnico',
+      type: 'appointment',
+      category: 'vendas'
+    },
+    { 
+      id: 16,
+      action: 'Desconto corporativo aplicado', 
+      company: 'Vendas', 
+      time: '3h atrás', 
+      status: 'success', 
+      details: 'TechFix Informática - 15% desconto aprovado para compra em lote',
+      user: 'Diretor Comercial',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 17,
+      action: 'Pagamento confirmado', 
+      company: 'Vendas', 
+      time: '3h 15min atrás', 
+      status: 'success', 
+      details: 'Universidade TechnoSul - PIX de R$ 13.500 confirmado para 30 Kindles',
+      user: 'Financeiro',
+      type: 'sale',
+      category: 'vendas'
+    },
+    { 
+      id: 18,
+      action: 'Cliente reativado', 
+      company: 'Vendas', 
+      time: '3h 30min atrás', 
+      status: 'success', 
+      details: 'Casa & Decoração Ltda retomou compras após 3 meses',
+      user: 'Relacionamento',
+      type: 'client',
+      category: 'vendas'
+    },
+    { 
+      id: 19,
+      action: 'Promoção criada', 
+      company: 'Vendas', 
+      time: '4h atrás', 
+      status: 'info', 
+      details: 'Campanha "Black Week Eletrônicos" criada com 20% desconto',
+      user: 'Marketing Digital',
+      type: 'campaign',
+      category: 'vendas'
+    },
+    { 
+      id: 20,
+      action: 'Relatório de vendedor', 
+      company: 'Vendas', 
+      time: '4h 30min atrás', 
+      status: 'info', 
+      details: 'Vendedor do mês: João Silva com R$ 145.000 em vendas',
+      user: 'RH Comercial',
+      type: 'report',
+      category: 'vendas'
+    },
+    { 
+      id: 21,
+      action: 'Parceria firmada', 
+      company: 'Vendas', 
+      time: '5h atrás', 
+      status: 'success', 
+      details: 'Startup InnovaTech agora é cliente corporativo gold',
+      user: 'Gerente de Contas',
+      type: 'client',
+      category: 'vendas'
+    },
+    { 
+      id: 22,
+      action: 'Treinamento concluído', 
+      company: 'Vendas', 
+      time: '6h atrás', 
+      status: 'success', 
+      details: 'Equipe concluiu treinamento sobre novos produtos Apple',
+      user: 'Supervisor Técnico',
+      type: 'integration',
+      category: 'vendas'
+    },
+    { 
+      id: 23,
+      action: 'Meta mensal atingida', 
+      company: 'Vendas', 
+      time: '8h atrás', 
+      status: 'success', 
+      details: 'Meta de julho superada em 115% - R$ 2.3 milhões em vendas',
+      user: 'Diretor Comercial',
+      type: 'report',
+      category: 'vendas'
+    },
+    { 
+      id: 24,
+      action: 'Novo revendedor', 
+      company: 'Vendas', 
+      time: '12h atrás', 
+      status: 'success', 
+      details: 'MegaTech Distribuidora agora é parceiro oficial Samsung',
+      user: 'Gerente de Parcerias',
+      type: 'client',
+      category: 'vendas'
+    },
+    { 
+      id: 25,
+      action: 'Análise de concorrência', 
+      company: 'Vendas', 
+      time: '1 dia atrás', 
+      status: 'info', 
+      details: 'Relatório de preços de concorrentes atualizado',
+      user: 'Analista Comercial',
+      type: 'report',
+      category: 'vendas'
     },
     
     // Atividades de Atendimento

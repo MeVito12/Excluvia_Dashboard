@@ -370,166 +370,308 @@ export class SupabaseMultiStorage implements IStorage {
         createdAt: new Date(),
         updatedAt: new Date()
       },
-      // Mais agendamentos de vendas
+      // Vendas - Agendamentos comerciais extensos
       {
         id: 14,
         userId: 1,
-        title: 'Degustação Vinhos',
-        description: 'Evento de degustação para clientes premium',
-        startTime: new Date('2024-07-10T19:00:00'),
-        endTime: new Date('2024-07-10T22:00:00'),
-        location: 'Adega Premium Wines',
-        clientName: 'Clientes VIP',
-        clientEmail: 'eventos@premiumwines.com.br',
-        clientPhone: '(11) 91111-4444',
+        title: 'Reunião de Vendas - MacBook Air M3',
+        description: 'Apresentação e negociação de MacBook Air M3 para empresa',
+        startTime: new Date('2024-07-03T14:00:00'),
+        endTime: new Date('2024-07-03T15:30:00'),
+        location: 'Digital Solutions Corp - Sala de Reuniões',
+        clientName: 'Digital Solutions Corp',
+        clientEmail: 'compras@digitalsolutions.com.br',
+        clientPhone: '(11) 94000-1000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-03T10:00:00'),
+        scheduledAt: new Date('2024-07-01T10:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 15,
         userId: 1,
-        title: 'Entrega Corporativa',
-        description: 'Entrega de equipamentos de informática para empresa',
-        startTime: new Date('2024-07-11T13:00:00'),
-        endTime: new Date('2024-07-11T15:00:00'),
-        location: 'Empresa XYZ - Departamento TI',
-        clientName: 'Marcos Tecnologia',
-        clientEmail: 'marcos.tech@empresa.com',
-        clientPhone: '(11) 90000-5555',
-        status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-08T16:00:00'),
+        title: 'Apresentação Samsung Galaxy S24',
+        description: 'Demonstração técnica Samsung Galaxy S24 Ultra para revendedor',
+        startTime: new Date('2024-07-03T09:00:00'),
+        endTime: new Date('2024-07-03T10:00:00'),
+        location: 'MegaTech Distribuidora',
+        clientName: 'MegaTech Distribuidora',
+        clientEmail: 'vendas@megatech.com.br',
+        clientPhone: '(11) 95000-2000',
+        status: 'confirmed' as const,
+        scheduledAt: new Date('2024-07-01T14:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 16,
         userId: 1,
-        title: 'Demonstração MacBook',
-        description: 'Apresentação do MacBook Air M3 para cliente corporativo',
-        startTime: new Date('2024-07-12T15:00:00'),
-        endTime: new Date('2024-07-12T16:30:00'),
-        location: 'Apple Store - Sala de demonstrações',
-        clientName: 'Empresa Design Studios',
-        clientEmail: 'compras@designstudios.com',
-        clientPhone: '(21) 98888-6666',
+        title: 'Follow-up Venda PlayStation 5',
+        description: 'Acompanhamento da venda de PlayStation 5 para loja de games',
+        startTime: new Date('2024-07-03T16:00:00'),
+        endTime: new Date('2024-07-03T16:30:00'),
+        location: 'GameZone Loja de Games',
+        clientName: 'GameZone Loja de Games',
+        clientEmail: 'compras@gamezone.com.br',
+        clientPhone: '(41) 96000-3000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-09T12:00:00'),
+        scheduledAt: new Date('2024-07-02T11:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
-      // Design Gráfico
       {
         id: 17,
         userId: 1,
-        title: 'Briefing - Logo da Empresa',
-        description: 'Reunião para definir identidade visual e criação de logo',
-        startTime: new Date('2024-07-08T14:00:00'),
-        endTime: new Date('2024-07-08T15:30:00'),
-        location: 'Estúdio Criativo Design',
-        clientName: 'StartUp Tech Solutions',
-        clientEmail: 'contato@startuptech.com',
-        clientPhone: '(11) 97777-1010',
+        title: 'Negociação Smart TV Samsung',
+        description: 'Negociação de preços para 8 Smart TVs Samsung 65" para hotel',
+        startTime: new Date('2024-07-04T10:00:00'),
+        endTime: new Date('2024-07-04T11:30:00'),
+        location: 'Hotel Presidente - Administração',
+        clientName: 'Hotel Presidente',
+        clientEmail: 'suprimentos@presidente.com.br',
+        clientPhone: '(61) 97000-4000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-05T10:00:00'),
+        scheduledAt: new Date('2024-07-02T15:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 18,
         userId: 1,
-        title: 'Apresentação Material Gráfico',
-        description: 'Apresentação de cartões de visita, folder e banner',
-        startTime: new Date('2024-07-09T10:00:00'),
-        endTime: new Date('2024-07-09T11:00:00'),
-        location: 'Agência Visual Impact',
-        clientName: 'Clínica Odontológica Sorrisos',
-        clientEmail: 'marketing@clinicasorrisos.com',
-        clientPhone: '(21) 96666-2020',
-        status: 'completed' as const,
-        scheduledAt: new Date('2024-07-07T14:00:00'),
+        title: 'Entrega iPads - Escola Técnica',
+        description: 'Entrega e configuração de 15 iPads Pro para escola',
+        startTime: new Date('2024-07-04T14:00:00'),
+        endTime: new Date('2024-07-04T17:00:00'),
+        location: 'Escola Técnica Moderna - Laboratório',
+        clientName: 'Escola Técnica Moderna',
+        clientEmail: 'ti@tecnicamoderna.edu.br',
+        clientPhone: '(31) 98000-5000',
+        status: 'confirmed' as const,
+        scheduledAt: new Date('2024-07-01T09:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 19,
         userId: 1,
-        title: 'UI/UX Design Review',
-        description: 'Revisão da interface do aplicativo mobile',
-        startTime: new Date('2024-07-10T15:00:00'),
-        endTime: new Date('2024-07-10T17:00:00'),
-        location: 'Design Studio Pro',
-        clientName: 'Fintech InnovatePay',
-        clientEmail: 'product@innovatepay.com',
-        clientPhone: '(11) 95555-3030',
+        title: 'Reunião Monitores LG UltraWide',
+        description: 'Apresentação de monitores LG UltraWide para agência',
+        startTime: new Date('2024-07-05T11:00:00'),
+        endTime: new Date('2024-07-05T12:00:00'),
+        location: 'Agência de Publicidade Criativa',
+        clientName: 'Agência de Publicidade Criativa',
+        clientEmail: 'equipamentos@criativa.com.br',
+        clientPhone: '(48) 99000-6000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-08T16:00:00'),
+        scheduledAt: new Date('2024-07-03T16:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
-      // Criação de Sites
       {
         id: 20,
         userId: 1,
-        title: 'Reunião Desenvolvimento Website',
-        description: 'Definição de escopo para site institucional',
-        startTime: new Date('2024-07-11T09:00:00'),
-        endTime: new Date('2024-07-11T11:00:00'),
-        location: 'WebDev Solutions',
-        clientName: 'Escritório de Advocacia Lima & Santos',
-        clientEmail: 'contato@limasantos.adv.br',
-        clientPhone: '(31) 94444-4040',
+        title: 'Pós-venda Xbox Series X',
+        description: 'Suporte pós-venda e configuração Xbox Series X',
+        startTime: new Date('2024-07-05T15:00:00'),
+        endTime: new Date('2024-07-05T16:00:00'),
+        location: 'Residência do Cliente',
+        clientName: 'Roberto Silva Junior',
+        clientEmail: 'roberto.junior@email.com',
+        clientPhone: '(85) 92000-7000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-09T13:00:00'),
+        scheduledAt: new Date('2024-07-04T10:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 21,
         userId: 1,
-        title: 'Entrega E-commerce',
-        description: 'Entrega final da loja online com integração de pagamentos',
-        startTime: new Date('2024-07-12T14:00:00'),
-        endTime: new Date('2024-07-12T16:00:00'),
-        location: 'CodeCraft Development',
-        clientName: 'Loja de Roupas Estilo Único',
-        clientEmail: 'proprietario@estilounicio.com.br',
-        clientPhone: '(48) 93333-5050',
+        title: 'Apresentação Tênis Adidas Corporate',
+        description: 'Apresentação linha corporativa Adidas para revendedor',
+        startTime: new Date('2024-07-06T09:30:00'),
+        endTime: new Date('2024-07-06T11:00:00'),
+        location: 'SportMax Artigos Esportivos',
+        clientName: 'SportMax Artigos Esportivos',
+        clientEmail: 'vendas@sportmax.com.br',
+        clientPhone: '(62) 93000-8000',
         status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-10T11:00:00'),
+        scheduledAt: new Date('2024-07-04T14:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 22,
         userId: 1,
-        title: 'Treinamento Sistema Web',
-        description: 'Treinamento para uso do sistema de gestão web',
-        startTime: new Date('2024-07-13T10:00:00'),
-        endTime: new Date('2024-07-13T12:00:00'),
-        location: 'Empresa Cliente - Sala de Treinamento',
-        clientName: 'Restaurante Sabor Caseiro',
-        clientEmail: 'gerencia@saborcaseiro.com',
-        clientPhone: '(85) 92222-6060',
-        status: 'scheduled' as const,
-        scheduledAt: new Date('2024-07-11T15:00:00'),
+        title: 'Negociação Cafeteiras Nespresso',
+        description: 'Negociação de 12 cafeteiras Nespresso para escritórios',
+        startTime: new Date('2024-07-06T14:00:00'),
+        endTime: new Date('2024-07-06T15:00:00'),
+        location: 'Café Central Escritórios - Sede',
+        clientName: 'Café Central Escritórios',
+        clientEmail: 'compras@cafecentral.com.br',
+        clientPhone: '(11) 94000-9000',
+        status: 'confirmed' as const,
+        scheduledAt: new Date('2024-07-05T09:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         id: 23,
         userId: 1,
-        title: 'Landing Page - Campanha',
-        description: 'Criação de landing page para campanha de marketing',
-        startTime: new Date('2024-07-14T13:00:00'),
-        endTime: new Date('2024-07-14T15:00:00'),
-        location: 'Digital Agency Hub',
-        clientName: 'Academia Fitness Plus',
-        clientEmail: 'marketing@fitnessplus.com',
-        clientPhone: '(61) 91111-7070',
-        status: 'completed' as const,
-        scheduledAt: new Date('2024-07-12T09:00:00'),
+        title: 'Entrega Aspiradores Robô',
+        description: 'Entrega e instalação de 4 aspiradores robô iRobot',
+        startTime: new Date('2024-07-07T10:00:00'),
+        endTime: new Date('2024-07-07T12:00:00'),
+        location: 'Condomínio Residencial Jardins',
+        clientName: 'Condomínio Residencial Jardins',
+        clientEmail: 'administracao@jardins.com.br',
+        clientPhone: '(13) 95000-0100',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-05T16:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 24,
+        userId: 1,
+        title: 'Follow-up Air Fryer Philips',
+        description: 'Acompanhamento venda de 25 Air Fryers para revendedor',
+        startTime: new Date('2024-07-07T14:30:00'),
+        endTime: new Date('2024-07-07T15:00:00'),
+        location: 'Casa & Decoração Ltda',
+        clientName: 'Casa & Decoração Ltda',
+        clientEmail: 'compras@casadecoração.com.br',
+        clientPhone: '(19) 96000-0200',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-06T11:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 25,
+        userId: 1,
+        title: 'Reunião Ferramentas Bosch',
+        description: 'Apresentação kit ferramentas Bosch para construtora',
+        startTime: new Date('2024-07-08T08:00:00'),
+        endTime: new Date('2024-07-08T09:30:00'),
+        location: 'Construtora Moderna - Escritório',
+        clientName: 'Construtora Moderna',
+        clientEmail: 'suprimentos@moderna.com.br',
+        clientPhone: '(16) 97000-0300',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-06T15:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 26,
+        userId: 1,
+        title: 'Apresentação Livros Educacionais',
+        description: 'Apresentação acervo livros para livraria',
+        startTime: new Date('2024-07-08T15:00:00'),
+        endTime: new Date('2024-07-08T16:00:00'),
+        location: 'Livraria Conhecimento',
+        clientName: 'Livraria Conhecimento',
+        clientEmail: 'compras@conhecimento.com.br',
+        clientPhone: '(27) 98000-0400',
+        status: 'confirmed' as const,
+        scheduledAt: new Date('2024-07-07T10:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 27,
+        userId: 1,
+        title: 'Negociação Kindle Paperwhite',
+        description: 'Negociação 30 Kindles Paperwhite para universidade',
+        startTime: new Date('2024-07-09T10:00:00'),
+        endTime: new Date('2024-07-09T11:30:00'),
+        location: 'Universidade Federal TechnoSul',
+        clientName: 'Universidade Federal TechnoSul',
+        clientEmail: 'licitacoes@technosul.edu.br',
+        clientPhone: '(53) 99000-0500',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-07T14:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 28,
+        userId: 1,
+        title: 'Pós-venda iPhone 15 Pro Max',
+        description: 'Suporte técnico e configuração iPhone 15 Pro Max',
+        startTime: new Date('2024-07-09T16:00:00'),
+        endTime: new Date('2024-07-09T17:00:00'),
+        location: 'Escritório do Cliente',
+        clientName: 'Pedro Santos Silva',
+        clientEmail: 'pedro.santos@email.com',
+        clientPhone: '(11) 91000-0600',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-08T12:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 29,
+        userId: 1,
+        title: 'Reunião Notebook Dell Corporate',
+        description: 'Apresentação linha Dell Inspiron para TechFix',
+        startTime: new Date('2024-07-10T09:00:00'),
+        endTime: new Date('2024-07-10T10:30:00'),
+        location: 'TechFix Informática Ltda',
+        clientName: 'TechFix Informática Ltda',
+        clientEmail: 'vendas@techfix.com.br',
+        clientPhone: '(51) 92000-0700',
+        status: 'confirmed' as const,
+        scheduledAt: new Date('2024-07-08T16:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 30,
+        userId: 1,
+        title: 'Follow-up Galaxy S24 Ultra',
+        description: 'Acompanhamento venda Samsung Galaxy S24 Ultra',
+        startTime: new Date('2024-07-10T14:00:00'),
+        endTime: new Date('2024-07-10T14:30:00'),
+        location: 'Residência da Cliente',
+        clientName: 'Maria Fernanda Costa',
+        clientEmail: 'mf.costa@gmail.com',
+        clientPhone: '(21) 93000-0800',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-09T11:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 31,
+        userId: 1,
+        title: 'Entrega Equipamentos Startup',
+        description: 'Entrega equipamentos tecnológicos para startup',
+        startTime: new Date('2024-07-11T11:00:00'),
+        endTime: new Date('2024-07-11T13:00:00'),
+        location: 'Startup InnovaTech - Sede',
+        clientName: 'Startup InnovaTech',
+        clientEmail: 'compras@innovatech.com.br',
+        clientPhone: '(48) 94000-0900',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-09T15:00:00'),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 32,
+        userId: 1,
+        title: 'Apresentação AirPods Pro Corporate',
+        description: 'Demonstração AirPods Pro para academia fitness',
+        startTime: new Date('2024-07-11T15:30:00'),
+        endTime: new Date('2024-07-11T16:30:00'),
+        location: 'Academia Fit Life',
+        clientName: 'Academia Fit Life',
+        clientEmail: 'compras@fitlife.com.br',
+        clientPhone: '(81) 95000-1000',
+        status: 'scheduled' as const,
+        scheduledAt: new Date('2024-07-10T10:00:00'),
         createdAt: new Date(),
         updatedAt: new Date()
       }
@@ -539,52 +681,42 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async getAppointmentsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Appointment[]> {
-    // Implementation will query appointments by date range from Supabase
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+    throw new Error('Date range appointments will be implemented with Supabase integration');
   }
 
   async getAppointment(id: number): Promise<Appointment | undefined> {
-    // Implementation will query specific appointment from Supabase
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+    throw new Error('Single appointment operations will be implemented with Supabase integration');
   }
 
   async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
-    // Implementation will create appointment in appropriate Supabase database
     throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment> {
-    // Implementation will update appointment in Supabase
     throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async deleteAppointment(id: number): Promise<void> {
-    // Implementation will delete appointment from Supabase
     throw new Error('Appointment operations will be implemented with Supabase integration');
   }
 
   async getReminders(appointmentId: number): Promise<Reminder[]> {
-    // Implementation will query reminders from Supabase
     throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async getPendingReminders(): Promise<Reminder[]> {
-    // Implementation will query pending reminders from Supabase
     throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async createReminder(reminder: InsertReminder): Promise<Reminder> {
-    // Implementation will create reminder in Supabase
     throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async markReminderSent(id: number): Promise<void> {
-    // Implementation will mark reminder as sent in Supabase
     throw new Error('Reminder operations will be implemented with Supabase integration');
   }
 
   async getIntegrationSettings(userId: number): Promise<IntegrationSettings[]> {
-    // Mock data para configurações de integração
     const mockIntegrations = [
       {
         id: 1,
@@ -601,18 +733,6 @@ export class SupabaseMultiStorage implements IStorage {
         },
         createdAt: new Date(),
         updatedAt: new Date()
-      },
-      {
-        id: 2,
-        userId: 1,
-        platform: 'doctoralia' as const,
-        isActive: false,
-        settings: {
-          clinicId: '',
-          syncEnabled: false
-        },
-        createdAt: new Date(),
-        updatedAt: new Date()
       }
     ];
     
@@ -620,22 +740,18 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async getIntegrationSettingsByPlatform(userId: number, platform: string): Promise<IntegrationSettings | undefined> {
-    // Implementation will query platform-specific integration settings from Supabase
     throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async createIntegrationSettings(settings: InsertIntegrationSettings): Promise<IntegrationSettings> {
-    // Implementation will create integration settings in Supabase
     throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async updateIntegrationSettings(id: number, settings: Partial<InsertIntegrationSettings>): Promise<IntegrationSettings> {
-    // Implementation will update integration settings in Supabase
     throw new Error('Integration settings will be implemented with Supabase integration');
   }
 
   async getNotificationSettings(userId: number): Promise<NotificationSettings | undefined> {
-    // Mock data para configurações de notificação
     const mockNotificationSettings = {
       id: 1,
       userId: 1,
@@ -654,277 +770,65 @@ export class SupabaseMultiStorage implements IStorage {
   }
 
   async createNotificationSettings(settings: InsertNotificationSettings): Promise<NotificationSettings> {
-    // Implementation will create notification settings in Supabase
     throw new Error('Notification settings will be implemented with Supabase integration');
   }
 
   async updateNotificationSettings(id: number, settings: Partial<InsertNotificationSettings>): Promise<NotificationSettings> {
-    // Implementation will update notification settings in Supabase
     throw new Error('Notification settings will be implemented with Supabase integration');
   }
 
-  // Product/Inventory operations
-  async getProducts(): Promise<Product[]> {
-    // Implementation will query products from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async getProduct(id: number): Promise<Product | undefined> {
-    // Implementation will query specific product from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async getProductBySku(sku: string): Promise<Product | undefined> {
-    // Implementation will query product by SKU from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async createProduct(product: InsertProduct): Promise<Product> {
-    // Implementation will create product in Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product> {
-    // Implementation will update product in Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async deleteProduct(id: number): Promise<void> {
-    // Implementation will delete product from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async getLowStockProducts(): Promise<Product[]> {
-    // Implementation will query products with low stock from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  async getExpiringProducts(days: number): Promise<Product[]> {
-    // Implementation will query products expiring within specified days from Supabase
-    throw new Error('Product operations will be implemented with Supabase integration');
-  }
-
-  // Sale operations
-  async getSales(): Promise<Sale[]> {
-    // Implementation will query sales from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async getSale(id: number): Promise<Sale | undefined> {
-    // Implementation will query specific sale from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async getSalesByDateRange(startDate: Date, endDate: Date): Promise<Sale[]> {
-    // Implementation will query sales by date range from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async getSalesByProduct(productId: number): Promise<Sale[]> {
-    // Implementation will query sales by product from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async createSale(sale: InsertSale): Promise<Sale> {
-    // Implementation will create sale in Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async updateSale(id: number, sale: Partial<InsertSale>): Promise<Sale> {
-    // Implementation will update sale in Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async deleteSale(id: number): Promise<void> {
-    // Implementation will delete sale from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async getDailySales(date: Date): Promise<Sale[]> {
-    // Implementation will query daily sales from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  async getWeeklySales(startDate: Date): Promise<Sale[]> {
-    // Implementation will query weekly sales from Supabase
-    throw new Error('Sale operations will be implemented with Supabase integration');
-  }
-
-  // Stock Movement operations
-  async getStockMovements(productId?: number): Promise<StockMovement[]> {
-    // Implementation will query stock movements from Supabase
-    throw new Error('Stock movement operations will be implemented with Supabase integration');
-  }
-
-  async createStockMovement(movement: InsertStockMovement): Promise<StockMovement> {
-    // Implementation will create stock movement in Supabase
-    throw new Error('Stock movement operations will be implemented with Supabase integration');
-  }
-
-  async getStockMovementsByDateRange(startDate: Date, endDate: Date): Promise<StockMovement[]> {
-    // Implementation will query stock movements by date range from Supabase
-    throw new Error('Stock movement operations will be implemented with Supabase integration');
-  }
-
-  // Client operations
-  async getClients(): Promise<Client[]> {
-    // Implementation will query clients from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async getClient(id: number): Promise<Client | undefined> {
-    // Implementation will query specific client from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async getClientByEmail(email: string): Promise<Client | undefined> {
-    // Implementation will query client by email from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async createClient(client: InsertClient): Promise<Client> {
-    // Implementation will create client in Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async updateClient(id: number, client: Partial<InsertClient>): Promise<Client> {
-    // Implementation will update client in Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async deleteClient(id: number): Promise<void> {
-    // Implementation will delete client from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async getInactiveClients(days: number): Promise<Client[]> {
-    // Implementation will query inactive clients from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  async getNewClients(days: number): Promise<Client[]> {
-    // Implementation will query new clients from Supabase
-    throw new Error('Client operations will be implemented with Supabase integration');
-  }
-
-  // WhatsApp Chat operations
-  async getWhatsAppChats(): Promise<WhatsAppChat[]> {
-    // Implementation will query WhatsApp chats from Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  async getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined> {
-    // Implementation will query specific WhatsApp chat from Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  async getActiveChats(): Promise<WhatsAppChat[]> {
-    // Implementation will query active WhatsApp chats from Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  async createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat> {
-    // Implementation will create WhatsApp chat in Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  async updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat> {
-    // Implementation will update WhatsApp chat in Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  async markChatAsRead(id: number): Promise<void> {
-    // Implementation will mark chat as read in Supabase
-    throw new Error('WhatsApp chat operations will be implemented with Supabase integration');
-  }
-
-  // Bot Configuration operations
-  async getBotConfigs(): Promise<BotConfig[]> {
-    // Implementation will query bot configurations from Supabase
-    throw new Error('Bot configuration operations will be implemented with Supabase integration');
-  }
-
-  async getBotConfig(id: number): Promise<BotConfig | undefined> {
-    // Implementation will query specific bot configuration from Supabase
-    throw new Error('Bot configuration operations will be implemented with Supabase integration');
-  }
-
-  async getActiveBotConfig(): Promise<BotConfig | undefined> {
-    // Implementation will query active bot configuration from Supabase
-    throw new Error('Bot configuration operations will be implemented with Supabase integration');
-  }
-
-  async createBotConfig(config: InsertBotConfig): Promise<BotConfig> {
-    // Implementation will create bot configuration in Supabase
-    throw new Error('Bot configuration operations will be implemented with Supabase integration');
-  }
-
-  async updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig> {
-    // Implementation will update bot configuration in Supabase
-    throw new Error('Bot configuration operations will be implemented with Supabase integration');
-  }
-
-  // Loyalty Campaign operations
-  async getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]> {
-    // Implementation will query loyalty campaigns from Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  async getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined> {
-    // Implementation will query specific loyalty campaign from Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  async getActiveCampaigns(): Promise<LoyaltyCampaign[]> {
-    // Implementation will query active loyalty campaigns from Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  async createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> {
-    // Implementation will create loyalty campaign in Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  async updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign> {
-    // Implementation will update loyalty campaign in Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  async deleteLoyaltyCampaign(id: number): Promise<void> {
-    // Implementation will delete loyalty campaign from Supabase
-    throw new Error('Loyalty campaign operations will be implemented with Supabase integration');
-  }
-
-  // Support Agent operations
-  async getSupportAgents(): Promise<SupportAgent[]> {
-    // Implementation will query support agents from Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
-
-  async getSupportAgent(id: number): Promise<SupportAgent | undefined> {
-    // Implementation will query specific support agent from Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
-
-  async getOnlineAgents(): Promise<SupportAgent[]> {
-    // Implementation will query online support agents from Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
-
-  async createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent> {
-    // Implementation will create support agent in Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
-
-  async updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent> {
-    // Implementation will update support agent in Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
-
-  async updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent> {
-    // Implementation will update agent status in Supabase
-    throw new Error('Support agent operations will be implemented with Supabase integration');
-  }
+  // Implementações restantes das outras operações...
+  async getProducts(): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async getProduct(id: number): Promise<Product | undefined> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async getProductBySku(sku: string): Promise<Product | undefined> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async createProduct(product: InsertProduct): Promise<Product> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async deleteProduct(id: number): Promise<void> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async getLowStockProducts(): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async getExpiringProducts(days: number): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
+  async getSales(): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getSale(id: number): Promise<Sale | undefined> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getSalesByDateRange(startDate: Date, endDate: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getSalesByProduct(productId: number): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async createSale(sale: InsertSale): Promise<Sale> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async updateSale(id: number, sale: Partial<InsertSale>): Promise<Sale> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async deleteSale(id: number): Promise<void> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getDailySales(date: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getWeeklySales(startDate: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
+  async getStockMovements(productId?: number): Promise<StockMovement[]> { throw new Error('Stock operations will be implemented with Supabase integration'); }
+  async createStockMovement(movement: InsertStockMovement): Promise<StockMovement> { throw new Error('Stock operations will be implemented with Supabase integration'); }
+  async getStockMovementsByDateRange(startDate: Date, endDate: Date): Promise<StockMovement[]> { throw new Error('Stock operations will be implemented with Supabase integration'); }
+  async getClients(): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async getClient(id: number): Promise<Client | undefined> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async getClientByEmail(email: string): Promise<Client | undefined> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async createClient(client: InsertClient): Promise<Client> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async updateClient(id: number, client: Partial<InsertClient>): Promise<Client> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async deleteClient(id: number): Promise<void> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async getInactiveClients(days: number): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async getNewClients(days: number): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
+  async getWhatsAppChats(): Promise<WhatsAppChat[]> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async getActiveChats(): Promise<WhatsAppChat[]> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async markChatAsRead(id: number): Promise<void> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
+  async getBotConfigs(): Promise<BotConfig[]> { throw new Error('Bot operations will be implemented with Supabase integration'); }
+  async getBotConfig(id: number): Promise<BotConfig | undefined> { throw new Error('Bot operations will be implemented with Supabase integration'); }
+  async getActiveBotConfig(): Promise<BotConfig | undefined> { throw new Error('Bot operations will be implemented with Supabase integration'); }
+  async createBotConfig(config: InsertBotConfig): Promise<BotConfig> { throw new Error('Bot operations will be implemented with Supabase integration'); }
+  async updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig> { throw new Error('Bot operations will be implemented with Supabase integration'); }
+  async getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async getActiveCampaigns(): Promise<LoyaltyCampaign[]> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async deleteLoyaltyCampaign(id: number): Promise<void> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
+  async getSupportAgents(): Promise<SupportAgent[]> { throw new Error('Support operations will be implemented with Supabase integration'); }
+  async getSupportAgent(id: number): Promise<SupportAgent | undefined> { throw new Error('Support operations will be implemented with Supabase integration'); }
+  async getOnlineAgents(): Promise<SupportAgent[]> { throw new Error('Support operations will be implemented with Supabase integration'); }
+  async createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
+  async updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
+  async updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
 }
 
 export const storage = new SupabaseMultiStorage();

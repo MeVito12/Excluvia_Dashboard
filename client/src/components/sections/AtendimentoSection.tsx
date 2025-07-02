@@ -88,8 +88,22 @@ const AtendimentoSection = () => {
         return {
           catalogName: 'Catálogo',
           chats: [
-            { id: 1, clientName: 'Cliente Corporativo', lastMessage: 'Preciso de orçamento para 50 notebooks', timestamp: '17:00', status: 'unread', unread: 3, category: 'vendas' },
-            { id: 2, clientName: 'Loja Parceira', lastMessage: 'Quando chegam os iPhones?', timestamp: '16:20', status: 'read', unread: 0, category: 'vendas' }
+            { id: 1, clientName: 'Digital Solutions Corp', lastMessage: 'Orçamento aprovado! Podem enviar os 3 MacBook Air M3. Quando fica pronta a entrega?', timestamp: '17:45', status: 'unread', unread: 2, category: 'vendas' },
+            { id: 2, clientName: 'MegaTech Distribuidora', lastMessage: 'Perfeito! Fechamos 50 Samsung Galaxy S24 Ultra. Preciso da nota fiscal até amanhã.', timestamp: '17:30', status: 'unread', unread: 1, category: 'vendas' },
+            { id: 3, clientName: 'GameZone Loja de Games', lastMessage: 'Os 10 PlayStation 5 chegaram hoje! Qualidade excelente como sempre. Próximo pedido: 15 Xbox Series X.', timestamp: '17:15', status: 'read', unread: 0, category: 'vendas' },
+            { id: 4, clientName: 'Hotel Presidente', lastMessage: 'Instalação das 8 Smart TVs Samsung foi um sucesso! Hóspedes adoraram. Vamos conversar sobre ar condicionados agora.', timestamp: '16:50', status: 'unread', unread: 3, category: 'vendas' },
+            { id: 5, clientName: 'Escola Técnica Moderna', lastMessage: 'Configuração dos 15 iPads Pro está perfeita! Alunos já estão usando. Agradecemos o suporte técnico impecável.', timestamp: '16:35', status: 'read', unread: 0, category: 'vendas' },
+            { id: 6, clientName: 'Pedro Santos Silva', lastMessage: 'iPhone 15 Pro Max funcionando perfeitamente! Migração de dados foi rápida. Recomendo vocês para meus colegas.', timestamp: '16:20', status: 'read', unread: 0, category: 'vendas' },
+            { id: 7, clientName: 'SportMax Artigos Esportivos', lastMessage: 'Linha Adidas chegou hoje! 20 Tênis Ultraboost vendidos em 2 horas. Podem enviar mais 30 unidades?', timestamp: '16:05', status: 'unread', unread: 2, category: 'vendas' },
+            { id: 8, clientName: 'Café Central Escritórios', lastMessage: 'As 12 Cafeteiras Nespresso estão instaladas em todos os andares. Funcionários adoraram! Precisamos de mais cápsulas.', timestamp: '15:45', status: 'read', unread: 0, category: 'vendas' },
+            { id: 9, clientName: 'Agência Publicidade Criativa', lastMessage: 'Monitores LG UltraWide aumentaram nossa produtividade em 40%! Designers estão muito satisfeitos. Vamos ampliar a compra.', timestamp: '15:30', status: 'unread', unread: 1, category: 'vendas' },
+            { id: 10, clientName: 'TechFix Informática Ltda', lastMessage: 'Notebooks Dell Inspiron com desconto corporativo aprovado! Enviem os 5 notebooks esta semana.', timestamp: '15:15', status: 'read', unread: 0, category: 'vendas' },
+            { id: 11, clientName: 'Construtora Moderna', lastMessage: 'Kits Ferramentas Bosch chegaram! Qualidade profissional excelente. Próximo pedido: furadeiras e parafusadeiras.', timestamp: '15:00', status: 'unread', unread: 3, category: 'vendas' },
+            { id: 12, clientName: 'Maria Fernanda Costa', lastMessage: 'Dois Galaxy S24 Ultra entregues! Câmera profissional é impressionante. Marido também quer um iPhone agora.', timestamp: '14:45', status: 'read', unread: 0, category: 'vendas' },
+            { id: 13, clientName: 'Livraria Conhecimento', lastMessage: '40 exemplares "Pai Rico, Pai Pobre" vendidos em uma semana! Podem enviar mais 60 livros de negócios?', timestamp: '14:30', status: 'unread', unread: 2, category: 'vendas' },
+            { id: 14, clientName: 'Universidade TechnoSul', lastMessage: 'Licitação dos 30 Kindles Paperwhite aprovada! Biblioteca digital será revolucionária. Quando podem entregar?', timestamp: '14:15', status: 'unread', unread: 1, category: 'vendas' },
+            { id: 15, clientName: 'Casa & Decoração Ltda', lastMessage: '25 Air Fryers Philips voaram das prateleiras! Clientes amaram a qualidade. Precisamos de mais 50 unidades urgente.', timestamp: '14:00', status: 'read', unread: 0, category: 'vendas' },
+            { id: 16, clientName: 'Startup InnovaTech', lastMessage: 'Setup completo entregue! Equipe trabalhando com máxima produtividade. Vocês são nossos parceiros oficiais de tecnologia!', timestamp: '13:45', status: 'unread', unread: 4, category: 'vendas' }
           ],
           catalogs: [
             { id: 1, name: 'Catálogo Eletrônicos', category: 'vendas', items: ['iPhone 15 Pro', 'Notebook Dell Inspiron', 'Smart TV Samsung 55"', 'Fone Bluetooth Sony'], description: 'Eletrônicos de última geração', active: true },
