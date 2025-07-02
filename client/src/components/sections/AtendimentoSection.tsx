@@ -388,7 +388,7 @@ const AtendimentoSection = () => {
                             </div>
                             <div className="text-center">
                               <p className="text-sm text-gray-600 mb-2">
-                                Escaneie para acessar o {categoryData.catalogName.toLowerCase()}
+                                Escaneie para acessar o catálogo
                               </p>
                               <div className="flex gap-2">
                                 <Button variant="outline" size="sm">

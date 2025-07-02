@@ -133,10 +133,317 @@ const AgendamentosSection = () => {
 
   const serviceTypes = getServiceTypesByCategory();
 
-  // Queries
-  const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
-    queryKey: ['/api/appointments'],
-  });
+  // Criar agendamentos específicos por categoria
+  const getCategorySpecificAppointments = () => {
+    const categoryAppointments: { [key: string]: any[] } = {
+      'pet': [
+        {
+          id: 1,
+          title: 'Consulta Veterinária - Rex',
+          description: 'Consulta de rotina e vacinação do cachorro Rex',
+          startTime: '2024-07-01T10:00:00',
+          endTime: '2024-07-01T11:00:00',
+          location: 'Clínica Veterinária Bichos & Cia',
+          clientName: 'Ana Maria Oliveira',
+          clientEmail: 'ana.oliveira@email.com',
+          clientPhone: '(11) 99999-1111',
+          status: 'scheduled'
+        },
+        {
+          id: 2,
+          title: 'Cirurgia - Gata Mimi',
+          description: 'Castração da gata Mimi',
+          startTime: '2024-07-02T14:30:00',
+          endTime: '2024-07-02T16:00:00',
+          location: 'Hospital Veterinário Central',
+          clientName: 'Carlos Santos',
+          clientEmail: 'carlos.santos@email.com',
+          clientPhone: '(21) 98888-2222',
+          status: 'scheduled'
+        },
+        {
+          id: 3,
+          title: 'Vacinação V10 - Thor',
+          description: 'Vacina múltipla canina (V10)',
+          startTime: '2024-07-04T09:30:00',
+          endTime: '2024-07-04T10:00:00',
+          location: 'Pet Clinic Center',
+          clientName: 'Roberto Lima',
+          clientEmail: 'roberto.lima@email.com',
+          clientPhone: '(85) 97777-8888',
+          status: 'scheduled'
+        },
+        {
+          id: 4,
+          title: 'Emergência - Luna',
+          description: 'Atendimento de emergência - possível intoxicação',
+          startTime: '2024-07-05T20:00:00',
+          endTime: '2024-07-05T22:00:00',
+          location: 'Hospital Veterinário 24h',
+          clientName: 'Família Souza',
+          clientEmail: 'emergencia.souza@email.com',
+          clientPhone: '(62) 96666-9999',
+          status: 'scheduled'
+        },
+        {
+          id: 5,
+          title: 'Banho e Tosa - Buddy',
+          description: 'Banho medicinal e tosa higiênica',
+          startTime: '2024-07-06T11:00:00',
+          endTime: '2024-07-06T12:30:00',
+          location: 'Pet Shop Amigo Fiel',
+          clientName: 'Joana Costa',
+          clientEmail: 'joana.costa@email.com',
+          clientPhone: '(41) 95555-0000',
+          status: 'scheduled'
+        }
+      ],
+      'saude': [
+        {
+          id: 11,
+          title: 'Consulta Cardiologia',
+          description: 'Consulta de acompanhamento cardiológico',
+          startTime: '2024-07-01T15:00:00',
+          endTime: '2024-07-01T16:00:00',
+          location: 'Centro Médico Coração',
+          clientName: 'José Silva',
+          clientEmail: 'jose.silva@email.com',
+          clientPhone: '(31) 88888-3333',
+          status: 'scheduled'
+        },
+        {
+          id: 12,
+          title: 'Fisioterapia - Reabilitação',
+          description: 'Sessão de fisioterapia pós-cirurgia de joelho',
+          startTime: '2024-07-07T14:00:00',
+          endTime: '2024-07-07T15:00:00',
+          location: 'Clínica de Fisioterapia Movimento',
+          clientName: 'Paulo Ferreira',
+          clientEmail: 'paulo.ferreira@email.com',
+          clientPhone: '(47) 94444-1111',
+          status: 'scheduled'
+        },
+        {
+          id: 13,
+          title: 'Consulta Oftalmológica',
+          description: 'Avaliação para prescrição de óculos',
+          startTime: '2024-07-08T10:30:00',
+          endTime: '2024-07-08T11:30:00',
+          location: 'Clínica Oftalmológica Visão Clara',
+          clientName: 'Julia Martins',
+          clientEmail: 'julia.martins@email.com',
+          clientPhone: '(84) 93333-2222',
+          status: 'scheduled'
+        },
+        {
+          id: 14,
+          title: 'Consulta Dermatológica',
+          description: 'Avaliação de lesões de pele',
+          startTime: '2024-07-09T11:00:00',
+          endTime: '2024-07-09T12:00:00',
+          location: 'Clínica Dermatológica Bella Pele',
+          clientName: 'Marina Santos',
+          clientEmail: 'marina.santos@email.com',
+          clientPhone: '(21) 97777-4444',
+          status: 'scheduled'
+        }
+      ],
+      'alimenticio': [
+        {
+          id: 21,
+          title: 'Reserva Mesa VIP',
+          description: 'Jantar romântico para casal - mesa com vista',
+          startTime: '2024-07-01T20:00:00',
+          endTime: '2024-07-01T22:00:00',
+          location: 'Restaurante Bella Vista',
+          clientName: 'Marcos e Clara',
+          clientEmail: 'marcos.clara@email.com',
+          clientPhone: '(11) 99997-7777',
+          status: 'scheduled'
+        },
+        {
+          id: 22,
+          title: 'Evento Corporativo',
+          description: 'Jantar de confraternização da empresa - 50 pessoas',
+          startTime: '2024-07-05T19:00:00',
+          endTime: '2024-07-05T23:00:00',
+          location: 'Buffet Celebration',
+          clientName: 'Tech Solutions Ltda',
+          clientEmail: 'eventos@techsolutions.com',
+          clientPhone: '(21) 94444-8888',
+          status: 'scheduled'
+        },
+        {
+          id: 23,
+          title: 'Degustação de Vinhos',
+          description: 'Evento especial de degustação de vinhos importados',
+          startTime: '2024-07-07T18:30:00',
+          endTime: '2024-07-07T21:00:00',
+          location: 'Adega Premium',
+          clientName: 'Roberto Sommelier',
+          clientEmail: 'robert.wine@email.com',
+          clientPhone: '(41) 96666-5555',
+          status: 'scheduled'
+        },
+        {
+          id: 24,
+          title: 'Catering Casamento',
+          description: 'Serviço de catering para casamento - 120 pessoas',
+          startTime: '2024-07-08T16:00:00',
+          endTime: '2024-07-08T23:00:00',
+          location: 'Sítio dos Sonhos',
+          clientName: 'Família Rodrigues',
+          clientEmail: 'casamento.rodrigues@email.com',
+          clientPhone: '(31) 98888-9999',
+          status: 'scheduled'
+        }
+      ],
+      'vendas': [
+        {
+          id: 31,
+          title: 'Reunião de Vendas - MacBook Air M3',
+          description: 'Apresentação e negociação de MacBook Air M3 para empresa',
+          startTime: '2024-07-03T14:00:00',
+          endTime: '2024-07-03T15:30:00',
+          location: 'Digital Solutions Corp - Sala de Reuniões',
+          clientName: 'Digital Solutions Corp',
+          clientEmail: 'compras@digitalsolutions.com.br',
+          clientPhone: '(11) 94000-1000',
+          status: 'scheduled'
+        },
+        {
+          id: 32,
+          title: 'Demonstração Samsung Galaxy S24',
+          description: 'Demonstração técnica Samsung Galaxy S24 Ultra para revendedor',
+          startTime: '2024-07-03T09:00:00',
+          endTime: '2024-07-03T10:00:00',
+          location: 'MegaTech Distribuidora',
+          clientName: 'MegaTech Distribuidora',
+          clientEmail: 'vendas@megatech.com.br',
+          clientPhone: '(11) 95000-2000',
+          status: 'confirmed'
+        },
+        {
+          id: 33,
+          title: 'Entrega iPads - Escola Técnica',
+          description: 'Entrega e configuração de 15 iPads Pro para escola',
+          startTime: '2024-07-04T14:00:00',
+          endTime: '2024-07-04T17:00:00',
+          location: 'Escola Técnica Moderna - Laboratório',
+          clientName: 'Escola Técnica Moderna',
+          clientEmail: 'ti@tecnicamoderna.edu.br',
+          clientPhone: '(31) 98000-5000',
+          status: 'confirmed'
+        },
+        {
+          id: 34,
+          title: 'Negociação Smart TV Samsung',
+          description: 'Negociação de preços para 8 Smart TVs Samsung 65" para hotel',
+          startTime: '2024-07-04T10:00:00',
+          endTime: '2024-07-04T11:30:00',
+          location: 'Hotel Presidente - Administração',
+          clientName: 'Hotel Presidente',
+          clientEmail: 'suprimentos@presidente.com.br',
+          clientPhone: '(61) 97000-4000',
+          status: 'scheduled'
+        },
+        {
+          id: 35,
+          title: 'Follow-up PlayStation 5',
+          description: 'Acompanhamento da venda de PlayStation 5 para loja de games',
+          startTime: '2024-07-03T16:00:00',
+          endTime: '2024-07-03T16:30:00',
+          location: 'GameZone Loja de Games',
+          clientName: 'GameZone Loja de Games',
+          clientEmail: 'compras@gamezone.com.br',
+          clientPhone: '(41) 96000-3000',
+          status: 'scheduled'
+        }
+      ],
+      'design': [
+        {
+          id: 41,
+          title: 'Briefing Logo Startup',
+          description: 'Reunião para definir identidade visual da startup tech',
+          startTime: '2024-07-02T10:00:00',
+          endTime: '2024-07-02T11:30:00',
+          location: 'Agência Creative Design',
+          clientName: 'InnovaTech Startup',
+          clientEmail: 'branding@innovatech.com',
+          clientPhone: '(11) 99999-4444',
+          status: 'scheduled'
+        },
+        {
+          id: 42,
+          title: 'Apresentação Branding Completo',
+          description: 'Apresentação final do projeto de branding para cliente',
+          startTime: '2024-07-05T15:00:00',
+          endTime: '2024-07-05T16:30:00',
+          location: 'Estúdio Design Pro',
+          clientName: 'Bella Fashion',
+          clientEmail: 'marketing@bellafashion.com',
+          clientPhone: '(21) 98888-3333',
+          status: 'scheduled'
+        },
+        {
+          id: 43,
+          title: 'Revisão Material Gráfico',
+          description: 'Revisão de folder e catálogo corporativo',
+          startTime: '2024-07-06T14:00:00',
+          endTime: '2024-07-06T15:00:00',
+          location: 'Studio Visual Arts',
+          clientName: 'Construtora Alpha',
+          clientEmail: 'marketing@alpha.com.br',
+          clientPhone: '(31) 97777-6666',
+          status: 'scheduled'
+        }
+      ],
+      'sites': [
+        {
+          id: 51,
+          title: 'Kickoff E-commerce',
+          description: 'Reunião inicial para desenvolvimento de loja online',
+          startTime: '2024-07-01T09:00:00',
+          endTime: '2024-07-01T10:30:00',
+          location: 'Web Solutions - Sala de Reuniões',
+          clientName: 'ModaStyle Boutique',
+          clientEmail: 'digital@modastyle.com',
+          clientPhone: '(11) 97777-2222',
+          status: 'scheduled'
+        },
+        {
+          id: 52,
+          title: 'Entrega Landing Page',
+          description: 'Apresentação e entrega final da landing page',
+          startTime: '2024-07-06T14:00:00',
+          endTime: '2024-07-06T15:00:00',
+          location: 'CodeCraft Development',
+          clientName: 'Marketing Solutions',
+          clientEmail: 'projetos@marketingsolutions.com',
+          clientPhone: '(41) 96666-1111',
+          status: 'scheduled'
+        },
+        {
+          id: 53,
+          title: 'Reunião Sistema Interno',
+          description: 'Briefing para desenvolvimento de sistema de gestão',
+          startTime: '2024-07-08T10:00:00',
+          endTime: '2024-07-08T12:00:00',
+          location: 'TechCorp Offices',
+          clientName: 'Indústria MetalMax',
+          clientEmail: 'ti@metalmax.com.br',
+          clientPhone: '(48) 94444-7777',
+          status: 'scheduled'
+        }
+      ]
+    };
+
+    return categoryAppointments[selectedCategory] || [];
+  };
+
+  // Usar agendamentos específicos da categoria
+  const appointments = getCategorySpecificAppointments();
+  const appointmentsLoading = false;
 
   // Função para categorizar agendamentos
   const getAppointmentCategory = (appointment: any) => {
