@@ -106,13 +106,13 @@ All colors MUST be HSL.
 @layer components {
   /* Container principal das seções */
   .app-section {
-    @apply min-h-screen p-8;
+    @apply min-h-screen p-6 space-y-6;
     background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
   }
 
   /* Cabeçalho das seções */
   .section-header {
-    @apply mb-8;
+    @apply mb-6;
   }
 
   .section-title {
@@ -158,9 +158,15 @@ All colors MUST be HSL.
     transform: translateY(-2px);
   }
 
+  /* Grade de métricas */
+  .metrics-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6;
+  }
+
   /* Cards de métricas */
   .metric-card {
     @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300;
+    background: #ffffff !important;
   }
 
   .metric-card:hover {

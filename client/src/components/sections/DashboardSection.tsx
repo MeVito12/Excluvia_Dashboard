@@ -80,7 +80,7 @@ const DashboardSection = () => {
       />
 
       {/* Primary Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="metrics-grid">
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
@@ -135,7 +135,7 @@ const DashboardSection = () => {
       </div>
 
       {/* Cards com informações detalhadas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">

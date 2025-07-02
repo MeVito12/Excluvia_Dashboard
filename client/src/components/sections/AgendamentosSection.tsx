@@ -421,8 +421,12 @@ const AgendamentosSection = () => {
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
+            onClick={() => {
+              console.log('Agendamentos tab clicked:', tab.id);
+              setActiveTab(tab.id);
+            }}
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            type="button"
           >
             <tab.icon className="w-5 h-5" />
             {tab.label}
