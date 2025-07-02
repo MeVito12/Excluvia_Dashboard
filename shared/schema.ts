@@ -50,6 +50,46 @@ export const insertAppointmentSchema = z.object({
 
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
 
+
+
+// Campaign Types for Customer Loyalty
+export interface Campaign {
+  id: number;
+  title: string;
+  description: string;
+  type: 'discount' | 'promotion' | 'loyalty' | 'birthday' | 'seasonal';
+  discountPercentage?: number;
+  discountAmount?: number;
+  minPurchaseAmount?: number;
+  validFrom: Date;
+  validUntil: Date;
+  isActive: boolean;
+  targetAudience: 'all' | 'new' | 'vip' | 'inactive';
+  category: string;
+  messageTemplate: string;
+  sentCount: number;
+  usageCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const insertCampaignSchema = z.object({
+  title: z.string().min(1, "Campaign title is required"),
+  description: z.string().min(1, "Description is required"),
+  type: z.enum(['discount', 'promotion', 'loyalty', 'birthday', 'seasonal']),
+  discountPercentage: z.number().min(0).max(100).optional(),
+  discountAmount: z.number().min(0).optional(),
+  minPurchaseAmount: z.number().min(0).optional(),
+  validFrom: z.date(),
+  validUntil: z.date(),
+  isActive: z.boolean().default(true),
+  targetAudience: z.enum(['all', 'new', 'vip', 'inactive']).default('all'),
+  category: z.string().min(1, "Category is required"),
+  messageTemplate: z.string().min(1, "Message template is required"),
+});
+
+export type InsertCampaign = z.infer<typeof insertCampaignSchema>;
+
 // Reminder Types
 export interface Reminder {
   id: number;
@@ -160,7 +200,7 @@ export interface Product {
   id: number;
   name: string;
   description?: string;
-  sku: string;
+  sku?: string;
   category: string;
   price: number;
   cost?: number;
@@ -170,6 +210,7 @@ export interface Product {
   unit: string; // 'unit', 'kg', 'liter', etc.
   supplier?: string;
   expirationDate?: Date;
+  isPerishable: boolean;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -178,7 +219,7 @@ export interface Product {
 export const insertProductSchema = z.object({
   name: z.string().min(1, "Nome do produto é obrigatório"),
   description: z.string().optional(),
-  sku: z.string().min(1, "SKU é obrigatório"),
+  sku: z.string().optional(),
   category: z.string().min(1, "Categoria é obrigatória"),
   price: z.number().min(0, "Preço deve ser positivo"),
   cost: z.number().min(0, "Custo deve ser positivo").optional(),
@@ -188,6 +229,7 @@ export const insertProductSchema = z.object({
   unit: z.string().default("unit"),
   supplier: z.string().optional(),
   expirationDate: z.date().optional(),
+  isPerishable: z.boolean().default(false),
   isActive: z.boolean().default(true),
 });
 

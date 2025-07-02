@@ -17,7 +17,13 @@ import {
   QrCode,
   Link,
   Copy,
-  Download
+  Download,
+  Gift,
+  Users,
+  Target,
+  Calendar,
+  TrendingUp,
+  Mail
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -59,7 +65,8 @@ const AtendimentoSection = () => {
     const baseTabs = [
       { id: 'mensagens', label: 'Mensagens', icon: MessageCircle },
       { id: 'cardapios', label: selectedCategory === 'alimenticio' ? 'Cardápios' : 'Catálogos', icon: ShoppingCart },
-      { id: 'automacao', label: 'Automação', icon: Bot }
+      { id: 'automacao', label: 'Automação', icon: Bot },
+      { id: 'fidelizacao', label: 'Fidelização', icon: Gift }
     ];
     
     // Adicionar aba de pagamento para categorias alimentícias
@@ -456,6 +463,174 @@ const AtendimentoSection = () => {
     );
   };
 
+  // Renderizar aba de fidelização
+  const renderLoyalty = () => (
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <Gift className="w-8 h-8 text-purple-600" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">Programa de Fidelização</h3>
+              <p className="text-sm text-gray-600">Campanhas e promoções para retenção de clientes</p>
+            </div>
+          </div>
+          <button className="btn btn-primary flex items-center gap-2">
+            <Gift className="w-4 h-4" />
+            Nova Campanha
+          </button>
+        </div>
+
+        {/* Métricas de Fidelização */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-purple-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
+            <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
+            <p className="text-xs text-green-600 mt-1">+15% este mês</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Target className="w-6 h-6 text-green-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
+            <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
+            <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Retenção</h4>
+            <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
+            <p className="text-xs text-purple-600 mt-1">90 dias</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Mail className="w-6 h-6 text-yellow-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Mensagens Enviadas</h4>
+            <p className="text-2xl font-bold text-yellow-600 mt-1">3,892</p>
+            <p className="text-xs text-gray-600 mt-1">Este mês</p>
+          </div>
+        </div>
+
+        {/* Campanhas Ativas */}
+        <div className="mb-6">
+          <h4 className="font-medium text-gray-800 mb-4">Campanhas Ativas</h4>
+          <div className="space-y-4">
+            <div className="content-card">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Gift className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-800">
+                      {selectedCategory === 'alimenticio' ? 'Desconto 20% - Pizza Margherita' : 'Black Friday - Eletrônicos'}
+                    </h5>
+                    <p className="text-sm text-gray-600">
+                      {selectedCategory === 'alimenticio' 
+                        ? 'Promoção especial para novos clientes' 
+                        : 'Descontos em smartphones e notebooks'
+                      }
+                    </p>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span className="text-xs text-gray-500">Enviado para 856 clientes</span>
+                      <span className="text-xs text-green-600">142 conversões</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="badge badge-success">Ativa</span>
+                  <p className="text-sm text-gray-600 mt-1">Expira em 5 dias</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="content-card">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                    <Star className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h5 className="font-medium text-gray-800">
+                      {selectedCategory === 'alimenticio' ? 'Cliente VIP - Frete Grátis' : 'Programa VIP - Desconto Progressivo'}
+                    </h5>
+                    <p className="text-sm text-gray-600">
+                      {selectedCategory === 'alimenticio' 
+                        ? 'Entrega gratuita para pedidos acima de R$ 50' 
+                        : 'Descontos crescentes baseados em compras'
+                      }
+                    </p>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span className="text-xs text-gray-500">Enviado para 234 clientes VIP</span>
+                      <span className="text-xs text-blue-600">78 utilizações</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="badge badge-info">Permanente</span>
+                  <p className="text-sm text-gray-600 mt-1">Sempre ativa</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tipos de Campanha */}
+        <div>
+          <h4 className="font-medium text-gray-800 mb-4">Criar Nova Campanha</h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Gift className="w-8 h-8 text-purple-600" />
+                </div>
+                <h5 className="font-medium text-gray-800 mb-2">Desconto por Categoria</h5>
+                <p className="text-sm text-gray-600 mb-4">
+                  {selectedCategory === 'alimenticio' 
+                    ? 'Promoções em pizzas, bebidas e sobremesas' 
+                    : 'Descontos em eletrônicos, roupas e casa'
+                  }
+                </p>
+                <button className="btn btn-outline w-full">Criar Campanha</button>
+              </div>
+            </div>
+
+            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Calendar className="w-8 h-8 text-green-600" />
+                </div>
+                <h5 className="font-medium text-gray-800 mb-2">Promoção Sazonal</h5>
+                <p className="text-sm text-gray-600 mb-4">Campanhas para datas especiais e feriados</p>
+                <button className="btn btn-outline w-full">Criar Campanha</button>
+              </div>
+            </div>
+
+            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-blue-600" />
+                </div>
+                <h5 className="font-medium text-gray-800 mb-2">Reativação de Clientes</h5>
+                <p className="text-sm text-gray-600 mb-4">Ofertas especiais para clientes inativos</p>
+                <button className="btn btn-outline w-full">Criar Campanha</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'mensagens':
@@ -464,6 +639,8 @@ const AtendimentoSection = () => {
         return renderCatalogs();
       case 'automacao':
         return renderAutomation();
+      case 'fidelizacao':
+        return renderLoyalty();
       case 'pagamento':
         return renderPayment();
       default:

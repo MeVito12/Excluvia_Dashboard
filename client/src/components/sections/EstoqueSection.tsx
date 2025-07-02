@@ -11,7 +11,11 @@ import {
   Edit,
   DollarSign,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Calendar
 } from 'lucide-react';
 
 const EstoqueSection = () => {
@@ -28,23 +32,109 @@ const EstoqueSection = () => {
     { id: 'relatorios', label: 'Relatórios', icon: BarChart3 }
   ];
 
-  // Dados mockados por categoria
+  // Função para calcular dias até o vencimento
+  const getDaysUntilExpiry = (expiryDate: string) => {
+    const expiry = new Date(expiryDate);
+    const today = new Date();
+    const diffTime = expiry.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  // Função para determinar status do produto
+  const getProductStatus = (stock: number, minStock: number, expiryDate?: string) => {
+    if (expiryDate) {
+      const daysLeft = getDaysUntilExpiry(expiryDate);
+      if (daysLeft <= 0) return 'Vencido';
+      if (daysLeft <= 3) return 'Vencimento Próximo';
+    }
+    if (stock <= 0) return 'Sem Estoque';
+    if (stock <= minStock) return 'Estoque Baixo';
+    return 'Em Estoque';
+  };
+
+  // Dados mockados por categoria com controle de validade
   const getProductData = () => {
     if (selectedCategory === 'alimenticio') {
       return [
-        { id: 1, name: 'Pizza Margherita', category: 'Pizzas', stock: 50, minStock: 10, price: 35.00, status: 'Em Estoque' },
-        { id: 2, name: 'Hambúrguer Artesanal', category: 'Hambúrgueres', stock: 25, minStock: 8, price: 28.00, status: 'Em Estoque' },
-        { id: 3, name: 'Refrigerante 350ml', category: 'Bebidas', stock: 3, minStock: 20, price: 5.00, status: 'Estoque Baixo' }
+        { 
+          id: 1, 
+          name: 'Pizza Margherita', 
+          category: 'Pizzas', 
+          stock: 50, 
+          minStock: 10, 
+          price: 35.00, 
+          isPerishable: true,
+          expiryDate: '2025-01-05',
+          status: getProductStatus(50, 10, '2025-01-05')
+        },
+        { 
+          id: 2, 
+          name: 'Hambúrguer Artesanal', 
+          category: 'Hambúrgueres', 
+          stock: 25, 
+          minStock: 8, 
+          price: 28.00,
+          isPerishable: true,
+          expiryDate: '2025-01-03',
+          status: getProductStatus(25, 8, '2025-01-03')
+        },
+        { 
+          id: 3, 
+          name: 'Refrigerante 350ml', 
+          category: 'Bebidas', 
+          stock: 3, 
+          minStock: 20, 
+          price: 5.00,
+          isPerishable: true,
+          expiryDate: '2025-06-15',
+          status: getProductStatus(3, 20, '2025-06-15')
+        }
       ];
     } else if (selectedCategory === 'vendas') {
       return [
-        { id: 1, name: 'Smartphone Galaxy S24', category: 'Eletrônicos', stock: 15, minStock: 5, price: 2899.99, status: 'Em Estoque' },
-        { id: 2, name: 'Notebook Dell Inspiron', category: 'Eletrônicos', stock: 8, minStock: 3, price: 2499.99, status: 'Em Estoque' },
-        { id: 3, name: 'Camiseta Polo Ralph Lauren', category: 'Vestuário', stock: 2, minStock: 10, price: 189.99, status: 'Estoque Baixo' }
+        { 
+          id: 1, 
+          name: 'Smartphone Galaxy S24', 
+          category: 'Eletrônicos', 
+          stock: 15, 
+          minStock: 5, 
+          price: 2899.99,
+          isPerishable: false,
+          status: getProductStatus(15, 5)
+        },
+        { 
+          id: 2, 
+          name: 'Notebook Dell Inspiron', 
+          category: 'Eletrônicos', 
+          stock: 8, 
+          minStock: 3, 
+          price: 2499.99,
+          isPerishable: false,
+          status: getProductStatus(8, 3)
+        },
+        { 
+          id: 3, 
+          name: 'Camiseta Polo Ralph Lauren', 
+          category: 'Vestuário', 
+          stock: 2, 
+          minStock: 10, 
+          price: 189.99,
+          isPerishable: false,
+          status: getProductStatus(2, 10)
+        }
       ];
     }
     return [
-      { id: 1, name: 'Produto Geral', category: 'Geral', stock: 10, minStock: 5, price: 50.00, status: 'Em Estoque' }
+      { 
+        id: 1, 
+        name: 'Produto Geral', 
+        category: 'Geral', 
+        stock: 10, 
+        minStock: 5, 
+        price: 50.00,
+        isPerishable: false,
+        status: getProductStatus(10, 5)
+      }
     ];
   };
 
@@ -135,31 +225,76 @@ const EstoqueSection = () => {
           {getProductData().map((product) => (
             <div key={product.id} className="list-item">
               <div className="flex items-center gap-4 flex-1">
-                <div className="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center">
-                  <Package className="w-6 h-6 text-gray-600" />
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                  product.status === 'Vencido' ? 'bg-red-100' :
+                  product.status === 'Vencimento Próximo' ? 'bg-yellow-100' :
+                  product.status === 'Estoque Baixo' ? 'bg-orange-100' : 'bg-gray-100'
+                }`}>
+                  {product.status === 'Vencido' || product.status === 'Vencimento Próximo' ? (
+                    <AlertTriangle className={`w-6 h-6 ${
+                      product.status === 'Vencido' ? 'text-red-600' : 'text-yellow-600'
+                    }`} />
+                  ) : (
+                    <Package className="w-6 h-6 text-gray-600" />
+                  )}
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-medium text-gray-800">{product.name}</h4>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium text-gray-800">{product.name}</h4>
+                    {product.isPerishable && (
+                      <Clock className="w-4 h-4 text-blue-500" title="Produto perecível" />
+                    )}
+                  </div>
                   <p className="text-sm text-gray-600">Categoria: {product.category}</p>
-                  <p className="text-sm text-gray-600">Estoque: {product.stock} unidades</p>
+                  <div className="flex items-center gap-4 mt-1">
+                    <p className="text-sm text-gray-600">
+                      Estoque: <span className={`font-medium ${
+                        product.stock <= product.minStock ? 'text-red-600' : 'text-green-600'
+                      }`}>{product.stock}</span> / Mín: {product.minStock}
+                    </p>
+                    {product.expiryDate && (
+                      <p className="text-sm text-gray-600">
+                        Validade: <span className={`font-medium ${
+                          getDaysUntilExpiry(product.expiryDate) <= 3 ? 'text-red-600' : 'text-gray-700'
+                        }`}>
+                          {getDaysUntilExpiry(product.expiryDate) > 0 
+                            ? `${getDaysUntilExpiry(product.expiryDate)} dias`
+                            : 'Vencido'
+                          }
+                        </span>
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-gray-900">R$ {product.price.toFixed(2)}</p>
                   <span className={`badge ${
                     product.status === 'Em Estoque' ? 'badge-success' : 
-                    product.status === 'Estoque Baixo' ? 'badge-warning' : 'badge-error'
+                    product.status === 'Estoque Baixo' ? 'badge-warning' : 
+                    product.status === 'Vencimento Próximo' ? 'badge-warning' :
+                    'badge-error'
                   }`}>
                     {product.status}
                   </span>
+                  {(product.status === 'Vencido' || product.status === 'Vencimento Próximo' || product.status === 'Estoque Baixo') && (
+                    <div className="mt-1">
+                      <AlertTriangle className="w-4 h-4 text-red-500 mx-auto" />
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="flex gap-2">
-                <button className="btn btn-outline p-2">
+                <button className="btn btn-outline p-2" title="Visualizar detalhes">
                   <Eye className="w-4 h-4" />
                 </button>
-                <button className="btn btn-outline p-2">
+                <button className="btn btn-outline p-2" title="Editar produto">
                   <Edit className="w-4 h-4" />
                 </button>
+                {product.stock <= product.minStock && (
+                  <button className="btn btn-warning p-2" title="Reabastecer estoque">
+                    <Plus className="w-4 h-4" />
+                  </button>
+                )}
               </div>
             </div>
           ))}
