@@ -23,20 +23,19 @@ export const CategoryProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [isFirstLogin, setIsFirstLogin] = useState<boolean>(true);
 
   useEffect(() => {
-    // Verifica se já foi selecionada uma categoria anteriormente
-    const savedCategory = localStorage.getItem('selectedBusinessCategory');
-    const hasCompletedSetup = localStorage.getItem('hasCompletedCategorySetup');
-    
-    if (savedCategory && hasCompletedSetup) {
-      setSelectedCategory(savedCategory);
-      setIsFirstLogin(false);
-    }
+    // Para demonstração: sempre mantém como primeiro login
+    // Limpa dados salvos para simular primeiro acesso sempre
+    localStorage.removeItem('selectedBusinessCategory');
+    localStorage.removeItem('hasCompletedCategorySetup');
+    setIsFirstLogin(true);
+    setSelectedCategory('');
   }, []);
 
   const handleSetSelectedCategory = (category: string) => {
     setSelectedCategory(category);
-    localStorage.setItem('selectedBusinessCategory', category);
-    localStorage.setItem('hasCompletedCategorySetup', 'true');
+    // Para demonstração: não salva no localStorage para manter como primeiro login
+    // localStorage.setItem('selectedBusinessCategory', category);
+    // localStorage.setItem('hasCompletedCategorySetup', 'true');
     setIsFirstLogin(false);
   };
 
