@@ -138,19 +138,24 @@ All colors MUST be HSL.
   }
 
   .tab-button {
-    @apply flex items-center gap-3 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 flex-1 justify-center;
+    @apply flex items-center gap-3 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 flex-1 justify-center cursor-pointer;
     color: #6b7280;
+    background: transparent;
+    border: none;
+    outline: none;
   }
 
   .tab-button:hover {
-    @apply bg-white/50;
+    @apply bg-white/80;
     color: #374151;
+    transform: translateY(-1px);
   }
 
   .tab-button.active {
     @apply bg-white text-white shadow-lg;
-    background: hsl(var(--brand-primary));
-    transform: translateY(-1px);
+    background: hsl(var(--brand-primary)) !important;
+    color: white !important;
+    transform: translateY(-2px);
   }
 
   /* Cards de métricas */

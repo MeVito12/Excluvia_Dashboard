@@ -81,15 +81,15 @@ const DashboardSection = () => {
 
       {/* Primary Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="metric-card gradient-brand text-white">
+        <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Total de Registros</p>
-              <p className="text-2xl font-bold mt-1 text-white">{currentMetrics.totalRecords}</p>
-              <p className="text-xs mt-1 text-white/70">+12% este mês</p>
+              <p className="text-sm font-medium text-gray-600">Total de Registros</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.totalRecords}</p>
+              <p className="text-xs mt-1 text-green-600">+12% este mês</p>
             </div>
-            <div className="p-3 rounded-full bg-white/20">
-              <Database className="h-6 w-6 text-white" />
+            <div className="p-3 rounded-full bg-gray-100">
+              <Database className="h-6 w-6 text-gray-600" />
             </div>
           </div>
         </div>

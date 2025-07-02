@@ -14,7 +14,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 
-const AgendamentosSectionNew = () => {
+const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('agenda');
   const [searchTerm, setSearchTerm] = useState('');
@@ -436,4 +436,4 @@ const AgendamentosSectionNew = () => {
   );
 };
 
-export default AgendamentosSectionNew;
+export default AgendamentosSection;
