@@ -77,20 +77,20 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-gradient-to-b from-purple-600 via-blue-700 to-purple-800 border-r border-purple-500/30 transition-transform duration-300",
-        "w-64 shadow-2xl backdrop-blur-xl",
+        "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--sidebar-background))] border-r border-[hsl(var(--sidebar-border))] transition-transform duration-300",
+        "w-64 shadow-lg",
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-purple-400/30 bg-gradient-to-r from-purple-500/20 to-blue-500/20">
+          <div className="p-6 border-b border-[hsl(var(--sidebar-border))] bg-gradient-to-r from-purple-50 to-blue-50">
             <div className="mb-4">
               <UserAvatar username={user?.name || 'Usuário'} size="medium" />
             </div>
-            <h2 className="text-xl font-bold text-white bg-gradient-to-r from-white to-green-300 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold text-[hsl(var(--sidebar-foreground))] bg-gradient-to-r from-purple-600 to-green-600 bg-clip-text text-transparent">
               Sistema Inteligente
             </h2>
-            <p className="text-xs text-purple-200 mt-1 font-medium">Automação Avançada com IA</p>
+            <p className="text-xs text-[hsl(var(--muted-foreground))] mt-1 font-medium">Automação Avançada com IA</p>
           </div>
 
           {/* Navigation */}

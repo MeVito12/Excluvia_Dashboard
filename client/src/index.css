@@ -9,61 +9,61 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors - Dark theme inspired */
-    --background: 222 84% 5%;
-    --foreground: 0 0% 100%;
+    /* Base colors - Light theme restored */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 220 71% 7%;
-    --card-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 220 71% 7%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    /* Primary colors - Purple theme from images */
+    /* Primary colors - Vibrant purple from images */
     --primary: 262 83% 58%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 210 40% 98%;
 
-    /* Secondary colors - Dark blue theme */
+    /* Secondary colors - Enhanced blue */
     --secondary: 221 83% 53%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent colors - Neon green theme */
-    --accent: 142 76% 36%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent colors - Vibrant green from images */
+    --accent: 142 76% 50%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
     --ring: 262 83% 58%;
 
     --radius: 0.75rem;
 
-    /* Sidebar - Dark purple theme */
-    --sidebar-background: 221 83% 53%;
-    --sidebar-foreground: 0 0% 100%;
+    /* Sidebar - Enhanced with vibrant colors */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 262 83% 58%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 142 76% 36%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 142 76% 50%;
 
-    /* Vibrant theme colors inspired by the images */
+    /* Dashboard custom colors - maintained light */
+    --dashboard-background: 230 100% 96%;
+    --dashboard-dark: 225 100% 90%;
+    --dashboard-darker: 220 100% 84%;
+
+    /* Vibrant theme colors for accents */
     --vibrant-purple: 262 83% 58%;
     --vibrant-blue: 221 83% 53%;
-    --vibrant-green: 142 76% 36%;
+    --vibrant-green: 142 76% 50%;
     --vibrant-teal: 174 72% 56%;
     --vibrant-indigo: 243 75% 59%;
-    
-    /* Dark backgrounds for contrast */
-    --dark-purple: 262 83% 20%;
-    --dark-blue: 221 83% 15%;
-    --dark-green: 142 76% 15%;
 
     /* Custom dashboard colors - updated to match the blue tone */
     --dashboard-purple: 262 83% 58%;
