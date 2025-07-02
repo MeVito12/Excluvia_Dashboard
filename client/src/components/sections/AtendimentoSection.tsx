@@ -11,13 +11,48 @@ import {
   Clock,
   Star,
   CheckCircle,
-  Zap
+  Zap,
+  CreditCard,
+  Share2,
+  QrCode,
+  Link,
+  Copy,
+  Download
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showShareModal, setShowShareModal] = useState(false);
+  const [shareType, setShareType] = useState('link'); // 'link' ou 'qr'
+  const [shareUrl, setShareUrl] = useState('');
+
+  // Função para gerar URL de compartilhamento
+  const generateShareUrl = () => {
+    const baseUrl = window.location.origin;
+    const categorySlug = selectedCategory;
+    const menuType = selectedCategory === 'alimenticio' ? 'cardapio' : 'catalogo';
+    return `${baseUrl}/${menuType}/${categorySlug}`;
+  };
+
+  // Função para compartilhar
+  const handleShare = (type: 'link' | 'qr') => {
+    const url = generateShareUrl();
+    setShareUrl(url);
+    setShareType(type);
+    setShowShareModal(true);
+  };
+
+  // Função para copiar link
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert('Link copiado para a área de transferência!');
+    } catch (err) {
+      console.error('Erro ao copiar:', err);
+    }
+  };
 
   // Tabs baseadas na categoria
   const getTabs = () => {
@@ -26,6 +61,12 @@ const AtendimentoSection = () => {
       { id: 'cardapios', label: selectedCategory === 'alimenticio' ? 'Cardápios' : 'Catálogos', icon: ShoppingCart },
       { id: 'automacao', label: 'Automação', icon: Bot }
     ];
+    
+    // Adicionar aba de pagamento para categorias alimentícias
+    if (selectedCategory === 'alimenticio') {
+      baseTabs.push({ id: 'pagamento', label: 'Pagamento', icon: CreditCard });
+    }
+    
     return baseTabs;
   };
 
@@ -136,10 +177,26 @@ const AtendimentoSection = () => {
           <h3 className="text-xl font-semibold text-gray-800">
             {selectedCategory === 'alimenticio' ? 'Cardápio Digital' : 'Catálogo de Produtos'}
           </h3>
-          <button className="btn btn-primary">
-            <ShoppingCart className="w-4 h-4" />
-            Adicionar Item
-          </button>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => handleShare('link')}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartilhar Link
+            </button>
+            <button 
+              onClick={() => handleShare('qr')}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <QrCode className="w-4 h-4" />
+              QR Code
+            </button>
+            <button className="btn btn-primary">
+              <ShoppingCart className="w-4 h-4" />
+              Adicionar Item
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -246,6 +303,159 @@ const AtendimentoSection = () => {
     </div>
   );
 
+  // Renderizar aba de pagamento
+  const renderPayment = () => (
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <CreditCard className="w-8 h-8 text-green-600" />
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800">Sistema de Pagamentos</h3>
+            <p className="text-sm text-gray-600">Pagamentos automáticos via PIX e Cartão</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="content-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-800">PIX Automático</h4>
+                <p className="text-sm text-gray-600">Pagamento instantâneo</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Taxa</span>
+                <span className="font-medium text-green-600">Grátis</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Tempo de processamento</span>
+                <span className="font-medium">Instantâneo</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Status</span>
+                <span className="badge badge-success">Ativo</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="content-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <CreditCard className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-800">Cartão de Crédito</h4>
+                <p className="text-sm text-gray-600">Parcelamento disponível</p>
+              </div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Taxa</span>
+                <span className="font-medium text-blue-600">2.9%</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Parcelamento</span>
+                <span className="font-medium">Até 12x</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-600">Status</span>
+                <span className="badge badge-success">Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="content-card">
+          <h4 className="font-medium text-gray-800 mb-4">Transações Recentes</h4>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Pedido #1234 - João Silva</p>
+                  <p className="text-xs text-gray-600">PIX • Hoje às 14:30</p>
+                </div>
+              </div>
+              <span className="font-medium text-green-600">R$ 45,90</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <CreditCard className="w-4 h-4 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-800">Pedido #1233 - Maria Santos</p>
+                  <p className="text-xs text-gray-600">Cartão 3x • Hoje às 13:15</p>
+                </div>
+              </div>
+              <span className="font-medium text-blue-600">R$ 89,70</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Modal de compartilhamento
+  const renderShareModal = () => {
+    if (!showShareModal) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-semibold text-gray-800">
+              {shareType === 'qr' ? 'QR Code para Compartilhar' : 'Link de Compartilhamento'}
+            </h3>
+            <button 
+              onClick={() => setShowShareModal(false)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              ✕
+            </button>
+          </div>
+
+          {shareType === 'qr' ? (
+            <div className="text-center">
+              <div className="w-48 h-48 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <QrCode className="w-32 h-32 text-gray-400" />
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                Escaneie o QR Code para acessar o {selectedCategory === 'alimenticio' ? 'cardápio' : 'catálogo'}
+              </p>
+              <button className="btn btn-outline w-full flex items-center justify-center gap-2">
+                <Download className="w-4 h-4" />
+                Baixar QR Code
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Link className="w-4 h-4 text-gray-500" />
+                  <span className="text-sm text-gray-600 break-all">{shareUrl}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => copyToClipboard(shareUrl)}
+                className="btn btn-primary w-full flex items-center justify-center gap-2"
+              >
+                <Copy className="w-4 h-4" />
+                Copiar Link
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'mensagens':
@@ -254,6 +464,8 @@ const AtendimentoSection = () => {
         return renderCatalogs();
       case 'automacao':
         return renderAutomation();
+      case 'pagamento':
+        return renderPayment();
       default:
         return renderMessages();
     }
@@ -349,6 +561,9 @@ const AtendimentoSection = () => {
 
       {/* Conteúdo das Tabs */}
       {renderTabContent()}
+      
+      {/* Modal de Compartilhamento */}
+      {renderShareModal()}
     </div>
   );
 };
