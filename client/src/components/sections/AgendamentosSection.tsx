@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCategory, categories } from '@/contexts/CategoryContext';
 import UnifiedFilters from '@/components/UnifiedFilters';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -55,13 +56,81 @@ type IntegrationFormData = z.infer<typeof integrationSchema>;
 type NotificationFormData = z.infer<typeof notificationSchema>;
 
 const AgendamentosSection = () => {
+  const { selectedCategory } = useCategory();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [serviceTypeFilter, setServiceTypeFilter] = useState('all');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Tipos de serviços específicos por categoria
+  const getServiceTypesByCategory = () => {
+    switch (selectedCategory) {
+      case 'pet':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'consulta', label: 'Consulta Veterinária' },
+          { value: 'vacinacao', label: 'Vacinação' },
+          { value: 'cirurgia', label: 'Cirurgia' },
+          { value: 'banho_tosa', label: 'Banho e Tosa' },
+          { value: 'exame', label: 'Exames' },
+          { value: 'emergencia', label: 'Emergência' }
+        ];
+      case 'saude':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'consulta', label: 'Consulta Médica' },
+          { value: 'exame', label: 'Exames' },
+          { value: 'fisioterapia', label: 'Fisioterapia' },
+          { value: 'cirurgia', label: 'Cirurgia' },
+          { value: 'retorno', label: 'Retorno' },
+          { value: 'emergencia', label: 'Emergência' }
+        ];
+      case 'alimenticio':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'mesa', label: 'Reserva de Mesa' },
+          { value: 'evento', label: 'Evento/Festa' },
+          { value: 'delivery', label: 'Agendamento Delivery' },
+          { value: 'catering', label: 'Serviço de Catering' },
+          { value: 'degustacao', label: 'Degustação' }
+        ];
+      case 'tecnologia':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'reparo', label: 'Reparo/Manutenção' },
+          { value: 'instalacao', label: 'Instalação' },
+          { value: 'consultoria', label: 'Consultoria Técnica' },
+          { value: 'configuracao', label: 'Configuração' },
+          { value: 'treinamento', label: 'Treinamento' }
+        ];
+      case 'design':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'briefing', label: 'Briefing Inicial' },
+          { value: 'apresentacao', label: 'Apresentação' },
+          { value: 'aprovacao', label: 'Aprovação' },
+          { value: 'entrega', label: 'Entrega Final' },
+          { value: 'revisao', label: 'Revisão' }
+        ];
+      case 'sites':
+        return [
+          { value: 'all', label: 'Todos os Serviços' },
+          { value: 'briefing', label: 'Briefing do Projeto' },
+          { value: 'prototipo', label: 'Apresentação Protótipo' },
+          { value: 'desenvolvimento', label: 'Reunião Desenvolvimento' },
+          { value: 'teste', label: 'Testes e Validação' },
+          { value: 'lancamento', label: 'Lançamento' },
+          { value: 'manutencao', label: 'Manutenção' }
+        ];
+      default:
+        return [{ value: 'all', label: 'Todos os Serviços' }];
+    }
+  };
+
+  const serviceTypes = getServiceTypesByCategory();
 
   // Queries
   const { data: appointments = [], isLoading: appointmentsLoading } = useQuery({
@@ -109,18 +178,32 @@ const AgendamentosSection = () => {
     return 'outros';
   };
 
-  // Filtrar agendamentos
-  const filteredAppointments = appointments.filter((appointment: any) => {
+  // Filtrar agendamentos apenas da categoria selecionada
+  const filteredAppointments = (appointments as any[]).filter((appointment: any) => {
     const matchesSearch = !searchTerm || 
       appointment.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appointment.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appointment.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       appointment.location?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = categoryFilter === 'all' || getAppointmentCategory(appointment) === categoryFilter;
-    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
+    // Verifica se é da categoria selecionada
+    const appointmentCategory = getAppointmentCategory(appointment);
+    const categoryMap: { [key: string]: string } = {
+      'pet': 'veterinario',
+      'saude': 'medico',
+      'alimenticio': 'restaurante',
+      'tecnologia': 'tecnologia',
+      'design': 'design',
+      'sites': 'websites'
+    };
+    const matchesCategory = appointmentCategory === categoryMap[selectedCategory] || appointmentCategory === 'outros';
     
-    return matchesSearch && matchesCategory && matchesStatus;
+    const matchesStatus = statusFilter === 'all' || appointment.status === statusFilter;
+    const matchesServiceType = serviceTypeFilter === 'all' || 
+      appointment.title?.toLowerCase().includes(serviceTypeFilter) ||
+      appointment.description?.toLowerCase().includes(serviceTypeFilter);
+    
+    return matchesSearch && matchesCategory && matchesStatus && matchesServiceType;
   });
 
   const { data: integrations = [] } = useQuery({
@@ -273,7 +356,9 @@ const AgendamentosSection = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Agendamentos</h1>
-          <p className="text-gray-300">Gerencie seus agendamentos e lembretes</p>
+          <p className="text-gray-300">
+            {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - Gerencie seus agendamentos e lembretes
+          </p>
         </div>
         <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
           <DialogTrigger asChild>
@@ -490,52 +575,51 @@ const AgendamentosSection = () => {
             </Card>
           </div>
 
-          {/* Filtros Unificados */}
-          <UnifiedFilters
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            searchPlaceholder="Buscar por título, cliente, local..."
-            title="Filtros de Agendamentos"
-            filters={[
-              {
-                id: 'category',
-                label: 'Categoria',
-                value: categoryFilter,
-                onChange: setCategoryFilter,
-                options: [
-                  { value: 'all', label: 'Todas as categorias' },
-                  { value: 'veterinario', label: 'Veterinário' },
-                  { value: 'medico', label: 'Médico/Clínico' },
-                  { value: 'design', label: 'Design Gráfico' },
-                  { value: 'sites', label: 'Criação de Sites' },
-                  { value: 'vendas', label: 'Vendas/Comercial' },
-                  { value: 'outros', label: 'Outros' }
-                ]
-              },
-              {
-                id: 'status',
-                label: 'Status',
-                value: statusFilter,
-                onChange: setStatusFilter,
-                options: [
-                  { value: 'all', label: 'Todos os status' },
-                  { value: 'scheduled', label: 'Agendado' },
-                  { value: 'completed', label: 'Concluído' },
-                  { value: 'cancelled', label: 'Cancelado' }
-                ]
-              }
-            ]}
-            onClearFilters={() => {
-              setSearchTerm('');
-              setCategoryFilter('all');
-              setStatusFilter('all');
-            }}
-            showClearButton={true}
-          />
+          {/* Filtros Específicos da Categoria */}
+          <div className="bg-white border border-border/50 rounded-lg p-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Search */}
+              <div className="relative">
+                <Input
+                  placeholder="Buscar por título, cliente, local..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="bg-white text-gray-900 border-border/50"
+                />
+              </div>
+
+              {/* Service Type Filter */}
+              <Select value={serviceTypeFilter} onValueChange={setServiceTypeFilter}>
+                <SelectTrigger className="text-gray-900 bg-white">
+                  <SelectValue placeholder="Tipo de Serviço" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200">
+                  {serviceTypes.map((type) => (
+                    <SelectItem key={type.value} value={type.value} className="text-gray-900 hover:bg-gray-50">
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Status Filter */}
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="text-gray-900 bg-white">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200">
+                  <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos os Status</SelectItem>
+                  <SelectItem value="scheduled" className="text-gray-900 hover:bg-gray-50">Agendado</SelectItem>
+                  <SelectItem value="completed" className="text-gray-900 hover:bg-gray-50">Concluído</SelectItem>
+                  <SelectItem value="cancelled" className="text-gray-900 hover:bg-gray-50">Cancelado</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
           {/* Contador de resultados */}
           <div className="text-sm text-gray-500 px-2">
-            Mostrando {filteredAppointments.length} de {appointments.length} agendamentos
+            Mostrando {filteredAppointments.length} de {(appointments as any[]).length} agendamentos
           </div>
 
           {/* Appointments List */}

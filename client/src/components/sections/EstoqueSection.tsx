@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useCategory, categories } from '@/contexts/CategoryContext';
 import { 
   Package, 
   AlertTriangle, 
@@ -29,31 +30,132 @@ import {
 } from 'lucide-react';
 
 const EstoqueSection = () => {
+  const { selectedCategory } = useCategory();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSegment, setSelectedSegment] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [activeTab, setActiveTab] = useState('produtos');
 
-  // Categorias simplificadas e unificadas
-  const categories = [
-    { value: 'all', label: 'Todas as Categorias' },
-    { value: 'pet', label: 'Pet & Veterinário' },
-    { value: 'saude', label: 'Saúde & Medicamentos' },
-    { value: 'alimenticio', label: 'Alimentício' },
-    { value: 'tecnologia', label: 'Tecnologia' }
-  ];
+  // Filtros específicos baseados na categoria selecionada
+  const getCategorySpecificFilters = () => {
+    switch (selectedCategory) {
+      case 'pet':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'racao', label: 'Ração' },
+            { value: 'medicamentos', label: 'Medicamentos' },
+            { value: 'brinquedos', label: 'Brinquedos' },
+            { value: 'higiene', label: 'Higiene & Beleza' },
+            { value: 'acessorios', label: 'Acessórios' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'cao', label: 'Donos de Cães' },
+            { value: 'gato', label: 'Donos de Gatos' },
+            { value: 'exoticos', label: 'Pets Exóticos' },
+            { value: 'criadores', label: 'Criadores' }
+          ]
+        };
+      case 'saude':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'medicamentos', label: 'Medicamentos' },
+            { value: 'suplementos', label: 'Suplementos' },
+            { value: 'equipamentos', label: 'Equipamentos' },
+            { value: 'higiene', label: 'Higiene Pessoal' },
+            { value: 'cosmeticos', label: 'Cosméticos' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'cronic', label: 'Pacientes Crônicos' },
+            { value: 'elderly', label: 'Idosos' },
+            { value: 'family', label: 'Famílias' },
+            { value: 'athletes', label: 'Atletas' }
+          ]
+        };
+      case 'alimenticio':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'pratos', label: 'Pratos Principais' },
+            { value: 'bebidas', label: 'Bebidas' },
+            { value: 'sobremesas', label: 'Sobremesas' },
+            { value: 'entradas', label: 'Entradas' },
+            { value: 'lanches', label: 'Lanches' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'delivery', label: 'Delivery' },
+            { value: 'local', label: 'Presencial' },
+            { value: 'corporativo', label: 'Corporativo' },
+            { value: 'eventos', label: 'Eventos' }
+          ]
+        };
+      case 'tecnologia':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'smartphones', label: 'Smartphones' },
+            { value: 'laptops', label: 'Laptops' },
+            { value: 'acessorios', label: 'Acessórios' },
+            { value: 'games', label: 'Games' },
+            { value: 'audio', label: 'Áudio' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'gamers', label: 'Gamers' },
+            { value: 'professionals', label: 'Profissionais' },
+            { value: 'students', label: 'Estudantes' },
+            { value: 'casual', label: 'Uso Casual' }
+          ]
+        };
+      case 'design':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'logos', label: 'Logotipos' },
+            { value: 'materiais', label: 'Material Gráfico' },
+            { value: 'branding', label: 'Branding' },
+            { value: 'digital', label: 'Design Digital' },
+            { value: 'impressos', label: 'Impressos' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'startup', label: 'Startups' },
+            { value: 'pme', label: 'PMEs' },
+            { value: 'corporativo', label: 'Corporativo' },
+            { value: 'individual', label: 'Pessoa Física' }
+          ]
+        };
+      case 'sites':
+        return {
+          productTypes: [
+            { value: 'all', label: 'Todos os Tipos' },
+            { value: 'websites', label: 'Sites Institucionais' },
+            { value: 'ecommerce', label: 'E-commerce' },
+            { value: 'landing', label: 'Landing Pages' },
+            { value: 'apps', label: 'Aplicativos' },
+            { value: 'seo', label: 'SEO & Marketing' }
+          ],
+          clientSegments: [
+            { value: 'all', label: 'Todos os Clientes' },
+            { value: 'pequenos', label: 'Pequenos Negócios' },
+            { value: 'medios', label: 'Médias Empresas' },
+            { value: 'freelancers', label: 'Freelancers' },
+            { value: 'agencias', label: 'Agências' }
+          ]
+        };
+      default:
+        return {
+          productTypes: [{ value: 'all', label: 'Todos os Tipos' }],
+          clientSegments: [{ value: 'all', label: 'Todos os Clientes' }]
+        };
+    }
+  };
 
-  // Segmentos simplificados para clientes
-  const segments = [
-    { value: 'all', label: 'Todos os Segmentos' },
-    { value: 'pet', label: 'Pet & Veterinário' },
-    { value: 'saude', label: 'Saúde & Medicamentos' },
-    { value: 'alimenticio', label: 'Alimentício' },
-    { value: 'tecnologia', label: 'Tecnologia' }
-  ];
-
-
+  const { productTypes, clientSegments } = getCategorySpecificFilters();
 
   // Mock data para produtos diversificados
   const products = [
@@ -428,27 +530,30 @@ const EstoqueSection = () => {
     }
   ];
 
-  // Filter functions
+  // Filter functions - apenas dados da categoria selecionada
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.sku.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesCategory = product.category === selectedCategory; // Apenas da categoria selecionada
+    const matchesType = selectedSegment === 'all' || product.sku.toLowerCase().includes(selectedSegment);
+    const matchesStatus = selectedStatus === 'all' || product.status === selectedStatus;
+    return matchesSearch && matchesCategory && matchesType && matchesStatus;
   });
 
   const filteredSales = sales.filter(sale => {
     const matchesSearch = sale.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          sale.clientName.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || sale.category === selectedCategory;
+    const matchesCategory = sale.category === selectedCategory; // Apenas da categoria selecionada
     return matchesSearch && matchesCategory;
   });
 
   const filteredClients = clients.filter(client => {
     const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          client.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSegment = selectedSegment === 'all' || client.segment === selectedSegment;
+    const matchesSegment = client.segment === selectedCategory; // Apenas da categoria selecionada
+    const matchesClientType = selectedSegment === 'all' || clientSegments.some(seg => seg.value === selectedSegment && client.type.toLowerCase().includes(seg.value));
     const matchesStatus = selectedStatus === 'all' || client.status === selectedStatus;
-    return matchesSearch && matchesSegment && matchesStatus;
+    return matchesSearch && matchesSegment && matchesClientType && matchesStatus;
   });
 
   const getStockStatus = (product: any) => {
@@ -493,7 +598,9 @@ const EstoqueSection = () => {
       {/* Header */}
       <div>
         <h2 className="text-3xl font-bold text-white mb-2">Controle de Estoque</h2>
-        <p className="text-gray-300">Gerencie produtos, vendas e clientes em um só lugar</p>
+        <p className="text-gray-300">
+          {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - Gerencie produtos, vendas e clientes
+        </p>
       </div>
 
       {/* Alertas de Estoque */}
@@ -581,28 +688,50 @@ const EstoqueSection = () => {
               </div>
             </CardHeader>
             <CardContent>
-              {/* Filtros Unificados */}
+              {/* Filtros Específicos da Categoria */}
               <div className="mb-4">
-                <UnifiedFilters
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  searchPlaceholder="Buscar produtos, SKU..."
-                  title="Filtros de Produtos"
-                  filters={[
-                    {
-                      id: 'category',
-                      label: 'Categoria',
-                      value: selectedCategory,
-                      onChange: setSelectedCategory,
-                      options: categories
-                    }
-                  ]}
-                  onClearFilters={() => {
-                    setSearchTerm('');
-                    setSelectedCategory('all');
-                  }}
-                  showClearButton={true}
-                />
+                <div className="bg-white border border-border/50 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Buscar produtos, SKU..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 bg-white text-gray-900 border-border/50"
+                      />
+                    </div>
+
+                    {/* Product Type Filter */}
+                    <Select value={selectedSegment} onValueChange={setSelectedSegment}>
+                      <SelectTrigger className="text-gray-900 bg-white">
+                        <SelectValue placeholder="Tipo de Produto" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        {productTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value} className="text-gray-900 hover:bg-gray-50">
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Status Filter */}
+                    <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                      <SelectTrigger className="text-gray-900 bg-white">
+                        <SelectValue placeholder="Status" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos os Status</SelectItem>
+                        <SelectItem value="normal" className="text-gray-900 hover:bg-gray-50">Normal</SelectItem>
+                        <SelectItem value="low_stock" className="text-gray-900 hover:bg-gray-50">Estoque Baixo</SelectItem>
+                        <SelectItem value="out_of_stock" className="text-gray-900 hover:bg-gray-50">Sem Estoque</SelectItem>
+                        <SelectItem value="expiring" className="text-gray-900 hover:bg-gray-50">Próximo ao Vencimento</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
 
               {/* Lista de produtos */}
@@ -681,26 +810,34 @@ const EstoqueSection = () => {
             <CardContent>
               {/* Filtros Unificados para Vendas */}
               <div className="mb-4">
-                <UnifiedFilters
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  searchPlaceholder="Buscar vendas, clientes..."
-                  title="Filtros de Vendas"
-                  filters={[
-                    {
-                      id: 'category',
-                      label: 'Categoria',
-                      value: selectedCategory,
-                      onChange: setSelectedCategory,
-                      options: categories
-                    }
-                  ]}
-                  onClearFilters={() => {
-                    setSearchTerm('');
-                    setSelectedCategory('all');
-                  }}
-                  showClearButton={true}
-                />
+                <div className="bg-white border border-border/50 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Buscar vendas, clientes..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 bg-white text-gray-900 border-border/50"
+                      />
+                    </div>
+
+                    {/* Status Filter */}
+                    <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                      <SelectTrigger className="text-gray-900 bg-white">
+                        <SelectValue placeholder="Status" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos os Status</SelectItem>
+                        <SelectItem value="pending" className="text-gray-900 hover:bg-gray-50">Pendente</SelectItem>
+                        <SelectItem value="confirmed" className="text-gray-900 hover:bg-gray-50">Confirmado</SelectItem>
+                        <SelectItem value="delivered" className="text-gray-900 hover:bg-gray-50">Entregue</SelectItem>
+                        <SelectItem value="cancelled" className="text-gray-900 hover:bg-gray-50">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -756,38 +893,46 @@ const EstoqueSection = () => {
             <CardContent>
               {/* Filtros Unificados para Clientes */}
               <div className="mb-4">
-                <UnifiedFilters
-                  searchTerm={searchTerm}
-                  onSearchChange={setSearchTerm}
-                  searchPlaceholder="Buscar clientes, email..."
-                  title="Filtros de Clientes"
-                  filters={[
-                    {
-                      id: 'segment',
-                      label: 'Segmento',
-                      value: selectedSegment,
-                      onChange: setSelectedSegment,
-                      options: segments
-                    },
-                    {
-                      id: 'status',
-                      label: 'Status',
-                      value: selectedStatus,
-                      onChange: setSelectedStatus,
-                      options: [
-                        { value: 'all', label: 'Todos' },
-                        { value: 'active', label: 'Ativos' },
-                        { value: 'inactive', label: 'Inativos' }
-                      ]
-                    }
-                  ]}
-                  onClearFilters={() => {
-                    setSearchTerm('');
-                    setSelectedSegment('all');
-                    setSelectedStatus('all');
-                  }}
-                  showClearButton={true}
-                />
+                <div className="bg-white border border-border/50 rounded-lg p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {/* Search */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="Buscar clientes, email..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 bg-white text-gray-900 border-border/50"
+                      />
+                    </div>
+
+                    {/* Client Type Filter */}
+                    <Select value={selectedSegment} onValueChange={setSelectedSegment}>
+                      <SelectTrigger className="text-gray-900 bg-white">
+                        <SelectValue placeholder="Tipo de Cliente" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        {clientSegments.map((segment) => (
+                          <SelectItem key={segment.value} value={segment.value} className="text-gray-900 hover:bg-gray-50">
+                            {segment.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {/* Status Filter */}
+                    <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                      <SelectTrigger className="text-gray-900 bg-white">
+                        <SelectValue placeholder="Status" className="text-gray-500" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200">
+                        <SelectItem value="all" className="text-gray-900 hover:bg-gray-50">Todos</SelectItem>
+                        <SelectItem value="active" className="text-gray-900 hover:bg-gray-50">Ativos</SelectItem>
+                        <SelectItem value="inactive" className="text-gray-900 hover:bg-gray-50">Inativos</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-4">
