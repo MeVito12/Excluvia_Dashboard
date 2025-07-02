@@ -152,7 +152,7 @@ All colors MUST be HSL.
   }
 
   .tab-button:hover:not(.active) {
-    background: hsl(var(--brand-secondary)) !important;
+    @apply bg-green-400;
     color: white !important;
     transform: translateY(-1px);
     cursor: pointer !important;
