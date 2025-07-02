@@ -151,9 +151,9 @@ All colors MUST be HSL.
     z-index: 20;
   }
 
-  .tab-button:hover {
-    @apply bg-white/80;
-    color: #374151 !important;
+  .tab-button:hover:not(.active) {
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
     transform: translateY(-1px);
     cursor: pointer !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
