@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import UserAvatar from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
+import ModernIcon from '@/components/ui/modern-icon';
 import { 
   BarChart3, 
   Database, 
@@ -109,7 +110,13 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                       )}
                       onClick={() => onSectionChange(item.id)}
                     >
-                      <Icon className="w-5 h-5 mr-3 flex-shrink-0" />
+                      <ModernIcon 
+                        icon={Icon}
+                        variant="category"
+                        size="md"
+                        animated={true}
+                        className="mr-3 flex-shrink-0"
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm leading-tight">{item.label}</div>
                         <div className={cn(
@@ -134,7 +141,13 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
               className="w-full text-blue-200 hover:text-white hover:bg-red-500/20"
               onClick={logout}
             >
-              <LogOut className="w-4 h-4 mr-2" />
+              <ModernIcon 
+                icon={LogOut}
+                variant="danger"
+                size="sm"
+                animated={true}
+                className="mr-2"
+              />
               Sair
             </Button>
             <div className="text-xs text-blue-200 text-center mt-2">

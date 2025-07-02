@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import ModernIcon from '@/components/ui/modern-icon';
 import { 
   MessageCircle, 
   Bot, 
@@ -617,15 +618,13 @@ const AtendimentoSection = () => {
                         selectedCategory === 'sites' ? 'bg-gradient-to-br from-purple-100 to-blue-200' :
                         'bg-gradient-to-br from-gray-100 to-gray-200'
                       }`}>
-                        <feature.icon className={`h-8 w-8 ${
-                          selectedCategory === 'alimenticio' ? 'text-green-600' :
-                          selectedCategory === 'pet' ? 'text-purple-600' :
-                          selectedCategory === 'saude' ? 'text-blue-600' :
-                          selectedCategory === 'vendas' ? 'text-purple-600' :
-                          selectedCategory === 'design' ? 'text-teal-600' :
-                          selectedCategory === 'sites' ? 'text-indigo-600' :
-                          'text-gray-600'
-                        }`} />
+                        <ModernIcon 
+                          icon={feature.icon}
+                          variant="category"
+                          category={selectedCategory as any}
+                          size="xl"
+                          animated={true}
+                        />
                       </div>
                       <h3 className="font-bold text-gray-900 mb-2 text-lg">{feature.title}</h3>
                       <p className="text-sm text-gray-600 mb-4 leading-relaxed">{feature.description}</p>
@@ -672,7 +671,12 @@ const AtendimentoSection = () => {
             
             <div className="mt-8 text-center">
               <Alert className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
-                <CheckCircle className="h-5 w-5 text-green-600" />
+                <ModernIcon 
+                  icon={CheckCircle}
+                  variant="success"
+                  size="md"
+                  animated={true}
+                />
                 <AlertDescription className="text-gray-800 font-medium">
                   <strong>Processo Automático:</strong> Cliente faz solicitação → IA analisa e processa → 
                   Sistema executa automaticamente → Confirmação instantânea → Resultado entregue!
@@ -793,9 +797,19 @@ const AtendimentoSection = () => {
                               : 'bg-gradient-to-br from-gray-400 to-gray-600'
                           }`}>
                             {(chat as any).isBot ? (
-                              <Bot className="w-6 h-6 text-white" />
+                              <ModernIcon 
+                                icon={Bot}
+                                variant="primary"
+                                size="lg"
+                                className="text-white"
+                              />
                             ) : (
-                              <Users className="w-6 h-6 text-white" />
+                              <ModernIcon 
+                                icon={Users}
+                                variant="default"
+                                size="lg"
+                                className="text-white"
+                              />
                             )}
                           </div>
                           <div>
@@ -953,7 +967,14 @@ const AtendimentoSection = () => {
                               'border-gray-400 text-gray-700 hover:bg-gray-500 hover:text-white'
                             }`}
                           >
-                            <QrCode className="w-4 h-4 mr-1" />
+                            <ModernIcon 
+                              icon={QrCode}
+                              variant="category"
+                              category={selectedCategory as any}
+                              size="sm"
+                              animated={true}
+                              className="mr-1"
+                            />
                             QR Code
                           </Button>
                           <Button 
@@ -969,7 +990,14 @@ const AtendimentoSection = () => {
                               'border-gray-400 text-gray-700 hover:bg-gray-500 hover:text-white'
                             }`}
                           >
-                            <Share className="w-4 h-4 mr-1" />
+                            <ModernIcon 
+                              icon={Share}
+                              variant="category"
+                              category={selectedCategory as any}
+                              size="sm"
+                              animated={true}
+                              className="mr-1"
+                            />
                             Compartilhar
                           </Button>
                         </div>

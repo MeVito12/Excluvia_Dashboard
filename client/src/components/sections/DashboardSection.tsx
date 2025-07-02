@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCategory } from '@/contexts/CategoryContext';
+import ModernIcon from '@/components/ui/modern-icon';
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
@@ -193,7 +194,12 @@ const DashboardSection = () => {
         <Card className="bg-white border border-border/50 modern-card-hover modern-glow modern-glass">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
-              <Calendar className="h-5 w-5 modern-pulse-subtle" />
+              <ModernIcon 
+                icon={Calendar}
+                variant="primary"
+                size="md"
+                animated={true}
+              />
               Próximos Compromissos
             </CardTitle>
           </CardHeader>
@@ -259,7 +265,12 @@ const DashboardSection = () => {
         <Card className="bg-white border border-border/50 modern-card-hover modern-glow modern-glass">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
-              <Bell className="h-5 w-5 modern-pulse-subtle" />
+              <ModernIcon 
+                icon={Bell}
+                variant="accent"
+                size="md"
+                animated={true}
+              />
               Notificações Importantes
             </CardTitle>
           </CardHeader>

@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
+import ModernIcon from '@/components/ui/modern-icon';
 
 interface MetricCardProps {
   title: string;
@@ -35,9 +36,16 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
             </p>
           )}
         </div>
-        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 modern-float">
-          <Icon className="h-6 w-6 text-primary" />
-        </div>
+        <ModernIcon 
+          icon={Icon}
+          variant="primary"
+          size="lg"
+          background={true}
+          rounded={true}
+          animated={true}
+          gradient={true}
+          glow={true}
+        />
       </div>
     </Card>
   );
