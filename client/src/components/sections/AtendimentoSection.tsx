@@ -335,6 +335,11 @@ const AtendimentoSection = () => {
             }}
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
             type="button"
+            style={{ 
+              cursor: 'pointer',
+              pointerEvents: 'auto',
+              userSelect: 'none'
+            }}
           >
             <tab.icon className="w-5 h-5" />
             {tab.label}

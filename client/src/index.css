@@ -133,22 +133,34 @@ All colors MUST be HSL.
 
   /* Navegação por tabs moderna */
   .tab-navigation {
-    @apply flex bg-gray-50 rounded-xl p-1 mb-6;
+    @apply flex bg-gray-50 rounded-xl p-1 mb-6 relative;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 10;
   }
 
   .tab-button {
-    @apply flex items-center gap-3 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 flex-1 justify-center cursor-pointer;
+    @apply flex items-center gap-3 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 flex-1 justify-center;
     color: #6b7280;
     background: transparent;
     border: none;
     outline: none;
+    cursor: pointer !important;
+    user-select: none;
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 20;
   }
 
   .tab-button:hover {
     @apply bg-white/80;
-    color: #374151;
+    color: #374151 !important;
     transform: translateY(-1px);
+    cursor: pointer !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-button:active {
+    transform: scale(0.98);
   }
 
   .tab-button.active {
