@@ -64,8 +64,8 @@ const EstoqueSection = () => {
           minStock: 10, 
           price: 35.00, 
           isPerishable: true,
-          expiryDate: '2025-01-05',
-          status: getProductStatus(50, 10, '2025-01-05')
+          expiryDate: '2025-02-15',
+          status: getProductStatus(50, 10, '2025-02-15')
         },
         { 
           id: 2, 
@@ -75,8 +75,8 @@ const EstoqueSection = () => {
           minStock: 8, 
           price: 28.00,
           isPerishable: true,
-          expiryDate: '2025-01-03',
-          status: getProductStatus(25, 8, '2025-01-03')
+          expiryDate: '2025-01-05',
+          status: getProductStatus(25, 8, '2025-01-05')
         },
         { 
           id: 3, 
@@ -88,6 +88,50 @@ const EstoqueSection = () => {
           isPerishable: true,
           expiryDate: '2025-06-15',
           status: getProductStatus(3, 20, '2025-06-15')
+        },
+        { 
+          id: 4, 
+          name: 'Sorvete Chocolate', 
+          category: 'Sobremesas', 
+          stock: 0, 
+          minStock: 5, 
+          price: 12.00,
+          isPerishable: true,
+          expiryDate: '2025-03-20',
+          status: getProductStatus(0, 5, '2025-03-20')
+        },
+        { 
+          id: 5, 
+          name: 'Leite Integral 1L', 
+          category: 'Bebidas', 
+          stock: 15, 
+          minStock: 10, 
+          price: 4.50,
+          isPerishable: true,
+          expiryDate: '2024-12-30',
+          status: getProductStatus(15, 10, '2024-12-30')
+        },
+        { 
+          id: 6, 
+          name: 'Pão Francês', 
+          category: 'Padaria', 
+          stock: 80, 
+          minStock: 20, 
+          price: 0.75,
+          isPerishable: true,
+          expiryDate: '2025-07-10',
+          status: getProductStatus(80, 20, '2025-07-10')
+        },
+        { 
+          id: 7, 
+          name: 'Queijo Mussarela', 
+          category: 'Laticínios', 
+          stock: 12, 
+          minStock: 8, 
+          price: 22.90,
+          isPerishable: true,
+          expiryDate: '2025-01-08',
+          status: getProductStatus(12, 8, '2025-01-08')
         }
       ];
     } else if (selectedCategory === 'vendas') {
@@ -100,6 +144,7 @@ const EstoqueSection = () => {
           minStock: 5, 
           price: 2899.99,
           isPerishable: false,
+          expiryDate: undefined,
           status: getProductStatus(15, 5)
         },
         { 
@@ -110,6 +155,7 @@ const EstoqueSection = () => {
           minStock: 3, 
           price: 2499.99,
           isPerishable: false,
+          expiryDate: undefined,
           status: getProductStatus(8, 3)
         },
         { 
@@ -120,7 +166,63 @@ const EstoqueSection = () => {
           minStock: 10, 
           price: 189.99,
           isPerishable: false,
+          expiryDate: undefined,
           status: getProductStatus(2, 10)
+        },
+        { 
+          id: 4, 
+          name: 'Fone Bluetooth Sony', 
+          category: 'Eletrônicos', 
+          stock: 25, 
+          minStock: 8, 
+          price: 349.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(25, 8)
+        },
+        { 
+          id: 5, 
+          name: 'Tênis Nike Air Max', 
+          category: 'Calçados', 
+          stock: 0, 
+          minStock: 5, 
+          price: 599.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(0, 5)
+        },
+        { 
+          id: 6, 
+          name: 'Relógio Smartwatch', 
+          category: 'Eletrônicos', 
+          stock: 12, 
+          minStock: 4, 
+          price: 899.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(12, 4)
+        },
+        { 
+          id: 7, 
+          name: 'Jaqueta Jeans', 
+          category: 'Vestuário', 
+          stock: 18, 
+          minStock: 6, 
+          price: 159.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(18, 6)
+        },
+        { 
+          id: 8, 
+          name: 'Mouse Gamer RGB', 
+          category: 'Eletrônicos', 
+          stock: 3, 
+          minStock: 15, 
+          price: 129.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(3, 15)
         }
       ];
     }
@@ -133,7 +235,19 @@ const EstoqueSection = () => {
         minStock: 5, 
         price: 50.00,
         isPerishable: false,
+        expiryDate: undefined,
         status: getProductStatus(10, 5)
+      },
+      { 
+        id: 2, 
+        name: 'Item de Serviço', 
+        category: 'Serviços', 
+        stock: 5, 
+        minStock: 3, 
+        price: 75.00,
+        isPerishable: false,
+        expiryDate: undefined,
+        status: getProductStatus(5, 3)
       }
     ];
   };
@@ -242,7 +356,7 @@ const EstoqueSection = () => {
                   <div className="flex items-center gap-2">
                     <h4 className="font-medium text-gray-800">{product.name}</h4>
                     {product.isPerishable && (
-                      <Clock className="w-4 h-4 text-blue-500" title="Produto perecível" />
+                      <Clock className="w-4 h-4 text-blue-500" />
                     )}
                   </div>
                   <p className="text-sm text-gray-600">Categoria: {product.category}</p>
@@ -252,13 +366,13 @@ const EstoqueSection = () => {
                         product.stock <= product.minStock ? 'text-red-600' : 'text-green-600'
                       }`}>{product.stock}</span> / Mín: {product.minStock}
                     </p>
-                    {product.expiryDate && (
+                    {(product as any).expiryDate && (
                       <p className="text-sm text-gray-600">
                         Validade: <span className={`font-medium ${
-                          getDaysUntilExpiry(product.expiryDate) <= 3 ? 'text-red-600' : 'text-gray-700'
+                          getDaysUntilExpiry((product as any).expiryDate) <= 3 ? 'text-red-600' : 'text-gray-700'
                         }`}>
-                          {getDaysUntilExpiry(product.expiryDate) > 0 
-                            ? `${getDaysUntilExpiry(product.expiryDate)} dias`
+                          {getDaysUntilExpiry((product as any).expiryDate) > 0 
+                            ? `${getDaysUntilExpiry((product as any).expiryDate)} dias`
                             : 'Vencido'
                           }
                         </span>
