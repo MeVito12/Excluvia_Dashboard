@@ -191,14 +191,17 @@ const DashboardSection = () => {
 
       {/* Lembretes de Agenda e Compromissos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white border border-border/50 modern-card-hover modern-glow">
+        <Card className="bg-white border border-border/50 modern-card-hover">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
               <ModernIcon 
                 icon={Calendar}
                 variant="primary"
                 size="md"
+                background={true}
+                rounded={true}
                 animated={true}
+                glow={true}
               />
               Próximos Compromissos
             </CardTitle>
@@ -262,14 +265,17 @@ const DashboardSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-border/50 modern-card-hover modern-glow modern-glass">
+        <Card className="bg-white border border-border/50 modern-card-hover">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
               <ModernIcon 
                 icon={Bell}
                 variant="accent"
                 size="md"
+                background={true}
+                rounded={true}
                 animated={true}
+                glow={true}
               />
               Notificações Importantes
             </CardTitle>

@@ -112,10 +112,10 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                     >
                       <ModernIcon 
                         icon={Icon}
-                        variant="category"
+                        variant="default"
                         size="md"
                         animated={true}
-                        className="mr-3 flex-shrink-0"
+                        className="mr-3 flex-shrink-0 !text-white"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm leading-tight">{item.label}</div>
@@ -143,10 +143,10 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
             >
               <ModernIcon 
                 icon={LogOut}
-                variant="danger"
+                variant="default"
                 size="sm"
                 animated={true}
-                className="mr-2"
+                className="mr-2 !text-blue-200 hover:!text-white"
               />
               Sair
             </Button>
