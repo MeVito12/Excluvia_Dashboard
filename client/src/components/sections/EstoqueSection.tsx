@@ -1337,7 +1337,7 @@ const EstoqueSection = () => {
 
       {/* Tabs principais */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full flex overflow-x-auto scroll-smooth gap-1 pb-2 bg-white" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+        <TabsList className="tabs-scrollable w-full bg-white">
           <TabsTrigger value="produtos" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
             <Package className="w-4 h-4 mr-2" />
             Produtos

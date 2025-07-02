@@ -758,7 +758,7 @@ const AtendimentoSection = () => {
 
       {/* Tabs de Conteúdo */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="w-full flex overflow-x-auto scroll-smooth gap-1 pb-2" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
+        <TabsList className="tabs-scrollable w-full">
           <TabsTrigger value="mensagens" className="flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
             Mensagens

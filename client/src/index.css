@@ -237,3 +237,20 @@ All colors MUST be HSL.
     hsl(var(--primary))
   );
 }
+
+/* Fix para tabs com scroll horizontal */
+.tabs-scrollable {
+  justify-content: flex-start !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+  gap: 4px !important;
+}
+
+.tabs-scrollable::-webkit-scrollbar {
+  display: none !important;
+}
+
+.tabs-scrollable > * {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
