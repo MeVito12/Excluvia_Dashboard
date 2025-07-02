@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 interface ModernIconProps {
   icon: LucideIcon;
-  variant?: 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger' | 'category';
+  variant?: 'default' | 'primary' | 'accent' | 'success' | 'warning' | 'danger' | 'category' | 'purple' | 'blue' | 'green' | 'creative';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
   background?: boolean;
   rounded?: boolean;
@@ -34,7 +34,11 @@ const ModernIcon: React.FC<ModernIconProps> = ({
     success: 'text-green-600',
     warning: 'text-yellow-600',
     danger: 'text-red-600',
-    category: category ? getCategoryColor(category) : 'text-gray-600'
+    category: category ? getCategoryColor(category) : 'text-gray-600',
+    purple: 'text-[#9333ea]',
+    blue: 'text-[#1e3a8a]',
+    green: 'text-[#00ff88]',
+    creative: 'text-white'
   };
 
   const sizes = {
