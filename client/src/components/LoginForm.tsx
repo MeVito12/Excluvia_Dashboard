@@ -6,17 +6,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
+import { useCategory } from '@/contexts/CategoryContext';
 
 interface LoginFormProps {
   onLogin: (user: { name: string; email: string }) => void;
 }
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
+  const { setSelectedCategory } = useCategory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Sistema de usuários por categoria
+  const categoryUsers = {
+    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic' },
+    'saude': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde' },
+    'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista' },
+    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech' },
+    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative' },
+    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency' }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,14 +38,32 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     // Simular delay de autenticação
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // Verificar credenciais mock
-    if (email === 'auxiliar@ldsnews.com.br' && password === 'aux@lds2025') {
-      onLogin({
-        name: 'EXCLUVI.IA',
-        email: 'auxiliar@ldsnews.com.br'
-      });
-    } else {
-      setError('Email ou senha incorretos. Tente: auxiliar@ldsnews.com.br / aux@lds2025');
+    // Verificar credenciais e definir categoria automaticamente
+    let userFound = false;
+    for (const [category, userData] of Object.entries(categoryUsers)) {
+      if (email === userData.email && password === userData.password) {
+        // Definir categoria no localStorage e contexto
+        localStorage.setItem('userBusinessCategory', category);
+        setSelectedCategory(category);
+        
+        onLogin({
+          name: userData.name,
+          email: userData.email
+        });
+        
+        userFound = true;
+        break;
+      }
+    }
+
+    if (!userFound) {
+      setError('Email ou senha incorretos. Credenciais válidas:\n' +
+        '• veterinario@petclinic.com / vet2025 (Pet & Veterinário)\n' +
+        '• medico@clinicasaude.com / med2025 (Saúde & Medicamentos)\n' +
+        '• chef@restaurante.com / chef2025 (Alimentício)\n' +
+        '• vendedor@comercial.com / venda2025 (Vendas)\n' +
+        '• designer@agencia.com / design2025 (Design Gráfico)\n' +
+        '• dev@webagency.com / web2025 (Criação de Sites)');
     }
 
     setIsLoading(false);
@@ -122,7 +152,9 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription className="whitespace-pre-line text-sm">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               )}
 

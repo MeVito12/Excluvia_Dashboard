@@ -3,8 +3,6 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 interface CategoryContextType {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
-  isFirstLogin: boolean;
-  setIsFirstLogin: (isFirst: boolean) => void;
 }
 
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
@@ -20,32 +18,25 @@ export const categories = [
 
 export const CategoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [isFirstLogin, setIsFirstLogin] = useState<boolean>(true);
 
   useEffect(() => {
-    // Para demonstração: sempre mantém como primeiro login
-    // Limpa dados salvos para simular primeiro acesso sempre
-    localStorage.removeItem('selectedBusinessCategory');
-    localStorage.removeItem('hasCompletedCategorySetup');
-    setIsFirstLogin(true);
-    setSelectedCategory('');
+    // Verifica se há categoria salva no localStorage (definida pelo login)
+    const savedCategory = localStorage.getItem('userBusinessCategory');
+    if (savedCategory) {
+      setSelectedCategory(savedCategory);
+    }
   }, []);
 
   const handleSetSelectedCategory = (category: string) => {
     setSelectedCategory(category);
-    // Para demonstração: não salva no localStorage para manter como primeiro login
-    // localStorage.setItem('selectedBusinessCategory', category);
-    // localStorage.setItem('hasCompletedCategorySetup', 'true');
-    setIsFirstLogin(false);
+    localStorage.setItem('userBusinessCategory', category);
   };
 
   return (
     <CategoryContext.Provider 
       value={{ 
         selectedCategory, 
-        setSelectedCategory: handleSetSelectedCategory, 
-        isFirstLogin, 
-        setIsFirstLogin 
+        setSelectedCategory: handleSetSelectedCategory
       }}
     >
       {children}

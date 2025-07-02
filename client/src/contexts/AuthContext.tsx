@@ -35,6 +35,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     setUser(null);
+    // Limpar categoria salva para permitir nova seleção no próximo login
+    localStorage.removeItem('userBusinessCategory');
   };
 
   const isAuthenticated = !!user;
