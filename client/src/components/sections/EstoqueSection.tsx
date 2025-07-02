@@ -226,6 +226,321 @@ const EstoqueSection = () => {
         }
       ];
     }
+    // Dados específicos para outras categorias
+    if (selectedCategory === 'pet') {
+      return [
+        { 
+          id: 1, 
+          name: 'Ração Premium Golden', 
+          category: 'Ração', 
+          stock: 45, 
+          minStock: 15, 
+          price: 89.90,
+          isPerishable: true,
+          expiryDate: '2025-08-15',
+          status: getProductStatus(45, 15, '2025-08-15')
+        },
+        { 
+          id: 2, 
+          name: 'Vacina V10 Cães', 
+          category: 'Medicamentos', 
+          stock: 8, 
+          minStock: 5, 
+          price: 85.00,
+          isPerishable: true,
+          expiryDate: '2025-03-20',
+          status: getProductStatus(8, 5, '2025-03-20')
+        },
+        { 
+          id: 3, 
+          name: 'Coleira Antipulgas', 
+          category: 'Acessórios', 
+          stock: 2, 
+          minStock: 10, 
+          price: 35.50,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(2, 10)
+        },
+        { 
+          id: 4, 
+          name: 'Shampoo para Cães', 
+          category: 'Higiene', 
+          stock: 22, 
+          minStock: 8, 
+          price: 24.90,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(22, 8)
+        },
+        { 
+          id: 5, 
+          name: 'Brinquedo Kong Classic', 
+          category: 'Brinquedos', 
+          stock: 0, 
+          minStock: 6, 
+          price: 45.00,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(0, 6)
+        }
+      ];
+    } else if (selectedCategory === 'medico') {
+      return [
+        { 
+          id: 1, 
+          name: 'Dipirona 500mg', 
+          category: 'Analgésicos', 
+          stock: 120, 
+          minStock: 30, 
+          price: 12.50,
+          isPerishable: true,
+          expiryDate: '2025-11-20',
+          status: getProductStatus(120, 30, '2025-11-20')
+        },
+        { 
+          id: 2, 
+          name: 'Soro Fisiológico 500ml', 
+          category: 'Soros', 
+          stock: 25, 
+          minStock: 20, 
+          price: 8.90,
+          isPerishable: true,
+          expiryDate: '2026-01-15',
+          status: getProductStatus(25, 20, '2026-01-15')
+        },
+        { 
+          id: 3, 
+          name: 'Termômetro Digital', 
+          category: 'Equipamentos', 
+          stock: 5, 
+          minStock: 3, 
+          price: 35.00,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(5, 3)
+        },
+        { 
+          id: 4, 
+          name: 'Antibiótico Amoxicilina', 
+          category: 'Antibióticos', 
+          stock: 0, 
+          minStock: 15, 
+          price: 28.90,
+          isPerishable: true,
+          expiryDate: '2025-04-10',
+          status: getProductStatus(0, 15, '2025-04-10')
+        },
+        { 
+          id: 5, 
+          name: 'Máscara Cirúrgica', 
+          category: 'EPI', 
+          stock: 500, 
+          minStock: 100, 
+          price: 0.85,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(500, 100)
+        },
+        { 
+          id: 6, 
+          name: 'Seringa 10ml', 
+          category: 'Descartáveis', 
+          stock: 3, 
+          minStock: 50, 
+          price: 1.20,
+          isPerishable: true,
+          expiryDate: '2027-12-31',
+          status: getProductStatus(3, 50, '2027-12-31')
+        }
+      ];
+    } else if (selectedCategory === 'tecnologia') {
+      return [
+        { 
+          id: 1, 
+          name: 'Processador Intel i7', 
+          category: 'Componentes', 
+          stock: 12, 
+          minStock: 5, 
+          price: 1899.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(12, 5)
+        },
+        { 
+          id: 2, 
+          name: 'Placa de Vídeo RTX 4060', 
+          category: 'Componentes', 
+          stock: 3, 
+          minStock: 8, 
+          price: 2499.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(3, 8)
+        },
+        { 
+          id: 3, 
+          name: 'SSD 1TB Samsung', 
+          category: 'Armazenamento', 
+          stock: 25, 
+          minStock: 10, 
+          price: 459.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(25, 10)
+        },
+        { 
+          id: 4, 
+          name: 'Monitor 27" 144Hz', 
+          category: 'Monitores', 
+          stock: 0, 
+          minStock: 4, 
+          price: 1299.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(0, 4)
+        },
+        { 
+          id: 5, 
+          name: 'Cabo HDMI 2.1', 
+          category: 'Cabos', 
+          stock: 45, 
+          minStock: 20, 
+          price: 35.90,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(45, 20)
+        }
+      ];
+    } else if (selectedCategory === 'educacao') {
+      return [
+        { 
+          id: 1, 
+          name: 'Livro Matemática Básica', 
+          category: 'Livros', 
+          stock: 80, 
+          minStock: 25, 
+          price: 45.90,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(80, 25)
+        },
+        { 
+          id: 2, 
+          name: 'Kit Laboratório Química', 
+          category: 'Material Didático', 
+          stock: 6, 
+          minStock: 3, 
+          price: 189.90,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(6, 3)
+        },
+        { 
+          id: 3, 
+          name: 'Caneta Esferográfica Azul', 
+          category: 'Material Escolar', 
+          stock: 2, 
+          minStock: 100, 
+          price: 1.50,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(2, 100)
+        },
+        { 
+          id: 4, 
+          name: 'Projetor Multimídia', 
+          category: 'Equipamentos', 
+          stock: 5, 
+          minStock: 2, 
+          price: 1899.99,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(5, 2)
+        },
+        { 
+          id: 5, 
+          name: 'Papel A4 500 folhas', 
+          category: 'Papelaria', 
+          stock: 0, 
+          minStock: 20, 
+          price: 25.90,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(0, 20)
+        }
+      ];
+    } else if (selectedCategory === 'beleza') {
+      return [
+        { 
+          id: 1, 
+          name: 'Shampoo Hidratante L\'Oréal', 
+          category: 'Cabelos', 
+          stock: 35, 
+          minStock: 15, 
+          price: 32.90,
+          isPerishable: true,
+          expiryDate: '2026-03-15',
+          status: getProductStatus(35, 15, '2026-03-15')
+        },
+        { 
+          id: 2, 
+          name: 'Base Líquida Ruby Rose', 
+          category: 'Maquiagem', 
+          stock: 18, 
+          minStock: 8, 
+          price: 24.90,
+          isPerishable: true,
+          expiryDate: '2025-09-20',
+          status: getProductStatus(18, 8, '2025-09-20')
+        },
+        { 
+          id: 3, 
+          name: 'Perfume Boticário 100ml', 
+          category: 'Perfumaria', 
+          stock: 3, 
+          minStock: 12, 
+          price: 89.90,
+          isPerishable: true,
+          expiryDate: '2027-01-10',
+          status: getProductStatus(3, 12, '2027-01-10')
+        },
+        { 
+          id: 4, 
+          name: 'Esmalte Colorama', 
+          category: 'Unhas', 
+          stock: 0, 
+          minStock: 20, 
+          price: 8.90,
+          isPerishable: true,
+          expiryDate: '2025-12-31',
+          status: getProductStatus(0, 20, '2025-12-31')
+        },
+        { 
+          id: 5, 
+          name: 'Creme Anti-idade Nivea', 
+          category: 'Cuidados', 
+          stock: 25, 
+          minStock: 10, 
+          price: 45.50,
+          isPerishable: true,
+          expiryDate: '2025-08-15',
+          status: getProductStatus(25, 10, '2025-08-15')
+        },
+        { 
+          id: 6, 
+          name: 'Protetor Solar FPS 60', 
+          category: 'Cuidados', 
+          stock: 12, 
+          minStock: 8, 
+          price: 35.90,
+          isPerishable: true,
+          expiryDate: '2025-06-30',
+          status: getProductStatus(12, 8, '2025-06-30')
+        }
+      ];
+    }
+    
     return [
       { 
         id: 1, 
@@ -237,17 +552,6 @@ const EstoqueSection = () => {
         isPerishable: false,
         expiryDate: undefined,
         status: getProductStatus(10, 5)
-      },
-      { 
-        id: 2, 
-        name: 'Item de Serviço', 
-        category: 'Serviços', 
-        stock: 5, 
-        minStock: 3, 
-        price: 75.00,
-        isPerishable: false,
-        expiryDate: undefined,
-        status: getProductStatus(5, 3)
       }
     ];
   };
@@ -323,13 +627,60 @@ const EstoqueSection = () => {
                 <option value="pizzas">Pizzas</option>
                 <option value="hamburgueres">Hambúrgueres</option>
                 <option value="bebidas">Bebidas</option>
+                <option value="sobremesas">Sobremesas</option>
+                <option value="padaria">Padaria</option>
+                <option value="laticinios">Laticínios</option>
               </>
             )}
             {selectedCategory === 'vendas' && (
               <>
                 <option value="eletronicos">Eletrônicos</option>
                 <option value="vestuario">Vestuário</option>
-                <option value="casa">Casa e Decoração</option>
+                <option value="calcados">Calçados</option>
+              </>
+            )}
+            {selectedCategory === 'pet' && (
+              <>
+                <option value="racao">Ração</option>
+                <option value="medicamentos">Medicamentos</option>
+                <option value="acessorios">Acessórios</option>
+                <option value="higiene">Higiene</option>
+                <option value="brinquedos">Brinquedos</option>
+              </>
+            )}
+            {selectedCategory === 'medico' && (
+              <>
+                <option value="analgesicos">Analgésicos</option>
+                <option value="antibioticos">Antibióticos</option>
+                <option value="equipamentos">Equipamentos</option>
+                <option value="descartaveis">Descartáveis</option>
+                <option value="epi">EPI</option>
+              </>
+            )}
+            {selectedCategory === 'tecnologia' && (
+              <>
+                <option value="componentes">Componentes</option>
+                <option value="monitores">Monitores</option>
+                <option value="armazenamento">Armazenamento</option>
+                <option value="cabos">Cabos</option>
+              </>
+            )}
+            {selectedCategory === 'educacao' && (
+              <>
+                <option value="livros">Livros</option>
+                <option value="material-didatico">Material Didático</option>
+                <option value="material-escolar">Material Escolar</option>
+                <option value="equipamentos">Equipamentos</option>
+                <option value="papelaria">Papelaria</option>
+              </>
+            )}
+            {selectedCategory === 'beleza' && (
+              <>
+                <option value="cabelos">Cabelos</option>
+                <option value="maquiagem">Maquiagem</option>
+                <option value="perfumaria">Perfumaria</option>
+                <option value="unhas">Unhas</option>
+                <option value="cuidados">Cuidados</option>
               </>
             )}
           </select>
