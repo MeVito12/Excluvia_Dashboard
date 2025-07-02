@@ -5,71 +5,102 @@ import SearchAndFilters from '@/components/SearchAndFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useCategory } from '@/contexts/CategoryContext';
 
 const DashboardSection = () => {
+  const { selectedCategory } = useCategory();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
-  // Dados de métricas baseados na empresa/categoria selecionada
-  const getMetricsForCompany = (companyId: string) => {
-    const metrics = {
-      all: {
-        totalRecords: '12',
-        activeUsers: '9',
-        transactionsPerMin: '8 vendas',
-        onlineServers: '7 agendamentos',
-        performance: '98.7%',
-        activeAlerts: '2',
-        totalRevenue: 'R$ 12.317',
-        avgResponseTime: '127ms'
+  // Dados de métricas específicos por categoria
+  const getCategoryMetrics = () => {
+    const categoryData = {
+      'pet': {
+        totalRecords: '15 Animais',
+        activeUsers: '8 Veterinários',
+        transactions: '12 Consultas',
+        appointments: '5 Agendamentos Hoje',
+        performance: '97.3%',
+        activeAlerts: '2 Vacinas Pendentes',
+        totalRevenue: 'R$ 1.850,00',
+        avgResponseTime: '15min',
+        mainMetric: 'Atendimentos',
+        secondaryMetric: 'Emergências',
+        alertType: 'Vacinas'
       },
-      'empresa-a': {
-        totalRecords: '3',
-        activeUsers: '2',
-        transactionsPerMin: '2 vendas',
-        onlineServers: '2 agendamentos',
-        performance: '98.7%',
-        activeAlerts: '0',
-        totalRevenue: 'R$ 404,80',
-        avgResponseTime: '98ms'
+      'saude': {
+        totalRecords: '24 Pacientes',
+        activeUsers: '6 Médicos',
+        transactions: '18 Consultas',
+        appointments: '4 Agendamentos Hoje',
+        performance: '98.1%',
+        activeAlerts: '1 Exame Atrasado',
+        totalRevenue: 'R$ 2.340,00',
+        avgResponseTime: '22min',
+        mainMetric: 'Consultas',
+        secondaryMetric: 'Exames',
+        alertType: 'Exames'
       },
-      'empresa-b': {
-        totalRecords: '3',
-        activeUsers: '2',
-        transactionsPerMin: '2 vendas',
-        onlineServers: '2 agendamentos',
-        performance: '94.2%',
-        activeAlerts: '1',
-        totalRevenue: 'R$ 522,70',
-        avgResponseTime: '156ms'
+      'alimenticio': {
+        totalRecords: '45 Pratos',
+        activeUsers: '12 Funcionários',
+        transactions: '89 Pedidos',
+        appointments: '4 Reservas Hoje',
+        performance: '94.8%',
+        activeAlerts: '3 Ingredientes Acabando',
+        totalRevenue: 'R$ 3.420,50',
+        avgResponseTime: '25min',
+        mainMetric: 'Pedidos',
+        secondaryMetric: 'Reservas',
+        alertType: 'Estoque'
       },
-      'empresa-c': {
-        totalRecords: '2',
-        activeUsers: '2',
-        transactionsPerMin: '2 vendas',
-        onlineServers: '1 agendamento',
-        performance: '96.5%',
-        activeAlerts: '0',
-        totalRevenue: 'R$ 140,00',
-        avgResponseTime: '145ms'
+      'vendas': {
+        totalRecords: '21 Produtos',
+        activeUsers: '5 Vendedores',
+        transactions: '19 Vendas',
+        appointments: '5 Reuniões Hoje',
+        performance: '96.7%',
+        activeAlerts: '2 Produtos em Falta',
+        totalRevenue: 'R$ 18.450,00',
+        avgResponseTime: '8min',
+        mainMetric: 'Vendas',
+        secondaryMetric: 'Reuniões',
+        alertType: 'Estoque'
       },
-      'empresa-d': {
-        totalRecords: '2',
-        activeUsers: '2',
-        transactionsPerMin: '2 vendas',
-        onlineServers: '2 agendamentos',
-        performance: '99.1%',
-        activeAlerts: '1',
-        totalRevenue: 'R$ 11.249',
-        avgResponseTime: '89ms'
+      'design': {
+        totalRecords: '8 Projetos',
+        activeUsers: '4 Designers',
+        transactions: '12 Entregas',
+        appointments: '3 Briefings Hoje',
+        performance: '99.2%',
+        activeAlerts: '1 Prazo Apertado',
+        totalRevenue: 'R$ 4.200,00',
+        avgResponseTime: '2h',
+        mainMetric: 'Projetos',
+        secondaryMetric: 'Briefings',
+        alertType: 'Prazos'
+      },
+      'sites': {
+        totalRecords: '6 Sites',
+        activeUsers: '3 Desenvolvedores',
+        transactions: '9 Entregas',
+        appointments: '3 Reuniões Hoje',
+        performance: '98.5%',
+        activeAlerts: '1 Deploy Pendente',
+        totalRevenue: 'R$ 7.800,00',
+        avgResponseTime: '24h',
+        mainMetric: 'Desenvolvimentos',
+        secondaryMetric: 'Reuniões',
+        alertType: 'Deploys'
       }
     };
-    return metrics[companyId as keyof typeof metrics] || metrics.all;
+
+    return categoryData[selectedCategory as keyof typeof categoryData] || categoryData.pet;
   };
 
-  const currentMetrics = getMetricsForCompany(selectedCompany);
+  const currentMetrics = getCategoryMetrics();
 
   return (
     <div className="space-y-6">
@@ -94,7 +125,7 @@ const DashboardSection = () => {
       {/* Primary Metrics Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          title="Total de Produtos"
+          title={currentMetrics.mainMetric}
           value={currentMetrics.totalRecords}
           change="+12% este mês"
           changeType="positive"
@@ -102,22 +133,22 @@ const DashboardSection = () => {
           gradient={true}
         />
         <MetricCard
-          title="Clientes Ativos"
+          title="Equipe Ativa"
           value={currentMetrics.activeUsers}
           change="+8% esta semana"
           changeType="positive"
           icon={Users}
         />
         <MetricCard
-          title="Vendas Recentes"
-          value={currentMetrics.transactionsPerMin}
+          title={currentMetrics.secondaryMetric}
+          value={currentMetrics.transactions}
           change="+23% hoje"
           changeType="positive"
           icon={TrendingUp}
         />
         <MetricCard
-          title="Agendamentos"
-          value={currentMetrics.onlineServers}
+          title="Agendamentos Hoje"
+          value={currentMetrics.appointments}
           change="2 pendentes"
           changeType="neutral"
           icon={Calendar}
@@ -134,10 +165,10 @@ const DashboardSection = () => {
           icon={Activity}
         />
         <MetricCard
-          title="Estoque Baixo"
+          title={currentMetrics.alertType}
           value={currentMetrics.activeAlerts}
-          change="Produtos precisam reposição"
-          changeType={currentMetrics.activeAlerts === '0' ? 'positive' : 'negative'}
+          change="Requer atenção"
+          changeType={currentMetrics.activeAlerts.includes('0') ? 'positive' : 'negative'}
           icon={AlertTriangle}
         />
         <MetricCard
@@ -149,7 +180,7 @@ const DashboardSection = () => {
           gradient={true}
         />
         <MetricCard
-          title="Tempo de Resposta"
+          title="Tempo Médio"
           value={currentMetrics.avgResponseTime}
           change="Otimizado"
           changeType="positive"
@@ -168,38 +199,55 @@ const DashboardSection = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Clock className="h-4 w-4 text-blue-600" />
-                  <div>
-                    <p className="font-medium text-gray-900">Reunião com Cliente A</p>
-                    <p className="text-sm text-gray-600">Hoje às 15:00</p>
+              {(() => {
+                const categoryAppointments = {
+                  'pet': [
+                    { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h', color: 'blue' },
+                    { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã', color: 'orange' },
+                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado', color: 'green' }
+                  ],
+                  'saude': [
+                    { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h', color: 'blue' },
+                    { title: 'Fisioterapia - Reabilitação', time: '07/07 às 14:00', status: 'Próxima semana', color: 'orange' },
+                    { title: 'Consulta Oftalmológica', time: '08/07 às 10:30', status: 'Agendado', color: 'green' }
+                  ],
+                  'alimenticio': [
+                    { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h', color: 'blue' },
+                    { title: 'Evento Corporativo', time: '05/07 às 19:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado', color: 'green' }
+                  ],
+                  'vendas': [
+                    { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h', color: 'blue' },
+                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 09:00', status: 'Concluído', color: 'green' },
+                    { title: 'Entrega iPads - Escola', time: '04/07 às 14:00', status: 'Amanhã', color: 'orange' }
+                  ],
+                  'design': [
+                    { title: 'Briefing Logo Startup', time: 'Hoje às 10:00', status: 'Concluído', color: 'green' },
+                    { title: 'Apresentação Branding', time: '05/07 às 15:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Revisão Material Gráfico', time: '06/07 às 14:00', status: 'Agendado', color: 'blue' }
+                  ],
+                  'sites': [
+                    { title: 'Kickoff E-commerce', time: 'Hoje às 09:00', status: 'Concluído', color: 'green' },
+                    { title: 'Entrega Landing Page', time: '06/07 às 14:00', status: 'Esta semana', color: 'orange' },
+                    { title: 'Reunião Sistema Interno', time: '08/07 às 10:00', status: 'Agendado', color: 'blue' }
+                  ]
+                };
+                
+                const appointments = categoryAppointments[selectedCategory as keyof typeof categoryAppointments] || categoryAppointments.pet;
+                
+                return appointments.map((apt, index) => (
+                  <div key={index} className={`flex items-center justify-between p-3 bg-${apt.color}-50 rounded-lg`}>
+                    <div className="flex items-center gap-3">
+                      <Clock className={`h-4 w-4 text-${apt.color}-600`} />
+                      <div>
+                        <p className="font-medium text-gray-900">{apt.title}</p>
+                        <p className="text-sm text-gray-600">{apt.time}</p>
+                      </div>
+                    </div>
+                    <Badge className={`bg-${apt.color}-500 text-white`}>{apt.status}</Badge>
                   </div>
-                </div>
-                <Badge className="bg-blue-500 text-white">Em 2h</Badge>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Clock className="h-4 w-4 text-orange-600" />
-                  <div>
-                    <p className="font-medium text-gray-900">Revisão de Estoque</p>
-                    <p className="text-sm text-gray-600">Amanhã às 09:00</p>
-                  </div>
-                </div>
-                <Badge className="bg-orange-500 text-white">Amanhã</Badge>
-              </div>
-              
-              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Calendar className="h-4 w-4 text-green-600" />
-                  <div>
-                    <p className="font-medium text-gray-900">Entrega Produto XYZ</p>
-                    <p className="text-sm text-gray-600">30/06/2024 às 14:00</p>
-                  </div>
-                </div>
-                <Badge className="bg-green-500 text-white">Agendado</Badge>
-              </div>
+                ));
+              })()}
             </div>
             
             <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white">
@@ -217,32 +265,53 @@ const DashboardSection = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              <div className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
-                <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">Estoque Baixo</p>
-                  <p className="text-sm text-gray-600">3 produtos abaixo do estoque mínimo</p>
-                </div>
-                <Badge className="bg-red-500 text-white">Urgente</Badge>
-              </div>
-              
-              <div className="flex items-start gap-3 p-3 bg-orange-50 rounded-lg">
-                <Clock className="h-4 w-4 text-orange-600 mt-0.5" />
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">Produtos Vencendo</p>
-                  <p className="text-sm text-gray-600">2 produtos vencem em 30 dias</p>
-                </div>
-                <Badge className="bg-orange-500 text-white">Atenção</Badge>
-              </div>
-              
-              <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
-                <TrendingUp className="h-4 w-4 text-green-600 mt-0.5" />
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">Nova Venda</p>
-                  <p className="text-sm text-gray-600">Venda registrada há 15 minutos</p>
-                </div>
-                <Badge className="bg-green-500 text-white">Novo</Badge>
-              </div>
+              {(() => {
+                const categoryNotifications = {
+                  'pet': [
+                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Consulta Atrasada', desc: 'Reagendar consulta do Rex', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Agendamento feito há 10 minutos', color: 'green', badge: 'Novo' }
+                  ],
+                  'saude': [
+                    { icon: AlertTriangle, title: 'Exames Atrasados', desc: '1 exame precisa ser realizado', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Medicamentos', desc: 'Verificar receitas vencidas', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Paciente agendado para amanhã', color: 'green', badge: 'Novo' }
+                  ],
+                  'alimenticio': [
+                    { icon: AlertTriangle, title: 'Ingredientes Acabando', desc: '3 ingredientes abaixo do mínimo', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Produtos Vencendo', desc: '2 produtos vencem hoje', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pedido #245 há 5 minutos', color: 'green', badge: 'Novo' }
+                  ],
+                  'vendas': [
+                    { icon: AlertTriangle, title: 'Estoque Baixo', desc: '2 produtos em falta', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Follow-up Pendente', desc: 'Contatar cliente PlayStation 5', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Nova Venda', desc: 'MacBook vendido há 30 minutos', color: 'green', badge: 'Novo' }
+                  ],
+                  'design': [
+                    { icon: AlertTriangle, title: 'Prazo Apertado', desc: '1 projeto entrega amanhã', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente precisa aprovar logo', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 1 hora', color: 'green', badge: 'Novo' }
+                  ],
+                  'sites': [
+                    { icon: AlertTriangle, title: 'Deploy Pendente', desc: '1 site aguardando deploy', color: 'red', badge: 'Urgente' },
+                    { icon: Clock, title: 'Teste em Andamento', desc: 'E-commerce sendo testado', color: 'orange', badge: 'Atenção' },
+                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Sistema interno contratado', color: 'green', badge: 'Novo' }
+                  ]
+                };
+                
+                const notifications = categoryNotifications[selectedCategory as keyof typeof categoryNotifications] || categoryNotifications.pet;
+                
+                return notifications.map((notif, index) => (
+                  <div key={index} className={`flex items-start gap-3 p-3 bg-${notif.color}-50 rounded-lg`}>
+                    <notif.icon className={`h-4 w-4 text-${notif.color}-600 mt-0.5`} />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-900">{notif.title}</p>
+                      <p className="text-sm text-gray-600">{notif.desc}</p>
+                    </div>
+                    <Badge className={`bg-${notif.color}-500 text-white`}>{notif.badge}</Badge>
+                  </div>
+                ));
+              })()}
             </div>
             
             <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white">
