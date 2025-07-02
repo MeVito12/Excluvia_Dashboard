@@ -196,10 +196,10 @@ const DashboardSection = () => {
             <CardTitle className="text-black flex items-center gap-2">
               <ModernIcon 
                 icon={Calendar}
-                variant="primary"
+                variant="category"
+                category={selectedCategory as any}
                 size="md"
                 background={true}
-                rounded={true}
                 animated={true}
                 glow={true}
               />
@@ -270,10 +270,10 @@ const DashboardSection = () => {
             <CardTitle className="text-black flex items-center gap-2">
               <ModernIcon 
                 icon={Bell}
-                variant="accent"
+                variant="category"
+                category={selectedCategory as any}
                 size="md"
                 background={true}
-                rounded={true}
                 animated={true}
                 glow={true}
               />

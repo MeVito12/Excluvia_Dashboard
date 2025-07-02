@@ -18,7 +18,7 @@ const UserAvatar = ({ username, size = "medium" }: UserAvatarProps) => {
 
   return (
     <div className="flex items-center gap-3">
-      <div className={`${avatarSizes[size]} rounded-full overflow-hidden border-2 border-blue-300`}>
+      <div className={`${avatarSizes[size]} rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-primary to-primary/80 transition-all duration-300 hover:scale-105 modern-card-hover`}>
         <img 
           src={avatarImage} 
           alt={`Avatar de ${username}`} 

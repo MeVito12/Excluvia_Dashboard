@@ -69,14 +69,14 @@ const ModernIcon: React.FC<ModernIconProps> = ({
 
   function getCategoryBackground(cat: string): string {
     const categoryBackgrounds = {
-      'pet': 'bg-gradient-to-br from-purple-100 to-purple-200 border-purple-300',
-      'saude': 'bg-gradient-to-br from-blue-100 to-blue-200 border-blue-300',
-      'alimenticio': 'bg-gradient-to-br from-green-100 to-green-200 border-green-300',
-      'vendas': 'bg-gradient-to-br from-purple-100 to-indigo-200 border-purple-300',
-      'design': 'bg-gradient-to-br from-teal-100 to-green-200 border-teal-300',
-      'sites': 'bg-gradient-to-br from-indigo-100 to-blue-200 border-indigo-300'
+      'pet': 'bg-gradient-to-br from-purple-500 to-purple-700',
+      'saude': 'bg-gradient-to-br from-blue-500 to-blue-700',
+      'alimenticio': 'bg-gradient-to-br from-green-500 to-green-700',
+      'vendas': 'bg-gradient-to-br from-purple-600 to-indigo-700',
+      'design': 'bg-gradient-to-br from-teal-500 to-green-600',
+      'sites': 'bg-gradient-to-br from-indigo-600 to-blue-700'
     };
-    return categoryBackgrounds[cat as keyof typeof categoryBackgrounds] || 'bg-gray-100 border-gray-300';
+    return categoryBackgrounds[cat as keyof typeof categoryBackgrounds] || 'bg-gradient-to-br from-gray-500 to-gray-700';
   }
 
   function getCategoryGlow(cat: string): string {
@@ -105,17 +105,19 @@ const ModernIcon: React.FC<ModernIconProps> = ({
   if (background) {
     return (
       <div className={cn(
-        'border-2 flex items-center justify-center',
+        'flex items-center justify-center shadow-md',
         backgroundSizes[size],
-        rounded ? 'rounded-full' : 'rounded-xl',
-        gradient ? 'bg-gradient-to-br from-primary/10 to-accent/10 border-primary/20' : 
-          category ? getCategoryBackground(category) : 'bg-gray-100 border-gray-300',
+        'rounded-2xl', // Sempre quadrado arredondado
+        gradient ? 'bg-gradient-to-br from-primary to-primary/80' : 
+          category ? getCategoryBackground(category) : 'bg-gradient-to-br from-gray-400 to-gray-600',
         glow && 'shadow-lg',
         glow && category && getCategoryGlow(category),
-        animated && 'modern-card-hover',
+        animated && 'modern-card-hover transition-all duration-300 hover:scale-110',
         className
       )}>
-        {iconElement}
+        <div className="text-white">
+          {iconElement}
+        </div>
       </div>
     );
   }

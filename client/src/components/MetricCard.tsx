@@ -3,6 +3,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
 import ModernIcon from '@/components/ui/modern-icon';
+import { useCategory } from '@/contexts/CategoryContext';
 
 interface MetricCardProps {
   title: string;
@@ -14,6 +15,7 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, gradient = false }: MetricCardProps) => {
+  const { selectedCategory } = useCategory();
   const changeColors = {
     positive: 'text-accent',
     negative: 'text-destructive',
@@ -38,12 +40,11 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
         </div>
         <ModernIcon 
           icon={Icon}
-          variant="primary"
+          variant="category"
+          category={selectedCategory as any}
           size="lg"
           background={true}
-          rounded={true}
           animated={true}
-          gradient={true}
           glow={true}
         />
       </div>
