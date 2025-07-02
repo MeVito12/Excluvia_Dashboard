@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, TrendingUp, Users, Calendar } from 'lucide-react';
 
 interface MetricCardProps {
   title: string;

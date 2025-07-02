@@ -104,13 +104,11 @@ const DashboardSection = () => {
   const currentMetrics = getCategoryMetrics();
 
   return (
-    <div className="section-container">
+    <div className="app-section">
       {/* Header */}
       <div className="section-header">
-        <div>
-          <h1 className="section-title text-white">Dashboard</h1>
-          <p className="section-description text-gray-300">Visão geral das métricas do sistema</p>
-        </div>
+        <h1 className="section-title">Dashboard</h1>
+        <p className="section-subtitle">Visão geral das métricas do sistema</p>
       </div>
 
       {/* Search and Filters */}
@@ -193,7 +191,7 @@ const DashboardSection = () => {
 
       {/* Lembretes de Agenda e Compromissos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="standard-card">
+        <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <ModernIcon 
@@ -266,7 +264,7 @@ const DashboardSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="standard-card">
+        <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <ModernIcon 
