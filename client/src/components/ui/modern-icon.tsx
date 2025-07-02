@@ -12,6 +12,7 @@ interface ModernIconProps {
   gradient?: boolean;
   glow?: boolean;
   category?: 'pet' | 'saude' | 'alimenticio' | 'vendas' | 'design' | 'sites';
+  contextual?: boolean;
   className?: string;
 }
 
@@ -25,6 +26,7 @@ const ModernIcon: React.FC<ModernIconProps> = ({
   gradient = false,
   glow = false,
   category,
+  contextual = false,
   className
 }) => {
   const variants = {
@@ -107,14 +109,75 @@ const ModernIcon: React.FC<ModernIconProps> = ({
 
   function getRandomCreativeBackground(): string {
     const backgrounds = [
-      'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo
-      'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', // Azul escuro
-      'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon
-      'bg-gradient-to-br from-[#9333ea] to-[#00ff88]', // Roxo para verde
-      'bg-gradient-to-br from-[#1e3a8a] to-[#9333ea]', // Azul para roxo
-      'bg-gradient-to-br from-[#00ff88] to-[#1e3a8a]'  // Verde para azul
+      'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo corporativo
+      'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', // Azul corporativo
+      'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde corporativo
+      'bg-gradient-to-br from-[#f59e0b] to-[#d97706]', // Laranja vibrante
+      'bg-gradient-to-br from-[#ef4444] to-[#dc2626]', // Vermelho vibrante
+      'bg-gradient-to-br from-[#8b5cf6] to-[#7c3aed]', // Roxo suave
+      'bg-gradient-to-br from-[#06b6d4] to-[#0891b2]', // Cyan vibrante
+      'bg-gradient-to-br from-[#10b981] to-[#059669]', // Verde esmeralda
+      'bg-gradient-to-br from-[#f97316] to-[#ea580c]', // Laranja quente
+      'bg-gradient-to-br from-[#ec4899] to-[#db2777]'  // Pink vibrante
     ];
     return backgrounds[Math.floor(Math.random() * backgrounds.length)];
+  }
+
+  function getContextualBackground(iconName: string): string {
+    // Mapeamento inteligente baseado no contexto do ícone
+    const contextualMap: { [key: string]: string } = {
+      // Financeiro - Verdes e dourados
+      'DollarSign': 'bg-gradient-to-br from-[#10b981] to-[#059669]',
+      'CreditCard': 'bg-gradient-to-br from-[#f59e0b] to-[#d97706]',
+      'TrendingUp': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]',
+      'TrendingDown': 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]',
+      
+      // Alertas e notificações - Vermelhos e laranjas
+      'AlertTriangle': 'bg-gradient-to-br from-[#f97316] to-[#ea580c]',
+      'AlertCircle': 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]',
+      'Bell': 'bg-gradient-to-br from-[#f59e0b] to-[#d97706]',
+      
+      // Tempo e calendário - Azuis
+      'Clock': 'bg-gradient-to-br from-[#06b6d4] to-[#0891b2]',
+      'Calendar': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]',
+      
+      // Comunicação - Roxos e pinks
+      'MessageCircle': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]',
+      'Phone': 'bg-gradient-to-br from-[#8b5cf6] to-[#7c3aed]',
+      'Mail': 'bg-gradient-to-br from-[#ec4899] to-[#db2777]',
+      
+      // Tecnologia e bots - Cyans e verdes tech
+      'Bot': 'bg-gradient-to-br from-[#06b6d4] to-[#0891b2]',
+      'Settings': 'bg-gradient-to-br from-[#6b7280] to-[#4b5563]',
+      'Zap': 'bg-gradient-to-br from-[#eab308] to-[#ca8a04]',
+      
+      // Ações positivas - Verdes
+      'CheckCircle': 'bg-gradient-to-br from-[#10b981] to-[#059669]',
+      'Plus': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]',
+      
+      // Downloads e compartilhamento - Azuis
+      'Download': 'bg-gradient-to-br from-[#3b82f6] to-[#2563eb]',
+      'Share': 'bg-gradient-to-br from-[#8b5cf6] to-[#7c3aed]',
+      'Copy': 'bg-gradient-to-br from-[#06b6d4] to-[#0891b2]',
+      
+      // Busca e filtros - Roxos
+      'Search': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]',
+      'Filter': 'bg-gradient-to-br from-[#8b5cf6] to-[#7c3aed]',
+      
+      // Pessoas e usuários - Pinks e roxos
+      'Users': 'bg-gradient-to-br from-[#ec4899] to-[#db2777]',
+      'User': 'bg-gradient-to-br from-[#8b5cf6] to-[#7c3aed]',
+      
+      // Compras e produtos - Laranjas e verdes
+      'ShoppingCart': 'bg-gradient-to-br from-[#f97316] to-[#ea580c]',
+      'Package': 'bg-gradient-to-br from-[#10b981] to-[#059669]',
+      
+      // Estrelas e favoritos - Dourados
+      'Star': 'bg-gradient-to-br from-[#eab308] to-[#ca8a04]',
+      'Heart': 'bg-gradient-to-br from-[#ef4444] to-[#dc2626]'
+    };
+    
+    return contextualMap[iconName] || getRandomCreativeBackground();
   }
 
   const iconElement = (
@@ -134,8 +197,11 @@ const ModernIcon: React.FC<ModernIconProps> = ({
         'flex items-center justify-center shadow-md',
         backgroundSizes[size],
         'rounded-2xl', // Sempre quadrado arredondado
-        gradient ? 'bg-gradient-to-br from-primary to-primary/80' : 
-          category ? getCategoryBackground(category) : 'bg-gradient-to-br from-gray-400 to-gray-600',
+        contextual ? getContextualBackground(Icon.displayName || Icon.name || 'default') :
+          gradient ? 'bg-gradient-to-br from-primary to-primary/80' : 
+          category ? getCategoryBackground(category) : 
+          ['purple', 'blue', 'green', 'creative'].includes(variant) ? getCreativeBackground(variant) :
+          'bg-gradient-to-br from-gray-400 to-gray-600',
         glow && 'shadow-lg',
         glow && category && getCategoryGlow(category),
         animated && 'modern-card-hover transition-all duration-300 hover:scale-110',

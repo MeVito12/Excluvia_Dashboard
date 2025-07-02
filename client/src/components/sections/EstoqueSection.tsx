@@ -1267,10 +1267,9 @@ const EstoqueSection = () => {
               </div>
               <ModernIcon 
                 icon={AlertTriangle}
-                variant="category"
-                category={selectedCategory as any}
                 size="xl"
                 background={true}
+                contextual={true}
                 animated={true}
                 glow={true}
               />
@@ -1287,10 +1286,9 @@ const EstoqueSection = () => {
               </div>
               <ModernIcon 
                 icon={Clock}
-                variant="category"
-                category={selectedCategory as any}
                 size="xl"
                 background={true}
+                contextual={true}
                 animated={true}
                 glow={true}
               />
@@ -1307,10 +1305,9 @@ const EstoqueSection = () => {
               </div>
               <ModernIcon 
                 icon={TrendingUp}
-                variant="category"
-                category={selectedCategory as any}
                 size="xl"
                 background={true}
+                contextual={true}
                 animated={true}
                 glow={true}
               />
@@ -1327,10 +1324,9 @@ const EstoqueSection = () => {
               </div>
               <ModernIcon 
                 icon={DollarSign}
-                variant="category"
-                category={selectedCategory as any}
                 size="xl"
                 background={true}
+                contextual={true}
                 animated={true}
                 glow={true}
               />
@@ -1341,7 +1337,7 @@ const EstoqueSection = () => {
 
       {/* Tabs principais */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-white">
+        <TabsList className="w-full flex overflow-x-auto scroll-smooth gap-1 pb-2 bg-white" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
           <TabsTrigger value="produtos" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
             <Package className="w-4 h-4 mr-2" />
             Produtos

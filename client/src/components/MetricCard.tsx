@@ -40,10 +40,9 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
         </div>
         <ModernIcon 
           icon={Icon}
-          variant="category"
-          category={selectedCategory as any}
           size="lg"
           background={true}
+          contextual={true}
           animated={true}
           glow={true}
         />

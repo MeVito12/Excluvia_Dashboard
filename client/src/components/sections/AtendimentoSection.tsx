@@ -563,9 +563,11 @@ const AtendimentoSection = () => {
         <div className="relative">
           <ModernIcon 
             icon={Search}
-            variant="default"
             size="sm"
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            background={true}
+            contextual={true}
+            animated={true}
+            className="absolute left-3 top-1/2 transform -translate-y-1/2"
           />
           <Input
             placeholder="Buscar conversas, catálogos..."
@@ -700,10 +702,9 @@ const AtendimentoSection = () => {
               <div className="flex items-center gap-3">
                 <ModernIcon 
                   icon={Bot}
-                  variant="category"
-                  category={selectedCategory as any}
                   size="xl"
                   background={true}
+                  contextual={true}
                   animated={true}
                   glow={true}
                 />
@@ -723,10 +724,9 @@ const AtendimentoSection = () => {
               <div className="flex items-center gap-3">
                 <ModernIcon 
                   icon={CreditCard}
-                  variant="category"
-                  category={selectedCategory as any}
                   size="xl"
                   background={true}
+                  contextual={true}
                   animated={true}
                   glow={true}
                 />
@@ -758,7 +758,7 @@ const AtendimentoSection = () => {
 
       {/* Tabs de Conteúdo */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="w-full flex overflow-x-auto scroll-smooth gap-1 pb-2" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
           <TabsTrigger value="mensagens" className="flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
             Mensagens
