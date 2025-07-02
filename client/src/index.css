@@ -48,11 +48,28 @@ All colors MUST be HSL.
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Custom dashboard colors - updated to match the blue tone */
-    --dashboard-purple: 262 83% 58%;
-    --dashboard-green: 158 89% 53%;
-    --dashboard-dark: 220 100% 12%;
-    --dashboard-darker: 220 100% 8%;
+    /* Padronização de cores do sistema */
+    --brand-primary: 262 83% 58%;
+    --brand-secondary: 158 89% 53%;
+    --brand-dark: 220 100% 12%;
+    --brand-darker: 220 100% 8%;
+    
+    /* Cores funcionais padronizadas */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    --info: 221 83% 53%;
+    
+    /* Backgrounds padronizados */
+    --card-glass: 0 0% 100% / 0.95;
+    --section-bg: 0 0% 98%;
+    --metric-bg: 0 0% 100%;
+    --hover-bg: 0 0% 96%;
+    
+    /* Sombras padronizadas */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   }
 
   .dark {
@@ -93,13 +110,138 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(135deg, hsl(var(--dashboard-darker)) 0%, hsl(var(--dashboard-dark)) 100%);
+    background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
+  }
+}
+
+/* Classes utilitárias padronizadas */
+@layer components {
+  /* Containers padronizados */
+  .section-container {
+    @apply p-6 space-y-6;
+    background: hsl(var(--section-bg));
+    border-radius: 0.75rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Cards padronizados */
+  .standard-card {
+    @apply bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-lg p-6;
+    box-shadow: var(--shadow-md);
+    transition: all 0.2s ease;
+  }
+
+  .standard-card:hover {
+    background: hsl(var(--hover-bg));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+  }
+
+  /* Métricas padronizadas */
+  .metric-card {
+    @apply bg-white/95 backdrop-blur-sm border border-gray-200/50 rounded-lg p-4;
+    background: hsl(var(--metric-bg));
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+  }
+
+  .metric-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+
+  /* Botões padronizados */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg;
+    background: hsl(var(--brand-primary));
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary/90 text-secondary-foreground px-4 py-2 rounded-lg;
+    background: hsl(var(--brand-secondary));
+    transition: all 0.2s ease;
+  }
+
+  /* Badges padronizados */
+  .badge-success {
+    @apply text-white px-2 py-1 rounded-full text-xs font-medium;
+    background: hsl(var(--success));
+  }
+
+  .badge-warning {
+    @apply text-white px-2 py-1 rounded-full text-xs font-medium;
+    background: hsl(var(--warning));
+  }
+
+  .badge-error {
+    @apply text-white px-2 py-1 rounded-full text-xs font-medium;
+    background: hsl(var(--error));
+  }
+
+  .badge-info {
+    @apply text-white px-2 py-1 rounded-full text-xs font-medium;
+    background: hsl(var(--info));
+  }
+
+  /* Cabeçalhos padronizados */
+  .section-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .section-title {
+    @apply text-2xl font-semibold text-gray-900;
+  }
+
+  .section-description {
+    @apply text-gray-600 mt-2;
+  }
+
+  /* Tabelas padronizadas */
+  .standard-table {
+    @apply w-full border-collapse bg-white/95 backdrop-blur-sm rounded-lg overflow-hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .standard-table th {
+    @apply bg-gray-50 px-4 py-3 text-left text-sm font-medium text-gray-700 border-b;
+  }
+
+  .standard-table td {
+    @apply px-4 py-3 text-sm text-gray-900 border-b border-gray-200;
+  }
+
+  .standard-table tr:hover {
+    background: hsl(var(--hover-bg));
+  }
+
+  /* Inputs padronizados */
+  .standard-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary;
+    background: hsl(var(--metric-bg));
+    transition: all 0.2s ease;
+  }
+
+  /* Tabs padronizadas */
+  .standard-tabs {
+    @apply border-b border-gray-200;
+  }
+
+  .standard-tab {
+    @apply px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 border-b-2 border-transparent hover:border-gray-300;
+    transition: all 0.2s ease;
+  }
+
+  .standard-tab.active {
+    @apply text-primary border-primary;
+    color: hsl(var(--brand-primary));
+    border-color: hsl(var(--brand-primary));
   }
 }
 
 /* Custom gradient backgrounds */
-.gradient-purple-green {
-  background: linear-gradient(135deg, hsl(var(--dashboard-purple)) 0%, hsl(var(--dashboard-green)) 100%);
+.gradient-brand {
+  background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-secondary)) 100%);
 }
 
 .gradient-dark {

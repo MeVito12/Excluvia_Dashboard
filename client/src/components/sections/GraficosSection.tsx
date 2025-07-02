@@ -13,11 +13,13 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
   return (
-    <div className="space-y-6">
+    <div className="section-container">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Relatórios e Gráficos</h1>
-        <p className="text-gray-300">Relatórios de vendas, análises e visualizações detalhadas</p>
+      <div className="section-header">
+        <div>
+          <h1 className="section-title text-white">Relatórios e Gráficos</h1>
+          <p className="section-description text-gray-300">Relatórios de vendas, análises e visualizações detalhadas</p>
+        </div>
       </div>
 
       {/* Search and Filters */}

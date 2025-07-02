@@ -481,17 +481,19 @@ const AtividadeSection = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="section-container">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Atividade</h1>
-        <p className="text-gray-300">
-          Log de atividades - {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'}
-        </p>
+      <div className="section-header">
+        <div>
+          <h1 className="section-title text-white">Atividade</h1>
+          <p className="section-description text-gray-300">
+            Log de atividades - {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'}
+          </p>
+        </div>
       </div>
 
       {/* Filtros específicos da seção */}
-      <div className="bg-white border border-border/50 rounded-lg p-6">
+      <div className="standard-card">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Search */}
           <div className="relative">

@@ -104,11 +104,13 @@ const DashboardSection = () => {
   const currentMetrics = getCategoryMetrics();
 
   return (
-    <div className="space-y-6">
+    <div className="section-container">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-300">Visão geral das métricas do sistema</p>
+      <div className="section-header">
+        <div>
+          <h1 className="section-title text-white">Dashboard</h1>
+          <p className="section-description text-gray-300">Visão geral das métricas do sistema</p>
+        </div>
       </div>
 
       {/* Search and Filters */}
@@ -191,9 +193,9 @@ const DashboardSection = () => {
 
       {/* Lembretes de Agenda e Compromissos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white border border-border/50 modern-card-hover">
+        <Card className="standard-card">
           <CardHeader>
-            <CardTitle className="text-black flex items-center gap-2">
+            <CardTitle className="text-gray-900 flex items-center gap-2">
               <ModernIcon 
                 icon={Calendar}
                 size="md"
@@ -258,15 +260,15 @@ const DashboardSection = () => {
               })()}
             </div>
             
-            <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white">
+            <Button className="btn-primary w-full mt-4">
               Ver Todos os Compromissos
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-border/50 modern-card-hover">
+        <Card className="standard-card">
           <CardHeader>
-            <CardTitle className="text-black flex items-center gap-2">
+            <CardTitle className="text-gray-900 flex items-center gap-2">
               <ModernIcon 
                 icon={Bell}
                 size="md"
@@ -329,7 +331,7 @@ const DashboardSection = () => {
               })()}
             </div>
             
-            <Button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white">
+            <Button className="btn-primary w-full mt-4">
               Ver Todas as Notificações
             </Button>
           </CardContent>

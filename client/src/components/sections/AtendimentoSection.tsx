@@ -549,17 +549,19 @@ const AtendimentoSection = () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="section-container">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Atendimento ao Cliente</h1>
-        <p className="text-gray-300">
-          {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - Mensagens, {catalogName}s e automação de atendimento
-        </p>
+      <div className="section-header">
+        <div>
+          <h1 className="section-title text-white">Atendimento ao Cliente</h1>
+          <p className="section-description text-gray-300">
+            {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - Mensagens, {catalogName}s e automação de atendimento
+          </p>
+        </div>
       </div>
 
       {/* Filtros */}
-      <div className="bg-white border border-border/50 rounded-lg p-6">
+      <div className="standard-card">
         <div className="relative">
           <ModernIcon 
             icon={Search}
@@ -696,7 +698,7 @@ const AtendimentoSection = () => {
 
       {/* Configurações de Automação */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="bg-white border border-border/50">
+        <Card className="standard-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -718,7 +720,7 @@ const AtendimentoSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-border/50">
+        <Card className="standard-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -740,7 +742,7 @@ const AtendimentoSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-border/50">
+        <Card className="standard-card">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -775,7 +777,7 @@ const AtendimentoSection = () => {
 
         {/* Tab Mensagens */}
         <TabsContent value="mensagens">
-          <Card className="bg-white border border-border/50">
+          <Card className="standard-card">
             <CardHeader>
               <CardTitle className="text-black flex items-center gap-2">
                 <MessageCircle className="h-5 w-5 text-green-600" />
@@ -921,7 +923,7 @@ const AtendimentoSection = () => {
 
         {/* Tab Catálogos/Cardápios */}
         <TabsContent value="catalogos">
-          <Card className="bg-white border border-border/50">
+          <Card className="standard-card">
             <CardHeader>
               <CardTitle className="text-black flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5 text-purple-600" />
@@ -1141,7 +1143,7 @@ const AtendimentoSection = () => {
         {/* Tab Automação */}
         <TabsContent value="automacao">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="bg-white border border-border/50">
+            <Card className="standard-card">
               <CardHeader>
                 <CardTitle className="text-black flex items-center gap-2">
                   <Gift className="h-5 w-5 text-orange-500" />
@@ -1172,7 +1174,7 @@ const AtendimentoSection = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border border-border/50">
+            <Card className="standard-card">
               <CardHeader>
                 <CardTitle className="text-black flex items-center gap-2">
                   <Zap className="h-5 w-5 text-yellow-500" />

@@ -7,7 +7,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCategory } from '@/contexts/CategoryContext';
-import ModernIcon from '@/components/ui/modern-icon';
+import { UnifiedIcon, UnifiedCard } from '@/components/ui/unified-system';
 import { 
   Package, 
   AlertTriangle, 
@@ -48,7 +48,7 @@ interface Sale {
   products: string[];
   total: number;
   status: 'Concluída' | 'Pendente' | 'Cancelada';
-  category: string;
+  paymentMethod: string;
 }
 
 interface Client {
@@ -56,41 +56,97 @@ interface Client {
   name: string;
   email: string;
   phone: string;
-  category: string;
+  totalPurchases: number;
   lastPurchase: string;
-  totalSpent: number;
   status: 'Ativo' | 'Inativo';
+  segment: string;
 }
 
 const EstoqueSectionNew = () => {
-  const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const { selectedCategory } = useCategory();
 
-  // Mock data for products
-  const products: Product[] = [
-    { id: 1, name: 'Smartphone Samsung Galaxy S24', category: 'eletrônicos', stock: 15, minStock: 5, price: 2899.99, supplier: 'Tech Distribuidor', lastRestock: '2024-12-15', status: 'Em Estoque' },
-    { id: 2, name: 'Notebook Dell Inspiron 15', category: 'eletrônicos', stock: 8, minStock: 3, price: 2499.99, supplier: 'Dell Brasil', lastRestock: '2024-12-10', status: 'Em Estoque' },
-    { id: 3, name: 'Camiseta Polo Ralph Lauren', category: 'vestuário', stock: 25, minStock: 10, price: 189.99, supplier: 'Fashion Store', lastRestock: '2024-12-20', status: 'Em Estoque' },
-    { id: 4, name: 'Tênis Nike Air Max', category: 'vestuário', stock: 12, minStock: 8, price: 399.99, supplier: 'Sports Direct', lastRestock: '2024-12-18', status: 'Em Estoque' },
-    { id: 5, name: 'Livro "Sapiens"', category: 'livros', stock: 2, minStock: 5, price: 49.99, supplier: 'Editora Companhia das Letras', lastRestock: '2024-12-05', status: 'Estoque Baixo' }
+  // Mock data - In production, this would come from an API
+  const mockProducts: Product[] = [
+    {
+      id: 1,
+      name: "Smartphone Samsung Galaxy S24",
+      category: "eletrônicos",
+      stock: 15,
+      minStock: 5,
+      price: 2899.99,
+      supplier: "TechSupply Ltda",
+      lastRestock: "2024-12-15",
+      status: "Em Estoque"
+    },
+    {
+      id: 2,
+      name: "Camiseta Polo Ralph Lauren",
+      category: "vestuário",
+      stock: 3,
+      minStock: 10,
+      price: 299.99,
+      supplier: "Fashion Center",
+      lastRestock: "2024-12-10",
+      status: "Estoque Baixo"
+    },
+    {
+      id: 3,
+      name: "Notebook Dell Inspiron 15",
+      category: "eletrônicos",
+      stock: 8,
+      minStock: 3,
+      price: 3299.99,
+      supplier: "Dell Brasil",
+      lastRestock: "2024-12-18",
+      status: "Em Estoque"
+    }
   ];
 
-  // Mock data for sales
-  const sales: Sale[] = [
-    { id: 1, date: '2024-12-25', clientName: 'João Silva', products: ['Smartphone Samsung Galaxy S24'], total: 2899.99, status: 'Concluída', category: 'eletrônicos' },
-    { id: 2, date: '2024-12-24', clientName: 'Maria Santos', products: ['Camiseta Polo Ralph Lauren', 'Tênis Nike Air Max'], total: 589.98, status: 'Concluída', category: 'vestuário' },
-    { id: 3, date: '2024-12-23', clientName: 'Carlos Oliveira', products: ['Notebook Dell Inspiron 15'], total: 2499.99, status: 'Pendente', category: 'eletrônicos' },
-    { id: 4, date: '2024-12-22', clientName: 'Ana Costa', products: ['Livro "Sapiens"'], total: 49.99, status: 'Concluída', category: 'livros' }
+  const mockSales: Sale[] = [
+    {
+      id: 1,
+      date: "2024-12-20",
+      clientName: "TechCorp Solutions",
+      products: ["Smartphone Samsung Galaxy S24", "Notebook Dell Inspiron 15"],
+      total: 6199.98,
+      status: "Concluída",
+      paymentMethod: "Cartão de Crédito"
+    },
+    {
+      id: 2,
+      date: "2024-12-19",
+      clientName: "Empresa ABC",
+      products: ["Camiseta Polo Ralph Lauren"],
+      total: 299.99,
+      status: "Pendente",
+      paymentMethod: "PIX"
+    }
   ];
 
-  // Mock data for clients
-  const clients: Client[] = [
-    { id: 1, name: 'João Silva', email: 'joao@email.com', phone: '(11) 99999-9999', category: 'eletrônicos', lastPurchase: '2024-12-25', totalSpent: 5799.98, status: 'Ativo' },
-    { id: 2, name: 'Maria Santos', email: 'maria@email.com', phone: '(11) 88888-8888', category: 'vestuário', lastPurchase: '2024-12-24', totalSpent: 1179.96, status: 'Ativo' },
-    { id: 3, name: 'Carlos Oliveira', email: 'carlos@email.com', phone: '(11) 77777-7777', category: 'eletrônicos', lastPurchase: '2024-12-23', totalSpent: 2499.99, status: 'Ativo' },
-    { id: 4, name: 'Ana Costa', email: 'ana@email.com', phone: '(11) 66666-6666', category: 'livros', lastPurchase: '2024-12-22', totalSpent: 149.97, status: 'Ativo' }
+  const mockClients: Client[] = [
+    {
+      id: 1,
+      name: "TechCorp Solutions",
+      email: "contato@techcorp.com.br",
+      phone: "(11) 98765-4321",
+      totalPurchases: 15699.95,
+      lastPurchase: "2024-12-20",
+      status: "Ativo",
+      segment: "corporativo"
+    },
+    {
+      id: 2,
+      name: "Empresa ABC",
+      email: "vendas@empresaabc.com",
+      phone: "(11) 91234-5678",
+      totalPurchases: 2299.97,
+      lastPurchase: "2024-12-19",
+      status: "Ativo",
+      segment: "corporativo"
+    }
   ];
 
   const renderTabContent = () => {
@@ -114,43 +170,48 @@ const EstoqueSectionNew = () => {
                     placeholder="Buscar produtos..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="standard-input"
+                    className="flex-1"
                   />
                 </div>
-                <Select value={filterCategory} onValueChange={setFilterCategory}>
+                <Select value={selectedFilter} onValueChange={setSelectedFilter}>
                   <SelectTrigger className="w-48">
                     <SelectValue placeholder="Filtrar por categoria" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Todas as categorias</SelectItem>
+                    <SelectItem value="all">Todos</SelectItem>
                     <SelectItem value="eletrônicos">Eletrônicos</SelectItem>
                     <SelectItem value="vestuário">Vestuário</SelectItem>
-                    <SelectItem value="livros">Livros</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="space-y-3">
-                {products.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{product.name}</h4>
-                      <p className="text-sm text-gray-600">Categoria: {product.category}</p>
-                      <p className="text-sm text-gray-600">Estoque: {product.stock} unidades</p>
+              <div className="grid gap-4">
+                {mockProducts.map((product) => (
+                  <div key={product.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <UnifiedIcon icon={Package} forceColor="inventory" />
+                      <div>
+                        <p className="font-medium text-gray-900">{product.name}</p>
+                        <p className="text-sm text-gray-600">Categoria: {product.category}</p>
+                        <p className="text-sm text-gray-600">Fornecedor: {product.supplier}</p>
+                      </div>
                     </div>
-                    <div className="text-right mr-4">
-                      <p className="font-semibold text-gray-900">R$ {product.price.toFixed(2)}</p>
-                      <Badge className={product.status === 'Em Estoque' ? 'badge-success' : product.status === 'Estoque Baixo' ? 'badge-warning' : 'badge-error'}>
-                        {product.status}
-                      </Badge>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-medium text-gray-900">R$ {product.price.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">Estoque: {product.stock} unidades</p>
+                        <Badge variant={product.status === 'Em Estoque' ? 'default' : 'destructive'}>
+                          {product.status}
+                        </Badge>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -171,19 +232,25 @@ const EstoqueSectionNew = () => {
                 </Button>
               </div>
 
-              <div className="space-y-3">
-                {sales.map((sale) => (
-                  <div key={sale.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">Venda #{sale.id}</h4>
-                      <p className="text-sm text-gray-600">Cliente: {sale.clientName}</p>
-                      <p className="text-sm text-gray-600">Data: {sale.date}</p>
+              <div className="grid gap-4">
+                {mockSales.map((sale) => (
+                  <div key={sale.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <UnifiedIcon icon={ShoppingCart} forceColor="financial" />
+                      <div>
+                        <p className="font-medium text-gray-900">{sale.clientName}</p>
+                        <p className="text-sm text-gray-600">Data: {sale.date}</p>
+                        <p className="text-sm text-gray-600">Produtos: {sale.products.join(', ')}</p>
+                      </div>
                     </div>
-                    <div className="text-right mr-4">
-                      <p className="font-semibold text-gray-900">R$ {sale.total.toFixed(2)}</p>
-                      <Badge className={sale.status === 'Concluída' ? 'badge-success' : sale.status === 'Pendente' ? 'badge-warning' : 'badge-error'}>
-                        {sale.status}
-                      </Badge>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-medium text-gray-900">R$ {sale.total.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">{sale.paymentMethod}</p>
+                        <Badge variant={sale.status === 'Concluída' ? 'default' : 'secondary'}>
+                          {sale.status}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -204,19 +271,25 @@ const EstoqueSectionNew = () => {
                 </Button>
               </div>
 
-              <div className="space-y-3">
-                {clients.map((client) => (
-                  <div key={client.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{client.name}</h4>
-                      <p className="text-sm text-gray-600">Email: {client.email}</p>
-                      <p className="text-sm text-gray-600">Última compra: {client.lastPurchase}</p>
+              <div className="grid gap-4">
+                {mockClients.map((client) => (
+                  <div key={client.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-4">
+                      <UnifiedIcon icon={Users} forceColor="users" />
+                      <div>
+                        <p className="font-medium text-gray-900">{client.name}</p>
+                        <p className="text-sm text-gray-600">{client.email}</p>
+                        <p className="text-sm text-gray-600">{client.phone}</p>
+                      </div>
                     </div>
-                    <div className="text-right mr-4">
-                      <p className="font-semibold text-gray-900">R$ {client.totalSpent.toFixed(2)}</p>
-                      <Badge className={client.status === 'Ativo' ? 'badge-success' : 'badge-error'}>
-                        {client.status}
-                      </Badge>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="font-medium text-gray-900">R$ {client.totalPurchases.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">Última compra: {client.lastPurchase}</p>
+                        <Badge variant={client.status === 'Ativo' ? 'default' : 'secondary'}>
+                          {client.status}
+                        </Badge>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -300,7 +373,7 @@ const EstoqueSectionNew = () => {
               <p className="text-sm text-gray-600 font-medium">Total de Produtos</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">126</p>
             </div>
-            <ModernIcon icon={Package} size="lg" contextual={true} />
+            <UnifiedIcon icon={Package} forceColor="inventory" size="lg" />
           </div>
         </div>
 
@@ -310,7 +383,7 @@ const EstoqueSectionNew = () => {
               <p className="text-sm text-gray-600 font-medium">Vendas Hoje</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">R$ 6.499</p>
             </div>
-            <ModernIcon icon={DollarSign} size="lg" contextual={true} />
+            <UnifiedIcon icon={DollarSign} forceColor="financial" size="lg" />
           </div>
         </div>
 
@@ -320,7 +393,7 @@ const EstoqueSectionNew = () => {
               <p className="text-sm text-gray-600 font-medium">Clientes Ativos</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">89</p>
             </div>
-            <ModernIcon icon={Users} size="lg" contextual={true} />
+            <UnifiedIcon icon={Users} forceColor="users" size="lg" />
           </div>
         </div>
 
@@ -330,7 +403,7 @@ const EstoqueSectionNew = () => {
               <p className="text-sm text-gray-600 font-medium">Estoque Baixo</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">7</p>
             </div>
-            <ModernIcon icon={AlertTriangle} size="lg" contextual={true} />
+            <UnifiedIcon icon={AlertTriangle} forceColor="alerts" size="lg" />
           </div>
         </div>
       </div>
@@ -373,4 +446,4 @@ const EstoqueSectionNew = () => {
   );
 };
 
-export default EstoqueSectionNew;
+export { default } from './EstoqueSectionNew';

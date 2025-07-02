@@ -660,12 +660,12 @@ const AgendamentosSection = () => {
     .slice(0, 5);
 
   return (
-    <div className="space-y-6">
+    <div className="section-container">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="section-header">
         <div>
-          <h1 className="text-3xl font-bold text-white">Agendamentos</h1>
-          <p className="text-gray-300">
+          <h1 className="section-title text-white">Agendamentos</h1>
+          <p className="section-description text-gray-300">
             {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - Gerencie seus agendamentos e lembretes
           </p>
         </div>
