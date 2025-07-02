@@ -17,40 +17,67 @@ const DashboardSection = () => {
   const getCategoryMetrics = () => {
     const categoryData = {
       'pet': {
-        totalRecords: '15 Animais',
-        activeUsers: '8 Veterinários',
-        transactions: '12 Consultas',
-        appointments: '5 Agendamentos Hoje'
+        totalRecords: '445 Pets',
+        activeUsers: '12 Veterinários',
+        transactions: '23 Atendimentos',
+        appointments: '8 Agendamentos Hoje',
+        revenue: 'R$ 1.820',
+        growth: '+20%',
+        satisfaction: '4.9'
       },
-      'saude': {
-        totalRecords: '24 Pacientes',
-        activeUsers: '6 Médicos',
-        transactions: '18 Consultas',
-        appointments: '4 Agendamentos Hoje'
+      'medico': {
+        totalRecords: '672 Pacientes',
+        activeUsers: '18 Profissionais',
+        transactions: '34 Consultas',
+        appointments: '12 Agendamentos Hoje',
+        revenue: 'R$ 3.680',
+        growth: '+12%',
+        satisfaction: '4.7'
       },
       'alimenticio': {
-        totalRecords: '45 Pratos',
-        activeUsers: '12 Funcionários',
-        transactions: '89 Pedidos',
-        appointments: '3 Reservas Hoje'
+        totalRecords: '856 Clientes',
+        activeUsers: '15 Funcionários',
+        transactions: '47 Pedidos',
+        appointments: '6 Reservas Hoje',
+        revenue: 'R$ 2.450',
+        growth: '+18%',
+        satisfaction: '4.8'
       },
       'vendas': {
-        totalRecords: '128 Produtos',
-        activeUsers: '15 Vendedores',
-        transactions: '47 Vendas',
-        appointments: '8 Reuniões Hoje'
+        totalRecords: '324 Clientes',
+        activeUsers: '8 Vendedores',
+        transactions: '12 Vendas',
+        appointments: '5 Reuniões Hoje',
+        revenue: 'R$ 8.950',
+        growth: '+15%',
+        satisfaction: '4.6'
       },
-      'design': {
-        totalRecords: '32 Projetos',
-        activeUsers: '5 Designers',
-        transactions: '14 Entregas',
-        appointments: '6 Briefings Hoje'
+      'tecnologia': {
+        totalRecords: '156 Clientes',
+        activeUsers: '6 Técnicos',
+        transactions: '8 Vendas',
+        appointments: '3 Demos Hoje',
+        revenue: 'R$ 12.450',
+        growth: '+25%',
+        satisfaction: '4.5'
       },
-      'sites': {
-        totalRecords: '18 Sites',
-        activeUsers: '4 Desenvolvedores',
-        transactions: '9 Deploys',
-        appointments: '3 Reuniões Hoje'
+      'educacao': {
+        totalRecords: '523 Alunos',
+        activeUsers: '9 Professores',
+        transactions: '28 Matrículas',
+        appointments: '4 Aulas Hoje',
+        revenue: 'R$ 1.950',
+        growth: '+8%',
+        satisfaction: '4.6'
+      },
+      'beleza': {
+        totalRecords: '687 Clientes',
+        activeUsers: '11 Profissionais',
+        transactions: '36 Atendimentos',
+        appointments: '9 Agendamentos Hoje',
+        revenue: 'R$ 2.180',
+        growth: '+14%',
+        satisfaction: '4.8'
       }
     };
     
@@ -86,7 +113,7 @@ const DashboardSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Registros</p>
               <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.totalRecords}</p>
-              <p className="text-xs mt-1 text-green-600">+12% este mês</p>
+              <p className="text-xs mt-1 text-green-600">{currentMetrics.growth} este mês</p>
             </div>
             <div className="p-3 rounded-full bg-gray-100">
               <Database className="h-6 w-6 text-gray-600" />
@@ -99,7 +126,7 @@ const DashboardSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Equipe Ativa</p>
               <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.activeUsers}</p>
-              <p className="text-xs mt-1 text-green-600">+8% esta semana</p>
+              <p className="text-xs mt-1 text-blue-600">Profissionais ativos</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <Users className="h-6 w-6 text-blue-600" />
@@ -110,9 +137,9 @@ const DashboardSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Transações</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
-              <p className="text-xs mt-1 text-green-600">+23% hoje</p>
+              <p className="text-sm font-medium text-gray-600">Receita Hoje</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.revenue}</p>
+              <p className="text-xs mt-1 text-green-600">{currentMetrics.growth} vs ontem</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -125,10 +152,69 @@ const DashboardSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos Hoje</p>
               <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.appointments}</p>
-              <p className="text-xs mt-1 text-blue-600">Próximos</p>
+              <p className="text-xs mt-1 text-purple-600">Próximos</p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
               <Calendar className="h-6 w-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Secondary Metrics Grid */}
+      <div className="metrics-grid">
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Transações Hoje</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
+              <p className="text-xs mt-1 text-green-600">Volume do dia</p>
+            </div>
+            <div className="p-3 rounded-full bg-emerald-100">
+              <TrendingUp className="h-6 w-6 text-emerald-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Satisfação</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.satisfaction}</p>
+              <p className="text-xs mt-1 text-yellow-600">⭐ Avaliação média</p>
+            </div>
+            <div className="p-3 rounded-full bg-yellow-100">
+              <Clock className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Alertas Ativos</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">
+                {selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
+              </p>
+              <p className="text-xs mt-1 text-red-600">Requer atenção</p>
+            </div>
+            <div className="p-3 rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Notificações</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">
+                {selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
+              </p>
+              <p className="text-xs mt-1 text-blue-600">Não lidas</p>
+            </div>
+            <div className="p-3 rounded-full bg-indigo-100">
+              <Bell className="h-6 w-6 text-indigo-600" />
             </div>
           </div>
         </div>
@@ -150,32 +236,44 @@ const DashboardSection = () => {
                   'pet': [
                     { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h' },
                     { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã' },
-                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado' }
+                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado' },
+                    { title: 'Banho e Tosa - Bella', time: '06/07 às 14:00', status: 'Esta semana' }
                   ],
-                  'saude': [
+                  'medico': [
                     { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Fisioterapia - Reabilitação', time: '07/07 às 14:00', status: 'Próxima semana' },
-                    { title: 'Consulta Oftalmológica', time: '08/07 às 10:30', status: 'Agendado' }
+                    { title: 'Fisioterapia - Reabilitação', time: 'Hoje às 16:30', status: 'Em 3h' },
+                    { title: 'Consulta Oftalmológica', time: 'Amanhã às 10:30', status: 'Amanhã' },
+                    { title: 'Cirurgia - Emergência', time: '05/07 às 08:00', status: 'Agendado' }
                   ],
                   'alimenticio': [
                     { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h' },
-                    { title: 'Evento Corporativo', time: '05/07 às 19:00', status: 'Esta semana' },
-                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado' }
+                    { title: 'Evento Corporativo', time: 'Amanhã às 19:00', status: 'Amanhã' },
+                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado' },
+                    { title: 'Festa de Aniversário', time: '08/07 às 15:00', status: 'Esta semana' }
                   ],
                   'vendas': [
                     { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h' },
-                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 09:00', status: 'Concluído' },
-                    { title: 'Entrega iPads - Escola', time: '04/07 às 14:00', status: 'Amanhã' }
+                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 16:00', status: 'Em 3h' },
+                    { title: 'Entrega iPads - Escola', time: 'Amanhã às 14:00', status: 'Amanhã' },
+                    { title: 'Apresentação Projeto TI', time: '05/07 às 10:00', status: 'Agendado' }
                   ],
-                  'design': [
-                    { title: 'Briefing Logo Startup', time: 'Hoje às 10:00', status: 'Concluído' },
-                    { title: 'Apresentação Branding', time: '05/07 às 15:00', status: 'Esta semana' },
-                    { title: 'Revisão Material Gráfico', time: '06/07 às 14:00', status: 'Agendado' }
+                  'tecnologia': [
+                    { title: 'Instalação Servidor', time: 'Hoje às 14:00', status: 'Em 1h' },
+                    { title: 'Manutenção Rede', time: 'Hoje às 18:00', status: 'Em 5h' },
+                    { title: 'Setup Workstation', time: 'Amanhã às 09:00', status: 'Amanhã' },
+                    { title: 'Treinamento Software', time: '06/07 às 14:00', status: 'Esta semana' }
                   ],
-                  'sites': [
-                    { title: 'Kickoff E-commerce', time: 'Hoje às 09:00', status: 'Concluído' },
-                    { title: 'Entrega Landing Page', time: '06/07 às 14:00', status: 'Esta semana' },
-                    { title: 'Reunião Sistema Interno', time: '08/07 às 10:00', status: 'Agendado' }
+                  'educacao': [
+                    { title: 'Aula Matemática Avançada', time: 'Hoje às 14:00', status: 'Em 1h' },
+                    { title: 'Reunião Pais', time: 'Hoje às 17:00', status: 'Em 4h' },
+                    { title: 'Prova de Física', time: 'Amanhã às 08:00', status: 'Amanhã' },
+                    { title: 'Feira de Ciências', time: '08/07 às 09:00', status: 'Esta semana' }
+                  ],
+                  'beleza': [
+                    { title: 'Corte e Escova - Maria', time: 'Hoje às 15:00', status: 'Em 2h' },
+                    { title: 'Manicure - Ana', time: 'Hoje às 16:30', status: 'Em 3h' },
+                    { title: 'Design de Sobrancelhas', time: 'Amanhã às 10:00', status: 'Amanhã' },
+                    { title: 'Tratamento Facial', time: '05/07 às 14:00', status: 'Agendado' }
                   ]
                 };
                 
@@ -214,34 +312,39 @@ const DashboardSection = () => {
               {(() => {
                 const categoryNotifications = {
                   'pet': [
-                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Consulta Atrasada', desc: 'Reagendar consulta do Rex', badge: 'Atenção', color: 'orange' },
+                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação V10', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Estoque Baixo', desc: 'Ração Premium Golden acabando', badge: 'Atenção', color: 'orange' },
                     { icon: TrendingUp, title: 'Nova Consulta', desc: 'Agendamento feito há 10 minutos', badge: 'Novo', color: 'green' }
                   ],
-                  'saude': [
-                    { icon: AlertTriangle, title: 'Exames Atrasados', desc: '1 exame precisa ser realizado', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Medicamentos', desc: 'Verificar receitas vencidas', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Paciente agendado para amanhã', badge: 'Novo', color: 'green' }
+                  'medico': [
+                    { icon: AlertTriangle, title: 'Medicamentos Vencidos', desc: 'Antibiótico expira em 2 dias', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Estoque Crítico', desc: 'Seringas 10ml em falta', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Emergência agendada há 5 minutos', badge: 'Novo', color: 'green' }
                   ],
                   'alimenticio': [
-                    { icon: AlertTriangle, title: 'Ingredientes Acabando', desc: '3 ingredientes abaixo do mínimo', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Produtos Vencendo', desc: '2 produtos vencem hoje', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pedido #245 há 5 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Ingredientes Vencendo', desc: '4 ingredientes vencem hoje', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Estoque Baixo', desc: 'Massa para pizza acabando', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pizza Margherita há 3 minutos', badge: 'Novo', color: 'green' }
                   ],
                   'vendas': [
-                    { icon: AlertTriangle, title: 'Stock Baixo', desc: '5 produtos abaixo do mínimo', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Pagamento Pendente', desc: 'Fatura vence hoje', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Venda', desc: 'MacBook vendido há 15 minutos', badge: 'Novo', color: 'green' }
+                    { icon: AlertTriangle, title: 'Produto Esgotado', desc: 'Monitor 144Hz fora de estoque', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Pagamento Pendente', desc: 'Fatura corporativa vence hoje', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Nova Venda', desc: 'Processador i7 vendido há 8 minutos', badge: 'Novo', color: 'green' }
                   ],
-                  'design': [
-                    { icon: AlertTriangle, title: 'Projeto Atrasado', desc: 'Logo entrega hoje', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente precisa aprovar arte', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 30 minutos', badge: 'Novo', color: 'green' }
+                  'tecnologia': [
+                    { icon: AlertTriangle, title: 'Hardware Crítico', desc: 'Placa RTX 4060 esgotada', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Instalação Pendente', desc: 'Servidor aguarda configuração', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Nova Venda', desc: 'SSD Samsung vendido há 12 minutos', badge: 'Novo', color: 'green' }
                   ],
-                  'sites': [
-                    { icon: AlertTriangle, title: 'Site Fora do Ar', desc: 'Domínio cliente.com', badge: 'Crítico', color: 'red' },
-                    { icon: Clock, title: 'Backup Pendente', desc: 'Backup automático atrasado', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Lead', desc: 'Orçamento solicitado há 20 minutos', badge: 'Novo', color: 'green' }
+                  'educacao': [
+                    { icon: AlertTriangle, title: 'Material Esgotado', desc: 'Papel A4 fora de estoque', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Entrega Atrasada', desc: 'Kit laboratório chegou ontem', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Nova Matrícula', desc: 'Aluno inscrito há 15 minutos', badge: 'Novo', color: 'green' }
+                  ],
+                  'beleza': [
+                    { icon: AlertTriangle, title: 'Produto Vencendo', desc: 'Esmalte Colorama expira em 3 dias', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Estoque Baixo', desc: 'Perfume Boticário acabando', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Novo Agendamento', desc: 'Corte marcado há 7 minutos', badge: 'Novo', color: 'green' }
                   ]
                 };
                 
