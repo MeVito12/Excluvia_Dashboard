@@ -52,24 +52,154 @@ const AtendimentoSection = () => {
         return {
           catalogName: 'Prateleira',
           chats: [
-            { id: 1, clientName: 'Ana Oliveira', lastMessage: 'Quando é a próxima vacina do Max?', timestamp: '14:30', status: 'unread', unread: 2, category: 'pet' },
-            { id: 2, clientName: 'Carlos Silva', lastMessage: 'Obrigado pelo atendimento!', timestamp: '14:15', status: 'read', unread: 0, category: 'pet' }
+            { id: 1, clientName: 'Ana Oliveira', lastMessage: '🤖 Bot: Vacina V10 do Max está agendada para 15/07. Lembretes automáticos ativados! 📅', timestamp: '14:30', status: 'unread', unread: 2, category: 'pet', isBot: true, serviceScheduled: true },
+            { id: 2, clientName: 'Carlos Silva', lastMessage: 'Meu gato está com tosse, é urgente?', timestamp: '14:15', status: 'unread', unread: 1, category: 'pet', isBot: false },
+            { id: 3, clientName: 'Maria Santos', lastMessage: '🤖 Bot: Sintomas indicam consulta veterinária. Agendamento automático disponível para hoje 16h. Confirmar?', timestamp: '14:00', status: 'read', unread: 0, category: 'pet', isBot: true, urgentCase: true },
+            { id: 4, clientName: 'Pedro Lima', lastMessage: 'Que ração vocês recomendam para filhote de labrador?', timestamp: '13:45', status: 'unread', unread: 1, category: 'pet', isBot: false },
+            { id: 5, clientName: 'Família Costa', lastMessage: '🤖 Bot: Para filhotes de labrador recomendo Royal Canin Puppy Large. Rico em nutrientes essenciais. Entrega hoje mesmo!', timestamp: '13:30', status: 'read', unread: 0, category: 'pet', isBot: true, productRecommended: true }
           ],
           catalogs: [
-            { id: 1, name: 'Prateleira Pet Shop Premium', category: 'pet', items: ['Ração Golden Premium 15kg', 'Brinquedo Kong Classic', 'Medicamento Antiparasitário', 'Coleira Antipulgas'], description: 'Produtos premium para cães e gatos', active: true, qrCode: 'QR_PET_001' },
-            { id: 2, name: 'Prateleira Veterinário', category: 'pet', items: ['Vacina V10', 'Exame de Sangue', 'Consulta Veterinária', 'Cirurgia Castração'], description: 'Serviços veterinários completos', active: true, qrCode: 'QR_PET_002' }
+            { 
+              id: 1, 
+              name: 'Prateleira Pet Shop Inteligente', 
+              category: 'pet', 
+              items: ['Ração Royal Canin Premium', 'Brinquedo Kong Interativo', 'Medicamento Antipulgas', 'Coleira GPS Smart'], 
+              description: 'Produtos premium com recomendações personalizadas baseadas na raça, idade e necessidades do pet', 
+              active: true, 
+              qrCode: 'QR_PET_001',
+              features: [
+                'Recomendação por raça/idade',
+                'Lembretes de vacinação',
+                'Consulta express online',
+                'Entrega emergencial',
+                'Histórico médico digital'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Veterinário Automatizado', 
+              category: 'pet', 
+              items: ['Consulta Online 24h', 'Agendamento Inteligente', 'Diagnóstico Pré-análise', 'Receituário Digital'], 
+              description: 'Atendimento veterinário com triagem automática, agendamentos inteligentes e diagnósticos preliminares', 
+              active: true, 
+              qrCode: 'QR_PET_002',
+              features: [
+                'Triagem automática 24/7',
+                'Agendamento por urgência',
+                'Histórico completo',
+                'Receitas digitais',
+                'Lembretes automáticos'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Triagem Veterinária 24/7',
+              description: 'Sistema analisa sintomas relatados e sugere nível de urgência, agendamentos automáticos ou orientações básicas.',
+              icon: Bot,
+              examples: [
+                'Meu gato está com tosse, é urgente?',
+                'Quando é a próxima vacina?',
+                'Que ração é melhor para meu cachorro?'
+              ]
+            },
+            {
+              title: 'Recomendações Personalizadas',
+              description: 'Com base na raça, idade e histórico, sugere produtos específicos e cria lembretes de cuidados.',
+              icon: Heart,
+              examples: [
+                'Ração personalizada por raça',
+                'Cronograma de vacinação automático',
+                'Produtos recomendados por idade'
+              ]
+            },
+            {
+              title: 'Agendamento Inteligente',
+              description: 'Identifica emergências e agenda consultas automáticas com base na disponibilidade e urgência.',
+              icon: Clock,
+              examples: [
+                'Agendamento por urgência',
+                'Lembretes de consulta',
+                'Disponibilidade em tempo real'
+              ]
+            }
           ]
         };
       case 'saude':
         return {
           catalogName: 'Prateleira',
           chats: [
-            { id: 1, clientName: 'Maria Santos', lastMessage: 'Preciso renovar minha receita', timestamp: '15:20', status: 'unread', unread: 1, category: 'saude' },
-            { id: 2, clientName: 'João Costa', lastMessage: 'Medicamento chegou, obrigado!', timestamp: '14:45', status: 'read', unread: 0, category: 'saude' }
+            { id: 1, clientName: 'Maria Santos', lastMessage: '🤖 Bot: Receita de Losartana renovada automaticamente! Entrega agendada para amanhã 14h. Lembrete de dosagem ativado 💊', timestamp: '15:20', status: 'unread', unread: 1, category: 'saude', isBot: true, prescriptionRenewed: true },
+            { id: 2, clientName: 'João Costa', lastMessage: 'Estou sentindo dor no peito, devo me preocupar?', timestamp: '15:10', status: 'unread', unread: 2, category: 'saude', isBot: false },
+            { id: 3, clientName: 'Ana Paula', lastMessage: '🤖 Bot: Sintomas indicam avaliação médica urgente. Telemedicina disponível agora ou consulta presencial em 30min. Escolha?', timestamp: '15:00', status: 'read', unread: 0, category: 'saude', isBot: true, urgentConsultation: true },
+            { id: 4, clientName: 'Carlos Mendes', lastMessage: 'Minha pressão está 140x90, é normal?', timestamp: '14:45', status: 'unread', unread: 1, category: 'saude', isBot: false },
+            { id: 5, clientName: 'Família Silva', lastMessage: '🤖 Bot: Pressão ligeiramente alta. Recomendo monitoramento. Agendamento com cardiologista para esta semana? Kit pressão em promoção.', timestamp: '14:30', status: 'read', unread: 0, category: 'saude', isBot: true, healthMonitoring: true }
           ],
           catalogs: [
-            { id: 1, name: 'Prateleira Farmácia Central', category: 'saude', items: ['Dipirona 500mg', 'Vitamina D3', 'Suplemento Ômega 3', 'Kit Primeiros Socorros'], description: 'Medicamentos e produtos de saúde', active: true, qrCode: 'QR_SAUDE_001' },
-            { id: 2, name: 'Prateleira Clínica Médica', category: 'saude', items: ['Consulta Clínico Geral', 'Exame Cardiológico', 'Fisioterapia', 'Check-up Completo'], description: 'Serviços médicos especializados', active: true, qrCode: 'QR_SAUDE_002' }
+            { 
+              id: 1, 
+              name: 'Farmácia Inteligente 24h', 
+              category: 'saude', 
+              items: ['Medicamentos Controlados', 'Vitaminas Personalizadas', 'Kit Monitoramento', 'Entrega Express'], 
+              description: 'Farmácia com prescrições automáticas, lembretes de dosagem e monitoramento de saúde integrado', 
+              active: true, 
+              qrCode: 'QR_SAUDE_001',
+              features: [
+                'Renovação automática receitas',
+                'Lembretes de medicação',
+                'Interações medicamentosas',
+                'Entrega emergencial 24h',
+                'Monitoramento de efeitos'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Clínica Telemedicina Avançada', 
+              category: 'saude', 
+              items: ['Consulta Imediata 24h', 'Diagnóstico AI-Assistido', 'Monitoramento Remoto', 'Prescrição Digital'], 
+              description: 'Atendimento médico com triagem inteligente, diagnósticos assistidos por IA e monitoramento contínuo', 
+              active: true, 
+              qrCode: 'QR_SAUDE_002',
+              features: [
+                'Triagem por sintomas IA',
+                'Consulta imediata 24/7',
+                'Diagnóstico assistido',
+                'Receitas digitais seguras',
+                'Histórico médico completo'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Triagem Médica Inteligente',
+              description: 'Analisa sintomas relatados e determina nível de urgência, direcionando para telemedicina ou atendimento presencial.',
+              icon: Bot,
+              examples: [
+                'Estou com dor no peito, é urgente?',
+                'Minha pressão está alta, o que fazer?',
+                'Posso renovar minha receita?'
+              ]
+            },
+            {
+              title: 'Prescrições Automáticas',
+              description: 'Renova receitas automaticamente, verifica interações medicamentosas e cria lembretes de dosagem.',
+              icon: Heart,
+              examples: [
+                'Renovação automática de receitas',
+                'Alertas de interação medicamentosa',
+                'Lembretes de horário da medicação'
+              ]
+            },
+            {
+              title: 'Monitoramento Contínuo',
+              description: 'Acompanha sinais vitais e exames, alertando sobre mudanças e sugerindo consultas preventivas.',
+              icon: TrendingUp,
+              examples: [
+                'Monitoramento de pressão arterial',
+                'Alertas de exames em atraso',
+                'Consultas preventivas sugeridas'
+              ]
+            }
           ]
         };
       case 'alimenticio':
@@ -172,50 +302,227 @@ const AtendimentoSection = () => {
         return {
           catalogName: 'Catálogo',
           chats: [
-            { id: 1, clientName: 'Digital Solutions Corp', lastMessage: 'Orçamento aprovado! Podem enviar os 3 MacBook Air M3. Quando fica pronta a entrega?', timestamp: '17:45', status: 'unread', unread: 2, category: 'vendas' },
-            { id: 2, clientName: 'MegaTech Distribuidora', lastMessage: 'Perfeito! Fechamos 50 Samsung Galaxy S24 Ultra. Preciso da nota fiscal até amanhã.', timestamp: '17:30', status: 'unread', unread: 1, category: 'vendas' },
-            { id: 3, clientName: 'GameZone Loja de Games', lastMessage: 'Os 10 PlayStation 5 chegaram hoje! Qualidade excelente como sempre. Próximo pedido: 15 Xbox Series X.', timestamp: '17:15', status: 'read', unread: 0, category: 'vendas' },
-            { id: 4, clientName: 'Hotel Presidente', lastMessage: 'Instalação das 8 Smart TVs Samsung foi um sucesso! Hóspedes adoraram. Vamos conversar sobre ar condicionados agora.', timestamp: '16:50', status: 'unread', unread: 3, category: 'vendas' },
-            { id: 5, clientName: 'Escola Técnica Moderna', lastMessage: 'Configuração dos 15 iPads Pro está perfeita! Alunos já estão usando. Agradecemos o suporte técnico impecável.', timestamp: '16:35', status: 'read', unread: 0, category: 'vendas' },
-            { id: 6, clientName: 'Pedro Santos Silva', lastMessage: 'iPhone 15 Pro Max funcionando perfeitamente! Migração de dados foi rápida. Recomendo vocês para meus colegas.', timestamp: '16:20', status: 'read', unread: 0, category: 'vendas' },
-            { id: 7, clientName: 'SportMax Artigos Esportivos', lastMessage: 'Linha Adidas chegou hoje! 20 Tênis Ultraboost vendidos em 2 horas. Podem enviar mais 30 unidades?', timestamp: '16:05', status: 'unread', unread: 2, category: 'vendas' },
-            { id: 8, clientName: 'Café Central Escritórios', lastMessage: 'As 12 Cafeteiras Nespresso estão instaladas em todos os andares. Funcionários adoraram! Precisamos de mais cápsulas.', timestamp: '15:45', status: 'read', unread: 0, category: 'vendas' },
-            { id: 9, clientName: 'Agência Publicidade Criativa', lastMessage: 'Monitores LG UltraWide aumentaram nossa produtividade em 40%! Designers estão muito satisfeitos. Vamos ampliar a compra.', timestamp: '15:30', status: 'unread', unread: 1, category: 'vendas' },
-            { id: 10, clientName: 'TechFix Informática Ltda', lastMessage: 'Notebooks Dell Inspiron com desconto corporativo aprovado! Enviem os 5 notebooks esta semana.', timestamp: '15:15', status: 'read', unread: 0, category: 'vendas' },
-            { id: 11, clientName: 'Construtora Moderna', lastMessage: 'Kits Ferramentas Bosch chegaram! Qualidade profissional excelente. Próximo pedido: furadeiras e parafusadeiras.', timestamp: '15:00', status: 'unread', unread: 3, category: 'vendas' },
-            { id: 12, clientName: 'Maria Fernanda Costa', lastMessage: 'Dois Galaxy S24 Ultra entregues! Câmera profissional é impressionante. Marido também quer um iPhone agora.', timestamp: '14:45', status: 'read', unread: 0, category: 'vendas' },
-            { id: 13, clientName: 'Livraria Conhecimento', lastMessage: '40 exemplares "Pai Rico, Pai Pobre" vendidos em uma semana! Podem enviar mais 60 livros de negócios?', timestamp: '14:30', status: 'unread', unread: 2, category: 'vendas' },
-            { id: 14, clientName: 'Universidade TechnoSul', lastMessage: 'Licitação dos 30 Kindles Paperwhite aprovada! Biblioteca digital será revolucionária. Quando podem entregar?', timestamp: '14:15', status: 'unread', unread: 1, category: 'vendas' },
-            { id: 15, clientName: 'Casa & Decoração Ltda', lastMessage: '25 Air Fryers Philips voaram das prateleiras! Clientes amaram a qualidade. Precisamos de mais 50 unidades urgente.', timestamp: '14:00', status: 'read', unread: 0, category: 'vendas' },
-            { id: 16, clientName: 'Startup InnovaTech', lastMessage: 'Setup completo entregue! Equipe trabalhando com máxima produtividade. Vocês são nossos parceiros oficiais de tecnologia!', timestamp: '13:45', status: 'unread', unread: 4, category: 'vendas' }
+            { id: 1, clientName: 'Digital Solutions Corp', lastMessage: '🤖 Bot: Orçamento de 3 MacBook Air M3 aprovado (R$ 29.997,00)! Entrega expressa disponível para amanhã. Pagamento confirmado?', timestamp: '17:45', status: 'unread', unread: 2, category: 'vendas', isBot: true, orderValue: 29997.00 },
+            { id: 2, clientName: 'MegaTech Distribuidora', lastMessage: 'Preciso de um orçamento para 100 smartphones Samsung', timestamp: '17:30', status: 'unread', unread: 1, category: 'vendas', isBot: false },
+            { id: 3, clientName: 'Empresa Local', lastMessage: '🤖 Bot: Orçamento para 100 Samsung Galaxy S24 gerado! Total: R$ 89.900,00 com desconto corporativo (10%). Nota fiscal programada.', timestamp: '17:15', status: 'read', unread: 0, category: 'vendas', isBot: true, corporateDiscount: true },
+            { id: 4, clientName: 'GameZone Loja', lastMessage: 'Xbox Series X ainda tem estoque?', timestamp: '16:50', status: 'unread', unread: 1, category: 'vendas', isBot: false },
+            { id: 5, clientName: 'Hotel Presidente', lastMessage: '🤖 Bot: Xbox Series X em estoque! 25 unidades disponíveis. Desconto para volume: 15% acima de 10 unidades. Interessado?', timestamp: '16:35', status: 'read', unread: 0, category: 'vendas', isBot: true, bulkDiscount: true }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Eletrônicos', category: 'vendas', items: ['iPhone 15 Pro', 'Notebook Dell Inspiron', 'Smart TV Samsung 55"', 'Fone Bluetooth Sony'], description: 'Eletrônicos de última geração', active: true, qrCode: 'QR_VENDAS_001' },
-            { id: 2, name: 'Catálogo Geral', category: 'vendas', items: ['Roupas Masculinas', 'Produtos para Casa', 'Artigos Esportivos', 'Livros e Revistas'], description: 'Produtos diversificados para todas as necessidades', active: true, qrCode: 'QR_VENDAS_002' }
+            { 
+              id: 1, 
+              name: 'Catálogo Inteligente B2B', 
+              category: 'vendas', 
+              items: ['iPhone 15 Pro Max', 'MacBook Air M3', 'Samsung Galaxy S24 Ultra', 'Notebooks Corporativos'], 
+              description: 'Catálogo com preços dinâmicos, descontos automáticos por volume e orçamentos instantâneos para empresas', 
+              active: true, 
+              qrCode: 'QR_VENDAS_001',
+              features: [
+                'Orçamento automático por volume',
+                'Desconto corporativo instantâneo',
+                'Consulta de estoque em tempo real',
+                'Nota fiscal automática',
+                'Entrega programada'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Marketplace Automatizado', 
+              category: 'vendas', 
+              items: ['Eletrônicos Premium', 'Artigos Esportivos', 'Casa & Decoração', 'Livros e E-books'], 
+              description: 'Sistema automatizado que sugere produtos baseado no histórico de compras e negocia preços automaticamente', 
+              active: true, 
+              qrCode: 'QR_VENDAS_002',
+              features: [
+                'Sugestões personalizadas',
+                'Negociação automática de preços',
+                'Histórico de compras',
+                'Alertas de promoção',
+                'Frete otimizado'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Orçamentos Automáticos',
+              description: 'Sistema calcula preços, aplica descontos corporativos e gera orçamentos detalhados instantaneamente baseado no volume.',
+              icon: Bot,
+              examples: [
+                'Preciso de 100 smartphones Samsung',
+                'Qual o preço para 50 notebooks?',
+                'Desconto para pedido empresarial?'
+              ]
+            },
+            {
+              title: 'Gestão de Estoque Inteligente',
+              description: 'Consulta estoque em tempo real, sugere produtos alternativos e programa entregas automáticas.',
+              icon: TrendingUp,
+              examples: [
+                'Consulta de disponibilidade instantânea',
+                'Sugestões de produtos similares',
+                'Alertas de reposição automática'
+              ]
+            },
+            {
+              title: 'Negociação Automatizada',
+              description: 'Aplica descontos por volume, calcula fretes otimizados e processa pedidos com nota fiscal automática.',
+              icon: CreditCard,
+              examples: [
+                'Desconto automático por volume',
+                'Frete otimizado por região',
+                'Nota fiscal instantânea'
+              ]
+            }
           ]
         };
       case 'design':
         return {
           catalogName: 'Catálogo',
           chats: [
-            { id: 1, clientName: 'Startup Tech', lastMessage: 'Adorei o logo! Quando fica pronto?', timestamp: '18:15', status: 'unread', unread: 2, category: 'design' },
-            { id: 2, clientName: 'Empresa Local', lastMessage: 'Material gráfico aprovado', timestamp: '17:45', status: 'read', unread: 0, category: 'design' }
+            { id: 1, clientName: 'Startup Tech', lastMessage: '🤖 Bot: Logo criado automaticamente! 3 variações baseadas no seu briefing. Aprovação em 24h. Preview disponível no link.', timestamp: '18:15', status: 'unread', unread: 2, category: 'design', isBot: true, autoDesign: true },
+            { id: 2, clientName: 'Empresa Local', lastMessage: 'Preciso de uma identidade visual completa urgente', timestamp: '17:45', status: 'unread', unread: 1, category: 'design', isBot: false },
+            { id: 3, clientName: 'Café Central', lastMessage: '🤖 Bot: Identidade visual para cafeteria criada! Logo, cardápio, uniforme e sinalização. Estilo minimalista moderno aplicado.', timestamp: '17:30', status: 'read', unread: 0, category: 'design', isBot: true, fullBranding: true }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Design Gráfico', category: 'design', items: ['Logotipo Profissional', 'Identidade Visual Completa', 'Material Gráfico', 'Design para Redes Sociais'], description: 'Serviços de design profissional', active: true, qrCode: 'QR_DESIGN_001' },
-            { id: 2, name: 'Catálogo Branding', category: 'design', items: ['Branding Completo', 'Manual da Marca', 'Apresentação Corporativa', 'Papelaria Personalizada'], description: 'Soluções completas de branding', active: true, qrCode: 'QR_DESIGN_002' }
+            { 
+              id: 1, 
+              name: 'Design Automatizado AI', 
+              category: 'design', 
+              items: ['Logo Generator AI', 'Identidade Visual Express', 'Social Media Automático', 'Material Gráfico Inteligente'], 
+              description: 'Sistema de design automatizado que cria logotipos, identidades visuais e materiais baseado em briefing inteligente', 
+              active: true, 
+              qrCode: 'QR_DESIGN_001',
+              features: [
+                'Criação automática de logos',
+                'Identidade visual completa',
+                'Templates personalizados',
+                'Revisões ilimitadas',
+                'Entrega em 24h'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Branding Intelligence', 
+              category: 'design', 
+              items: ['Análise de Mercado AI', 'Posicionamento Automático', 'Manual da Marca Digital', 'Estratégia Visual'], 
+              description: 'Sistema inteligente que analisa o mercado e cria estratégias de branding personalizadas automaticamente', 
+              active: true, 
+              qrCode: 'QR_DESIGN_002',
+              features: [
+                'Análise automática de concorrência',
+                'Posicionamento estratégico',
+                'Manual da marca digital',
+                'Paleta de cores inteligente',
+                'Tipografia otimizada'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Design Automático AI',
+              description: 'Sistema cria logos, identidades e materiais gráficos automaticamente baseado no briefing e análise de mercado.',
+              icon: Bot,
+              examples: [
+                'Preciso de um logo para minha startup',
+                'Identidade visual para restaurante',
+                'Material para redes sociais'
+              ]
+            },
+            {
+              title: 'Análise de Mercado',
+              description: 'IA analisa concorrentes e tendências para criar designs únicos e posicionamento estratégico diferenciado.',
+              icon: TrendingUp,
+              examples: [
+                'Análise automática de concorrência',
+                'Tendências do mercado em tempo real',
+                'Posicionamento estratégico sugerido'
+              ]
+            },
+            {
+              title: 'Entrega Expressa',
+              description: 'Sistema automatizado entrega designs aprovados em até 24h com revisões ilimitadas.',
+              icon: Zap,
+              examples: [
+                'Entrega em 24 horas',
+                'Revisões automáticas ilimitadas',
+                'Aprovação por WhatsApp'
+              ]
+            }
           ]
         };
       case 'sites':
         return {
           catalogName: 'Catálogo',
           chats: [
-            { id: 1, clientName: 'E-commerce Client', lastMessage: 'Site está funcionando perfeitamente!', timestamp: '19:30', status: 'read', unread: 0, category: 'sites' },
-            { id: 2, clientName: 'Agência Parceira', lastMessage: 'Preciso de uma landing page urgente', timestamp: '18:50', status: 'unread', unread: 1, category: 'sites' }
+            { id: 1, clientName: 'E-commerce Client', lastMessage: '🤖 Bot: Site e-commerce criado! Integração com pagamentos automática. 150 produtos cadastrados. Vendas já iniciadas!', timestamp: '19:30', status: 'read', unread: 0, category: 'sites', isBot: true, siteDeployed: true },
+            { id: 2, clientName: 'Agência Parceira', lastMessage: 'Preciso de uma landing page para campanha que vai ao ar amanhã', timestamp: '18:50', status: 'unread', unread: 1, category: 'sites', isBot: false },
+            { id: 3, clientName: 'Startup InnovaTech', lastMessage: '🤖 Bot: Landing page criada e otimizada! SEO configurado, Analytics integrado. Performance 95/100. Online em 2h!', timestamp: '18:30', status: 'read', unread: 0, category: 'sites', isBot: true, fastDelivery: true }
           ],
           catalogs: [
-            { id: 1, name: 'Catálogo Desenvolvimento Web', category: 'sites', items: ['Site Institucional', 'E-commerce Completo', 'Landing Page', 'Sistema Web Personalizado'], description: 'Desenvolvimento web profissional', active: true, qrCode: 'QR_SITES_001' },
-            { id: 2, name: 'Catálogo Marketing Digital', category: 'sites', items: ['SEO Otimização', 'Google Ads', 'Redes Sociais', 'E-mail Marketing'], description: 'Estratégias de marketing digital', active: true, qrCode: 'QR_SITES_002' }
+            { 
+              id: 1, 
+              name: 'Desenvolvimento Web Automático', 
+              category: 'sites', 
+              items: ['Sites Institucionais AI', 'E-commerce Express', 'Landing Pages Otimizadas', 'PWA Inteligentes'], 
+              description: 'Plataforma que cria sites completos automaticamente com SEO, responsividade e integração de pagamentos', 
+              active: true, 
+              qrCode: 'QR_SITES_001',
+              features: [
+                'Criação automática de sites',
+                'SEO otimizado',
+                'Responsividade garantida',
+                'Integração de pagamentos',
+                'Deploy automático'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Marketing Digital Automatizado', 
+              category: 'sites', 
+              items: ['Google Ads Auto-Setup', 'Social Media Manager AI', 'Email Marketing Inteligente', 'Analytics Avançado'], 
+              description: 'Sistema que configura e gerencia campanhas de marketing digital automaticamente com otimização contínua', 
+              active: true, 
+              qrCode: 'QR_SITES_002',
+              features: [
+                'Campanhas Google Ads automáticas',
+                'Posts redes sociais IA',
+                'Email marketing personalizado',
+                'Relatórios automáticos',
+                'Otimização contínua'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Desenvolvimento Automático',
+              description: 'IA cria sites completos, responsivos e otimizados em poucas horas com base nos requisitos do cliente.',
+              icon: Bot,
+              examples: [
+                'Preciso de um e-commerce completo',
+                'Landing page para campanha',
+                'Site institucional profissional'
+              ]
+            },
+            {
+              title: 'SEO e Performance',
+              description: 'Sistema automatiza otimização SEO, configura Analytics e garante performance superior em todos os dispositivos.',
+              icon: TrendingUp,
+              examples: [
+                'SEO automático otimizado',
+                'Performance 95+ garantida',
+                'Analytics configurado'
+              ]
+            },
+            {
+              title: 'Marketing Integrado',
+              description: 'Configura automaticamente Google Ads, redes sociais e email marketing com campanhas otimizadas.',
+              icon: Zap,
+              examples: [
+                'Google Ads configurado automaticamente',
+                'Redes sociais integradas',
+                'Email marketing personalizado'
+              ]
+            }
           ]
         };
       default:
@@ -263,53 +570,115 @@ const AtendimentoSection = () => {
         </div>
       </div>
 
-      {/* Seção Especial: Bot Alimentício Inteligente */}
-      {selectedCategory === 'alimenticio' && getCategorySpecificData().botFeatures && (
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6">
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-orange-800 mb-2">
-              🍽️ Seu Cardápio ao Alcance de Todos, Pelo WhatsApp!
-            </h2>
-            <p className="text-orange-700">
-              Sistema inteligente de atendimento 24/7 com pedidos automáticos e pagamentos integrados
-            </p>
+      {/* Seção Especial: Sistemas Inteligentes por Categoria */}
+      {getCategorySpecificData().botFeatures && (
+        <div className={`relative overflow-hidden rounded-xl p-8 ${
+          selectedCategory === 'alimenticio' ? 'bg-gradient-to-br from-green-400 via-green-500 to-green-600' :
+          selectedCategory === 'pet' ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700' :
+          selectedCategory === 'saude' ? 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800' :
+          selectedCategory === 'vendas' ? 'bg-gradient-to-br from-purple-600 via-purple-700 to-indigo-800' :
+          selectedCategory === 'design' ? 'bg-gradient-to-br from-green-400 via-teal-500 to-blue-600' :
+          selectedCategory === 'sites' ? 'bg-gradient-to-br from-purple-700 via-indigo-700 to-blue-800' :
+          'bg-gradient-to-br from-gray-600 via-gray-700 to-gray-800'
+        }`}>
+          {/* Padrão de fundo decorativo */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full -translate-x-20 -translate-y-20"></div>
+            <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full translate-x-16 translate-y-16"></div>
+            <div className="absolute top-1/2 left-1/2 w-24 h-24 bg-white rounded-full -translate-x-12 -translate-y-12"></div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {getCategorySpecificData().botFeatures?.map((feature, index) => (
-              <Card key={index} className="bg-white border border-orange-200 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="text-center mb-4">
-                    <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-3">
-                      <feature.icon className="h-8 w-8 text-orange-600" />
-                    </div>
-                    <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{feature.description}</p>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <p className="text-xs font-semibold text-orange-700 uppercase tracking-wide">
-                      Exemplos:
-                    </p>
-                    {feature.examples.map((example, idx) => (
-                      <div key={idx} className="bg-orange-50 rounded p-2">
-                        <p className="text-xs text-orange-800">"'{example}'"</p>
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-white mb-3">
+                {selectedCategory === 'alimenticio' && '🍽️ Seu Cardápio ao Alcance de Todos!'}
+                {selectedCategory === 'pet' && '🐾 Cuidado Veterinário Inteligente 24/7!'}
+                {selectedCategory === 'saude' && '🏥 Sua Saúde Monitorada Automaticamente!'}
+                {selectedCategory === 'vendas' && '💼 Vendas Automatizadas e Inteligentes!'}
+                {selectedCategory === 'design' && '🎨 Design Criativo Gerado por IA!'}
+                {selectedCategory === 'sites' && '🚀 Sites e Marketing Digital Automático!'}
+              </h2>
+              <p className="text-white/90 text-lg">
+                Sistema inteligente de atendimento 24/7 com automação completa e IA avançada
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {getCategorySpecificData().botFeatures?.map((feature, index) => (
+                <Card key={index} className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="text-center mb-4">
+                      <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${
+                        selectedCategory === 'alimenticio' ? 'bg-gradient-to-br from-green-100 to-green-200' :
+                        selectedCategory === 'pet' ? 'bg-gradient-to-br from-purple-100 to-purple-200' :
+                        selectedCategory === 'saude' ? 'bg-gradient-to-br from-blue-100 to-blue-200' :
+                        selectedCategory === 'vendas' ? 'bg-gradient-to-br from-purple-100 to-indigo-200' :
+                        selectedCategory === 'design' ? 'bg-gradient-to-br from-green-100 to-teal-200' :
+                        selectedCategory === 'sites' ? 'bg-gradient-to-br from-purple-100 to-blue-200' :
+                        'bg-gradient-to-br from-gray-100 to-gray-200'
+                      }`}>
+                        <feature.icon className={`h-8 w-8 ${
+                          selectedCategory === 'alimenticio' ? 'text-green-600' :
+                          selectedCategory === 'pet' ? 'text-purple-600' :
+                          selectedCategory === 'saude' ? 'text-blue-600' :
+                          selectedCategory === 'vendas' ? 'text-purple-600' :
+                          selectedCategory === 'design' ? 'text-teal-600' :
+                          selectedCategory === 'sites' ? 'text-indigo-600' :
+                          'text-gray-600'
+                        }`} />
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="mt-6 text-center">
-            <Alert className="bg-green-50 border-green-200">
-              <CheckCircle className="h-4 w-4 text-green-600" />
-              <AlertDescription className="text-green-800">
-                <strong>Compra Rápida e Fácil:</strong> Cliente escolhe itens na conversa → Sistema calcula tudo → 
-                Gera link de pagamento seguro → Pagamento confirmado → Pedido enviado automaticamente para cozinha!
-              </AlertDescription>
-            </Alert>
+                      <h3 className="font-bold text-gray-900 mb-2 text-lg">{feature.title}</h3>
+                      <p className="text-sm text-gray-600 mb-4 leading-relaxed">{feature.description}</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <p className={`text-xs font-semibold uppercase tracking-wide ${
+                        selectedCategory === 'alimenticio' ? 'text-green-700' :
+                        selectedCategory === 'pet' ? 'text-purple-700' :
+                        selectedCategory === 'saude' ? 'text-blue-700' :
+                        selectedCategory === 'vendas' ? 'text-purple-700' :
+                        selectedCategory === 'design' ? 'text-teal-700' :
+                        selectedCategory === 'sites' ? 'text-indigo-700' :
+                        'text-gray-700'
+                      }`}>
+                        Exemplos:
+                      </p>
+                      {feature.examples.map((example, idx) => (
+                        <div key={idx} className={`rounded-lg p-3 ${
+                          selectedCategory === 'alimenticio' ? 'bg-green-50 border border-green-200' :
+                          selectedCategory === 'pet' ? 'bg-purple-50 border border-purple-200' :
+                          selectedCategory === 'saude' ? 'bg-blue-50 border border-blue-200' :
+                          selectedCategory === 'vendas' ? 'bg-purple-50 border border-purple-200' :
+                          selectedCategory === 'design' ? 'bg-teal-50 border border-teal-200' :
+                          selectedCategory === 'sites' ? 'bg-indigo-50 border border-indigo-200' :
+                          'bg-gray-50 border border-gray-200'
+                        }`}>
+                          <p className={`text-xs font-medium ${
+                            selectedCategory === 'alimenticio' ? 'text-green-800' :
+                            selectedCategory === 'pet' ? 'text-purple-800' :
+                            selectedCategory === 'saude' ? 'text-blue-800' :
+                            selectedCategory === 'vendas' ? 'text-purple-800' :
+                            selectedCategory === 'design' ? 'text-teal-800' :
+                            selectedCategory === 'sites' ? 'text-indigo-800' :
+                            'text-gray-800'
+                          }`}>"{example}"</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            
+            <div className="mt-8 text-center">
+              <Alert className="bg-white/90 backdrop-blur-sm border-0 shadow-lg">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                <AlertDescription className="text-gray-800 font-medium">
+                  <strong>Processo Automático:</strong> Cliente faz solicitação → IA analisa e processa → 
+                  Sistema executa automaticamente → Confirmação instantânea → Resultado entregue!
+                </AlertDescription>
+              </Alert>
+            </div>
           </div>
         </div>
       )}
@@ -399,69 +768,111 @@ const AtendimentoSection = () => {
                   </div>
                 ) : (
                   filteredChats.map((chat) => (
-                    <div key={chat.id} className={`p-3 rounded-lg border ${
-                      selectedCategory === 'alimenticio' && (chat as any).isBot 
-                        ? 'bg-gradient-to-r from-green-50 to-blue-50 border-green-200' 
-                        : 'bg-gray-50 border-gray-200'
-                    }`}>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            selectedCategory === 'alimenticio' && (chat as any).isBot 
-                              ? 'bg-green-100' 
-                              : 'bg-blue-100'
+                    <div key={chat.id} className={`p-4 rounded-xl border-2 transition-all duration-300 hover:scale-[1.02] ${
+                      (chat as any).isBot 
+                        ? selectedCategory === 'alimenticio' ? 'bg-gradient-to-r from-green-50 via-green-100 to-emerald-50 border-green-300 shadow-green-100' :
+                          selectedCategory === 'pet' ? 'bg-gradient-to-r from-purple-50 via-purple-100 to-violet-50 border-purple-300 shadow-purple-100' :
+                          selectedCategory === 'saude' ? 'bg-gradient-to-r from-blue-50 via-blue-100 to-cyan-50 border-blue-300 shadow-blue-100' :
+                          selectedCategory === 'vendas' ? 'bg-gradient-to-r from-purple-50 via-indigo-100 to-purple-50 border-purple-300 shadow-purple-100' :
+                          selectedCategory === 'design' ? 'bg-gradient-to-r from-teal-50 via-green-100 to-teal-50 border-teal-300 shadow-teal-100' :
+                          selectedCategory === 'sites' ? 'bg-gradient-to-r from-indigo-50 via-blue-100 to-indigo-50 border-indigo-300 shadow-indigo-100' :
+                          'bg-gradient-to-r from-gray-50 via-gray-100 to-gray-50 border-gray-300 shadow-gray-100'
+                        : 'bg-white border-gray-200 shadow-sm hover:shadow-md'
+                    } shadow-lg`}>
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${
+                            (chat as any).isBot 
+                              ? selectedCategory === 'alimenticio' ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                                selectedCategory === 'pet' ? 'bg-gradient-to-br from-purple-500 to-purple-700' :
+                                selectedCategory === 'saude' ? 'bg-gradient-to-br from-blue-500 to-blue-700' :
+                                selectedCategory === 'vendas' ? 'bg-gradient-to-br from-purple-600 to-indigo-700' :
+                                selectedCategory === 'design' ? 'bg-gradient-to-br from-teal-500 to-green-600' :
+                                selectedCategory === 'sites' ? 'bg-gradient-to-br from-indigo-600 to-blue-700' :
+                                'bg-gradient-to-br from-gray-500 to-gray-700'
+                              : 'bg-gradient-to-br from-gray-400 to-gray-600'
                           }`}>
-                            {selectedCategory === 'alimenticio' && (chat as any).isBot ? (
-                              <Bot className="w-5 h-5 text-green-600" />
+                            {(chat as any).isBot ? (
+                              <Bot className="w-6 h-6 text-white" />
                             ) : (
-                              <Users className="w-5 h-5 text-blue-600" />
+                              <Users className="w-6 h-6 text-white" />
                             )}
                           </div>
                           <div>
-                            <h4 className="font-medium text-gray-900">
-                              {chat.clientName}
-                              {selectedCategory === 'alimenticio' && (chat as any).isBot && (
-                                <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
-                                  🤖 Atendimento Automático
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="font-bold text-gray-900 text-lg">{chat.clientName}</h4>
+                              {(chat as any).isBot && (
+                                <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                                  selectedCategory === 'alimenticio' ? 'bg-green-500 text-white' :
+                                  selectedCategory === 'pet' ? 'bg-purple-500 text-white' :
+                                  selectedCategory === 'saude' ? 'bg-blue-500 text-white' :
+                                  selectedCategory === 'vendas' ? 'bg-purple-600 text-white' :
+                                  selectedCategory === 'design' ? 'bg-teal-500 text-white' :
+                                  selectedCategory === 'sites' ? 'bg-indigo-600 text-white' :
+                                  'bg-gray-500 text-white'
+                                }`}>
+                                  🤖 IA
                                 </span>
                               )}
-                            </h4>
-                            <p className="text-sm text-gray-500">{chat.timestamp}</p>
+                            </div>
+                            <p className="text-sm text-gray-600 font-medium">{chat.timestamp}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          {selectedCategory === 'alimenticio' && (chat as any).orderValue && (
-                            <Badge className="bg-orange-100 text-orange-800">
+                          {(chat as any).orderValue && (
+                            <Badge className={`px-3 py-1 text-sm font-bold ${
+                              selectedCategory === 'alimenticio' ? 'bg-green-500 text-white' :
+                              selectedCategory === 'vendas' ? 'bg-purple-600 text-white' :
+                              'bg-blue-500 text-white'
+                            }`}>
                               R$ {(chat as any).orderValue.toFixed(2)}
                             </Badge>
                           )}
-                          {selectedCategory === 'alimenticio' && (chat as any).orderConfirmed && (
-                            <Badge className="bg-green-100 text-green-800">
-                              ✅ Pedido Confirmado
+                          {(chat as any).orderConfirmed && (
+                            <Badge className="bg-green-500 text-white px-3 py-1 text-sm font-bold">
+                              ✅ Confirmado
                             </Badge>
                           )}
                           {chat.unread > 0 && (
-                            <Badge className="bg-red-100 text-red-800">
+                            <Badge className="bg-red-500 text-white px-3 py-1 text-sm font-bold animate-pulse">
                               {chat.unread} nova{chat.unread !== 1 ? 's' : ''}
                             </Badge>
                           )}
-                          <Badge className={chat.status === 'unread' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}>
+                          <Badge className={`px-3 py-1 text-sm font-bold ${
+                            chat.status === 'unread' 
+                              ? 'bg-yellow-500 text-white' 
+                              : 'bg-green-500 text-white'
+                          }`}>
                             {chat.status === 'unread' ? 'Não lida' : 'Lida'}
                           </Badge>
                         </div>
                       </div>
-                      <p className={`text-sm ${
-                        selectedCategory === 'alimenticio' && (chat as any).isBot 
-                          ? 'text-green-800 font-medium' 
+                      <p className={`text-sm leading-relaxed ${
+                        (chat as any).isBot 
+                          ? selectedCategory === 'alimenticio' ? 'text-green-800 font-semibold' :
+                            selectedCategory === 'pet' ? 'text-purple-800 font-semibold' :
+                            selectedCategory === 'saude' ? 'text-blue-800 font-semibold' :
+                            selectedCategory === 'vendas' ? 'text-purple-800 font-semibold' :
+                            selectedCategory === 'design' ? 'text-teal-800 font-semibold' :
+                            selectedCategory === 'sites' ? 'text-indigo-800 font-semibold' :
+                            'text-gray-800 font-semibold'
                           : 'text-gray-700'
                       }`}>
                         {chat.lastMessage}
                       </p>
                       
-                      {selectedCategory === 'alimenticio' && (chat as any).isBot && (chat as any).orderValue && (
-                        <div className="mt-2 p-2 bg-white rounded border border-green-200">
-                          <p className="text-xs text-green-700">
-                            💳 Sistema processou pedido automaticamente - Link de pagamento gerado
+                      {(chat as any).isBot && (chat as any).orderValue && (
+                        <div className={`mt-3 p-3 rounded-lg border-2 ${
+                          selectedCategory === 'alimenticio' ? 'bg-white border-green-200' :
+                          selectedCategory === 'vendas' ? 'bg-white border-purple-200' :
+                          'bg-white border-blue-200'
+                        }`}>
+                          <p className={`text-xs font-semibold ${
+                            selectedCategory === 'alimenticio' ? 'text-green-700' :
+                            selectedCategory === 'vendas' ? 'text-purple-700' :
+                            'text-blue-700'
+                          }`}>
+                            💳 Sistema processou automaticamente - Pagamento seguro gerado
                           </p>
                         </div>
                       )}
@@ -493,52 +904,103 @@ const AtendimentoSection = () => {
                   </div>
                 ) : (
                   filteredCatalogs.map((catalog) => (
-                    <div key={catalog.id} className={`p-4 rounded-lg border ${
-                      selectedCategory === 'alimenticio' 
-                        ? 'bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200' 
-                        : 'bg-gray-50 border-gray-200'
+                    <div key={catalog.id} className={`p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] shadow-xl ${
+                      selectedCategory === 'alimenticio' ? 'bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 border-green-300 shadow-green-200' :
+                      selectedCategory === 'pet' ? 'bg-gradient-to-br from-purple-50 via-violet-50 to-purple-100 border-purple-300 shadow-purple-200' :
+                      selectedCategory === 'saude' ? 'bg-gradient-to-br from-blue-50 via-cyan-50 to-blue-100 border-blue-300 shadow-blue-200' :
+                      selectedCategory === 'vendas' ? 'bg-gradient-to-br from-purple-50 via-indigo-50 to-purple-100 border-purple-300 shadow-purple-200' :
+                      selectedCategory === 'design' ? 'bg-gradient-to-br from-teal-50 via-green-50 to-teal-100 border-teal-300 shadow-teal-200' :
+                      selectedCategory === 'sites' ? 'bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100 border-indigo-300 shadow-indigo-200' :
+                      'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50 border-gray-300 shadow-gray-200'
                     }`}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h4 className="font-medium text-gray-900">
-                            {catalog.name}
-                            {selectedCategory === 'alimenticio' && (
-                              <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
-                                🚀 Sistema Inteligente
-                              </span>
-                            )}
-                          </h4>
-                          <p className="text-sm text-gray-500">{catalog.description}</p>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-bold text-gray-900 text-xl">{catalog.name}</h4>
+                            <span className={`text-xs px-3 py-1 rounded-full font-bold ${
+                              selectedCategory === 'alimenticio' ? 'bg-green-500 text-white' :
+                              selectedCategory === 'pet' ? 'bg-purple-500 text-white' :
+                              selectedCategory === 'saude' ? 'bg-blue-500 text-white' :
+                              selectedCategory === 'vendas' ? 'bg-purple-600 text-white' :
+                              selectedCategory === 'design' ? 'bg-teal-500 text-white' :
+                              selectedCategory === 'sites' ? 'bg-indigo-600 text-white' :
+                              'bg-gray-500 text-white'
+                            }`}>
+                              🚀 IA Avançada
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-600 leading-relaxed">{catalog.description}</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={catalog.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
+                        <div className="flex items-center gap-3">
+                          <Badge className={`px-3 py-1 text-sm font-bold ${
+                            catalog.active 
+                              ? 'bg-green-500 text-white' 
+                              : 'bg-gray-400 text-white'
+                          }`}>
                             {catalog.active ? 'Ativo' : 'Inativo'}
                           </Badge>
                           <Button 
                             variant="outline" 
                             size="sm"
                             onClick={() => setShowQRCode(showQRCode === catalog.id ? null : catalog.id)}
+                            className={`border-2 font-semibold ${
+                              selectedCategory === 'alimenticio' ? 'border-green-400 text-green-700 hover:bg-green-500 hover:text-white' :
+                              selectedCategory === 'pet' ? 'border-purple-400 text-purple-700 hover:bg-purple-500 hover:text-white' :
+                              selectedCategory === 'saude' ? 'border-blue-400 text-blue-700 hover:bg-blue-500 hover:text-white' :
+                              selectedCategory === 'vendas' ? 'border-purple-400 text-purple-700 hover:bg-purple-600 hover:text-white' :
+                              selectedCategory === 'design' ? 'border-teal-400 text-teal-700 hover:bg-teal-500 hover:text-white' :
+                              selectedCategory === 'sites' ? 'border-indigo-400 text-indigo-700 hover:bg-indigo-600 hover:text-white' :
+                              'border-gray-400 text-gray-700 hover:bg-gray-500 hover:text-white'
+                            }`}
                           >
                             <QrCode className="w-4 h-4 mr-1" />
                             QR Code
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            className={`border-2 font-semibold ${
+                              selectedCategory === 'alimenticio' ? 'border-green-400 text-green-700 hover:bg-green-500 hover:text-white' :
+                              selectedCategory === 'pet' ? 'border-purple-400 text-purple-700 hover:bg-purple-500 hover:text-white' :
+                              selectedCategory === 'saude' ? 'border-blue-400 text-blue-700 hover:bg-blue-500 hover:text-white' :
+                              selectedCategory === 'vendas' ? 'border-purple-400 text-purple-700 hover:bg-purple-600 hover:text-white' :
+                              selectedCategory === 'design' ? 'border-teal-400 text-teal-700 hover:bg-teal-500 hover:text-white' :
+                              selectedCategory === 'sites' ? 'border-indigo-400 text-indigo-700 hover:bg-indigo-600 hover:text-white' :
+                              'border-gray-400 text-gray-700 hover:bg-gray-500 hover:text-white'
+                            }`}
+                          >
                             <Share className="w-4 h-4 mr-1" />
                             Compartilhar
                           </Button>
                         </div>
                       </div>
                       
-                      {/* Funcionalidades especiais para categoria alimentícia */}
-                      {selectedCategory === 'alimenticio' && (catalog as any).features && (
-                        <div className="mb-4 p-3 bg-white rounded-lg border border-orange-200">
-                          <p className="text-xs font-semibold text-orange-700 uppercase tracking-wide mb-2">
+                      {/* Funcionalidades automáticas */}
+                      {(catalog as any).features && (
+                        <div className="mb-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border-2 border-white/50 shadow-lg">
+                          <p className={`text-xs font-bold uppercase tracking-wide mb-3 ${
+                            selectedCategory === 'alimenticio' ? 'text-green-700' :
+                            selectedCategory === 'pet' ? 'text-purple-700' :
+                            selectedCategory === 'saude' ? 'text-blue-700' :
+                            selectedCategory === 'vendas' ? 'text-purple-700' :
+                            selectedCategory === 'design' ? 'text-teal-700' :
+                            selectedCategory === 'sites' ? 'text-indigo-700' :
+                            'text-gray-700'
+                          }`}>
                             🤖 Funcionalidades Automáticas:
                           </p>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {(catalog as any).features.map((feature: string, idx: number) => (
-                              <div key={idx} className="flex items-center gap-1 text-xs text-orange-800">
-                                <CheckCircle className="h-3 w-3 text-green-600" />
+                              <div key={idx} className={`flex items-center gap-2 text-xs font-semibold p-2 rounded-lg ${
+                                selectedCategory === 'alimenticio' ? 'text-green-800 bg-green-50' :
+                                selectedCategory === 'pet' ? 'text-purple-800 bg-purple-50' :
+                                selectedCategory === 'saude' ? 'text-blue-800 bg-blue-50' :
+                                selectedCategory === 'vendas' ? 'text-purple-800 bg-purple-50' :
+                                selectedCategory === 'design' ? 'text-teal-800 bg-teal-50' :
+                                selectedCategory === 'sites' ? 'text-indigo-800 bg-indigo-50' :
+                                'text-gray-800 bg-gray-50'
+                              }`}>
+                                <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
                                 {feature}
                               </div>
                             ))}
@@ -546,13 +1008,17 @@ const AtendimentoSection = () => {
                         </div>
                       )}
                       
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {catalog.items.map((item, index) => (
-                          <div key={index} className={`p-2 rounded border text-sm ${
-                            selectedCategory === 'alimenticio' 
-                              ? 'bg-white border-orange-200 text-orange-800 font-medium' 
-                              : 'bg-white border-gray-200 text-gray-700'
-                          }`}>
+                          <div key={index} className={`p-3 rounded-xl border-2 text-sm font-semibold transition-all duration-200 hover:scale-105 ${
+                            selectedCategory === 'alimenticio' ? 'bg-white border-green-200 text-green-800 shadow-green-100' :
+                            selectedCategory === 'pet' ? 'bg-white border-purple-200 text-purple-800 shadow-purple-100' :
+                            selectedCategory === 'saude' ? 'bg-white border-blue-200 text-blue-800 shadow-blue-100' :
+                            selectedCategory === 'vendas' ? 'bg-white border-purple-200 text-purple-800 shadow-purple-100' :
+                            selectedCategory === 'design' ? 'bg-white border-teal-200 text-teal-800 shadow-teal-100' :
+                            selectedCategory === 'sites' ? 'bg-white border-indigo-200 text-indigo-800 shadow-indigo-100' :
+                            'bg-white border-gray-200 text-gray-800 shadow-gray-100'
+                          } shadow-lg`}>
                             {item}
                           </div>
                         ))}
