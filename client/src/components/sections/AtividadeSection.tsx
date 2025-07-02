@@ -14,90 +14,216 @@ const AtividadeSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedType, setSelectedType] = useState('all');
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
-  // Dados de atividades expandidos
+  // Categorias de negócio
+  const categories = [
+    { value: 'all', label: 'Todas as Categorias' },
+    { value: 'pet', label: 'Pet & Veterinário' },
+    { value: 'saude', label: 'Saúde & Medicamentos' },
+    { value: 'alimenticio', label: 'Alimentício' },
+    { value: 'tecnologia', label: 'Tecnologia' },
+    { value: 'design', label: 'Design Gráfico' },
+    { value: 'sites', label: 'Criação de Sites' }
+  ];
+
+  // Tipos de atividade
+  const activityTypes = [
+    { value: 'all', label: 'Todos os Tipos' },
+    { value: 'appointment', label: 'Agendamentos' },
+    { value: 'reminder', label: 'Lembretes' },
+    { value: 'sale', label: 'Vendas' },
+    { value: 'stock', label: 'Estoque' },
+    { value: 'product', label: 'Produtos' },
+    { value: 'message', label: 'Mensagens' },
+    { value: 'qrcode', label: 'QR Codes' },
+    { value: 'campaign', label: 'Campanhas' },
+    { value: 'client', label: 'Clientes' },
+    { value: 'order', label: 'Pedidos' },
+    { value: 'integration', label: 'Integrações' },
+    { value: 'backup', label: 'Backups' },
+    { value: 'report', label: 'Relatórios' },
+    { value: 'delivery', label: 'Entregas' }
+  ];
+
+  // Dados de atividades relacionados aos dados do aplicativo
   const activities = [
+    // Atividades de Agendamentos
     { 
       id: 1,
-      action: 'Backup completo realizado', 
-      company: 'Empresa A', 
-      time: '2 min atrás', 
+      action: 'Agendamento confirmado', 
+      company: 'Pet & Veterinário', 
+      time: '5 min atrás', 
       status: 'success', 
-      details: 'Todos os dados salvos com sucesso. 2.4GB processados.',
-      user: 'Sistema',
-      type: 'backup'
+      details: 'Consulta veterinária para Luna agendada para hoje às 14:00',
+      user: 'Dr. Carlos Mendes',
+      type: 'appointment',
+      category: 'pet'
     },
     { 
       id: 2,
-      action: 'Novo usuário registrado', 
-      company: 'Empresa C', 
-      time: '5 min atrás', 
+      action: 'Lembrete enviado', 
+      company: 'Saúde & Medicamentos', 
+      time: '15 min atrás', 
       status: 'info', 
-      details: 'Usuário premium adicionado ao sistema.',
-      user: 'Admin',
-      type: 'user'
+      details: 'Email de lembrete enviado para Ana Silva sobre consulta de amanhã',
+      user: 'Sistema',
+      type: 'reminder',
+      category: 'saude'
     },
     { 
       id: 3,
-      action: 'Alerta de performance', 
-      company: 'Empresa B', 
-      time: '12 min atrás', 
+      action: 'Agendamento reagendado', 
+      company: 'Design Gráfico', 
+      time: '30 min atrás', 
       status: 'warning', 
-      details: 'CPU acima de 80% por 5 minutos consecutivos.',
-      user: 'Monitor',
-      type: 'alert'
+      details: 'Reunião de briefing movida de 10:00 para 15:00 a pedido do cliente',
+      user: 'Sarah Design',
+      type: 'appointment',
+      category: 'design'
     },
+    
+    // Atividades de Estoque/Vendas
     { 
       id: 4,
-      action: 'Manutenção programada', 
-      company: 'Empresa D', 
-      time: '1h atrás', 
-      status: 'neutral', 
-      details: 'Servidor 3 em manutenção preventiva.',
-      user: 'Admin',
-      type: 'maintenance'
+      action: 'Venda processada', 
+      company: 'Alimentício', 
+      time: '45 min atrás', 
+      status: 'success', 
+      details: 'Venda de R$ 45,90 - Combo Executivo processada com PIX',
+      user: 'Ana Costa',
+      type: 'sale',
+      category: 'alimenticio'
     },
     { 
       id: 5,
-      action: 'Transação de alto valor', 
-      company: 'Empresa F', 
-      time: '2h atrás', 
-      status: 'success', 
-      details: 'R$ 15.000 processados com sucesso.',
+      action: 'Estoque baixo detectado', 
+      company: 'Pet & Veterinário', 
+      time: '1h atrás', 
+      status: 'warning', 
+      details: 'Ração Premium Cães - apenas 5 unidades restantes',
       user: 'Sistema',
-      type: 'transaction'
+      type: 'stock',
+      category: 'pet'
     },
     { 
       id: 6,
-      action: 'Falha de conexão', 
-      company: 'Empresa G', 
-      time: '3h atrás', 
-      status: 'error', 
-      details: 'Conexão com banco perdida, restaurada automaticamente.',
-      user: 'Sistema',
-      type: 'error'
+      action: 'Produto adicionado', 
+      company: 'Tecnologia', 
+      time: '2h atrás', 
+      status: 'info', 
+      details: 'Novo produto: Smartphone Galaxy S24 adicionado ao catálogo',
+      user: 'Tech Admin',
+      type: 'product',
+      category: 'tecnologia'
     },
+    
+    // Atividades de Atendimento
     { 
       id: 7,
-      action: 'Atualização de sistema', 
-      company: 'Global', 
-      time: '4h atrás', 
-      status: 'success', 
-      details: 'Sistema atualizado para versão 2.1.3.',
-      user: 'DevOps',
-      type: 'update'
+      action: 'Mensagem recebida', 
+      company: 'Criação de Sites', 
+      time: '2h atrás', 
+      status: 'info', 
+      details: 'Nova mensagem de João sobre orçamento para e-commerce',
+      user: 'Bot Assistente',
+      type: 'message',
+      category: 'sites'
     },
     { 
       id: 8,
-      action: 'Novo relatório gerado', 
-      company: 'Empresa A', 
-      time: '5h atrás', 
-      status: 'info', 
-      details: 'Relatório mensal de vendas disponível.',
+      action: 'QR Code gerado', 
+      company: 'Alimentício', 
+      time: '3h atrás', 
+      status: 'success', 
+      details: 'QR Code criado para cardápio "Menu Executivo" - 5 downloads',
       user: 'Sistema',
-      type: 'report'
+      type: 'qrcode',
+      category: 'alimenticio'
+    },
+    { 
+      id: 9,
+      action: 'Campanha de fidelização ativada', 
+      company: 'Saúde & Medicamentos', 
+      time: '4h atrás', 
+      status: 'success', 
+      details: 'Desconto 10% para clientes VIP ativado - 38 conversões',
+      user: 'Marketing',
+      type: 'campaign',
+      category: 'saude'
+    },
+    
+    // Atividades de Cliente
+    { 
+      id: 10,
+      action: 'Novo cliente cadastrado', 
+      company: 'Pet & Veterinário', 
+      time: '5h atrás', 
+      status: 'success', 
+      details: 'Maria Santos cadastrada com pet "Bolt" - Pastor Alemão',
+      user: 'Recepção',
+      type: 'client',
+      category: 'pet'
+    },
+    { 
+      id: 11,
+      action: 'Pedido automático processado', 
+      company: 'Alimentício', 
+      time: '6h atrás', 
+      status: 'success', 
+      details: 'Pizza Margherita - R$ 32,50 pedida via bot e enviada para cozinha',
+      user: 'Bot IA',
+      type: 'order',
+      category: 'alimenticio'
+    },
+    { 
+      id: 12,
+      action: 'Integração Google Calendar', 
+      company: 'Saúde & Medicamentos', 
+      time: '8h atrás', 
+      status: 'info', 
+      details: 'Consulta sincronizada com Google Calendar de Dr. Pedro Lima',
+      user: 'Sistema',
+      type: 'integration',
+      category: 'saude'
+    },
+    
+    // Atividades de Sistema
+    { 
+      id: 13,
+      action: 'Backup automático', 
+      company: 'Global', 
+      time: '12h atrás', 
+      status: 'success', 
+      details: 'Backup diário concluído - 2.4GB de dados salvos com segurança',
+      user: 'Sistema',
+      type: 'backup',
+      category: 'all'
+    },
+    { 
+      id: 14,
+      action: 'Relatório de vendas gerado', 
+      company: 'Tecnologia', 
+      time: '1 dia atrás', 
+      status: 'info', 
+      details: 'Relatório semanal: R$ 2.847,30 em vendas de produtos tech',
+      user: 'Sistema',
+      type: 'report',
+      category: 'tecnologia'
+    },
+    { 
+      id: 15,
+      action: 'Falha de entrega detectada', 
+      company: 'Alimentício', 
+      time: '1 dia atrás', 
+      status: 'error', 
+      details: 'Entrega #1247 falhou - cliente contatado e reagendada',
+      user: 'Sistema',
+      type: 'delivery',
+      category: 'alimenticio'
     }
   ];
 
@@ -111,16 +237,34 @@ const AtividadeSection = () => {
     }
   };
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'success': return 'Sucesso';
+      case 'warning': return 'Aviso';
+      case 'error': return 'Erro';
+      case 'info': return 'Info';
+      case 'neutral': return 'Neutro';
+      default: return status;
+    }
+  };
+
   const getTypeColor = (type: string) => {
     switch (type) {
+      case 'appointment': return 'bg-blue-100 text-blue-800';
+      case 'reminder': return 'bg-yellow-100 text-yellow-800';
+      case 'sale': return 'bg-green-100 text-green-800';
+      case 'stock': return 'bg-orange-100 text-orange-800';
+      case 'product': return 'bg-purple-100 text-purple-800';
+      case 'message': return 'bg-blue-100 text-blue-800';
+      case 'qrcode': return 'bg-emerald-100 text-emerald-800';
+      case 'campaign': return 'bg-pink-100 text-pink-800';
+      case 'client': return 'bg-indigo-100 text-indigo-800';
+      case 'order': return 'bg-green-100 text-green-800';
+      case 'integration': return 'bg-cyan-100 text-cyan-800';
       case 'backup': return 'bg-purple-100 text-purple-800';
-      case 'user': return 'bg-blue-100 text-blue-800';
-      case 'alert': return 'bg-orange-100 text-orange-800';
-      case 'maintenance': return 'bg-gray-100 text-gray-800';
-      case 'transaction': return 'bg-green-100 text-green-800';
+      case 'report': return 'bg-slate-100 text-slate-800';
+      case 'delivery': return 'bg-amber-100 text-amber-800';
       case 'error': return 'bg-red-100 text-red-800';
-      case 'update': return 'bg-indigo-100 text-indigo-800';
-      case 'report': return 'bg-cyan-100 text-cyan-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
@@ -129,11 +273,14 @@ const AtividadeSection = () => {
   const filteredActivities = activities.filter(activity => {
     const matchesSearch = activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          activity.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.details.toLowerCase().includes(searchTerm.toLowerCase());
+                         activity.details.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         activity.user.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCompany = selectedCompany === 'all' || activity.company === selectedCompany;
     const matchesStatus = selectedStatus === 'all' || activity.status === selectedStatus;
+    const matchesCategory = selectedCategory === 'all' || activity.category === selectedCategory;
+    const matchesType = selectedType === 'all' || activity.type === selectedType;
     
-    return matchesSearch && matchesCompany && matchesStatus;
+    return matchesSearch && matchesCompany && matchesStatus && matchesCategory && matchesType;
   });
 
   return (
@@ -146,7 +293,7 @@ const AtividadeSection = () => {
 
       {/* Filtros específicos da seção */}
       <div className="bg-white border border-border/50 rounded-lg p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -176,6 +323,34 @@ const AtividadeSection = () => {
               <SelectItem value="error" className="text-gray-900 hover:bg-gray-50">Erro</SelectItem>
               <SelectItem value="info" className="text-gray-900 hover:bg-gray-50">Informação</SelectItem>
               <SelectItem value="neutral" className="text-gray-900 hover:bg-gray-50">Neutro</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* Category Filter */}
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="text-gray-900 bg-white">
+              <SelectValue placeholder="Categoria" className="text-gray-500" />
+            </SelectTrigger>
+            <SelectContent className="bg-white border border-gray-200">
+              {categories.map((category) => (
+                <SelectItem key={category.value} value={category.value} className="text-gray-900 hover:bg-gray-50">
+                  {category.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          {/* Type Filter */}
+          <Select value={selectedType} onValueChange={setSelectedType}>
+            <SelectTrigger className="text-gray-900 bg-white">
+              <SelectValue placeholder="Tipo" className="text-gray-500" />
+            </SelectTrigger>
+            <SelectContent className="bg-white border border-gray-200">
+              {activityTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value} className="text-gray-900 hover:bg-gray-50">
+                  {type.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -243,14 +418,19 @@ const AtividadeSection = () => {
           {filteredActivities.map((activity) => (
             <div key={activity.id} className="flex items-start justify-between p-4 bg-gray-50 rounded-lg border">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
+                <div className="flex items-center gap-2 mb-2 flex-wrap">
                   <h4 className="font-medium text-gray-900">{activity.action}</h4>
                   <Badge className={getStatusColor(activity.status)}>
-                    {activity.status}
+                    {getStatusLabel(activity.status)}
                   </Badge>
                   <Badge variant="outline" className={getTypeColor(activity.type)}>
-                    {activity.type}
+                    {activityTypes.find(t => t.value === activity.type)?.label || activity.type}
                   </Badge>
+                  {activity.category !== 'all' && (
+                    <Badge variant="secondary" className="bg-gray-100 text-gray-600">
+                      {categories.find(c => c.value === activity.category)?.label || activity.company}
+                    </Badge>
+                  )}
                 </div>
                 <p className="text-sm text-gray-600 mb-2">{activity.details}</p>
                 <div className="flex items-center gap-4 text-xs text-gray-500">
