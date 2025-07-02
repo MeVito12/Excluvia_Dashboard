@@ -93,22 +93,23 @@ const EstoqueSection = () => {
             { value: 'eventos', label: 'Eventos' }
           ]
         };
-      case 'tecnologia':
+      case 'vendas':
         return {
           productTypes: [
             { value: 'all', label: 'Todos os Tipos' },
-            { value: 'smartphones', label: 'Smartphones' },
-            { value: 'laptops', label: 'Laptops' },
-            { value: 'acessorios', label: 'Acessórios' },
-            { value: 'games', label: 'Games' },
-            { value: 'audio', label: 'Áudio' }
+            { value: 'eletronicos', label: 'Eletrônicos' },
+            { value: 'vestuario', label: 'Vestuário' },
+            { value: 'casa_jardim', label: 'Casa e Jardim' },
+            { value: 'esportes', label: 'Esportes' },
+            { value: 'livros', label: 'Livros' },
+            { value: 'automotivo', label: 'Automotivo' }
           ],
           clientSegments: [
             { value: 'all', label: 'Todos os Clientes' },
-            { value: 'gamers', label: 'Gamers' },
-            { value: 'professionals', label: 'Profissionais' },
-            { value: 'students', label: 'Estudantes' },
-            { value: 'casual', label: 'Uso Casual' }
+            { value: 'varejo', label: 'Varejo' },
+            { value: 'atacado', label: 'Atacado' },
+            { value: 'corporativo', label: 'Corporativo' },
+            { value: 'revendedor', label: 'Revendedores' }
           ]
         };
       case 'design':
@@ -297,13 +298,13 @@ const EstoqueSection = () => {
     },
     {
       id: 12,
-      name: 'SSD Samsung 1TB',
-      sku: 'TEC003',
-      category: 'tecnologia',
+      name: 'Notebook Dell Inspiron',
+      sku: 'VEN003',
+      category: 'vendas',
       currentStock: 15,
       minimumStock: 8,
-      price: 450.00,
-      supplier: 'Samsung',
+      price: 2450.00,
+      supplier: 'Dell',
       expirationDate: null,
       status: 'normal'
     }
@@ -386,11 +387,11 @@ const EstoqueSection = () => {
       saleDate: new Date('2024-06-29'),
       status: 'delivered'
     },
-    // Tecnologia
+    // Vendas
     {
       id: 7,
       productName: 'iPhone 15 Pro',
-      category: 'tecnologia',
+      category: 'vendas',
       clientName: 'Pedro Santos Silva',
       clientType: 'Particular',
       quantity: 1,
@@ -401,13 +402,13 @@ const EstoqueSection = () => {
     },
     {
       id: 8,
-      productName: 'SSD Samsung 1TB',
-      category: 'tecnologia',
+      productName: 'Notebook Dell Inspiron',
+      category: 'vendas',
       clientName: 'TechFix Informática',
       clientType: 'Empresa',
       quantity: 5,
-      unitPrice: 450.00,
-      totalPrice: 2250.00,
+      unitPrice: 2450.00,
+      totalPrice: 12250.00,
       saleDate: new Date('2024-06-28'),
       status: 'delivered'
     }
@@ -490,13 +491,13 @@ const EstoqueSection = () => {
       status: 'active',
       city: 'Florianópolis'
     },
-    // Tecnologia
+    // Vendas
     {
       id: 7,
       name: 'Pedro Santos Silva',
       email: 'pedro.santos@email.com',
       type: 'Particular',
-      segment: 'Tecnologia',
+      segment: 'vendas',
       totalPurchases: 3,
       totalSpent: 15500.00,
       lastPurchaseDate: new Date('2024-06-30'),
@@ -508,7 +509,7 @@ const EstoqueSection = () => {
       name: 'TechFix Informática',
       email: 'vendas@techfix.com.br',
       type: 'Empresa',
-      segment: 'Tecnologia',
+      segment: 'vendas',
       totalPurchases: 67,
       totalSpent: 89500.00,
       lastPurchaseDate: new Date('2024-06-28'),

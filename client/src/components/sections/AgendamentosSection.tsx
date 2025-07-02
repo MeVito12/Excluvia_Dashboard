@@ -97,14 +97,15 @@ const AgendamentosSection = () => {
           { value: 'catering', label: 'Serviço de Catering' },
           { value: 'degustacao', label: 'Degustação' }
         ];
-      case 'tecnologia':
+      case 'vendas':
         return [
           { value: 'all', label: 'Todos os Serviços' },
-          { value: 'reparo', label: 'Reparo/Manutenção' },
-          { value: 'instalacao', label: 'Instalação' },
-          { value: 'consultoria', label: 'Consultoria Técnica' },
-          { value: 'configuracao', label: 'Configuração' },
-          { value: 'treinamento', label: 'Treinamento' }
+          { value: 'reuniao_vendas', label: 'Reunião de Vendas' },
+          { value: 'apresentacao', label: 'Apresentação de Produto' },
+          { value: 'negociacao', label: 'Negociação' },
+          { value: 'follow_up', label: 'Follow-up' },
+          { value: 'entrega', label: 'Entrega/Instalação' },
+          { value: 'pos_venda', label: 'Pós-venda' }
         ];
       case 'design':
         return [
@@ -192,7 +193,7 @@ const AgendamentosSection = () => {
       'pet': 'veterinario',
       'saude': 'medico',
       'alimenticio': 'restaurante',
-      'tecnologia': 'tecnologia',
+      'vendas': 'vendas',
       'design': 'design',
       'sites': 'websites'
     };

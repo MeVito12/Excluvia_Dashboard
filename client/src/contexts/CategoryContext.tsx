@@ -13,7 +13,7 @@ export const categories = [
   { value: 'pet', label: 'Pet & Veterinário', icon: '🐕', description: 'Clínicas veterinárias, pet shops e cuidados animais' },
   { value: 'saude', label: 'Saúde & Medicamentos', icon: '⚕️', description: 'Clínicas médicas, farmácias e serviços de saúde' },
   { value: 'alimenticio', label: 'Alimentício', icon: '🍽️', description: 'Restaurantes, delivery e serviços alimentícios' },
-  { value: 'vendas', label: 'Vendas no Geral', icon: '💼', description: 'Empresas de vendas, comércio e representações' },
+  { value: 'vendas', label: 'Vendas', icon: '💼', description: 'Empresas de vendas, comércio e representações' },
   { value: 'design', label: 'Design Gráfico', icon: '🎨', description: 'Estúdios de design e agências criativas' },
   { value: 'sites', label: 'Criação de Sites', icon: '🌐', description: 'Desenvolvimento web e marketing digital' }
 ];
