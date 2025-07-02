@@ -170,19 +170,6 @@ const GraficosSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pedidos Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.today.orders}</p>
-              <p className="text-xs mt-1 text-green-600">Média: {metrics.today.avgTicket}</p>
-            </div>
-            <div className="p-3 rounded-full bg-indigo-100">
-              <ShoppingCart className="h-6 w-6 text-indigo-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
               <p className="text-sm font-medium text-gray-600">Total Clientes</p>
               <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.customers.total}</p>
               <p className="text-xs mt-1 text-blue-600">+{metrics.customers.new} novos</p>
@@ -209,12 +196,29 @@ const GraficosSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Satisfação</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.customers.satisfaction}</p>
-              <p className="text-xs mt-1 text-yellow-600">⭐ Avaliação média</p>
+              <p className="text-sm font-medium text-gray-600">Meta Mensal</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">
+                {selectedCategory === 'alimenticio' ? '85%' : selectedCategory === 'vendas' ? '92%' : selectedCategory === 'pet' ? '78%' : '88%'}
+              </p>
+              <p className="text-xs mt-1 text-green-600">Do objetivo alcançado</p>
             </div>
-            <div className="p-3 rounded-full bg-yellow-100">
-              <Star className="h-6 w-6 text-yellow-600" />
+            <div className="p-3 rounded-full bg-purple-100">
+              <Activity className="h-6 w-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Conversão</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">
+                {selectedCategory === 'alimenticio' ? '24%' : selectedCategory === 'vendas' ? '18%' : selectedCategory === 'pet' ? '31%' : '26%'}
+              </p>
+              <p className="text-xs mt-1 text-orange-600">Taxa de conversão</p>
+            </div>
+            <div className="p-3 rounded-full bg-orange-100">
+              <Zap className="h-6 w-6 text-orange-600" />
             </div>
           </div>
         </div>

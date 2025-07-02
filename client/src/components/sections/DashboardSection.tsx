@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Database, Users, TrendingUp, Calendar, Clock, Bell, AlertTriangle } from 'lucide-react';
+import { Database, Users, TrendingUp, Calendar, Clock, Bell, AlertTriangle, ShoppingCart } from 'lucide-react';
 import SearchAndFilters from '@/components/SearchAndFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -170,8 +170,8 @@ const DashboardSection = () => {
               <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
               <p className="text-xs mt-1 text-green-600">Volume do dia</p>
             </div>
-            <div className="p-3 rounded-full bg-emerald-100">
-              <TrendingUp className="h-6 w-6 text-emerald-600" />
+            <div className="p-3 rounded-full bg-blue-100">
+              <ShoppingCart className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
