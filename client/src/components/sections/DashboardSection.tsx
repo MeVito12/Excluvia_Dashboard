@@ -190,10 +190,10 @@ const DashboardSection = () => {
 
       {/* Lembretes de Agenda e Compromissos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-white border border-border/50">
+        <Card className="bg-white border border-border/50 modern-card-hover modern-glow modern-glass">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
+              <Calendar className="h-5 w-5 modern-pulse-subtle" />
               Próximos Compromissos
             </CardTitle>
           </CardHeader>
@@ -256,10 +256,10 @@ const DashboardSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-border/50">
+        <Card className="bg-white border border-border/50 modern-card-hover modern-glow modern-glass">
           <CardHeader>
             <CardTitle className="text-black flex items-center gap-2">
-              <Bell className="h-5 w-5" />
+              <Bell className="h-5 w-5 modern-pulse-subtle" />
               Notificações Importantes
             </CardTitle>
           </CardHeader>

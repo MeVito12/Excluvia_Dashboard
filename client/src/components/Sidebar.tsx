@@ -103,9 +103,9 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-200 min-h-[60px]",
-                        "hover:bg-green-400 hover:text-white",
-                        isActive && "bg-primary text-primary-foreground"
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[60px] modern-card-hover",
+                        "hover:bg-green-400 hover:text-white modern-shine",
+                        isActive && "bg-primary text-primary-foreground modern-glow"
                       )}
                       onClick={() => onSectionChange(item.id)}
                     >

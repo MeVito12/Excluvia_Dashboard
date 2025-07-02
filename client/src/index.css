@@ -105,3 +105,135 @@ All colors MUST be HSL.
 .gradient-dark {
   background: linear-gradient(135deg, hsl(var(--dashboard-darker)) 0%, hsl(var(--dashboard-dark)) 100%);
 }
+
+/* Toques modernos sutis mantendo o esquema de cores atual */
+.modern-glass {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modern-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.modern-card-hover:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modern-gradient-subtle {
+  background: linear-gradient(135deg, 
+    hsl(var(--card)) 0%, 
+    hsl(var(--muted) / 0.5) 100%);
+}
+
+.modern-border-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(45deg, 
+    hsl(var(--primary)), 
+    hsl(var(--accent)), 
+    hsl(var(--primary)));
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-border-glow:hover::before {
+  opacity: 0.8;
+}
+
+.modern-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  transition: transform 0.6s ease;
+}
+
+.modern-shine:hover::after {
+  transform: translateX(100%) translateY(100%) rotate(45deg);
+}
+
+/* Animações sutis */
+.modern-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.modern-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* Efeito de brilho sutil nos cards */
+.modern-glow {
+  box-shadow: 0 0 20px rgba(262, 83%, 58%, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.modern-glow:hover {
+  box-shadow: 0 0 30px rgba(262, 83%, 58%, 0.2);
+}
+
+/* Scrollbar moderna mantendo as cores do tema */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary)),
+    hsl(var(--accent))
+  );
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--accent)),
+    hsl(var(--primary))
+  );
+}

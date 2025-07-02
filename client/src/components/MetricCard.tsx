@@ -20,7 +20,7 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
   };
 
   return (
-    <Card className="p-6 bg-white border-border/50 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20">
+    <Card className="p-6 bg-white border-border/50 modern-card-hover modern-glow modern-shine modern-border-glow">
       <div className="flex items-start justify-between">
         <div className="space-y-2">
           <p className="text-sm font-medium text-gray-600">
@@ -30,12 +30,12 @@ const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, 
             {value}
           </p>
           {change && (
-            <p className={`text-sm ${changeColors[changeType]}`}>
+            <p className={`text-sm font-semibold ${changeColors[changeType]}`}>
               {change}
             </p>
           )}
         </div>
-        <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 modern-float">
           <Icon className="h-6 w-6 text-primary" />
         </div>
       </div>
