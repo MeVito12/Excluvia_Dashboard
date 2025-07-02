@@ -95,6 +95,28 @@ const ModernIcon: React.FC<ModernIconProps> = ({
     return categoryGlows[cat as keyof typeof categoryGlows] || 'shadow-[#9333ea]/30';
   }
 
+  function getCreativeBackground(variant: string): string {
+    const creativeBackgrounds = {
+      'purple': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]',
+      'blue': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', 
+      'green': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]',
+      'creative': getRandomCreativeBackground()
+    };
+    return creativeBackgrounds[variant as keyof typeof creativeBackgrounds] || 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]';
+  }
+
+  function getRandomCreativeBackground(): string {
+    const backgrounds = [
+      'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo
+      'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', // Azul escuro
+      'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon
+      'bg-gradient-to-br from-[#9333ea] to-[#00ff88]', // Roxo para verde
+      'bg-gradient-to-br from-[#1e3a8a] to-[#9333ea]', // Azul para roxo
+      'bg-gradient-to-br from-[#00ff88] to-[#1e3a8a]'  // Verde para azul
+    ];
+    return backgrounds[Math.floor(Math.random() * backgrounds.length)];
+  }
+
   const iconElement = (
     <Icon 
       className={cn(
