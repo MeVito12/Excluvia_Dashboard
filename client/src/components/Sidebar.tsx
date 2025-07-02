@@ -105,9 +105,12 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                       variant="ghost"
                       className={cn(
                         "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[60px] modern-card-hover",
-                        "hover:bg-green-400 hover:text-white modern-shine",
+                        "hover:text-white modern-shine",
                         isActive && "bg-primary text-primary-foreground modern-glow"
                       )}
+                      style={{
+                        '--hover-bg': 'hsl(158 89% 53%)'
+                      } as React.CSSProperties}
                       onClick={() => onSectionChange(item.id)}
                     >
                       <ModernIcon 

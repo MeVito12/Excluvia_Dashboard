@@ -152,7 +152,7 @@ All colors MUST be HSL.
   }
 
   .tab-button:hover:not(.active) {
-    @apply bg-green-400;
+    background: hsl(var(--brand-secondary)) !important;
     color: white !important;
     transform: translateY(-1px);
     cursor: pointer !important;
@@ -161,6 +161,11 @@ All colors MUST be HSL.
 
   .tab-button:active {
     transform: scale(0.98);
+  }
+
+  /* Hover para sidebar com mesma cor das abas */
+  .modern-card-hover:hover {
+    background: hsl(var(--brand-secondary)) !important;
   }
 
   .tab-button.active {
