@@ -103,11 +103,18 @@ const DashboardSection = () => {
   const currentMetrics = getCategoryMetrics();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-300">Visão geral das métricas do sistema</p>
+      <div className="relative">
+        <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-green-500 rounded-2xl p-8 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-green-500/20 rounded-2xl blur-xl"></div>
+          <div className="relative z-10">
+            <h1 className="text-4xl font-bold text-white mb-2 bg-gradient-to-r from-white to-green-200 bg-clip-text text-transparent">
+              Dashboard Inteligente
+            </h1>
+            <p className="text-purple-100 text-lg font-medium">Sistema de gestão automatizado com IA avançada</p>
+          </div>
+        </div>
       </div>
 
       {/* Search and Filters */}
