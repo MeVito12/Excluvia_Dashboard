@@ -9,7 +9,6 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Base colors - Light theme restored */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -19,19 +18,16 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    /* Primary colors - Vibrant purple from images */
     --primary: 262 83% 58%;
     --primary-foreground: 210 40% 98%;
 
-    /* Secondary colors - Enhanced blue */
-    --secondary: 221 83% 53%;
+    --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    /* Accent colors - Vibrant green from images */
-    --accent: 142 76% 50%;
+    --accent: 158 89% 53%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -41,29 +37,16 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 262 83% 58%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Sidebar - Enhanced with vibrant colors */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 262 83% 58%;
+    --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 142 76% 50%;
-
-    /* Dashboard custom colors - maintained light */
-    --dashboard-background: 230 100% 96%;
-    --dashboard-dark: 225 100% 90%;
-    --dashboard-darker: 220 100% 84%;
-
-    /* Vibrant theme colors for accents */
-    --vibrant-purple: 262 83% 58%;
-    --vibrant-blue: 221 83% 53%;
-    --vibrant-green: 142 76% 50%;
-    --vibrant-teal: 174 72% 56%;
-    --vibrant-indigo: 243 75% 59%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
 
     /* Custom dashboard colors - updated to match the blue tone */
     --dashboard-purple: 262 83% 58%;

@@ -14,33 +14,29 @@ interface MetricCardProps {
 
 const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, gradient = false }: MetricCardProps) => {
   const changeColors = {
-    positive: 'text-green-400',
-    negative: 'text-red-400',
-    neutral: 'text-purple-300'
+    positive: 'text-accent',
+    negative: 'text-destructive',
+    neutral: 'text-gray-600'
   };
 
-  const gradientClasses = gradient 
-    ? 'bg-gradient-to-br from-purple-600 via-blue-600 to-green-500' 
-    : 'bg-gradient-to-br from-gray-800/80 via-blue-900/80 to-purple-800/80';
-
   return (
-    <Card className={`p-6 ${gradientClasses} border-purple-400/30 hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-purple-500/20 backdrop-blur-sm border-2`}>
+    <Card className="p-6 bg-white border-border/50 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20">
       <div className="flex items-start justify-between">
-        <div className="space-y-3">
-          <p className="text-sm font-bold text-purple-200 uppercase tracking-wide">
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-600">
             {title}
           </p>
-          <p className="text-3xl font-bold text-white bg-gradient-to-r from-white to-green-300 bg-clip-text text-transparent">
+          <p className="text-3xl font-bold text-black">
             {value}
           </p>
           {change && (
-            <p className={`text-sm font-semibold ${changeColors[changeType]}`}>
+            <p className={`text-sm ${changeColors[changeType]}`}>
               {change}
             </p>
           )}
         </div>
-        <div className="p-4 rounded-xl bg-gradient-to-br from-white/20 to-green-400/20 border border-white/30 shadow-lg">
-          <Icon className="h-7 w-7 text-white" />
+        <div className="p-3 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30">
+          <Icon className="h-6 w-6 text-primary" />
         </div>
       </div>
     </Card>
