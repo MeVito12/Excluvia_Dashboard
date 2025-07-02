@@ -1,9 +1,7 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
-import ModernIcon from '@/components/ui/modern-icon';
-import { useCategory } from '@/contexts/CategoryContext';
+import { UnifiedMetric, DESIGN_SYSTEM } from '@/components/ui/unified-system';
 
 interface MetricCardProps {
   title: string;
@@ -14,40 +12,25 @@ interface MetricCardProps {
   gradient?: boolean;
 }
 
-const MetricCard = ({ title, value, change, changeType = 'neutral', icon: Icon, gradient = false }: MetricCardProps) => {
-  const { selectedCategory } = useCategory();
-  const changeColors = {
-    positive: 'text-accent',
-    negative: 'text-destructive',
-    neutral: 'text-gray-600'
-  };
+const MetricCard = ({ title, value, change, changeType = 'neutral', icon }: MetricCardProps) => {
+  // Mapear mudanças para trend
+  const trend = changeType === 'positive' ? 'up' : 
+               changeType === 'negative' ? 'down' : 'neutral';
+  
+  // Determinar cor baseada no ícone
+  const iconName = icon.displayName || icon.name || 'general';
+  const mappedColor = DESIGN_SYSTEM.iconMap[iconName as keyof typeof DESIGN_SYSTEM.iconMap];
+  const colorType = (mappedColor as keyof typeof DESIGN_SYSTEM.colors) || 'general';
 
   return (
-    <Card className="p-6 bg-white border-border/50 modern-card-hover modern-glow modern-shine modern-border-glow">
-      <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-600">
-            {title}
-          </p>
-          <p className="text-3xl font-bold text-black">
-            {value}
-          </p>
-          {change && (
-            <p className={`text-sm font-semibold ${changeColors[changeType]}`}>
-              {change}
-            </p>
-          )}
-        </div>
-        <ModernIcon 
-          icon={Icon}
-          size="lg"
-          background={true}
-          contextual={true}
-          animated={true}
-          glow={true}
-        />
-      </div>
-    </Card>
+    <UnifiedMetric
+      title={title}
+      value={value}
+      icon={icon}
+      trend={trend}
+      trendValue={change}
+      colorType={colorType}
+    />
   );
 };
 

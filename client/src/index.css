@@ -238,19 +238,78 @@ All colors MUST be HSL.
   );
 }
 
-/* Fix para tabs com scroll horizontal */
-.tabs-scrollable {
-  justify-content: flex-start !important;
-  overflow-x: auto !important;
-  scrollbar-width: none !important;
-  gap: 4px !important;
+/* Sistema de Design Unificado */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.tabs-scrollable::-webkit-scrollbar {
-  display: none !important;
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
-.tabs-scrollable > * {
-  flex-shrink: 0 !important;
-  white-space: nowrap !important;
+/* Animações suaves uniformes */
+.unified-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards com efeito moderno */
+.unified-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Tabs responsivas */
+.unified-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.unified-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.unified-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.unified-tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unified-tab.active {
+  color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.unified-tab.inactive {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.unified-tab.inactive:hover {
+  background: #f3f4f6;
 }
