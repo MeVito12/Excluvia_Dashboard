@@ -76,12 +76,96 @@ const AtendimentoSection = () => {
         return {
           catalogName: 'Cardápio e Menu',
           chats: [
-            { id: 1, clientName: 'Restaurante Sabor', lastMessage: 'Pedido #1234 está pronto para entrega', timestamp: '16:10', status: 'unread', unread: 1, category: 'alimenticio' },
-            { id: 2, clientName: 'Cliente VIP', lastMessage: 'Excelente como sempre!', timestamp: '15:30', status: 'read', unread: 0, category: 'alimenticio' }
+            { id: 1, clientName: 'Maria Silva', lastMessage: '🤖 Bot: Perfeito! Seu Combo Família (2 pizzas grandes + refrigerante 2L + sobremesa) ficou R$ 89,90. Link de pagamento: pay.link/combo-familia-001', timestamp: '18:45', status: 'unread', unread: 2, category: 'alimenticio', isBot: true, orderValue: 89.90 },
+            { id: 2, clientName: 'João Carlos', lastMessage: 'Quais ingredientes vêm no Burger Vegano?', timestamp: '18:30', status: 'unread', unread: 1, category: 'alimenticio', isBot: false },
+            { id: 3, clientName: 'Ana Costa', lastMessage: '🤖 Bot: Pagamento confirmado! ✅ Pedido #2847 enviado para cozinha. Tempo estimado: 25 minutos. Acompanhe: track.link/2847', timestamp: '18:15', status: 'read', unread: 0, category: 'alimenticio', isBot: true, orderConfirmed: true },
+            { id: 4, clientName: 'Roberto Almeida', lastMessage: 'Vocês têm alguma opção sem glúten?', timestamp: '18:00', status: 'unread', unread: 1, category: 'alimenticio', isBot: false },
+            { id: 5, clientName: 'Família Santos', lastMessage: '🤖 Bot: Encontrei 5 opções sem glúten no cardápio! Pizza Margherita (massa sem glúten), Salada Caesar, Suco Natural, Brownie sem glúten e Frango Grelhado. Qual te interessa?', timestamp: '17:45', status: 'read', unread: 0, category: 'alimenticio', isBot: true },
+            { id: 6, clientName: 'Pedro Lima', lastMessage: 'Qual o valor da taxa de entrega para Vila Madalena?', timestamp: '17:30', status: 'unread', unread: 1, category: 'alimenticio', isBot: false },
+            { id: 7, clientName: 'Carla Fernandes', lastMessage: '🤖 Bot: Taxa de entrega para Vila Madalena: R$ 8,90. Pedidos acima de R$ 60,00 têm frete grátis! 🚚 Tempo estimado: 30-40 min.', timestamp: '17:15', status: 'read', unread: 0, category: 'alimenticio', isBot: true },
+            { id: 8, clientName: 'Lucas Mendes', lastMessage: 'Qual o horário de funcionamento hoje?', timestamp: '17:00', status: 'unread', unread: 1, category: 'alimenticio', isBot: false },
+            { id: 9, clientName: 'Fernanda Oliveira', lastMessage: '🤖 Bot: Hoje funcionamos das 11h às 23h! 🕐 Delivery até 22h30. Final de semana até 00h. Está pronto para fazer seu pedido?', timestamp: '16:45', status: 'read', unread: 0, category: 'alimenticio', isBot: true },
+            { id: 10, clientName: 'Gabriel Torres', lastMessage: 'Quero um "Combo Família", o que ele inclui?', timestamp: '16:30', status: 'unread', unread: 1, category: 'alimenticio', isBot: false }
           ],
           catalogs: [
-            { id: 1, name: 'Cardápio Delivery', category: 'alimenticio', items: ['Pizza Margherita', 'Hambúrguer Artesanal', 'Salada Caesar', 'Açaí com Granola'], description: 'Pratos deliciosos para delivery', active: true, qrCode: 'QR_FOOD_001' },
-            { id: 2, name: 'Menu Executivo', category: 'alimenticio', items: ['Prato Feito Completo', 'Suco Natural', 'Sobremesa do Dia', 'Café Expresso'], description: 'Almoço executivo completo', active: true, qrCode: 'QR_FOOD_002' }
+            { 
+              id: 1, 
+              name: 'Cardápio WhatsApp Inteligente', 
+              category: 'alimenticio', 
+              items: [
+                'Pizza Margherita R$ 32,90',
+                'Burger Vegano R$ 28,50', 
+                'Combo Família R$ 89,90',
+                'Opções sem Glúten (5 pratos)',
+                'Sobremesas Artesanais',
+                'Bebidas e Sucos Naturais'
+              ], 
+              description: 'Cardápio completo com atendimento 24/7 via WhatsApp. Bot inteligente responde dúvidas, sugere pratos e processa pedidos automaticamente.', 
+              active: true, 
+              qrCode: 'QR_CARDAPIO_SMART_001',
+              features: [
+                'Atendimento 24/7 com IA',
+                'Pedidos automáticos',
+                'Pagamento integrado',
+                'Rastreamento de entrega',
+                'Sugestões personalizadas'
+              ]
+            },
+            { 
+              id: 2, 
+              name: 'Menu Delivery Premium', 
+              category: 'alimenticio', 
+              items: [
+                'Pratos Executivos R$ 24,90', 
+                'Pizzas Gourmet (8 sabores)', 
+                'Hambúrguers Artesanais', 
+                'Saladas Premium',
+                'Açaí e Smoothies',
+                'Combos Promocionais'
+              ], 
+              description: 'Menu premium com entrega rápida. Sistema automatizado de pedidos com confirmação instantânea para a cozinha.', 
+              active: true, 
+              qrCode: 'QR_MENU_PREMIUM_002',
+              features: [
+                'Entrega expressa',
+                'Pagamento seguro',
+                'Notificação automática',
+                'Combo inteligente',
+                'Frete grátis acima R$ 60'
+              ]
+            }
+          ],
+          botFeatures: [
+            {
+              title: 'Atendimento Inteligente 24/7',
+              description: 'Assistente virtual responde dúvidas sobre ingredientes, alergênicos, horários e preços instantaneamente.',
+              icon: Bot,
+              examples: [
+                'Quais ingredientes vêm no Burger Vegano?',
+                'Vocês têm opção sem glúten?',
+                'Qual o horário de funcionamento hoje?'
+              ]
+            },
+            {
+              title: 'Pedidos Automáticos',
+              description: 'Cliente escolhe pratos na conversa, sistema calcula total e gera link de pagamento personalizado.',
+              icon: ShoppingCart,
+              examples: [
+                'Combo calculado automaticamente',
+                'Link de pagamento instantâneo',
+                'Confirmação em tempo real'
+              ]
+            },
+            {
+              title: 'Pagamento Simplificado',
+              description: 'Pagamento aprovado é enviado automaticamente para cozinha com todos os detalhes do pedido.',
+              icon: CreditCard,
+              examples: [
+                'Pagamento seguro via PIX/Cartão',
+                'Pedido enviado para cozinha',
+                'Rastreamento automático'
+              ]
+            }
           ]
         };
       case 'vendas':
@@ -179,6 +263,57 @@ const AtendimentoSection = () => {
         </div>
       </div>
 
+      {/* Seção Especial: Bot Alimentício Inteligente */}
+      {selectedCategory === 'alimenticio' && getCategorySpecificData().botFeatures && (
+        <div className="bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-orange-800 mb-2">
+              🍽️ Seu Cardápio ao Alcance de Todos, Pelo WhatsApp!
+            </h2>
+            <p className="text-orange-700">
+              Sistema inteligente de atendimento 24/7 com pedidos automáticos e pagamentos integrados
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {getCategorySpecificData().botFeatures?.map((feature, index) => (
+              <Card key={index} className="bg-white border border-orange-200 shadow-lg">
+                <CardContent className="p-6">
+                  <div className="text-center mb-4">
+                    <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-3">
+                      <feature.icon className="h-8 w-8 text-orange-600" />
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-2">{feature.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4">{feature.description}</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-orange-700 uppercase tracking-wide">
+                      Exemplos:
+                    </p>
+                    {feature.examples.map((example, idx) => (
+                      <div key={idx} className="bg-orange-50 rounded p-2">
+                        <p className="text-xs text-orange-800">"'{example}'"</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="mt-6 text-center">
+            <Alert className="bg-green-50 border-green-200">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">
+                <strong>Compra Rápida e Fácil:</strong> Cliente escolhe itens na conversa → Sistema calcula tudo → 
+                Gera link de pagamento seguro → Pagamento confirmado → Pedido enviado automaticamente para cozinha!
+              </AlertDescription>
+            </Alert>
+          </div>
+        </div>
+      )}
+
       {/* Configurações de Automação */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-white border border-border/50">
@@ -264,18 +399,47 @@ const AtendimentoSection = () => {
                   </div>
                 ) : (
                   filteredChats.map((chat) => (
-                    <div key={chat.id} className="p-3 bg-gray-50 rounded-lg border">
+                    <div key={chat.id} className={`p-3 rounded-lg border ${
+                      selectedCategory === 'alimenticio' && (chat as any).isBot 
+                        ? 'bg-gradient-to-r from-green-50 to-blue-50 border-green-200' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <Users className="w-5 h-5 text-blue-600" />
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            selectedCategory === 'alimenticio' && (chat as any).isBot 
+                              ? 'bg-green-100' 
+                              : 'bg-blue-100'
+                          }`}>
+                            {selectedCategory === 'alimenticio' && (chat as any).isBot ? (
+                              <Bot className="w-5 h-5 text-green-600" />
+                            ) : (
+                              <Users className="w-5 h-5 text-blue-600" />
+                            )}
                           </div>
                           <div>
-                            <h4 className="font-medium text-gray-900">{chat.clientName}</h4>
+                            <h4 className="font-medium text-gray-900">
+                              {chat.clientName}
+                              {selectedCategory === 'alimenticio' && (chat as any).isBot && (
+                                <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                  🤖 Atendimento Automático
+                                </span>
+                              )}
+                            </h4>
                             <p className="text-sm text-gray-500">{chat.timestamp}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
+                          {selectedCategory === 'alimenticio' && (chat as any).orderValue && (
+                            <Badge className="bg-orange-100 text-orange-800">
+                              R$ {(chat as any).orderValue.toFixed(2)}
+                            </Badge>
+                          )}
+                          {selectedCategory === 'alimenticio' && (chat as any).orderConfirmed && (
+                            <Badge className="bg-green-100 text-green-800">
+                              ✅ Pedido Confirmado
+                            </Badge>
+                          )}
                           {chat.unread > 0 && (
                             <Badge className="bg-red-100 text-red-800">
                               {chat.unread} nova{chat.unread !== 1 ? 's' : ''}
@@ -286,7 +450,21 @@ const AtendimentoSection = () => {
                           </Badge>
                         </div>
                       </div>
-                      <p className="text-gray-700 text-sm">{chat.lastMessage}</p>
+                      <p className={`text-sm ${
+                        selectedCategory === 'alimenticio' && (chat as any).isBot 
+                          ? 'text-green-800 font-medium' 
+                          : 'text-gray-700'
+                      }`}>
+                        {chat.lastMessage}
+                      </p>
+                      
+                      {selectedCategory === 'alimenticio' && (chat as any).isBot && (chat as any).orderValue && (
+                        <div className="mt-2 p-2 bg-white rounded border border-green-200">
+                          <p className="text-xs text-green-700">
+                            💳 Sistema processou pedido automaticamente - Link de pagamento gerado
+                          </p>
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -315,10 +493,21 @@ const AtendimentoSection = () => {
                   </div>
                 ) : (
                   filteredCatalogs.map((catalog) => (
-                    <div key={catalog.id} className="p-4 bg-gray-50 rounded-lg border">
+                    <div key={catalog.id} className={`p-4 rounded-lg border ${
+                      selectedCategory === 'alimenticio' 
+                        ? 'bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200' 
+                        : 'bg-gray-50 border-gray-200'
+                    }`}>
                       <div className="flex items-center justify-between mb-3">
                         <div>
-                          <h4 className="font-medium text-gray-900">{catalog.name}</h4>
+                          <h4 className="font-medium text-gray-900">
+                            {catalog.name}
+                            {selectedCategory === 'alimenticio' && (
+                              <span className="ml-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full">
+                                🚀 Sistema Inteligente
+                              </span>
+                            )}
+                          </h4>
                           <p className="text-sm text-gray-500">{catalog.description}</p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -339,9 +528,31 @@ const AtendimentoSection = () => {
                           </Button>
                         </div>
                       </div>
+                      
+                      {/* Funcionalidades especiais para categoria alimentícia */}
+                      {selectedCategory === 'alimenticio' && (catalog as any).features && (
+                        <div className="mb-4 p-3 bg-white rounded-lg border border-orange-200">
+                          <p className="text-xs font-semibold text-orange-700 uppercase tracking-wide mb-2">
+                            🤖 Funcionalidades Automáticas:
+                          </p>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                            {(catalog as any).features.map((feature: string, idx: number) => (
+                              <div key={idx} className="flex items-center gap-1 text-xs text-orange-800">
+                                <CheckCircle className="h-3 w-3 text-green-600" />
+                                {feature}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                         {catalog.items.map((item, index) => (
-                          <div key={index} className="p-2 bg-white rounded border text-sm text-gray-700">
+                          <div key={index} className={`p-2 rounded border text-sm ${
+                            selectedCategory === 'alimenticio' 
+                              ? 'bg-white border-orange-200 text-orange-800 font-medium' 
+                              : 'bg-white border-gray-200 text-gray-700'
+                          }`}>
                             {item}
                           </div>
                         ))}
