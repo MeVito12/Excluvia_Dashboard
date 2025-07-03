@@ -295,17 +295,17 @@ const AtividadeSection = () => {
               placeholder="Buscar atividades..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-64"
+              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
             />
           </div>
 
           <Select value={selectedType} onValueChange={setSelectedType}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 bg-white text-gray-900 border-gray-200">
               <SelectValue placeholder="Tipo de atividade" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white">
               {activityTypes.map(type => (
-                <SelectItem key={type.value} value={type.value}>
+                <SelectItem key={type.value} value={type.value} className="text-gray-900 hover:bg-gray-100">
                   {type.label}
                 </SelectItem>
               ))}
@@ -313,15 +313,15 @@ const AtividadeSection = () => {
           </Select>
 
           <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-32 bg-white text-gray-900 border-gray-200">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos</SelectItem>
-              <SelectItem value="success">Sucesso</SelectItem>
-              <SelectItem value="error">Erro</SelectItem>
-              <SelectItem value="warning">Aviso</SelectItem>
-              <SelectItem value="info">Info</SelectItem>
+            <SelectContent className="bg-white">
+              <SelectItem value="all" className="text-gray-900 hover:bg-gray-100">Todos</SelectItem>
+              <SelectItem value="success" className="text-gray-900 hover:bg-gray-100">Sucesso</SelectItem>
+              <SelectItem value="error" className="text-gray-900 hover:bg-gray-100">Erro</SelectItem>
+              <SelectItem value="warning" className="text-gray-900 hover:bg-gray-100">Aviso</SelectItem>
+              <SelectItem value="info" className="text-gray-900 hover:bg-gray-100">Info</SelectItem>
             </SelectContent>
           </Select>
 

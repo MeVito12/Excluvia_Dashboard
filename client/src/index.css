@@ -198,11 +198,11 @@ All colors MUST be HSL.
 
   /* Botões do sistema */
   .btn {
-    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2;
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 cursor-pointer;
   }
 
   .btn-primary {
-    @apply text-white shadow-lg hover:shadow-xl;
+    @apply text-white shadow-lg hover:shadow-xl active:scale-95;
     background: hsl(var(--brand-primary));
   }
 
@@ -222,18 +222,22 @@ All colors MUST be HSL.
   }
 
   .btn-outline {
-    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50;
+    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 cursor-pointer active:scale-95;
   }
 
   /* Inputs modernos */
   .modern-input {
-    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-transparent focus:ring-2 transition-all duration-300;
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-transparent focus:ring-2 transition-all duration-300 text-gray-900;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: blur(10px);
   }
 
   .modern-input:focus {
     --tw-ring-color: hsl(var(--brand-primary) / 0.3);
+  }
+
+  .modern-input::placeholder {
+    @apply text-gray-500;
   }
 
   /* Grid responsivo */
@@ -282,6 +286,73 @@ All colors MUST be HSL.
   .badge-primary {
     @apply text-white;
     background: hsl(var(--brand-primary));
+  }
+
+  /* Garantir visibilidade de todos os elementos */
+  input, select, button, textarea {
+    @apply text-gray-900;
+  }
+
+  input::placeholder, textarea::placeholder {
+    @apply text-gray-500;
+  }
+
+  /* Garantir interatividade de botões */
+  button {
+    @apply cursor-pointer;
+    pointer-events: auto !important;
+  }
+
+  button:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* Select personalizado */
+  [data-radix-select-trigger] {
+    @apply text-gray-900 bg-white border-gray-200 cursor-pointer;
+    pointer-events: auto !important;
+  }
+
+  [data-radix-select-content] {
+    @apply bg-white border border-gray-200;
+    z-index: 9999 !important;
+  }
+
+  [data-radix-select-item] {
+    @apply text-gray-900 hover:bg-gray-100 cursor-pointer;
+    pointer-events: auto !important;
+  }
+
+  /* Garantir z-index adequado para elementos interativos */
+  .main-card button, .content-card button {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Calendário e popover */
+  [data-radix-popover-content] {
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+  }
+
+  [data-radix-calendar] button {
+    @apply cursor-pointer text-gray-900;
+    pointer-events: auto !important;
+  }
+
+  /* Override para componentes shadcn específicos */
+  .rdp {
+    --rdp-cell-size: 40px;
+    --rdp-accent-color: hsl(var(--brand-primary));
+  }
+
+  .rdp-button:hover {
+    @apply bg-gray-100;
+  }
+
+  .rdp-day_selected {
+    background-color: hsl(var(--brand-primary)) !important;
+    color: white !important;
   }
 
   /* Animações personalizadas */

@@ -53,23 +53,23 @@ const SearchAndFilters = ({
             placeholder="Pesquisar empresas..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-10 bg-background/50 text-black"
+            className="pl-10 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
           />
         </div>
 
         {/* Company Select */}
         <Select value={selectedCompany} onValueChange={onCompanyChange}>
-          <SelectTrigger className="bg-background/50 text-muted-foreground">
-            <SelectValue placeholder="Selecione uma empresa" />
+          <SelectTrigger className="bg-white text-gray-900 border-gray-200">
+            <SelectValue placeholder="Selecione uma empresa" className="text-gray-900" />
           </SelectTrigger>
-          <SelectContent className="bg-popover">
+          <SelectContent className="bg-white">
             {companies
               .filter(company => 
                 company.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                 searchTerm === ''
               )
               .map((company) => (
-                <SelectItem key={company.id} value={company.id} className="text-gray-600">
+                <SelectItem key={company.id} value={company.id} className="text-gray-900 hover:bg-gray-100">
                   {company.name}
                 </SelectItem>
               ))
@@ -83,11 +83,11 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50 text-muted-foreground",
-                !dateFrom && "text-muted-foreground"
+                "justify-start text-left font-normal bg-white text-gray-900 border-gray-200 hover:bg-gray-50",
+                !dateFrom && "text-gray-500"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
               {dateFrom ? format(dateFrom, "dd/MM/yyyy") : "Data inicial"}
             </Button>
           </PopoverTrigger>
@@ -108,11 +108,11 @@ const SearchAndFilters = ({
             <Button
               variant="outline"
               className={cn(
-                "justify-start text-left font-normal bg-background/50 text-muted-foreground",
-                !dateTo && "text-muted-foreground"
+                "justify-start text-left font-normal bg-white text-gray-900 border-gray-200 hover:bg-gray-50",
+                !dateTo && "text-gray-500"
               )}
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
+              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
               {dateTo ? format(dateTo, "dd/MM/yyyy") : "Data final"}
             </Button>
           </PopoverTrigger>
