@@ -78,54 +78,34 @@ const SearchAndFilters = ({
         </Select>
 
         {/* Date From */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "justify-start text-left font-normal bg-white text-gray-900 border-gray-200 hover:bg-gray-50",
-                !dateFrom && "text-gray-500"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-              {dateFrom ? format(dateFrom, "dd/MM/yyyy") : "Data inicial"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={dateFrom}
-              onSelect={onDateFromChange}
-              initialFocus
-              className="p-3 pointer-events-auto"
-            />
-          </PopoverContent>
-        </Popover>
+        <div className="flex items-center gap-2">
+          <CalendarIcon className="h-4 w-4 text-gray-500" />
+          <input
+            type="date"
+            className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+            onChange={(e) => {
+              const date = e.target.value ? new Date(e.target.value) : undefined;
+              onDateFromChange(date);
+            }}
+            placeholder="Data inicial"
+          />
+        </div>
 
         {/* Date To */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              className={cn(
-                "justify-start text-left font-normal bg-white text-gray-900 border-gray-200 hover:bg-gray-50",
-                !dateTo && "text-gray-500"
-              )}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
-              {dateTo ? format(dateTo, "dd/MM/yyyy") : "Data final"}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
-            <Calendar
-              mode="single"
-              selected={dateTo}
-              onSelect={onDateToChange}
-              initialFocus
-              className="p-3 pointer-events-auto"
-            />
-          </PopoverContent>
-        </Popover>
+        <div className="flex items-center gap-2">
+          <CalendarIcon className="h-4 w-4 text-gray-500" />
+          <input
+            type="date"
+            className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+            onChange={(e) => {
+              const date = e.target.value ? new Date(e.target.value) : undefined;
+              onDateToChange(date);
+            }}
+            placeholder="Data final"
+          />
+        </div>
       </div>
     </div>
   );
