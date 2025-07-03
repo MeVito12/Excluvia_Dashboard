@@ -53,6 +53,16 @@ const AtendimentoSection = () => {
     projectUrl: '',
     category: selectedCategory === 'design' ? 'branding' : 'website'
   });
+  const [showAddSpecialistModal, setShowAddSpecialistModal] = useState(false);
+  const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
+  const [newSpecialist, setNewSpecialist] = useState({
+    name: '',
+    specialty: '',
+    phone: '',
+    email: '',
+    schedule: '',
+    description: ''
+  });
 
   // Função para gerar URL de compartilhamento
   const generateShareUrl = () => {
@@ -122,6 +132,22 @@ const AtendimentoSection = () => {
     };
   });
 
+  // Estado para especialistas
+  const [specialists, setSpecialists] = useState(() => {
+    return {
+      'medico': [
+        { id: 1, name: 'Dr. João Silva', specialty: 'Cardiologia', phone: '(11) 99999-1111', email: 'joao@clinica.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Especialista em cardiologia com 15 anos de experiência', available: true },
+        { id: 2, name: 'Dra. Maria Santos', specialty: 'Pediatria', phone: '(11) 99999-2222', email: 'maria@clinica.com', schedule: 'Seg-Sex: 9h às 17h', description: 'Pediatra especializada em desenvolvimento infantil', available: true },
+        { id: 3, name: 'Dr. Carlos Oliveira', specialty: 'Ortopedia', phone: '(11) 99999-3333', email: 'carlos@clinica.com', schedule: 'Ter-Sáb: 8h às 16h', description: 'Ortopedista com foco em medicina esportiva', available: true }
+      ],
+      'pet': [
+        { id: 1, name: 'Dr. Pedro Costa', specialty: 'Clínica Geral', phone: '(11) 99999-4444', email: 'pedro@vetpet.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Veterinário clínico geral com experiência em felinos', available: true },
+        { id: 2, name: 'Dra. Ana Lima', specialty: 'Cirurgia', phone: '(11) 99999-5555', email: 'ana@vetpet.com', schedule: 'Seg-Sex: 7h às 15h', description: 'Especialista em cirurgias de pequenos animais', available: true },
+        { id: 3, name: 'Dr. Ricardo Ferreira', specialty: 'Dermatologia', phone: '(11) 99999-6666', email: 'ricardo@vetpet.com', schedule: 'Qua-Dom: 9h às 17h', description: 'Dermatologista veterinário especializado em alergias', available: true }
+      ]
+    };
+  });
+
   // Função para buscar itens da categoria atual
   const getCurrentCategoryItems = () => {
     return categoryItems[selectedCategory as keyof typeof categoryItems] || [];
@@ -179,6 +205,78 @@ const AtendimentoSection = () => {
     setShowEditPortfolioModal(false);
     setEditingPortfolioItem(null);
     alert('Projeto atualizado com sucesso!');
+  };
+
+  // Funções para especialistas
+  const addSpecialist = () => {
+    if (!newSpecialist.name || !newSpecialist.specialty) {
+      alert('Por favor, preencha os campos obrigatórios.');
+      return;
+    }
+
+    const specialist = {
+      id: Date.now(),
+      ...newSpecialist,
+      available: true
+    };
+
+    setSpecialists(prev => ({
+      ...prev,
+      [selectedCategory]: [...(prev[selectedCategory as keyof typeof prev] || []), specialist]
+    }));
+
+    setNewSpecialist({
+      name: '',
+      specialty: '',
+      phone: '',
+      email: '',
+      schedule: '',
+      description: ''
+    });
+    setShowAddSpecialistModal(false);
+    alert('Especialista adicionado com sucesso!');
+  };
+
+  const getCurrentSpecialists = () => {
+    return specialists[selectedCategory as keyof typeof specialists] || [];
+  };
+
+  // Função para buscar ingredientes do estoque (para categoria alimentícia)
+  const getStockIngredients = () => {
+    const stockItems = getCurrentCategoryItems();
+    return stockItems.filter((item: any) => item.stock && item.stock > 0);
+  };
+
+  // Função para salvar item alimentício com ingredientes
+  const saveMenuItemWithIngredients = () => {
+    if (!newItem.name || selectedIngredients.length === 0) {
+      alert('Por favor, preencha o nome do produto e selecione pelo menos um ingrediente.');
+      return;
+    }
+
+    const stockItems = getCurrentCategoryItems();
+    const ingredients = selectedIngredients.map(id => 
+      stockItems.find((item: any) => item.id === id)
+    ).filter(Boolean);
+
+    const menuItem = {
+      id: Date.now(),
+      name: newItem.name,
+      ingredients: ingredients,
+      description: `Ingredientes: ${ingredients.map((ing: any) => ing.name).join(', ')}`,
+      category: newItem.category,
+      available: true
+    };
+
+    setCategoryItems(prev => ({
+      ...prev,
+      [selectedCategory]: [...(prev[selectedCategory as keyof typeof prev] || []), menuItem]
+    }));
+
+    setNewItem({ name: '', description: '', price: '', category: 'pratos' });
+    setSelectedIngredients([]);
+    setShowAddItemModal(false);
+    alert('Item do cardápio adicionado com sucesso!');
   };
 
   // Função para buscar dados do portfólio (legacy - pode ser removida)
@@ -382,6 +480,11 @@ const AtendimentoSection = () => {
       { id: 'fidelizacao', label: 'Fidelização', icon: Gift }
     ];
     
+    // Adicionar aba de especialistas para categorias médicas
+    if (selectedCategory === 'medico' || selectedCategory === 'pet') {
+      baseTabs.splice(2, 0, { id: 'especialistas', label: 'Especialistas', icon: Users });
+    }
+    
     // Adicionar aba de pagamento para categorias alimentícias
     if (selectedCategory === 'alimenticio') {
       baseTabs.push({ id: 'pagamento', label: 'Pagamento', icon: CreditCard });
@@ -583,6 +686,89 @@ const AtendimentoSection = () => {
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  );
+
+  const renderSpecialists = () => (
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Especialistas {selectedCategory === 'medico' ? 'Médicos' : 'Veterinários'}
+          </h3>
+          <button 
+            onClick={() => setShowAddSpecialistModal(true)}
+            className="btn btn-primary"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Adicionar Especialista
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {getCurrentSpecialists().map((specialist: any) => (
+            <div key={specialist.id} className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-800">{specialist.name}</h4>
+                    <span className="text-sm text-gray-600">{specialist.specialty}</span>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <button className="btn btn-outline btn-sm">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-sm text-gray-600">
+                {specialist.phone && (
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <span>{specialist.phone}</span>
+                  </div>
+                )}
+                {specialist.email && (
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    <span>{specialist.email}</span>
+                  </div>
+                )}
+                {specialist.schedule && (
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <span>{specialist.schedule}</span>
+                  </div>
+                )}
+              </div>
+
+              {specialist.description && (
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-sm text-gray-700">{specialist.description}</p>
+                </div>
+              )}
+
+              <div className="mt-4 flex items-center justify-between">
+                <span className={`badge ${specialist.available ? 'badge-success' : 'badge-secondary'}`}>
+                  {specialist.available ? 'Disponível' : 'Indisponível'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {getCurrentSpecialists().length === 0 && (
+          <div className="text-center py-12">
+            <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h4 className="text-lg font-medium text-gray-600 mb-2">Nenhum especialista cadastrado</h4>
+            <p className="text-gray-500">Adicione especialistas para gerenciar sua equipe</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1011,6 +1197,8 @@ const AtendimentoSection = () => {
           return renderPortfolio();
         }
         return renderCatalogs();
+      case 'especialistas':
+        return renderSpecialists();
       case 'fidelizacao':
         return renderLoyalty();
       case 'pagamento':
@@ -1144,18 +1332,49 @@ const AtendimentoSection = () => {
                 />
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Descrição
-                </label>
-                <textarea
-                  value={newItem.description}
-                  onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder={selectedCategory === 'alimenticio' ? 'Molho especial, queijo mussarela...' : 'Características e especificações...'}
-                />
-              </div>
+              {selectedCategory === 'alimenticio' ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Ingredientes *
+                  </label>
+                  <div className="border border-gray-300 rounded-md p-3 max-h-40 overflow-y-auto">
+                    {getStockIngredients().map((ingredient: any) => (
+                      <label key={ingredient.id} className="flex items-center space-x-2 py-1">
+                        <input
+                          type="checkbox"
+                          checked={selectedIngredients.includes(ingredient.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedIngredients([...selectedIngredients, ingredient.id]);
+                            } else {
+                              setSelectedIngredients(selectedIngredients.filter(id => id !== ingredient.id));
+                            }
+                          }}
+                          className="rounded border-gray-300"
+                        />
+                        <span className="text-sm">{ingredient.name}</span>
+                        <span className="text-xs text-gray-500">(Estoque: {ingredient.stock})</span>
+                      </label>
+                    ))}
+                  </div>
+                  {getStockIngredients().length === 0 && (
+                    <p className="text-sm text-gray-500 mt-2">Nenhum ingrediente disponível no estoque</p>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Descrição
+                  </label>
+                  <textarea
+                    value={newItem.description}
+                    onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Características e especificações..."
+                  />
+                </div>
+              )}
               
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1206,7 +1425,7 @@ const AtendimentoSection = () => {
                 Cancelar
               </button>
               <button
-                onClick={saveNewItem}
+                onClick={selectedCategory === 'alimenticio' ? saveMenuItemWithIngredients : saveNewItem}
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
                 Adicionar
@@ -1325,6 +1544,120 @@ const AtendimentoSection = () => {
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
                 Adicionar Projeto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Adicionar Especialista */}
+      {showAddSpecialistModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Adicionar Especialista {selectedCategory === 'medico' ? 'Médico' : 'Veterinário'}
+              </h3>
+              <button 
+                onClick={() => setShowAddSpecialistModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome Completo *
+                </label>
+                <input
+                  type="text"
+                  value={newSpecialist.name}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Dr. João Silva"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Especialidade *
+                </label>
+                <input
+                  type="text"
+                  value={newSpecialist.specialty}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, specialty: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder={selectedCategory === 'medico' ? 'Cardiologia' : 'Clínica Geral'}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Telefone
+                </label>
+                <input
+                  type="tel"
+                  value={newSpecialist.phone}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, phone: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="(11) 99999-9999"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  E-mail
+                </label>
+                <input
+                  type="email"
+                  value={newSpecialist.email}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="doutor@clinica.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Horário de Atendimento
+                </label>
+                <input
+                  type="text"
+                  value={newSpecialist.schedule}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, schedule: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Seg-Sex: 8h às 18h"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição/Experiência
+                </label>
+                <textarea
+                  value={newSpecialist.description}
+                  onChange={(e) => setNewSpecialist({ ...newSpecialist, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Experiência e especialidades do profissional..."
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddSpecialistModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={addSpecialist}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar Especialista
               </button>
             </div>
           </div>
