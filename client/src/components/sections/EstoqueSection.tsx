@@ -9,6 +9,7 @@ import {
   Search,
   Eye,
   Edit,
+  Trash2,
   DollarSign,
   TrendingUp,
   AlertTriangle,
@@ -39,6 +40,14 @@ const EstoqueSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [products, setProducts] = useState(() => getInitialProductData());
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
+
+  // Categorias que não têm sistema de estoque
+  const categoriesWithoutStock = ['educacao', 'beleza'];
+
+  // Verificar se a categoria atual tem sistema de estoque
+  const hasStockSystem = !categoriesWithoutStock.includes(selectedCategory);
 
   // Funções operacionais para produtos
   const replenishStock = (productId: number) => {
@@ -63,10 +72,33 @@ const EstoqueSection = () => {
     alert('⚠️ Produto marcado como vencido!\n\nEstoque zerado automaticamente.');
   };
 
+  // Função para editar produto
   const editProduct = (productId: number) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      alert(`📝 Editando: ${product.name}\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá editar todos os detalhes do produto.`);
+      setEditingProduct(product);
+      setShowEditModal(true);
+    }
+  };
+
+  // Função para salvar produto editado
+  const saveEditedProduct = (editedProduct: any) => {
+    setProducts(prev => 
+      prev.map(product => 
+        product.id === editedProduct.id ? editedProduct : product
+      )
+    );
+    setShowEditModal(false);
+    setEditingProduct(null);
+    alert('✅ Produto atualizado com sucesso!');
+  };
+
+  // Função para excluir produto
+  const deleteProduct = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    if (product && confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`)) {
+      setProducts(prev => prev.filter(p => p.id !== productId));
+      alert('🗑️ Produto excluído com sucesso!');
     }
   };
 
@@ -828,6 +860,13 @@ const EstoqueSection = () => {
                 >
                   <Edit className="w-4 h-4" />
                 </button>
+                <button 
+                  onClick={() => deleteProduct(product.id)}
+                  className="btn btn-outline p-2 text-red-600 hover:text-red-700 hover:bg-red-50" 
+                  title="Excluir produto"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
                 {product.stock <= product.minStock && (
                   <button 
                     onClick={() => replenishStock(product.id)}
@@ -1054,6 +1093,37 @@ const EstoqueSection = () => {
     }
   };
 
+  // Se a categoria não tem sistema de estoque, mostrar mensagem
+  if (!hasStockSystem) {
+    return (
+      <div className="app-section">
+        <div className="section-header">
+          <h1 className="section-title">Gestão de Portfólio</h1>
+          <p className="section-subtitle">
+            Esta categoria utiliza portfólio de serviços - sem controle de estoque físico
+          </p>
+        </div>
+
+        <div className="main-card p-8 text-center">
+          <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">
+            Categoria de Serviços
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {selectedCategory === 'educacao' ? 'Educação e Ensino' : 'Beleza e Estética'} trabalha com 
+            portfólio de serviços. O catálogo é gerenciado diretamente na seção Atendimento.
+          </p>
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <p className="text-sm text-blue-700">
+              <strong>Gestão automatizada:</strong> Seus serviços do portfólio aparecem automaticamente 
+              no catálogo da seção Atendimento para compartilhamento com clientes.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-section">
       <div className="section-header">
@@ -1143,6 +1213,89 @@ const EstoqueSection = () => {
 
       {/* Conteúdo das Tabs */}
       {renderTabContent()}
+
+      {/* Modal de Edição */}
+      {showEditModal && editingProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Editar Produto</h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                <input
+                  type="text"
+                  value={editingProduct.name}
+                  onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})}
+                  className="modern-input w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <input
+                  type="text"
+                  value={editingProduct.category}
+                  onChange={(e) => setEditingProduct({...editingProduct, category: e.target.value})}
+                  className="modern-input w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Preço (R$)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={editingProduct.price}
+                  onChange={(e) => setEditingProduct({...editingProduct, price: parseFloat(e.target.value)})}
+                  className="modern-input w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Estoque Atual</label>
+                <input
+                  type="number"
+                  value={editingProduct.stock}
+                  onChange={(e) => setEditingProduct({...editingProduct, stock: parseInt(e.target.value)})}
+                  className="modern-input w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Estoque Mínimo</label>
+                <input
+                  type="number"
+                  value={editingProduct.minStock}
+                  onChange={(e) => setEditingProduct({...editingProduct, minStock: parseInt(e.target.value)})}
+                  className="modern-input w-full"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={editingProduct.isPerishable}
+                  onChange={(e) => setEditingProduct({...editingProduct, isPerishable: e.target.checked})}
+                  className="rounded"
+                />
+                <label className="text-sm text-gray-700">Produto perecível</label>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => saveEditedProduct(editingProduct)}
+                className="btn btn-primary flex-1"
+              >
+                Salvar Alterações
+              </button>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingProduct(null);
+                }}
+                className="btn btn-outline flex-1"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

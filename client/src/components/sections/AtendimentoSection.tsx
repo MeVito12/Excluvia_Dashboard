@@ -50,6 +50,50 @@ const AtendimentoSection = () => {
     return `${baseUrl}/${menuType}/${categorySlug}`;
   };
 
+  // Função para buscar produtos do estoque automaticamente
+  const getStockProducts = () => {
+    if (selectedCategory === 'alimenticio') {
+      // Para alimentício, mantém gestão manual
+      return [];
+    }
+    
+    // Para outras categorias, puxar automaticamente do estoque
+    const mockStockProducts = {
+      'pet': [
+        { id: 1, name: 'Ração Premium Golden', price: 89.90, category: 'racao', stock: 25, description: 'Ração premium para cães adultos' },
+        { id: 2, name: 'Antipulgas Frontline', price: 45.50, category: 'medicamentos', stock: 12, description: 'Proteção contra pulgas e carrapatos' },
+        { id: 3, name: 'Brinquedo Kong', price: 32.00, category: 'brinquedos', stock: 8, description: 'Brinquedo resistente para cães' }
+      ],
+      'medico': [
+        { id: 1, name: 'Dipirona 500mg', price: 15.90, category: 'analgesicos', stock: 50, description: 'Analgésico e antipirético' },
+        { id: 2, name: 'Amoxicilina 500mg', price: 25.00, category: 'antibioticos', stock: 30, description: 'Antibiótico de amplo espectro' },
+        { id: 3, name: 'Termômetro Digital', price: 89.90, category: 'equipamentos', stock: 15, description: 'Termômetro clínico digital' }
+      ],
+      'tecnologia': [
+        { id: 1, name: 'Processador Intel i7', price: 1299.00, category: 'componentes', stock: 5, description: 'Processador Intel Core i7 12ª geração' },
+        { id: 2, name: 'Monitor 24" Full HD', price: 699.00, category: 'monitores', stock: 8, description: 'Monitor LED 24 polegadas' },
+        { id: 3, name: 'SSD 1TB', price: 299.00, category: 'armazenamento', stock: 12, description: 'SSD interno 1TB alta velocidade' }
+      ],
+      'vendas': [
+        { id: 1, name: 'Smartphone Galaxy S24', price: 2899.99, category: 'eletronicos', stock: 6, description: 'Smartphone Samsung Galaxy S24' },
+        { id: 2, name: 'Camiseta Polo', price: 89.99, category: 'vestuario', stock: 20, description: 'Camiseta polo masculina' },
+        { id: 3, name: 'Tênis Esportivo', price: 199.99, category: 'calcados', stock: 15, description: 'Tênis para corrida' }
+      ],
+      'educacao': [
+        { id: 1, name: 'Livro Matemática Básica', price: 45.00, category: 'livros', stock: 25, description: 'Livro didático matemática básica' },
+        { id: 2, name: 'Kit Escolar Completo', price: 89.90, category: 'material-escolar', stock: 18, description: 'Kit com materiais escolares' },
+        { id: 3, name: 'Calculadora Científica', price: 89.00, category: 'equipamentos', stock: 12, description: 'Calculadora científica' }
+      ],
+      'beleza': [
+        { id: 1, name: 'Shampoo Hidratante', price: 35.90, category: 'cabelos', stock: 20, description: 'Shampoo hidratante para cabelos secos' },
+        { id: 2, name: 'Base Líquida', price: 89.90, category: 'maquiagem', stock: 15, description: 'Base líquida cobertura natural' },
+        { id: 3, name: 'Perfume Floral', price: 149.90, category: 'perfumaria', stock: 10, description: 'Perfume feminino floral' }
+      ]
+    };
+    
+    return mockStockProducts[selectedCategory as keyof typeof mockStockProducts] || [];
+  };
+
   // Função para compartilhar
   const handleShare = (type: 'link' | 'qr') => {
     const url = generateShareUrl();
@@ -188,21 +232,25 @@ const AtendimentoSection = () => {
   // Catálogos/Cardápios por categoria
   const getCatalogs = () => {
     if (selectedCategory === 'alimenticio') {
+      // Para alimentício, mantém gestão manual do cardápio
       return [
         { id: 1, name: 'Pizza Margherita', price: 'R$ 35,00', description: 'Molho de tomate, mussarela e manjericão', category: 'Pizzas' },
         { id: 2, name: 'Hambúrguer Artesanal', price: 'R$ 28,00', description: '180g de carne, queijo, alface e tomate', category: 'Hambúrgueres' },
         { id: 3, name: 'Refrigerante 350ml', price: 'R$ 5,00', description: 'Coca-Cola, Pepsi ou Guaraná', category: 'Bebidas' }
       ];
-    } else if (selectedCategory === 'vendas') {
-      return [
-        { id: 1, name: 'Smartphone Galaxy S24', price: 'R$ 2.899,00', description: '256GB, 12GB RAM, 5G', category: 'Eletrônicos' },
-        { id: 2, name: 'Notebook Dell Inspiron', price: 'R$ 2.499,00', description: 'Intel i7, 16GB RAM, SSD 512GB', category: 'Eletrônicos' },
-        { id: 3, name: 'Camiseta Polo', price: 'R$ 89,00', description: '100% algodão, várias cores', category: 'Vestuário' }
-      ];
+    } else {
+      // Para outras categorias, puxar automaticamente do estoque
+      const stockProducts = getStockProducts();
+      return stockProducts.map((product: any) => ({
+        id: product.id,
+        name: product.name,
+        price: `R$ ${product.price.toFixed(2).replace('.', ',')}`,
+        description: product.description,
+        category: product.category,
+        stock: product.stock,
+        isFromStock: true
+      }));
     }
-    return [
-      { id: 1, name: 'Produto 1', price: 'R$ 50,00', description: 'Descrição do produto', category: 'Geral' }
-    ];
   };
 
   const renderMessages = () => (
@@ -286,32 +334,69 @@ const AtendimentoSection = () => {
               <QrCode className="w-4 h-4" />
               QR Code
             </button>
-            <button 
-              onClick={handleAddItem}
-              className="btn btn-primary"
-            >
-              <ShoppingCart className="w-4 h-4" />
-              Adicionar Item
-            </button>
+            {selectedCategory === 'alimenticio' && (
+              <button 
+                onClick={handleAddItem}
+                className="btn btn-primary"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                Adicionar Item
+              </button>
+            )}
           </div>
         </div>
 
+        {/* Aviso de integração automática */}
+        {selectedCategory !== 'alimenticio' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 text-blue-700">
+              <CheckCircle className="w-5 h-5" />
+              <span className="font-medium">Sincronização Automática com Estoque</span>
+            </div>
+            <p className="text-sm text-blue-600 mt-1">
+              Os produtos abaixo são carregados automaticamente do seu estoque. 
+              Para gerenciar produtos, vá para a seção Estoque.
+            </p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {getCatalogs().map((item) => (
+          {getCatalogs().map((item: any) => (
             <div key={item.id} className="content-card hover:shadow-xl transition-all duration-300">
               <div className="flex justify-between items-start mb-3">
                 <span className="badge badge-primary">{item.category}</span>
-                <span className="text-lg font-bold text-green-600">{item.price}</span>
+                <div className="text-right">
+                  <span className="text-lg font-bold text-green-600">{item.price}</span>
+                  {item.isFromStock && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Estoque: {item.stock} unidades
+                    </p>
+                  )}
+                </div>
               </div>
               <h4 className="font-semibold text-gray-800 mb-2">{item.name}</h4>
               <p className="text-sm text-gray-600 mb-4">{item.description}</p>
+              {item.isFromStock && item.stock <= 5 && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded p-2 mb-3">
+                  <p className="text-xs text-yellow-700">⚠️ Estoque baixo - apenas {item.stock} unidades</p>
+                </div>
+              )}
               <div className="flex gap-2">
-                <button className="btn btn-outline flex-1">
-                  Editar
-                </button>
-                <button className="btn btn-secondary">
-                  <Send className="w-4 h-4" />
-                </button>
+                {selectedCategory === 'alimenticio' ? (
+                  <>
+                    <button className="btn btn-outline flex-1">
+                      Editar
+                    </button>
+                    <button className="btn btn-secondary">
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </>
+                ) : (
+                  <button className="btn btn-secondary flex-1">
+                    <Send className="w-4 h-4" />
+                    Enviar para Cliente
+                  </button>
+                )}
               </div>
             </div>
           ))}
