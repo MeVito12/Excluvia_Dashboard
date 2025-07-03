@@ -153,7 +153,6 @@ const AtendimentoSection = () => {
     const baseTabs = [
       { id: 'mensagens', label: 'Mensagens', icon: MessageCircle },
       { id: 'cardapios', label: selectedCategory === 'alimenticio' ? 'Cardápios' : 'Catálogos', icon: ShoppingCart },
-      { id: 'automacao', label: 'Automação', icon: Bot },
       { id: 'fidelizacao', label: 'Fidelização', icon: Gift }
     ];
     
@@ -316,86 +315,6 @@ const AtendimentoSection = () => {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderAutomation = () => (
-    <div className="animate-fade-in">
-      <div className="content-grid">
-        <div className="main-card p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Bot className="w-8 h-8 text-purple-600" />
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800">IA Assistant 24/7</h3>
-              <p className="text-sm text-gray-600">Configurações do bot inteligente</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <h4 className="font-medium text-gray-800">Bot Ativo</h4>
-                <p className="text-sm text-gray-600">Respostas automáticas habilitadas</p>
-              </div>
-              <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <h4 className="font-medium text-gray-800">Processamento de Pedidos</h4>
-                <p className="text-sm text-gray-600">Pedidos automáticos via PIX/Cartão</p>
-              </div>
-              <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-              <div>
-                <h4 className="font-medium text-gray-800">Suporte Humano</h4>
-                <p className="text-sm text-gray-600">Escalação inteligente para agentes</p>
-              </div>
-              <div className="w-12 h-6 bg-blue-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="main-card p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <Zap className="w-8 h-8 text-yellow-500" />
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800">Estatísticas em Tempo Real</h3>
-              <p className="text-sm text-gray-600">Performance do atendimento</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Mensagens Hoje</span>
-              <span className="font-semibold text-gray-800">127</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Bot Resolveu</span>
-              <span className="font-semibold text-green-600">89%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Tempo Médio</span>
-              <span className="font-semibold text-blue-600">2min</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Satisfação</span>
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                <span className="font-semibold text-yellow-600">4.8</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -728,8 +647,6 @@ const AtendimentoSection = () => {
         return renderMessages();
       case 'cardapios':
         return renderCatalogs();
-      case 'automacao':
-        return renderAutomation();
       case 'fidelizacao':
         return renderLoyalty();
       case 'pagamento':
