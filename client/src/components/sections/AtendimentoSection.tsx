@@ -117,6 +117,14 @@ const AtendimentoSection = () => {
         { id: 3, name: 'Perfume Floral 100ml', price: 199.00, category: 'perfumaria', description: 'Perfume feminino com notas florais', stock: 12, available: true },
         { id: 4, name: 'Creme Anti-idade', price: 149.90, category: 'skincare', description: 'Creme facial anti-idade', stock: 8, available: true }
       ],
+      'estetica': [
+        { id: 1, name: 'Ácido Hialurônico', price: 299.00, category: 'injetaveis', description: 'Preenchimento facial com ácido hialurônico', stock: 15, available: true },
+        { id: 2, name: 'Botox Allergan', price: 450.00, category: 'injetaveis', description: 'Toxina botulínica para rugas de expressão', stock: 8, available: true },
+        { id: 3, name: 'Peeling Químico', price: 180.00, category: 'tratamentos', description: 'Peeling para renovação celular', stock: 25, available: true },
+        { id: 4, name: 'Laser Fracionado', price: 350.00, category: 'equipamentos', description: 'Tratamento a laser para rejuvenescimento', stock: 5, available: true },
+        { id: 5, name: 'Microagulhamento', price: 120.00, category: 'tratamentos', description: 'Estimulação de colágeno', stock: 20, available: true },
+        { id: 6, name: 'Radiofrequência', price: 200.00, category: 'equipamentos', description: 'Tratamento para flacidez', stock: 10, available: true }
+      ],
       'design': [
         { id: 1, title: 'Identidade Visual - Café Aroma', description: 'Desenvolvimento completo da identidade visual para cafeteria premium', category: 'branding', imageUrl: '', projectUrl: 'https://exemplo.com/cafe-aroma', available: true },
         { id: 2, title: 'Material Gráfico - Eventos ABC', description: 'Criação de convites, banners e cartões para empresa de eventos', category: 'impressos', imageUrl: '', projectUrl: '', available: true },
@@ -144,6 +152,12 @@ const AtendimentoSection = () => {
         { id: 1, name: 'Dr. Pedro Costa', specialty: 'Clínica Geral', phone: '(11) 99999-4444', email: 'pedro@vetpet.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Veterinário clínico geral com experiência em felinos', available: true },
         { id: 2, name: 'Dra. Ana Lima', specialty: 'Cirurgia', phone: '(11) 99999-5555', email: 'ana@vetpet.com', schedule: 'Seg-Sex: 7h às 15h', description: 'Especialista em cirurgias de pequenos animais', available: true },
         { id: 3, name: 'Dr. Ricardo Ferreira', specialty: 'Dermatologia', phone: '(11) 99999-6666', email: 'ricardo@vetpet.com', schedule: 'Qua-Dom: 9h às 17h', description: 'Dermatologista veterinário especializado em alergias', available: true }
+      ],
+      'estetica': [
+        { id: 1, name: 'Dra. Fernanda Reis', specialty: 'Harmonização Facial', phone: '(11) 99999-7777', email: 'fernanda@clinicaestetica.com', schedule: 'Seg-Sex: 9h às 18h', description: 'Especialista em harmonização facial e preenchimentos', available: true },
+        { id: 2, name: 'Dr. Bruno Santos', specialty: 'Medicina Estética', phone: '(11) 99999-8888', email: 'bruno@clinicaestetica.com', schedule: 'Ter-Sáb: 8h às 17h', description: 'Médico especializado em tratamentos estéticos e antienvelhecimento', available: true },
+        { id: 3, name: 'Dra. Carla Mendes', specialty: 'Dermatologia Estética', phone: '(11) 99999-9999', email: 'carla@clinicaestetica.com', schedule: 'Seg-Sex: 10h às 19h', description: 'Dermatologista com foco em tratamentos estéticos', available: true },
+        { id: 4, name: 'Luciana Oliveira', specialty: 'Estética Avançada', phone: '(11) 99999-0000', email: 'luciana@clinicaestetica.com', schedule: 'Qua-Dom: 9h às 18h', description: 'Esteticista especializada em tratamentos corporais e faciais', available: true }
       ]
     };
   });
@@ -480,8 +494,8 @@ const AtendimentoSection = () => {
       { id: 'fidelizacao', label: 'Fidelização', icon: Gift }
     ];
     
-    // Adicionar aba de especialistas para categorias médicas
-    if (selectedCategory === 'medico' || selectedCategory === 'pet') {
+    // Adicionar aba de especialistas para categorias clínicas
+    if (selectedCategory === 'medico' || selectedCategory === 'pet' || selectedCategory === 'estetica') {
       baseTabs.splice(2, 0, { id: 'especialistas', label: 'Especialistas', icon: Users });
     }
     
@@ -695,7 +709,9 @@ const AtendimentoSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-gray-800">
-            Especialistas {selectedCategory === 'medico' ? 'Médicos' : 'Veterinários'}
+            {selectedCategory === 'medico' ? 'Especialistas Médicos' : 
+             selectedCategory === 'pet' ? 'Especialistas Veterinários' : 
+             'Especialistas em Estética'}
           </h3>
           <button 
             onClick={() => setShowAddSpecialistModal(true)}
@@ -1556,7 +1572,9 @@ const AtendimentoSection = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">
-                Adicionar Especialista {selectedCategory === 'medico' ? 'Médico' : 'Veterinário'}
+                Adicionar Especialista {selectedCategory === 'medico' ? 'Médico' : 
+                                       selectedCategory === 'pet' ? 'Veterinário' : 
+                                       'em Estética'}
               </h3>
               <button 
                 onClick={() => setShowAddSpecialistModal(false)}
@@ -1589,7 +1607,9 @@ const AtendimentoSection = () => {
                   value={newSpecialist.specialty}
                   onChange={(e) => setNewSpecialist({ ...newSpecialist, specialty: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder={selectedCategory === 'medico' ? 'Cardiologia' : 'Clínica Geral'}
+                  placeholder={selectedCategory === 'medico' ? 'Cardiologia' : 
+                              selectedCategory === 'pet' ? 'Clínica Geral' : 
+                              'Harmonização Facial'}
                 />
               </div>
               

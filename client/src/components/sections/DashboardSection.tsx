@@ -77,6 +77,15 @@ const DashboardSection = () => {
         revenue: 'R$ 2.180',
         growth: '+14%',
         satisfaction: '4.8'
+      },
+      'estetica': {
+        totalRecords: '389 Pacientes',
+        activeUsers: '7 Especialistas',
+        transactions: '18 Procedimentos',
+        appointments: '6 Consultas Hoje',
+        revenue: 'R$ 4.350',
+        growth: '+22%',
+        satisfaction: '4.9'
       }
     };
     
@@ -338,6 +347,12 @@ const DashboardSection = () => {
                 { title: 'Corte e Escova - Maria', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Maria Silva' },
                 { title: 'Manicure - Ana', time: 'Hoje às 16:30', status: 'Em 3h', client: 'Ana Costa' },
                 { title: 'Design de Sobrancelhas', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Carla Santos' }
+              ],
+              'estetica': [
+                { title: 'Preenchimento Ácido Hialurônico', time: 'Hoje às 14:30', status: 'Em 1h', client: 'Fernanda Reis' },
+                { title: 'Aplicação de Botox', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Juliana Santos' },
+                { title: 'Harmonização Facial', time: 'Amanhã às 10:30', status: 'Amanhã', client: 'Patricia Lima' },
+                { title: 'Peeling Químico', time: 'Amanhã às 15:00', status: 'Amanhã', client: 'Carolina Souza' }
               ]
             };
             

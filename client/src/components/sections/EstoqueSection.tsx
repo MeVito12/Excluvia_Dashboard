@@ -636,6 +636,75 @@ const EstoqueSection = () => {
           status: getProductStatus(12, 8, '2025-06-30')
         }
       ];
+    } else if (selectedCategory === 'estetica') {
+      return [
+        { 
+          id: 1, 
+          name: 'Ácido Hialurônico Restylane', 
+          category: 'Injetáveis', 
+          stock: 15, 
+          minStock: 5, 
+          price: 320.00,
+          isPerishable: true,
+          expiryDate: '2025-12-30',
+          status: getProductStatus(15, 5, '2025-12-30')
+        },
+        { 
+          id: 2, 
+          name: 'Botox Allergan 100U', 
+          category: 'Injetáveis', 
+          stock: 8, 
+          minStock: 3, 
+          price: 480.00,
+          isPerishable: true,
+          expiryDate: '2025-08-15',
+          status: getProductStatus(8, 3, '2025-08-15')
+        },
+        { 
+          id: 3, 
+          name: 'Peeling Químico TCA', 
+          category: 'Tratamentos', 
+          stock: 25, 
+          minStock: 10, 
+          price: 180.00,
+          isPerishable: true,
+          expiryDate: '2026-05-20',
+          status: getProductStatus(25, 10, '2026-05-20')
+        },
+        { 
+          id: 4, 
+          name: 'Fios de PDO', 
+          category: 'Lifting', 
+          stock: 3, 
+          minStock: 15, 
+          price: 45.00,
+          isPerishable: false,
+          expiryDate: '2027-01-10',
+          status: getProductStatus(3, 15, '2027-01-10')
+        },
+        { 
+          id: 5, 
+          name: 'Microagulhas Dermapen', 
+          category: 'Equipamentos', 
+          stock: 200, 
+          minStock: 50, 
+          price: 2.50,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(200, 50)
+        },
+        { 
+          id: 6, 
+          name: 'Sérum Vitamina C', 
+          category: 'Cosméticos', 
+          stock: 0, 
+          minStock: 20, 
+          price: 89.90,
+          isPerishable: true,
+          expiryDate: '2025-09-30',
+          status: getProductStatus(0, 20, '2025-09-30')
+        }
+      ];
     }
     
     return [
@@ -666,6 +735,13 @@ const EstoqueSection = () => {
         { id: 2, date: '2024-12-24', client: 'Pedro Lima', items: ['Notebook Dell', 'Camiseta Polo'], total: 2689.98, status: 'Concluída' },
         { id: 3, date: '2024-12-23', client: 'Lucia Ferreira', items: ['Camiseta Polo x2'], total: 379.98, status: 'Pendente' }
       ];
+    } else if (selectedCategory === 'estetica') {
+      return [
+        { id: 1, date: '2024-12-25', client: 'Fernanda Reis', items: ['Ácido Hialurônico x2'], total: 640.00, status: 'Concluída' },
+        { id: 2, date: '2024-12-24', client: 'Juliana Santos', items: ['Botox x1', 'Peeling Químico x1'], total: 660.00, status: 'Concluída' },
+        { id: 3, date: '2024-12-23', client: 'Patricia Lima', items: ['Fios de PDO x10'], total: 450.00, status: 'Concluída' },
+        { id: 4, date: '2024-12-22', client: 'Carolina Souza', items: ['Sérum Vitamina C x2'], total: 179.80, status: 'Pendente' }
+      ];
     }
     return [
       { id: 1, date: '2024-12-25', client: 'Cliente', items: ['Produto'], total: 50.00, status: 'Concluída' }
@@ -684,6 +760,14 @@ const EstoqueSection = () => {
         { id: 1, name: 'Ana Costa', email: 'ana@email.com', phone: '(11) 99999-9999', lastOrder: '2024-12-25', totalSpent: 8500.00, status: 'Ativo' },
         { id: 2, name: 'Pedro Lima', email: 'pedro@email.com', phone: '(11) 88888-8888', lastOrder: '2024-12-24', totalSpent: 3200.00, status: 'Ativo' },
         { id: 3, name: 'Lucia Ferreira', email: 'lucia@email.com', phone: '(11) 77777-7777', lastOrder: '2024-12-20', totalSpent: 750.00, status: 'Ativo' }
+      ];
+    } else if (selectedCategory === 'estetica') {
+      return [
+        { id: 1, name: 'Fernanda Reis', email: 'fernanda@email.com', phone: '(11) 99999-1111', lastOrder: '2024-12-25', totalSpent: 1820.00, status: 'Ativo' },
+        { id: 2, name: 'Juliana Santos', email: 'juliana@email.com', phone: '(11) 99999-2222', lastOrder: '2024-12-24', totalSpent: 980.00, status: 'Ativo' },
+        { id: 3, name: 'Patricia Lima', email: 'patricia@email.com', phone: '(11) 99999-3333', lastOrder: '2024-12-23', totalSpent: 1350.00, status: 'Ativo' },
+        { id: 4, name: 'Carolina Souza', email: 'carolina@email.com', phone: '(11) 99999-4444', lastOrder: '2024-12-22', totalSpent: 560.00, status: 'Ativo' },
+        { id: 5, name: 'Beatriz Oliveira', email: 'beatriz@email.com', phone: '(11) 99999-5555', lastOrder: '2024-12-15', totalSpent: 2100.00, status: 'Inativo' }
       ];
     }
     return [
