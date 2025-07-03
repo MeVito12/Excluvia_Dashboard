@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import { useNotificationContext } from '@/contexts/NotificationContext';
 import { 
   MessageCircle, 
   Bot, 
@@ -36,6 +37,7 @@ import {
 
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
+  const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
@@ -205,7 +207,7 @@ const AtendimentoSection = () => {
   // Função para salvar item editado (não portfolio)
   const saveEditedItem = () => {
     if (!newItem.name) {
-      alert('Por favor, preencha o nome do item.');
+      showError('Campo obrigatório', 'Por favor, preencha o nome do item.');
       return;
     }
 
@@ -226,9 +228,14 @@ const AtendimentoSection = () => {
         ) || []
       }));
       
-      alert(selectedCategory !== 'design' && selectedCategory !== 'sites' 
-        ? 'Item atualizado no catálogo e estoque com sucesso!' 
-        : 'Item atualizado com sucesso!');
+      showSuccess(
+        selectedCategory !== 'design' && selectedCategory !== 'sites' 
+          ? 'ITEM ATUALIZADO' 
+          : 'PROJETO ATUALIZADO',
+        selectedCategory !== 'design' && selectedCategory !== 'sites'
+          ? `"${newItem.name}" foi atualizado no catálogo e estoque com sucesso!`
+          : `"${newItem.name}" foi atualizado com sucesso!`
+      );
     } else {
       // Criar novo item
       if (selectedCategory === 'alimenticio') {
@@ -258,13 +265,13 @@ const AtendimentoSection = () => {
         [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
       }));
       
-      // Mensagens específicas por categoria
+      // Mensagens específicas por categoria usando o sistema temático
       if (selectedCategory === 'design' || selectedCategory === 'sites') {
-        alert(`🗑️ PROJETO EXCLUÍDO\n\n"${itemName}" foi removido do portfólio\n\nEsta ação não pode ser desfeita.`);
+        showError('PROJETO EXCLUÍDO', `"${itemName}" foi removido do portfólio permanentemente.`);
       } else if (selectedCategory === 'alimenticio') {
-        alert(`🗑️ PRATO EXCLUÍDO\n\n"${itemName}" foi removido do cardápio\n\nEstoque: Atualizado automaticamente\nEsta ação não pode ser desfeita.`);
+        showError('PRATO EXCLUÍDO', `"${itemName}" foi removido do cardápio. Estoque atualizado automaticamente.`);
       } else {
-        alert(`🗑️ PRODUTO EXCLUÍDO\n\n"${itemName}" foi removido do catálogo\n\nEstoque: Sincronizado automaticamente\nEsta ação não pode ser desfeita.`);
+        showError('PRODUTO EXCLUÍDO', `"${itemName}" foi removido do catálogo. Estoque sincronizado automaticamente.`);
       }
     }
   };
@@ -286,22 +293,33 @@ const AtendimentoSection = () => {
       ) || []
     }));
 
-    // Mensagens específicas por categoria e status
+    // Mensagens específicas por categoria e status usando o sistema temático
     const statusText = newStatus ? 'ATIVADO' : 'DESATIVADO';
-    const statusEmoji = newStatus ? '✅' : '❌';
     
     if (selectedCategory === 'design' || selectedCategory === 'sites') {
-      alert(`${statusEmoji} PROJETO ${statusText}\n\n"${itemName}" no portfólio\n\nStatus: ${newStatus ? 'Visível para clientes' : 'Oculto do portfólio'}`);
+      if (newStatus) {
+        showSuccess(`PROJETO ${statusText}`, `"${itemName}" está agora visível no portfólio para clientes.`);
+      } else {
+        showWarning(`PROJETO ${statusText}`, `"${itemName}" foi ocultado do portfólio.`);
+      }
     } else if (selectedCategory === 'alimenticio') {
-      alert(`${statusEmoji} PRATO ${statusText}\n\n"${itemName}" no cardápio\n\nStatus: ${newStatus ? 'Disponível para pedidos' : 'Indisponível no cardápio'}\nEstoque: Sincronizado automaticamente`);
+      if (newStatus) {
+        showSuccess(`PRATO ${statusText}`, `"${itemName}" está disponível para pedidos. Estoque sincronizado.`);
+      } else {
+        showWarning(`PRATO ${statusText}`, `"${itemName}" foi removido do cardápio. Estoque atualizado.`);
+      }
     } else {
-      alert(`${statusEmoji} PRODUTO ${statusText}\n\n"${itemName}" no catálogo\n\nStatus: ${newStatus ? 'Disponível para venda' : 'Oculto do catálogo'}\nEstoque: Sincronizado automaticamente`);
+      if (newStatus) {
+        showSuccess(`PRODUTO ${statusText}`, `"${itemName}" está disponível para venda. Estoque sincronizado.`);
+      } else {
+        showWarning(`PRODUTO ${statusText}`, `"${itemName}" foi ocultado do catálogo. Estoque atualizado.`);
+      }
     }
   };
 
   const saveEditedPortfolioItem = () => {
     if (!portfolioItem.title || !portfolioItem.description) {
-      alert('Por favor, preencha os campos obrigatórios.');
+      showError('Campos obrigatórios', 'Por favor, preencha título e descrição do projeto.');
       return;
     }
 
@@ -316,13 +334,13 @@ const AtendimentoSection = () => {
 
     setShowEditPortfolioModal(false);
     setEditingPortfolioItem(null);
-    alert('Projeto atualizado com sucesso!');
+    showSuccess('PROJETO ATUALIZADO', `"${portfolioItem.title}" foi atualizado no portfólio com sucesso!`);
   };
 
   // Funções para especialistas
   const addSpecialist = () => {
     if (!newSpecialist.name || !newSpecialist.specialty) {
-      alert('Por favor, preencha os campos obrigatórios.');
+      showError('Campos obrigatórios', 'Por favor, preencha nome e especialidade.');
       return;
     }
 
@@ -346,7 +364,7 @@ const AtendimentoSection = () => {
       description: ''
     });
     setShowAddSpecialistModal(false);
-    alert('Especialista adicionado com sucesso!');
+    showSuccess('ESPECIALISTA ADICIONADO', `"${newSpecialist.name}" foi adicionado com sucesso!`);
   };
 
   const getCurrentSpecialists = () => {
@@ -362,7 +380,7 @@ const AtendimentoSection = () => {
   // Função para salvar item alimentício com ingredientes
   const saveMenuItemWithIngredients = () => {
     if (!newItem.name || selectedIngredients.length === 0) {
-      alert('Por favor, preencha o nome do produto e selecione pelo menos um ingrediente.');
+      showError('Campos obrigatórios', 'Por favor, preencha o nome do prato e selecione pelo menos um ingrediente.');
       return;
     }
 
@@ -388,7 +406,7 @@ const AtendimentoSection = () => {
     setNewItem({ name: '', description: '', price: '', category: 'pratos' });
     setSelectedIngredients([]);
     setShowAddItemModal(false);
-    alert('Item do cardápio adicionado com sucesso!');
+    showSuccess('PRATO ADICIONADO', `"${newItem.name}" foi adicionado ao cardápio com sucesso!`);
   };
 
   // Função para buscar dados do portfólio (legacy - pode ser removida)
@@ -476,10 +494,10 @@ const AtendimentoSection = () => {
   const copyShareLink = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert('Link copiado para área de transferência!');
+      showSuccess('LINK COPIADO', 'Link copiado para área de transferência!');
     } catch (err) {
       console.error('Erro ao copiar:', err);
-      alert('Erro ao copiar link');
+      showError('ERRO AO COPIAR', 'Não foi possível copiar o link. Tente novamente.');
     }
   };
 
@@ -502,7 +520,7 @@ const AtendimentoSection = () => {
   // Função para salvar item do portfólio
   const savePortfolioItem = () => {
     if (portfolioItem.title && portfolioItem.description) {
-      alert('✅ Projeto adicionado ao portfólio com sucesso!');
+      showSuccess('PROJETO ADICIONADO', `"${portfolioItem.title}" foi adicionado ao portfólio com sucesso!`);
       setShowAddPortfolioModal(false);
       setPortfolioItem({
         title: '',
@@ -512,7 +530,7 @@ const AtendimentoSection = () => {
         category: selectedCategory === 'design' ? 'branding' : 'website'
       });
     } else {
-      alert('Por favor, preencha pelo menos o título e descrição do projeto.');
+      showError('Campos obrigatórios', 'Por favor, preencha pelo menos o título e descrição do projeto.');
     }
   };
 
@@ -527,7 +545,10 @@ const AtendimentoSection = () => {
         category: selectedCategory
       });
       
-      alert(`${selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'} "${newItem.name}" adicionado com sucesso!`);
+      showSuccess(
+        `${selectedCategory === 'alimenticio' ? 'PRATO' : 'PRODUTO'} ADICIONADO`,
+        `"${newItem.name}" foi adicionado com sucesso!`
+      );
       setShowAddItemModal(false);
       setNewItem({
         name: '',
@@ -536,7 +557,7 @@ const AtendimentoSection = () => {
         category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
       });
     } else {
-      alert('Por favor, preencha ao menos o nome e o preço.');
+      showError('Campos obrigatórios', 'Por favor, preencha ao menos o nome e o preço.');
     }
   };
 
