@@ -217,7 +217,7 @@ const AgendamentosSection = () => {
               </div>
             </div>
 
-            {selectedCategory === 'saude' && (
+            {(selectedCategory === 'saude' || selectedCategory === 'pet') && (
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
@@ -225,7 +225,9 @@ const AgendamentosSection = () => {
                   </div>
                   <div>
                     <h4 className="font-medium text-gray-800">Doctoralia</h4>
-                    <p className="text-sm text-gray-600">Plataforma médica</p>
+                    <p className="text-sm text-gray-600">
+                      {selectedCategory === 'saude' ? 'Plataforma médica' : 'Plataforma veterinária'}
+                    </p>
                   </div>
                 </div>
                 <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
@@ -406,8 +408,15 @@ const AgendamentosSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Integrações Ativas</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">3</p>
-              <p className="text-xs text-purple-600 mt-1">Google, WhatsApp, Doctoralia</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {(selectedCategory === 'saude' || selectedCategory === 'pet') ? '3' : '2'}
+              </p>
+              <p className="text-xs text-purple-600 mt-1">
+                {(selectedCategory === 'saude' || selectedCategory === 'pet') 
+                  ? 'Google, Outlook, Doctoralia' 
+                  : 'Google, Outlook'
+                }
+              </p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
               <Settings className="h-6 w-6 text-purple-600" />
