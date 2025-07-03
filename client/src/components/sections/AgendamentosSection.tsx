@@ -35,7 +35,6 @@ const AgendamentosSection = () => {
 
   const tabs = [
     { id: 'agenda', label: 'Agenda', icon: Calendar },
-    { id: 'lembretes', label: 'Lembretes', icon: Clock },
     { id: 'notificacoes', label: 'Notificações', icon: Mail }
   ];
 
@@ -186,27 +185,7 @@ const AgendamentosSection = () => {
     </div>
   );
 
-  const renderLembretes = () => (
-    <div className="animate-fade-in">
-      <div className="main-card p-6">
-        <h3 className="text-xl font-semibold text-gray-800 mb-6">Configurações de Lembretes</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">Lembrete Automático</span>
-            <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-              <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">Email de Confirmação</span>
-            <div className="w-12 h-6 bg-blue-500 rounded-full flex items-center">
-              <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+
 
   const renderNotificacoes = () => (
     <div className="animate-fade-in">
@@ -253,7 +232,6 @@ const AgendamentosSection = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'agenda': return renderAgenda();
-      case 'lembretes': return renderLembretes();
       case 'notificacoes': return renderNotificacoes();
       default: return renderAgenda();
     }
