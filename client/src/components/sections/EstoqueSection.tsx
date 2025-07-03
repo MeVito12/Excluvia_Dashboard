@@ -44,7 +44,7 @@ const EstoqueSection = () => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
 
   // Categorias que não têm sistema de estoque
-  const categoriesWithoutStock = ['educacao', 'beleza'];
+  const categoriesWithoutStock = ['design', 'sites'];
 
   // Verificar se a categoria atual tem sistema de estoque
   const hasStockSystem = !categoriesWithoutStock.includes(selectedCategory);
@@ -1110,7 +1110,7 @@ const EstoqueSection = () => {
             Categoria de Serviços
           </h3>
           <p className="text-gray-600 mb-4">
-            {selectedCategory === 'educacao' ? 'Educação e Ensino' : 'Beleza e Estética'} trabalha com 
+            {selectedCategory === 'design' ? 'Design Gráfico' : 'Criação de Sites'} trabalha com 
             portfólio de serviços. O catálogo é gerenciado diretamente na seção Atendimento.
           </p>
           <div className="bg-blue-50 p-4 rounded-lg">

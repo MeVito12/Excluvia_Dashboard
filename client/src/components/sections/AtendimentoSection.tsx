@@ -79,15 +79,15 @@ const AtendimentoSection = () => {
         { id: 2, name: 'Camiseta Polo', price: 89.99, category: 'vestuario', stock: 20, description: 'Camiseta polo masculina' },
         { id: 3, name: 'Tênis Esportivo', price: 199.99, category: 'calcados', stock: 15, description: 'Tênis para corrida' }
       ],
-      'educacao': [
-        { id: 1, name: 'Livro Matemática Básica', price: 45.00, category: 'livros', stock: 25, description: 'Livro didático matemática básica' },
-        { id: 2, name: 'Kit Escolar Completo', price: 89.90, category: 'material-escolar', stock: 18, description: 'Kit com materiais escolares' },
-        { id: 3, name: 'Calculadora Científica', price: 89.00, category: 'equipamentos', stock: 12, description: 'Calculadora científica' }
+      'design': [
+        { id: 1, name: 'Identidade Visual Completa', price: 899.00, category: 'branding', stock: 0, description: 'Criação de logotipo e manual da marca' },
+        { id: 2, name: 'Material Gráfico', price: 299.00, category: 'impressos', stock: 0, description: 'Cartões, folders e banners' },
+        { id: 3, name: 'Design para Redes Sociais', price: 199.00, category: 'digital', stock: 0, description: 'Posts e stories personalizados' }
       ],
-      'beleza': [
-        { id: 1, name: 'Shampoo Hidratante', price: 35.90, category: 'cabelos', stock: 20, description: 'Shampoo hidratante para cabelos secos' },
-        { id: 2, name: 'Base Líquida', price: 89.90, category: 'maquiagem', stock: 15, description: 'Base líquida cobertura natural' },
-        { id: 3, name: 'Perfume Floral', price: 149.90, category: 'perfumaria', stock: 10, description: 'Perfume feminino floral' }
+      'sites': [
+        { id: 1, name: 'Site Institucional', price: 1299.00, category: 'websites', stock: 0, description: 'Site responsivo com até 5 páginas' },
+        { id: 2, name: 'E-commerce Completo', price: 2499.00, category: 'loja-virtual', stock: 0, description: 'Loja virtual com pagamento integrado' },
+        { id: 3, name: 'Landing Page', price: 599.00, category: 'conversao', stock: 0, description: 'Página de conversão otimizada' }
       ]
     };
     
