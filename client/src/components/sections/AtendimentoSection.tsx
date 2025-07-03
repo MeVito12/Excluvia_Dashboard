@@ -33,6 +33,14 @@ const AtendimentoSection = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareType, setShareType] = useState('link'); // 'link' ou 'qr'
   const [shareUrl, setShareUrl] = useState('');
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [newItem, setNewItem] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+  });
+  const [qrCodeData, setQrCodeData] = useState('');
 
   // Função para gerar URL de compartilhamento
   const generateShareUrl = () => {
@@ -47,18 +55,98 @@ const AtendimentoSection = () => {
     const url = generateShareUrl();
     setShareUrl(url);
     setShareType(type);
+    
+    if (type === 'qr') {
+      // Gerar dados do QR Code
+      const qrData = `${url}?utm_source=qr&category=${selectedCategory}`;
+      setQrCodeData(qrData);
+    }
+    
     setShowShareModal(true);
   };
 
-  // Função para copiar link
-  const copyToClipboard = async (text: string) => {
+  // Função para copiar link principal
+  const copyShareLink = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      alert('Link copiado para a área de transferência!');
+      alert('Link copiado para área de transferência!');
     } catch (err) {
       console.error('Erro ao copiar:', err);
+      alert('Erro ao copiar link');
     }
   };
+
+  // Função para adicionar novo item
+  const handleAddItem = () => {
+    setNewItem({
+      name: '',
+      description: '',
+      price: '',
+      category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+    });
+    setShowAddItemModal(true);
+  };
+
+  // Função para salvar novo item
+  const saveNewItem = () => {
+    if (newItem.name && newItem.price) {
+      // Aqui seria a integração com a API
+      console.log('Novo item adicionado:', {
+        ...newItem,
+        id: Date.now(),
+        timestamp: new Date().toISOString(),
+        category: selectedCategory
+      });
+      
+      alert(`${selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'} "${newItem.name}" adicionado com sucesso!`);
+      setShowAddItemModal(false);
+      setNewItem({
+        name: '',
+        description: '',
+        price: '',
+        category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+      });
+    } else {
+      alert('Por favor, preencha ao menos o nome e o preço.');
+    }
+  };
+
+  // Função para gerar QR Code SVG simples
+  const generateQRCodeSVG = (data: string) => {
+    // QR Code simples usando SVG - em produção usaria uma biblioteca como qrcode.js
+    const size = 200;
+    const modules = 21; // QR Code básico 21x21
+    const moduleSize = size / modules;
+    
+    // Padrão simplificado de QR Code (demonstrativo)
+    const pattern = Array(modules).fill(null).map(() => 
+      Array(modules).fill(null).map(() => Math.random() > 0.5)
+    );
+    
+    // Adicionar padrões de detecção (cantos)
+    for (let i = 0; i < 7; i++) {
+      for (let j = 0; j < 7; j++) {
+        pattern[i][j] = (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4));
+        pattern[i][modules - 1 - j] = (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4));
+        pattern[modules - 1 - i][j] = (i === 0 || i === 6 || j === 0 || j === 6 || (i >= 2 && i <= 4 && j >= 2 && j <= 4));
+      }
+    }
+    
+    const rects = pattern.map((row, i) =>
+      row.map((cell, j) => 
+        cell ? `<rect x="${j * moduleSize}" y="${i * moduleSize}" width="${moduleSize}" height="${moduleSize}" fill="black"/>` : ''
+      ).join('')
+    ).join('');
+    
+    return `
+      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+        <rect width="${size}" height="${size}" fill="white"/>
+        ${rects}
+      </svg>
+    `;
+  };
+
+
 
   // Tabs baseadas na categoria
   const getTabs = () => {
@@ -199,7 +287,10 @@ const AtendimentoSection = () => {
               <QrCode className="w-4 h-4" />
               QR Code
             </button>
-            <button className="btn btn-primary">
+            <button 
+              onClick={handleAddItem}
+              className="btn btn-primary"
+            >
               <ShoppingCart className="w-4 h-4" />
               Adicionar Item
             </button>
@@ -450,7 +541,7 @@ const AtendimentoSection = () => {
                 </div>
               </div>
               <button 
-                onClick={() => copyToClipboard(shareUrl)}
+                onClick={() => copyShareLink(shareUrl)}
                 className="btn btn-primary w-full flex items-center justify-center gap-2"
               >
                 <Copy className="w-4 h-4" />
@@ -741,6 +832,108 @@ const AtendimentoSection = () => {
       
       {/* Modal de Compartilhamento */}
       {renderShareModal()}
+      
+      {/* Modal de Adicionar Item */}
+      {showAddItemModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Adicionar {selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'}
+              </h3>
+              <button 
+                onClick={() => setShowAddItemModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome *
+                </label>
+                <input
+                  type="text"
+                  value={newItem.name}
+                  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder={selectedCategory === 'alimenticio' ? 'Ex: Pizza Margherita' : 'Ex: Smartphone XYZ'}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição
+                </label>
+                <textarea
+                  value={newItem.description}
+                  onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder={selectedCategory === 'alimenticio' ? 'Molho especial, queijo mussarela...' : 'Características e especificações...'}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Preço *
+                </label>
+                <input
+                  type="text"
+                  value={newItem.price}
+                  onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="R$ 0,00"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoria
+                </label>
+                <select
+                  value={newItem.category}
+                  onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  {selectedCategory === 'alimenticio' ? (
+                    <>
+                      <option value="pratos">Pratos Principais</option>
+                      <option value="bebidas">Bebidas</option>
+                      <option value="sobremesas">Sobremesas</option>
+                      <option value="entradas">Entradas</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="produtos">Produtos Gerais</option>
+                      <option value="promocoes">Promoções</option>
+                      <option value="lancamentos">Lançamentos</option>
+                      <option value="destaque">Em Destaque</option>
+                    </>
+                  )}
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddItemModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveNewItem}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
