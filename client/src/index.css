@@ -297,14 +297,144 @@ All colors MUST be HSL.
     @apply text-gray-500;
   }
 
-  /* Garantir interatividade de botões */
-  button {
+  /* Garantir interatividade COMPLETA de TODOS os elementos */
+  button, input, select, textarea, [role="button"], [tabindex], a, label {
     @apply cursor-pointer;
     pointer-events: auto !important;
+    position: relative !important;
+    z-index: 999 !important;
+    user-select: none !important;
   }
 
   button:disabled {
     @apply cursor-not-allowed opacity-50;
+    pointer-events: none !important;
+  }
+
+  /* Corrigir todos os elementos clicáveis específicos */
+  .tab-button, .btn, .metric-card, .badge, .list-item {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 999 !important;
+  }
+
+  /* Garantir que cards não bloqueiem cliques */
+  .main-card, .content-card, .metric-card {
+    pointer-events: auto !important;
+  }
+
+  .main-card *, .content-card *, .metric-card * {
+    pointer-events: auto !important;
+  }
+
+  /* Corrigir elementos interativos específicos do shadcn */
+  [data-state], [data-radix-collection-item], .select__trigger, .select__content {
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+  }
+
+  /* CORREÇÃO GLOBAL PARA INTERATIVIDADE - APLICAR A TODOS OS ELEMENTOS */
+  * {
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+  }
+
+  /* Garantir que TODOS os elementos clickáveis funcionem */
+  [onclick], [role="button"], [tabindex], .clickable, .cursor-pointer,
+  input[type="button"], input[type="submit"], input[type="reset"],
+  button, select, a, label, .tab-button, .btn, .badge {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 999 !important;
+    position: relative !important;
+  }
+
+  /* Forçar interatividade em elementos específicos do sistema */
+  .metric-card, .list-item, .content-card button, .main-card button,
+  [data-radix-select-trigger], [data-radix-popover-trigger],
+  .modern-input, input[type="date"], input[type="search"] {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 999 !important;
+  }
+
+  /* Remover qualquer bloqueio de eventos */
+  .app-section *, .main-card *, .content-card * {
+    pointer-events: auto !important;
+  }
+
+  /* Override para componentes shadcn/ui */
+  [data-radix-select-content], [data-radix-popover-content],
+  [data-radix-dialog-content], [data-radix-dropdown-menu-content] {
+    pointer-events: auto !important;
+    z-index: 99999 !important;
+  }
+
+  /* CORREÇÃO CRÍTICA: Remover elementos que podem estar bloqueando */
+  ::before, ::after {
+    pointer-events: none !important;
+  }
+
+  /* Forçar interatividade em elementos específicos do sistema */
+  div[role="tab"], div[role="tabpanel"], div[role="button"], 
+  span[role="button"], a[role="button"] {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+  }
+
+  /* Garantir que overlays não bloqueiem cliques */
+  .absolute, .fixed, .relative {
+    pointer-events: auto !important;
+  }
+
+  .absolute::before, .absolute::after,
+  .fixed::before, .fixed::after,
+  .relative::before, .relative::after {
+    pointer-events: none !important;
+  }
+
+  /* RESET COMPLETO de eventos para elementos específicos */
+  input, select, button, textarea, a, label, 
+  [onclick], [onmousedown], [onmouseup], [onchange],
+  .tab-button, .btn, .metric-card, .badge, .list-item {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+    position: relative !important;
+  }
+
+  /* Restaurar propriedades essenciais dos botões */
+  button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+  }
+
+  /* Garantir que inputs de data funcionem */
+  input[type="date"] {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    appearance: auto !important;
+    -webkit-appearance: auto !important;
+  }
+
+  /* Para elementos que parecem estar sendo sobrescritos */
+  button:not(:disabled) {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    user-select: none !important;
+  }
+
+  /* Garantir que elementos de layout não bloqueiem */
+  .min-h-screen, .bg-gradient-to-br, .text-white, .relative, .overflow-hidden {
+    pointer-events: auto !important;
   }
 
   /* Select personalizado */
