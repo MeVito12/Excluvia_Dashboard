@@ -859,21 +859,34 @@ const AtendimentoSection = () => {
                 </div>
               )}
               <div className="flex gap-2">
-                {selectedCategory === 'alimenticio' ? (
-                  <>
-                    <button className="btn btn-outline flex-1">
-                      Editar
-                    </button>
-                    <button className="btn btn-secondary">
-                      <Send className="w-4 h-4" />
-                    </button>
-                  </>
-                ) : (
-                  <button className="btn btn-secondary flex-1">
-                    <Send className="w-4 h-4" />
-                    Enviar para Cliente
-                  </button>
-                )}
+                <button 
+                  onClick={() => editItem(item)}
+                  className="btn btn-outline btn-sm"
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => {
+                    setCategoryItems(prev => ({
+                      ...prev,
+                      [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((catItem: any) => 
+                        catItem.id === item.id 
+                          ? { ...catItem, available: !catItem.available }
+                          : catItem
+                      ) || []
+                    }));
+                    alert(`Item ${item.available ? 'desativado' : 'ativado'} com sucesso!`);
+                  }}
+                  className={`btn btn-sm ${item.available ? 'btn-secondary' : 'btn-success'}`}
+                >
+                  {item.available ? 'Desativar' : 'Ativar'}
+                </button>
+                <button 
+                  onClick={() => deleteItem(item.id)}
+                  className="btn btn-sm btn-error"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ))}
