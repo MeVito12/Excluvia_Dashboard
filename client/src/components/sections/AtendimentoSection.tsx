@@ -23,7 +23,9 @@ import {
   Target,
   Calendar,
   TrendingUp,
-  Mail
+  Mail,
+  Plus,
+  Edit
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -41,6 +43,14 @@ const AtendimentoSection = () => {
     category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
   });
   const [qrCodeData, setQrCodeData] = useState('');
+  const [showAddPortfolioModal, setShowAddPortfolioModal] = useState(false);
+  const [portfolioItem, setPortfolioItem] = useState({
+    title: '',
+    description: '',
+    imageUrl: '',
+    projectUrl: '',
+    category: selectedCategory === 'design' ? 'branding' : 'website'
+  });
 
   // Função para gerar URL de compartilhamento
   const generateShareUrl = () => {
@@ -94,6 +104,72 @@ const AtendimentoSection = () => {
     return mockStockProducts[selectedCategory as keyof typeof mockStockProducts] || [];
   };
 
+  // Função para buscar dados do portfólio
+  const getPortfolioData = () => {
+    if (selectedCategory === 'design') {
+      return [
+        {
+          id: 1,
+          title: 'Identidade Visual - Café Aroma',
+          description: 'Criação completa de marca para cafeteria, incluindo logotipo, paleta de cores e aplicações.',
+          imageUrl: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=400',
+          projectUrl: 'https://portfolio.exemplo.com/cafe-aroma',
+          category: 'branding',
+          date: '2024-12-20'
+        },
+        {
+          id: 2,
+          title: 'Material Gráfico - Clínica Saúde+',
+          description: 'Desenvolvimento de cartões de visita, folders e banners para clínica médica.',
+          imageUrl: 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400',
+          projectUrl: 'https://portfolio.exemplo.com/clinica-saude',
+          category: 'impressos',
+          date: '2024-12-15'
+        },
+        {
+          id: 3,
+          title: 'Posts Redes Sociais - Tech Solutions',
+          description: 'Criação de template e posts para empresa de tecnologia no Instagram e LinkedIn.',
+          imageUrl: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400',
+          projectUrl: 'https://portfolio.exemplo.com/tech-solutions',
+          category: 'digital',
+          date: '2024-12-10'
+        }
+      ];
+    } else if (selectedCategory === 'sites') {
+      return [
+        {
+          id: 1,
+          title: 'E-commerce - Loja Moda Urbana',
+          description: 'Desenvolvimento de loja virtual responsiva com sistema de pagamento integrado.',
+          imageUrl: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400',
+          projectUrl: 'https://modaurbana.exemplo.com',
+          category: 'loja-virtual',
+          date: '2024-12-18'
+        },
+        {
+          id: 2,
+          title: 'Site Institucional - Escritório Advocacia',
+          description: 'Website profissional com blog integrado e formulário de contato.',
+          imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+          projectUrl: 'https://advocacia-silva.exemplo.com',
+          category: 'institucional',
+          date: '2024-12-12'
+        },
+        {
+          id: 3,
+          title: 'Landing Page - Curso Online',
+          description: 'Página de conversão otimizada para curso de marketing digital.',
+          imageUrl: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=400',
+          projectUrl: 'https://curso-marketing.exemplo.com',
+          category: 'conversao',
+          date: '2024-12-08'
+        }
+      ];
+    }
+    return [];
+  };
+
   // Função para compartilhar
   const handleShare = (type: 'link' | 'qr') => {
     const url = generateShareUrl();
@@ -129,6 +205,28 @@ const AtendimentoSection = () => {
       category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
     });
     setShowAddItemModal(true);
+  };
+
+  // Função para adicionar item ao portfólio
+  const handleAddPortfolioItem = () => {
+    setShowAddPortfolioModal(true);
+  };
+
+  // Função para salvar item do portfólio
+  const savePortfolioItem = () => {
+    if (portfolioItem.title && portfolioItem.description) {
+      alert('✅ Projeto adicionado ao portfólio com sucesso!');
+      setShowAddPortfolioModal(false);
+      setPortfolioItem({
+        title: '',
+        description: '',
+        imageUrl: '',
+        projectUrl: '',
+        category: selectedCategory === 'design' ? 'branding' : 'website'
+      });
+    } else {
+      alert('Por favor, preencha pelo menos o título e descrição do projeto.');
+    }
   };
 
   // Função para salvar novo item
@@ -194,9 +292,16 @@ const AtendimentoSection = () => {
 
   // Tabs baseadas na categoria
   const getTabs = () => {
+    let catalogLabel = 'Catálogos';
+    if (selectedCategory === 'alimenticio') {
+      catalogLabel = 'Cardápios';
+    } else if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      catalogLabel = 'Portfólio';
+    }
+    
     const baseTabs = [
       { id: 'mensagens', label: 'Mensagens', icon: MessageCircle },
-      { id: 'cardapios', label: selectedCategory === 'alimenticio' ? 'Cardápios' : 'Catálogos', icon: ShoppingCart },
+      { id: 'cardapios', label: catalogLabel, icon: ShoppingCart },
       { id: 'fidelizacao', label: 'Fidelização', icon: Gift }
     ];
     
@@ -304,6 +409,99 @@ const AtendimentoSection = () => {
                 <button className="btn btn-outline p-2">
                   <Send className="w-4 h-4" />
                 </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Renderizar aba de portfólio para design e sites
+  const renderPortfolio = () => (
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">
+            Portfólio {selectedCategory === 'design' ? 'de Design' : 'de Desenvolvimento'}
+          </h3>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => handleShare('link')}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <Share2 className="w-4 h-4" />
+              Compartilhar Portfolio
+            </button>
+            <button 
+              onClick={() => handleShare('qr')}
+              className="btn btn-outline flex items-center gap-2"
+            >
+              <QrCode className="w-4 h-4" />
+              QR Code
+            </button>
+            <button 
+              onClick={handleAddPortfolioItem}
+              className="btn btn-primary"
+            >
+              <Plus className="w-4 h-4" />
+              Adicionar Projeto
+            </button>
+          </div>
+        </div>
+
+        {/* Aviso sobre portfólio */}
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-2 text-purple-700">
+            <CheckCircle className="w-5 h-5" />
+            <span className="font-medium">Portfólio Profissional</span>
+          </div>
+          <p className="text-sm text-purple-600 mt-1">
+            Adicione seus melhores trabalhos com imagens e links para impressionar clientes. 
+            Compartilhe via link direto ou QR code.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {getPortfolioData().map((project: any) => (
+            <div key={project.id} className="content-card group hover:shadow-xl transition-all duration-300">
+              <div className="relative mb-4">
+                <img 
+                  src={project.imageUrl} 
+                  alt={project.title}
+                  className="w-full h-48 object-cover rounded-lg"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://via.placeholder.com/400x200/9333ea/ffffff?text=Projeto';
+                  }}
+                />
+                <div className="absolute top-2 left-2">
+                  <span className="badge badge-primary">{project.category}</span>
+                </div>
+                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a 
+                    href={project.projectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-sm btn-secondary"
+                  >
+                    <Link className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+              
+              <h4 className="font-semibold text-gray-800 mb-2">{project.title}</h4>
+              <p className="text-sm text-gray-600 mb-4 line-clamp-3">{project.description}</p>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">{project.date}</span>
+                <div className="flex gap-2">
+                  <button className="btn btn-outline btn-sm">
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button className="btn btn-secondary btn-sm">
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -731,6 +929,10 @@ const AtendimentoSection = () => {
       case 'mensagens':
         return renderMessages();
       case 'cardapios':
+        // Para design e sites, mostrar portfólio ao invés de catálogo
+        if (selectedCategory === 'design' || selectedCategory === 'sites') {
+          return renderPortfolio();
+        }
         return renderCatalogs();
       case 'fidelizacao':
         return renderLoyalty();
@@ -931,6 +1133,121 @@ const AtendimentoSection = () => {
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
                 Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Adicionar Projeto ao Portfólio */}
+      {showAddPortfolioModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Adicionar Projeto ao Portfólio
+              </h3>
+              <button 
+                onClick={() => setShowAddPortfolioModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Título do Projeto *
+                </label>
+                <input
+                  type="text"
+                  value={portfolioItem.title}
+                  onChange={(e) => setPortfolioItem({ ...portfolioItem, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Ex: Identidade Visual - Empresa ABC"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição *
+                </label>
+                <textarea
+                  value={portfolioItem.description}
+                  onChange={(e) => setPortfolioItem({ ...portfolioItem, description: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows={3}
+                  placeholder="Descreva o projeto e os resultados alcançados..."
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  URL da Imagem
+                </label>
+                <input
+                  type="url"
+                  value={portfolioItem.imageUrl}
+                  onChange={(e) => setPortfolioItem({ ...portfolioItem, imageUrl: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="https://exemplo.com/imagem.jpg"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Link do Projeto
+                </label>
+                <input
+                  type="url"
+                  value={portfolioItem.projectUrl}
+                  onChange={(e) => setPortfolioItem({ ...portfolioItem, projectUrl: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="https://projeto.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoria
+                </label>
+                <select
+                  value={portfolioItem.category}
+                  onChange={(e) => setPortfolioItem({ ...portfolioItem, category: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  {selectedCategory === 'design' ? (
+                    <>
+                      <option value="branding">Identidade Visual</option>
+                      <option value="impressos">Material Gráfico</option>
+                      <option value="digital">Design Digital</option>
+                      <option value="publicidade">Publicidade</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="website">Site Institucional</option>
+                      <option value="loja-virtual">E-commerce</option>
+                      <option value="conversao">Landing Page</option>
+                      <option value="sistema">Sistema Web</option>
+                    </>
+                  )}
+                </select>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddPortfolioModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={savePortfolioItem}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar Projeto
               </button>
             </div>
           </div>
