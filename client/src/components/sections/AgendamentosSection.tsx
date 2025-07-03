@@ -32,6 +32,15 @@ const AgendamentosSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [appointments, setAppointments] = useState(() => getAppointmentData());
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newAppointment, setNewAppointment] = useState({
+    title: '',
+    client: '',
+    date: '',
+    time: '',
+    type: 'consulta',
+    notes: ''
+  });
 
   const tabs = [
     { id: 'agenda', label: 'Agenda', icon: Calendar },
@@ -58,21 +67,40 @@ const AgendamentosSection = () => {
     }
   };
 
-  // Função para adicionar novo compromisso
-  const addNewAppointment = () => {
-    const newId = Math.max(...appointments.map(a => a.id)) + 1;
-    const newAppointment = {
-      id: newId,
-      title: 'Novo Compromisso',
-      client: 'Cliente Novo',
-      date: selectedDate ? selectedDate.toISOString().split('T')[0] : '2024-12-26',
-      time: '14:00',
+  // Função para abrir modal de adicionar compromisso
+  const openAddModal = () => {
+    setNewAppointment({
+      title: '',
+      client: '',
+      date: new Date().toISOString().split('T')[0],
+      time: '09:00',
       type: 'consulta',
+      notes: ''
+    });
+    setShowAddModal(true);
+  };
+
+  // Função para salvar novo compromisso
+  const saveNewAppointment = () => {
+    if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
+      alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    const newId = Math.max(...appointments.map(a => a.id)) + 1;
+    const appointment = {
+      id: newId,
+      title: newAppointment.title,
+      client: newAppointment.client,
+      date: newAppointment.date,
+      time: newAppointment.time,
+      type: newAppointment.type,
       status: 'scheduled' as const
     };
     
-    setAppointments(prev => [...prev, newAppointment]);
-    alert('✅ Novo compromisso adicionado com sucesso!\n\nVocê pode editar os detalhes clicando no botão de edição.');
+    setAppointments(prev => [...prev, appointment]);
+    setShowAddModal(false);
+    alert('✅ Compromisso adicionado com sucesso!');
   };
 
   const renderAgenda = () => (
@@ -82,7 +110,7 @@ const AgendamentosSection = () => {
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-black">Compromissos</h3>
           <button 
-            onClick={addNewAppointment}
+            onClick={openAddModal}
             className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2"
           >
             + Adicionar Compromisso
@@ -322,6 +350,123 @@ const AgendamentosSection = () => {
       </div>
 
       {renderTabContent()}
+
+      {/* Modal de Adicionar Compromisso */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                Adicionar Novo Compromisso
+              </h3>
+              <button 
+                onClick={() => setShowAddModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Título *
+                </label>
+                <input
+                  type="text"
+                  value={newAppointment.title}
+                  onChange={(e) => setNewAppointment({ ...newAppointment, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Ex: Consulta Veterinária"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cliente *
+                </label>
+                <input
+                  type="text"
+                  value={newAppointment.client}
+                  onChange={(e) => setNewAppointment({ ...newAppointment, client: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Nome do cliente"
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Data *
+                  </label>
+                  <input
+                    type="date"
+                    value={newAppointment.date}
+                    onChange={(e) => setNewAppointment({ ...newAppointment, date: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Horário *
+                  </label>
+                  <input
+                    type="time"
+                    value={newAppointment.time}
+                    onChange={(e) => setNewAppointment({ ...newAppointment, time: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo
+                </label>
+                <select
+                  value={newAppointment.type}
+                  onChange={(e) => setNewAppointment({ ...newAppointment, type: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="consulta">Consulta</option>
+                  <option value="reuniao">Reunião</option>
+                  <option value="followup">Follow-up</option>
+                  <option value="emergencia">Emergência</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Observações
+                </label>
+                <textarea
+                  value={newAppointment.notes}
+                  onChange={(e) => setNewAppointment({ ...newAppointment, notes: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  rows={3}
+                  placeholder="Observações adicionais..."
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveNewAppointment}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

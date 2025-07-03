@@ -294,19 +294,11 @@ const DashboardSection = () => {
 
       {/* Seção de Compromissos */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center mb-6">
           <h3 className="text-lg font-semibold text-black flex items-center gap-2">
             <Calendar className="h-5 w-5 text-purple-600" />
             Compromissos
           </h3>
-          <Button 
-            onClick={() => {
-              alert('➕ Novo compromisso\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá agendar novos compromissos diretamente do dashboard.');
-            }}
-            className="bg-purple-600 text-white hover:bg-purple-700"
-          >
-            + Novo Compromisso
-          </Button>
         </div>
         
         <div className="space-y-3">

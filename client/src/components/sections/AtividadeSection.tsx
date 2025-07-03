@@ -200,25 +200,54 @@ const AtividadeSection = () => {
     total: filteredActivities.length,
     success: filteredActivities.filter(a => a.status === 'success').length,
     error: filteredActivities.filter(a => a.status === 'error').length,
+    pending: filteredActivities.filter(a => a.status === 'warning' || a.status === 'info').length,
     integrations: filteredActivities.filter(a => integrationLogs.some(log => log.id === a.id)).length
   };
 
-  // Função para exportar dados
+  // Função para mostrar modal de exportação
+  const [showExportModal, setShowExportModal] = useState(false);
+  
+  // Função para exportar dados com formatação profissional
   const handleExport = () => {
-    const csvData = filteredActivities.map(activity => 
-      `"${activity.time}","${activity.action}","${activity.description}","${activity.status}","${activity.user}"`
-    ).join('\n');
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('pt-BR');
+    const formattedTime = currentDate.toLocaleTimeString('pt-BR');
+    const categoryName = categories.find(c => c.value === selectedCategory)?.label || 'Sistema';
     
-    const header = '"Data/Hora","Ação","Descrição","Status","Usuário"\n';
-    const csvContent = header + csvData;
+    // Cabeçalho profissional
+    const header = [
+      `"RELATÓRIO DE ATIVIDADES - ${categoryName.toUpperCase()}"`,
+      `"Data de Geração: ${formattedDate} às ${formattedTime}"`,
+      `"Total de Registros: ${stats.total}"`,
+      `"Período: ${filteredActivities.length > 0 ? filteredActivities[filteredActivities.length - 1].time : 'N/A'} até ${filteredActivities.length > 0 ? filteredActivities[0].time : 'N/A'}"`,
+      '""',
+      '"=== RESUMO EXECUTIVO ==="',
+      `"Atividades com Sucesso: ${stats.success}"`,
+      `"Atividades com Erro: ${stats.error}"`,
+      `"Atividades Pendentes: ${stats.pending}"`,
+      '""',
+      '"=== DETALHAMENTO DAS ATIVIDADES ==="',
+      '"Data/Hora","Tipo","Ação","Descrição Completa","Status","Responsável","Categoria"'
+    ].join('\n');
+    
+    // Dados formatados
+    const csvData = filteredActivities.map(activity => {
+      const statusFormatted = activity.status === 'success' ? 'SUCESSO' : 
+                             activity.status === 'error' ? 'ERRO' : 'PENDENTE';
+      return `"${activity.time}","${activity.type.toUpperCase()}","${activity.action}","${activity.description}","${statusFormatted}","${activity.user}","${activity.category}"`;
+    }).join('\n');
+    
+    const csvContent = header + '\n' + csvData;
     
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `atividades_${selectedCategory}_${format(new Date(), 'dd-MM-yyyy')}.csv`;
+    link.download = `relatorio_atividades_${selectedCategory}_${currentDate.toISOString().split('T')[0]}.csv`;
     link.click();
     
-    alert(`📊 Exportação realizada!\n\n${stats.total} atividades exportadas para CSV.\nArquivo baixado com sucesso.`);
+    // Modal de confirmação personalizado
+    setShowExportModal(true);
+    setTimeout(() => setShowExportModal(false), 3000);
   };
 
   return (
@@ -532,6 +561,32 @@ const AtividadeSection = () => {
           </div>
         )}
       </div>
+
+      {/* Modal de Confirmação de Exportação */}
+      {showExportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 transform animate-bounce">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Download className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Exportação Concluída!
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Relatório de atividades exportado com sucesso.
+                <br />
+                <span className="font-medium">{stats.total} registros</span> processados
+              </p>
+              <div className="bg-gray-50 rounded-lg p-3">
+                <p className="text-sm text-gray-700">
+                  📄 Arquivo: <span className="font-mono">relatorio_atividades_{selectedCategory}_{new Date().toISOString().split('T')[0]}.csv</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
