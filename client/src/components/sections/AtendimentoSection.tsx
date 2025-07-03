@@ -44,6 +44,8 @@ const AtendimentoSection = () => {
   });
   const [qrCodeData, setQrCodeData] = useState('');
   const [showAddPortfolioModal, setShowAddPortfolioModal] = useState(false);
+  const [showEditPortfolioModal, setShowEditPortfolioModal] = useState(false);
+  const [editingPortfolioItem, setEditingPortfolioItem] = useState(null);
   const [portfolioItem, setPortfolioItem] = useState({
     title: '',
     description: '',
@@ -60,51 +62,126 @@ const AtendimentoSection = () => {
     return `${baseUrl}/${menuType}/${categorySlug}`;
   };
 
-  // Função para buscar produtos do estoque automaticamente
-  const getStockProducts = () => {
-    if (selectedCategory === 'alimenticio') {
-      // Para alimentício, mantém gestão manual
-      return [];
-    }
-    
-    // Para outras categorias, puxar automaticamente do estoque
-    const mockStockProducts = {
+  // Estado para gerenciar itens de todas as categorias
+  const [categoryItems, setCategoryItems] = useState(() => {
+    return {
+      'alimenticio': [
+        { id: 1, name: 'Hambúrguer Artesanal', price: 28.90, category: 'pratos', description: 'Hambúrguer 180g com fritas artesanais', image: '', available: true },
+        { id: 2, name: 'Pizza Margherita', price: 35.00, category: 'pratos', description: 'Pizza tradicional com manjericão fresco', image: '', available: true },
+        { id: 3, name: 'Suco Natural de Laranja', price: 8.50, category: 'bebidas', description: 'Suco natural de laranja 300ml', image: '', available: true },
+        { id: 4, name: 'Tiramisù', price: 15.90, category: 'sobremesas', description: 'Sobremesa italiana tradicional', image: '', available: true }
+      ],
       'pet': [
-        { id: 1, name: 'Ração Premium Golden', price: 89.90, category: 'racao', stock: 25, description: 'Ração premium para cães adultos' },
-        { id: 2, name: 'Antipulgas Frontline', price: 45.50, category: 'medicamentos', stock: 12, description: 'Proteção contra pulgas e carrapatos' },
-        { id: 3, name: 'Brinquedo Kong', price: 32.00, category: 'brinquedos', stock: 8, description: 'Brinquedo resistente para cães' }
+        { id: 1, name: 'Ração Premium Golden', price: 89.90, category: 'racao', description: 'Ração premium para cães adultos', stock: 25, available: true },
+        { id: 2, name: 'Antipulgas Frontline', price: 45.50, category: 'medicamentos', description: 'Proteção contra pulgas e carrapatos', stock: 12, available: true },
+        { id: 3, name: 'Brinquedo Kong', price: 32.00, category: 'brinquedos', description: 'Brinquedo resistente para cães', stock: 8, available: true },
+        { id: 4, name: 'Coleira GPS', price: 199.00, category: 'acessorios', description: 'Coleira com GPS para localização', stock: 5, available: true }
       ],
       'medico': [
-        { id: 1, name: 'Dipirona 500mg', price: 15.90, category: 'analgesicos', stock: 50, description: 'Analgésico e antipirético' },
-        { id: 2, name: 'Amoxicilina 500mg', price: 25.00, category: 'antibioticos', stock: 30, description: 'Antibiótico de amplo espectro' },
-        { id: 3, name: 'Termômetro Digital', price: 89.90, category: 'equipamentos', stock: 15, description: 'Termômetro clínico digital' }
+        { id: 1, name: 'Dipirona 500mg', price: 15.90, category: 'analgesicos', description: 'Analgésico e antipirético', stock: 50, available: true },
+        { id: 2, name: 'Amoxicilina 500mg', price: 25.00, category: 'antibioticos', description: 'Antibiótico de amplo espectro', stock: 30, available: true },
+        { id: 3, name: 'Termômetro Digital', price: 89.90, category: 'equipamentos', description: 'Termômetro clínico digital', stock: 15, available: true },
+        { id: 4, name: 'Vitamina C 1g', price: 18.50, category: 'suplementos', description: 'Suplemento de vitamina C', stock: 40, available: true }
       ],
       'tecnologia': [
-        { id: 1, name: 'Processador Intel i7', price: 1299.00, category: 'componentes', stock: 5, description: 'Processador Intel Core i7 12ª geração' },
-        { id: 2, name: 'Monitor 24" Full HD', price: 699.00, category: 'monitores', stock: 8, description: 'Monitor LED 24 polegadas' },
-        { id: 3, name: 'SSD 1TB', price: 299.00, category: 'armazenamento', stock: 12, description: 'SSD interno 1TB alta velocidade' }
+        { id: 1, name: 'Processador Intel i7', price: 1299.00, category: 'componentes', description: 'Processador Intel Core i7 12ª geração', stock: 5, available: true },
+        { id: 2, name: 'Monitor 24" Full HD', price: 699.00, category: 'monitores', description: 'Monitor LED 24 polegadas', stock: 8, available: true },
+        { id: 3, name: 'SSD 1TB', price: 299.00, category: 'armazenamento', description: 'SSD interno 1TB alta velocidade', stock: 12, available: true },
+        { id: 4, name: 'Placa de Vídeo RTX 4060', price: 1899.00, category: 'componentes', description: 'GPU NVIDIA RTX 4060 8GB', stock: 3, available: true }
       ],
       'vendas': [
-        { id: 1, name: 'Smartphone Galaxy S24', price: 2899.99, category: 'eletronicos', stock: 6, description: 'Smartphone Samsung Galaxy S24' },
-        { id: 2, name: 'Camiseta Polo', price: 89.99, category: 'vestuario', stock: 20, description: 'Camiseta polo masculina' },
-        { id: 3, name: 'Tênis Esportivo', price: 199.99, category: 'calcados', stock: 15, description: 'Tênis para corrida' }
+        { id: 1, name: 'Smartphone Galaxy S24', price: 2899.99, category: 'eletronicos', description: 'Smartphone Samsung Galaxy S24', stock: 6, available: true },
+        { id: 2, name: 'Camiseta Polo', price: 89.99, category: 'vestuario', description: 'Camiseta polo masculina', stock: 20, available: true },
+        { id: 3, name: 'Tênis Esportivo', price: 199.99, category: 'calcados', description: 'Tênis para corrida', stock: 15, available: true },
+        { id: 4, name: 'Notebook Gaming', price: 3499.99, category: 'eletronicos', description: 'Notebook para jogos', stock: 4, available: true }
+      ],
+      'educacao': [
+        { id: 1, name: 'Livro de Matemática', price: 89.90, category: 'livros', description: 'Livro didático de matemática avançada', stock: 25, available: true },
+        { id: 2, name: 'Kit de Experimentos', price: 45.50, category: 'materiais', description: 'Kit para experimentos de química', stock: 12, available: true },
+        { id: 3, name: 'Calculadora Científica', price: 32.00, category: 'papelaria', description: 'Calculadora científica avançada', stock: 18, available: true },
+        { id: 4, name: 'Atlas Mundial', price: 67.90, category: 'livros', description: 'Atlas geográfico mundial atualizado', stock: 8, available: true }
+      ],
+      'beleza': [
+        { id: 1, name: 'Shampoo Hidratante', price: 35.90, category: 'cabelos', description: 'Shampoo para cabelos ressecados', stock: 30, available: true },
+        { id: 2, name: 'Base Líquida FPS 30', price: 89.90, category: 'maquiagem', description: 'Base com proteção solar', stock: 15, available: true },
+        { id: 3, name: 'Perfume Floral 100ml', price: 199.00, category: 'perfumaria', description: 'Perfume feminino com notas florais', stock: 12, available: true },
+        { id: 4, name: 'Creme Anti-idade', price: 149.90, category: 'skincare', description: 'Creme facial anti-idade', stock: 8, available: true }
       ],
       'design': [
-        { id: 1, name: 'Identidade Visual Completa', price: 899.00, category: 'branding', stock: 0, description: 'Criação de logotipo e manual da marca' },
-        { id: 2, name: 'Material Gráfico', price: 299.00, category: 'impressos', stock: 0, description: 'Cartões, folders e banners' },
-        { id: 3, name: 'Design para Redes Sociais', price: 199.00, category: 'digital', stock: 0, description: 'Posts e stories personalizados' }
+        { id: 1, title: 'Identidade Visual - Café Aroma', description: 'Desenvolvimento completo da identidade visual para cafeteria premium', category: 'branding', imageUrl: '', projectUrl: 'https://exemplo.com/cafe-aroma', available: true },
+        { id: 2, title: 'Material Gráfico - Eventos ABC', description: 'Criação de convites, banners e cartões para empresa de eventos', category: 'impressos', imageUrl: '', projectUrl: '', available: true },
+        { id: 3, title: 'Posts para Redes Sociais - Tech Start', description: 'Design de posts e stories para startup de tecnologia', category: 'digital', imageUrl: '', projectUrl: 'https://instagram.com/techstart', available: true },
+        { id: 4, title: 'Campanha Publicitária - Eco Fashion', description: 'Peças publicitárias para marca de moda sustentável', category: 'publicidade', imageUrl: '', projectUrl: '', available: true }
       ],
       'sites': [
-        { id: 1, name: 'Site Institucional', price: 1299.00, category: 'websites', stock: 0, description: 'Site responsivo com até 5 páginas' },
-        { id: 2, name: 'E-commerce Completo', price: 2499.00, category: 'loja-virtual', stock: 0, description: 'Loja virtual com pagamento integrado' },
-        { id: 3, name: 'Landing Page', price: 599.00, category: 'conversao', stock: 0, description: 'Página de conversão otimizada' }
+        { id: 1, title: 'Site Institucional - Dr. Silva', description: 'Website responsivo para clínica médica com agendamento online', category: 'website', imageUrl: '', projectUrl: 'https://clinicadrsilva.com.br', available: true },
+        { id: 2, title: 'E-commerce - Loja Virtual Plus', description: 'Loja virtual completa com carrinho e pagamento', category: 'loja-virtual', imageUrl: '', projectUrl: 'https://lojavirtualplus.com', available: true },
+        { id: 3, title: 'Landing Page - Curso Online', description: 'Página de conversão para curso de marketing digital', category: 'conversao', imageUrl: '', projectUrl: 'https://cursomarketing.com.br', available: true },
+        { id: 4, title: 'Sistema Web - Gestão Escolar', description: 'Sistema completo para gestão de escola', category: 'sistema', imageUrl: '', projectUrl: '', available: true }
       ]
     };
-    
-    return mockStockProducts[selectedCategory as keyof typeof mockStockProducts] || [];
+  });
+
+  // Função para buscar itens da categoria atual
+  const getCurrentCategoryItems = () => {
+    return categoryItems[selectedCategory as keyof typeof categoryItems] || [];
   };
 
-  // Função para buscar dados do portfólio
+  // Funções para editar e excluir itens
+  const editItem = (item: any) => {
+    if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      setEditingPortfolioItem(item);
+      setPortfolioItem({
+        title: item.title,
+        description: item.description,
+        imageUrl: item.imageUrl || '',
+        projectUrl: item.projectUrl || '',
+        category: item.category
+      });
+      setShowEditPortfolioModal(true);
+    } else {
+      // Para outras categorias (produtos/catálogos)
+      setNewItem({
+        name: item.name,
+        description: item.description,
+        price: item.price?.toString() || '',
+        category: item.category
+      });
+      setShowAddItemModal(true);
+    }
+  };
+
+  const deleteItem = (itemId: number) => {
+    if (confirm('Tem certeza que deseja excluir este item?')) {
+      setCategoryItems(prev => ({
+        ...prev,
+        [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
+      }));
+      alert('Item excluído com sucesso!');
+    }
+  };
+
+  const saveEditedPortfolioItem = () => {
+    if (!portfolioItem.title || !portfolioItem.description) {
+      alert('Por favor, preencha os campos obrigatórios.');
+      return;
+    }
+
+    setCategoryItems(prev => ({
+      ...prev,
+      [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((item: any) => 
+        item.id === (editingPortfolioItem as any)?.id 
+          ? { ...item, ...portfolioItem }
+          : item
+      ) || []
+    }));
+
+    setShowEditPortfolioModal(false);
+    setEditingPortfolioItem(null);
+    alert('Projeto atualizado com sucesso!');
+  };
+
+  // Função para buscar dados do portfólio (legacy - pode ser removida)
   const getPortfolioData = () => {
     if (selectedCategory === 'design') {
       return [
@@ -345,11 +422,11 @@ const AtendimentoSection = () => {
       ];
     } else {
       // Para outras categorias, puxar automaticamente do estoque
-      const stockProducts = getStockProducts();
+      const stockProducts = getCurrentCategoryItems();
       return stockProducts.map((product: any) => ({
         id: product.id,
-        name: product.name,
-        price: `R$ ${product.price.toFixed(2).replace('.', ',')}`,
+        name: product.name || product.title,
+        price: product.price ? `R$ ${product.price.toFixed(2).replace('.', ',')}` : 'Sob consulta',
         description: product.description,
         category: product.category,
         stock: product.stock,
