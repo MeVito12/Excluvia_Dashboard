@@ -28,7 +28,10 @@ import {
   Edit,
   Trash2,
   Eye,
-  EyeOff
+  EyeOff,
+  XCircle,
+  Power,
+  PowerOff
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -257,11 +260,11 @@ const AtendimentoSection = () => {
       
       // Mensagens específicas por categoria
       if (selectedCategory === 'design' || selectedCategory === 'sites') {
-        alert(`✅ Projeto "${itemName}" foi excluído do portfólio com sucesso!`);
+        alert(`🗑️ PROJETO EXCLUÍDO\n\n"${itemName}" foi removido do portfólio\n\nEsta ação não pode ser desfeita.`);
       } else if (selectedCategory === 'alimenticio') {
-        alert(`✅ Prato "${itemName}" foi removido do cardápio e estoque atualizado!`);
+        alert(`🗑️ PRATO EXCLUÍDO\n\n"${itemName}" foi removido do cardápio\n\nEstoque: Atualizado automaticamente\nEsta ação não pode ser desfeita.`);
       } else {
-        alert(`✅ Produto "${itemName}" foi excluído do catálogo e estoque sincronizado!`);
+        alert(`🗑️ PRODUTO EXCLUÍDO\n\n"${itemName}" foi removido do catálogo\n\nEstoque: Sincronizado automaticamente\nEsta ação não pode ser desfeita.`);
       }
     }
   };
@@ -284,15 +287,15 @@ const AtendimentoSection = () => {
     }));
 
     // Mensagens específicas por categoria e status
+    const statusText = newStatus ? 'ATIVADO' : 'DESATIVADO';
+    const statusEmoji = newStatus ? '✅' : '❌';
+    
     if (selectedCategory === 'design' || selectedCategory === 'sites') {
-      const action = newStatus ? 'ativado' : 'desativado';
-      alert(`🎨 Projeto "${itemName}" foi ${action} no portfólio!`);
+      alert(`${statusEmoji} PROJETO ${statusText}\n\n"${itemName}" no portfólio\n\nStatus: ${newStatus ? 'Visível para clientes' : 'Oculto do portfólio'}`);
     } else if (selectedCategory === 'alimenticio') {
-      const action = newStatus ? 'disponível' : 'indisponível';
-      alert(`🍽️ Prato "${itemName}" está agora ${action} no cardápio e estoque atualizado!`);
+      alert(`${statusEmoji} PRATO ${statusText}\n\n"${itemName}" no cardápio\n\nStatus: ${newStatus ? 'Disponível para pedidos' : 'Indisponível no cardápio'}\nEstoque: Sincronizado automaticamente`);
     } else {
-      const action = newStatus ? 'ativado' : 'desativado';
-      alert(`📦 Produto "${itemName}" foi ${action} no catálogo e estoque sincronizado!`);
+      alert(`${statusEmoji} PRODUTO ${statusText}\n\n"${itemName}" no catálogo\n\nStatus: ${newStatus ? 'Disponível para venda' : 'Oculto do catálogo'}\nEstoque: Sincronizado automaticamente`);
     }
   };
 
@@ -795,12 +798,12 @@ const AtendimentoSection = () => {
                     onClick={() => toggleItemAvailability(project.id)}
                     className={`p-2 border rounded-md transition-colors ${
                       project.available 
-                        ? 'border-yellow-300 text-yellow-600 hover:bg-yellow-50' 
-                        : 'border-green-300 text-green-600 hover:bg-green-50'
+                        ? 'border-green-300 text-green-600 hover:bg-green-50' 
+                        : 'border-red-300 text-red-600 hover:bg-red-50'
                     }`}
                     title={project.available ? 'Desativar projeto' : 'Ativar projeto'}
                   >
-                    {project.available ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {project.available ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                   </button>
                   <button 
                     onClick={() => deleteItem(project.id)}
@@ -984,12 +987,12 @@ const AtendimentoSection = () => {
                   onClick={() => toggleItemAvailability(item.id)}
                   className={`p-2 border rounded-md transition-colors ${
                     item.available 
-                      ? 'border-yellow-300 text-yellow-600 hover:bg-yellow-50' 
-                      : 'border-green-300 text-green-600 hover:bg-green-50'
+                      ? 'border-green-300 text-green-600 hover:bg-green-50' 
+                      : 'border-red-300 text-red-600 hover:bg-red-50'
                   }`}
                   title={item.available ? 'Desativar item' : 'Ativar item'}
                 >
-                  {item.available ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {item.available ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
                 </button>
                 <button 
                   onClick={() => deleteItem(item.id)}
