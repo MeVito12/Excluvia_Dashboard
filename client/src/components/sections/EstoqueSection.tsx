@@ -45,7 +45,7 @@ const EstoqueSection = () => {
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [newProduct, setNewProduct] = useState({
     name: '',
-    quantity: '',
+    currentStock: '',
     manufacturingDate: '',
     expiryDate: '',
     isPerishable: false,
@@ -66,20 +66,26 @@ const EstoqueSection = () => {
 
   // Função para adicionar novo produto
   const addProduct = () => {
-    if (!newProduct.name || !newProduct.quantity) {
-      alert('Por favor, preencha nome e quantidade.');
+    if (!newProduct.name || !newProduct.currentStock) {
+      alert('Por favor, preencha nome e estoque atual.');
+      return;
+    }
+
+    // Validação para produtos perecíveis
+    if (newProduct.isPerishable && (!newProduct.manufacturingDate || !newProduct.expiryDate)) {
+      alert('Para produtos perecíveis, preencha a data de fabricação e validade.');
       return;
     }
 
     const product = {
       id: Date.now(),
       name: newProduct.name,
-      stock: parseInt(newProduct.quantity),
+      stock: parseInt(newProduct.currentStock),
       minStock: parseInt(newProduct.minStock),
       price: parseFloat(newProduct.price) || 0,
       category: newProduct.category,
       isPerishable: newProduct.isPerishable,
-      manufacturingDate: newProduct.manufacturingDate || null,
+      manufacturingDate: newProduct.isPerishable ? newProduct.manufacturingDate : null,
       expiryDate: newProduct.isPerishable ? newProduct.expiryDate : null,
       createdAt: new Date().toISOString()
     };
@@ -87,7 +93,7 @@ const EstoqueSection = () => {
     setProducts(prev => [...prev, product]);
     setNewProduct({
       name: '',
-      quantity: '',
+      currentStock: '',
       manufacturingDate: '',
       expiryDate: '',
       isPerishable: false,
@@ -96,7 +102,7 @@ const EstoqueSection = () => {
       minStock: '10'
     });
     setShowAddProductModal(false);
-    alert(`✅ Produto "${product.name}" adicionado ao estoque com sucesso!`);
+    alert(`✅ Produto "${product.name}" adicionado ao estoque com ${product.stock} unidades!`);
   };
 
   // Função para ajustar estoque manualmente
@@ -1558,7 +1564,7 @@ const EstoqueSection = () => {
                   setShowAddProductModal(false);
                   setNewProduct({
                     name: '',
-                    quantity: '',
+                    currentStock: '',
                     manufacturingDate: '',
                     expiryDate: '',
                     isPerishable: false,
@@ -1589,14 +1595,14 @@ const EstoqueSection = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantidade *
+                  Estoque Atual *
                 </label>
                 <input
                   type="number"
-                  value={newProduct.quantity}
-                  onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+                  value={newProduct.currentStock}
+                  onChange={(e) => setNewProduct({ ...newProduct, currentStock: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Quantidade inicial"
+                  placeholder="Quantidade em estoque"
                   min="0"
                 />
               </div>
@@ -1641,30 +1647,32 @@ const EstoqueSection = () => {
                 </label>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Data de Fabricação
-                </label>
-                <input
-                  type="date"
-                  value={newProduct.manufacturingDate}
-                  onChange={(e) => setNewProduct({ ...newProduct, manufacturingDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
               {newProduct.isPerishable && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Data de Validade *
-                  </label>
-                  <input
-                    type="date"
-                    value={newProduct.expiryDate}
-                    onChange={(e) => setNewProduct({ ...newProduct, expiryDate: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  />
-                </div>
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Data de Fabricação *
+                    </label>
+                    <input
+                      type="date"
+                      value={newProduct.manufacturingDate}
+                      onChange={(e) => setNewProduct({ ...newProduct, manufacturingDate: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Data de Validade *
+                    </label>
+                    <input
+                      type="date"
+                      value={newProduct.expiryDate}
+                      onChange={(e) => setNewProduct({ ...newProduct, expiryDate: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                </>
               )}
             </div>
             
@@ -1674,7 +1682,7 @@ const EstoqueSection = () => {
                   setShowAddProductModal(false);
                   setNewProduct({
                     name: '',
-                    quantity: '',
+                    currentStock: '',
                     manufacturingDate: '',
                     expiryDate: '',
                     isPerishable: false,
