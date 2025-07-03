@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Database, Users, TrendingUp, Calendar, Clock, Bell, AlertTriangle, ShoppingCart } from 'lucide-react';
-import SearchAndFilters from '@/components/SearchAndFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,8 +9,8 @@ const DashboardSection = () => {
   const { selectedCategory } = useCategory();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
+  const [dateFrom, setDateFrom] = useState<string | undefined>();
+  const [dateTo, setDateTo] = useState<string | undefined>();
 
   // Dados de métricas específicos por categoria
   const getCategoryMetrics = () => {
@@ -93,7 +92,8 @@ const DashboardSection = () => {
     // Aplicar filtro de data se selecionado
     if (dateFrom || dateTo) {
       const now = new Date();
-      const daysDiff = dateFrom ? Math.floor((now.getTime() - dateFrom.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+      const fromDate = dateFrom ? new Date(dateFrom) : now;
+      const daysDiff = Math.floor((now.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
       
       // Simular ajuste de métricas baseado no período
       if (daysDiff > 7) {
@@ -128,17 +128,55 @@ const DashboardSection = () => {
         <p className="section-subtitle">Visão geral das métricas do sistema</p>
       </div>
 
-      {/* Search and Filters */}
-      <SearchAndFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedCompany={selectedCompany}
-        onCompanyChange={setSelectedCompany}
-        dateFrom={dateFrom}
-        dateTo={dateTo}
-        onDateFromChange={setDateFrom}
-        onDateToChange={setDateTo}
-      />
+      {/* Filtros de Data */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
+        
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data inicial:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateFrom || ''}
+              onChange={(e) => setDateFrom(e.target.value || undefined)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data final:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateTo || ''}
+              onChange={(e) => setDateTo(e.target.value || undefined)}
+            />
+          </div>
+
+          <Button 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+            }}
+            variant="outline"
+            className="bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+          >
+            Limpar Filtros
+          </Button>
+
+          <Button 
+            onClick={() => {
+              const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
+              alert(`📊 Filtros aplicados!\n\nDados atualizados para o período: ${period}`);
+            }}
+            className="bg-purple-600 text-white hover:bg-purple-700"
+          >
+            Aplicar Filtros
+          </Button>
+        </div>
+      </div>
 
       {/* Primary Metrics Grid */}
       <div className="metrics-grid">
@@ -254,86 +292,110 @@ const DashboardSection = () => {
         </div>
       </div>
 
-      {/* Cards com informações detalhadas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="main-card">
-          <CardHeader>
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-purple-600" />
-              Próximos Compromissos
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {(() => {
-                const categoryAppointments = {
-                  'pet': [
-                    { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã' },
-                    { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado' },
-                    { title: 'Banho e Tosa - Bella', time: '06/07 às 14:00', status: 'Esta semana' }
-                  ],
-                  'medico': [
-                    { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Fisioterapia - Reabilitação', time: 'Hoje às 16:30', status: 'Em 3h' },
-                    { title: 'Consulta Oftalmológica', time: 'Amanhã às 10:30', status: 'Amanhã' },
-                    { title: 'Cirurgia - Emergência', time: '05/07 às 08:00', status: 'Agendado' }
-                  ],
-                  'alimenticio': [
-                    { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h' },
-                    { title: 'Evento Corporativo', time: 'Amanhã às 19:00', status: 'Amanhã' },
-                    { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado' },
-                    { title: 'Festa de Aniversário', time: '08/07 às 15:00', status: 'Esta semana' }
-                  ],
-                  'vendas': [
-                    { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h' },
-                    { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 16:00', status: 'Em 3h' },
-                    { title: 'Entrega iPads - Escola', time: 'Amanhã às 14:00', status: 'Amanhã' },
-                    { title: 'Apresentação Projeto TI', time: '05/07 às 10:00', status: 'Agendado' }
-                  ],
-                  'tecnologia': [
-                    { title: 'Instalação Servidor', time: 'Hoje às 14:00', status: 'Em 1h' },
-                    { title: 'Manutenção Rede', time: 'Hoje às 18:00', status: 'Em 5h' },
-                    { title: 'Setup Workstation', time: 'Amanhã às 09:00', status: 'Amanhã' },
-                    { title: 'Treinamento Software', time: '06/07 às 14:00', status: 'Esta semana' }
-                  ],
-                  'educacao': [
-                    { title: 'Aula Matemática Avançada', time: 'Hoje às 14:00', status: 'Em 1h' },
-                    { title: 'Reunião Pais', time: 'Hoje às 17:00', status: 'Em 4h' },
-                    { title: 'Prova de Física', time: 'Amanhã às 08:00', status: 'Amanhã' },
-                    { title: 'Feira de Ciências', time: '08/07 às 09:00', status: 'Esta semana' }
-                  ],
-                  'beleza': [
-                    { title: 'Corte e Escova - Maria', time: 'Hoje às 15:00', status: 'Em 2h' },
-                    { title: 'Manicure - Ana', time: 'Hoje às 16:30', status: 'Em 3h' },
-                    { title: 'Design de Sobrancelhas', time: 'Amanhã às 10:00', status: 'Amanhã' },
-                    { title: 'Tratamento Facial', time: '05/07 às 14:00', status: 'Agendado' }
-                  ]
-                };
-                
-                const appointments = categoryAppointments[selectedCategory as keyof typeof categoryAppointments] || categoryAppointments.pet;
-                
-                return appointments.map((apt, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <Clock className="h-4 w-4 text-gray-600" />
-                      <div>
-                        <p className="font-medium text-gray-900">{apt.title}</p>
-                        <p className="text-sm text-gray-600">{apt.time}</p>
-                      </div>
-                    </div>
-                    <Badge className="bg-purple-500 text-white">{apt.status}</Badge>
-                  </div>
-                ));
-              })()}
-            </div>
+      {/* Seção de Compromissos */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-black flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-purple-600" />
+            Compromissos
+          </h3>
+          <Button 
+            onClick={() => {
+              alert('➕ Novo compromisso\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá agendar novos compromissos diretamente do dashboard.');
+            }}
+            className="bg-purple-600 text-white hover:bg-purple-700"
+          >
+            + Novo Compromisso
+          </Button>
+        </div>
+        
+        <div className="space-y-3">
+          {(() => {
+            const categoryAppointments = {
+              'pet': [
+                { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Cliente A' },
+                { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã', client: 'Cliente B' },
+                { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado', client: 'Cliente C' }
+              ],
+              'medico': [
+                { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Paciente A' },
+                { title: 'Fisioterapia - Reabilitação', time: 'Hoje às 16:30', status: 'Em 3h', client: 'Paciente B' },
+                { title: 'Consulta Oftalmológica', time: 'Amanhã às 10:30', status: 'Amanhã', client: 'Paciente C' }
+              ],
+              'alimenticio': [
+                { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h', client: 'Cliente VIP' },
+                { title: 'Evento Corporativo', time: 'Amanhã às 19:00', status: 'Amanhã', client: 'Empresa ABC' },
+                { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado', client: 'Grupo Gourmet' }
+              ],
+              'vendas': [
+                { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h', client: 'TechCorp' },
+                { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Mobile Solutions' },
+                { title: 'Entrega iPads - Escola', time: 'Amanhã às 14:00', status: 'Amanhã', client: 'Colégio Futuro' }
+              ],
+              'tecnologia': [
+                { title: 'Instalação Servidor', time: 'Hoje às 14:00', status: 'Em 1h', client: 'DataCenter Pro' },
+                { title: 'Manutenção Rede', time: 'Hoje às 18:00', status: 'Em 5h', client: 'Office Tower' },
+                { title: 'Setup Workstation', time: 'Amanhã às 09:00', status: 'Amanhã', client: 'Design Studio' }
+              ],
+              'educacao': [
+                { title: 'Aula Matemática Avançada', time: 'Hoje às 14:00', status: 'Em 1h', client: 'Turma A' },
+                { title: 'Reunião Pais', time: 'Hoje às 17:00', status: 'Em 4h', client: 'Responsáveis' },
+                { title: 'Prova de Física', time: 'Amanhã às 08:00', status: 'Amanhã', client: 'Turma B' }
+              ],
+              'beleza': [
+                { title: 'Corte e Escova - Maria', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Maria Silva' },
+                { title: 'Manicure - Ana', time: 'Hoje às 16:30', status: 'Em 3h', client: 'Ana Costa' },
+                { title: 'Design de Sobrancelhas', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Carla Santos' }
+              ]
+            };
             
-            <Button className="btn-primary w-full mt-4">
-              Ver Todos os Compromissos
-            </Button>
-          </CardContent>
-        </Card>
+            const appointments = categoryAppointments[selectedCategory as keyof typeof categoryAppointments] || categoryAppointments.pet;
+            
+            return appointments.map((apt, index) => (
+              <div key={index} className="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-900">{apt.title}</h4>
+                      <p className="text-sm text-gray-600">{apt.client}</p>
+                      <p className="text-sm text-gray-500">{apt.time}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      className={`${
+                        apt.status.includes('Em') ? 'bg-green-100 text-green-800' :
+                        apt.status === 'Amanhã' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {apt.status}
+                    </Badge>
+                    <div className="flex gap-1">
+                      <button className="p-1 text-gray-400 hover:text-purple-600">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button className="p-1 text-gray-400 hover:text-green-600">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ));
+          })()}
+        </div>
+      </div>
 
+      {/* Cards com informações detalhadas */}
+      <div className="grid grid-cols-1 gap-6">
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">

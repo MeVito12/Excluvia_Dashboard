@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import DatabaseChart from '@/components/DatabaseChart';
-import SearchAndFilters from '@/components/SearchAndFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,8 +24,8 @@ const GraficosSection = () => {
   const { selectedCategory } = useCategory();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
+  const [dateFrom, setDateFrom] = useState<string | undefined>();
+  const [dateTo, setDateTo] = useState<string | undefined>();
 
   // Dados específicos por categoria
   const getMetricsData = () => {
@@ -98,17 +97,55 @@ const GraficosSection = () => {
         <p className="section-subtitle">Relatórios de vendas, análises e visualizações detalhadas</p>
       </div>
 
-      {/* Search and Filters */}
-      <SearchAndFilters
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedCompany={selectedCompany}
-        onCompanyChange={setSelectedCompany}
-        dateFrom={dateFrom}
-        dateTo={dateTo}
-        onDateFromChange={setDateFrom}
-        onDateToChange={setDateTo}
-      />
+      {/* Filtros de Data */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
+        
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data inicial:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateFrom || ''}
+              onChange={(e) => setDateFrom(e.target.value || undefined)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data final:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateTo || ''}
+              onChange={(e) => setDateTo(e.target.value || undefined)}
+            />
+          </div>
+
+          <Button 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+            }}
+            variant="outline"
+            className="bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+          >
+            Limpar Filtros
+          </Button>
+
+          <Button 
+            onClick={() => {
+              const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
+              alert(`📊 Filtros aplicados!\n\nGráficos atualizados para o período: ${period}`);
+            }}
+            className="bg-purple-600 text-white hover:bg-purple-700"
+          >
+            Aplicar Filtros
+          </Button>
+        </div>
+      </div>
 
       {/* Métricas de Vendas */}
       <div className="metrics-grid">
@@ -339,6 +376,61 @@ const GraficosSection = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Botões de Exportação */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Exportar Dados</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Button 
+            onClick={() => {
+              const csvContent = `"Métrica","Valor"\n"Vendas Hoje","${metrics.today.sales}"\n"Crescimento","${metrics.today.growth}"\n"Pedidos","${metrics.today.orders}"\n"Ticket Médio","${metrics.today.avgTicket}"`;
+              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = `metricas_${new Date().toISOString().split('T')[0]}.csv`;
+              link.click();
+              alert('📊 Métricas exportadas!\n\nArquivo CSV baixado com os dados atuais.');
+            }}
+            className="btn btn-primary"
+          >
+            <Download className="w-4 h-4" />
+            Exportar Métricas
+          </Button>
+          
+          <Button 
+            onClick={() => {
+              const csvContent = `"Produto","Vendas","Receita","Crescimento"\n"Produto 1","847","R$ 12.450","+25%"\n"Produto 2","723","R$ 9.820","+18%"\n"Produto 3","612","R$ 7.650","+12%"`;
+              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = `top_produtos_${new Date().toISOString().split('T')[0]}.csv`;
+              link.click();
+              alert('🏆 Top produtos exportados!\n\nArquivo CSV baixado com ranking de produtos.');
+            }}
+            className="btn btn-secondary"
+          >
+            <Star className="w-4 h-4" />
+            Exportar Top Produtos
+          </Button>
+          
+          <Button 
+            onClick={() => {
+              const csvContent = `"Período","Vendas Semanais","Vendas Mensais","Crescimento"\n"Atual","${metrics.week.sales}","${metrics.month.sales}","${metrics.month.growth}"`;
+              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+              const link = document.createElement('a');
+              link.href = URL.createObjectURL(blob);
+              link.download = `relatorio_completo_${new Date().toISOString().split('T')[0]}.csv`;
+              link.click();
+              alert('📋 Relatório completo exportado!\n\nArquivo CSV baixado com análise detalhada.');
+            }}
+            className="btn btn-outline"
+          >
+            <BarChart3 className="w-4 h-4" />
+            Relatório Completo
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
