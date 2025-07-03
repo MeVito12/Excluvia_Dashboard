@@ -17,10 +17,21 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
+const getAppointmentData = () => {
+  const commonData = [
+    { id: 1, title: 'Reunião Principal', client: 'Cliente A', date: '2024-12-26', time: '09:00', type: 'reuniao', status: 'scheduled' },
+    { id: 2, title: 'Consulta Importante', client: 'Cliente B', date: '2024-12-26', time: '10:30', type: 'consulta', status: 'scheduled' },
+    { id: 3, title: 'Follow-up', client: 'Cliente C', date: '2024-12-27', time: '14:00', type: 'followup', status: 'completed' }
+  ];
+  return commonData;
+};
+
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('agenda');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [appointments, setAppointments] = useState(() => getAppointmentData());
 
   const tabs = [
     { id: 'agenda', label: 'Agenda', icon: Calendar },
@@ -29,29 +40,93 @@ const AgendamentosSection = () => {
     { id: 'notificacoes', label: 'Notificações', icon: Mail }
   ];
 
-  const getAppointmentData = () => {
-    const commonData = [
-      { id: 1, title: 'Reunião Principal', client: 'Cliente A', date: '2024-12-26', time: '09:00', type: 'reuniao', status: 'scheduled' },
-      { id: 2, title: 'Consulta Importante', client: 'Cliente B', date: '2024-12-26', time: '10:30', type: 'consulta', status: 'scheduled' },
-      { id: 3, title: 'Follow-up', client: 'Cliente C', date: '2024-12-27', time: '14:00', type: 'followup', status: 'completed' }
-    ];
-    return commonData;
+  // Função para marcar compromisso como concluído
+  const markAsCompleted = (appointmentId: number) => {
+    setAppointments(prev => 
+      prev.map(app => 
+        app.id === appointmentId 
+          ? { ...app, status: 'completed' }
+          : app
+      )
+    );
+    alert('✅ Compromisso marcado como concluído!');
+  };
+
+  // Função para editar compromisso
+  const editAppointment = (appointmentId: number) => {
+    const appointment = appointments.find(app => app.id === appointmentId);
+    if (appointment) {
+      alert(`📝 Editando: ${appointment.title}\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá editar todos os detalhes do compromisso.`);
+    }
+  };
+
+  // Função para adicionar novo compromisso
+  const addNewAppointment = () => {
+    const newId = Math.max(...appointments.map(a => a.id)) + 1;
+    const newAppointment = {
+      id: newId,
+      title: 'Novo Compromisso',
+      client: 'Cliente Novo',
+      date: selectedDate ? selectedDate.toISOString().split('T')[0] : '2024-12-26',
+      time: '14:00',
+      type: 'consulta',
+      status: 'scheduled' as const
+    };
+    
+    setAppointments(prev => [...prev, newAppointment]);
+    alert('✅ Novo compromisso adicionado com sucesso!\n\nVocê pode editar os detalhes clicando no botão de edição.');
   };
 
   const renderAgenda = () => (
     <div className="animate-fade-in">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">
+          Compromissos ({appointments.length})
+        </h3>
+        <button 
+          onClick={addNewAppointment}
+          className="btn btn-primary flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Novo Compromisso
+        </button>
+      </div>
+      
       <div className="space-y-4">
-        {getAppointmentData().map((appointment) => (
+        {appointments.map((appointment) => (
           <div key={appointment.id} className="main-card p-4">
             <div className="flex justify-between items-start">
-              <div>
+              <div className="flex-1">
                 <h4 className="font-medium text-gray-800">{appointment.title}</h4>
                 <p className="text-sm text-gray-600">{appointment.client}</p>
                 <p className="text-xs text-gray-500">{appointment.date} às {appointment.time}</p>
               </div>
-              <span className={`badge ${appointment.status === 'scheduled' ? 'badge-success' : 'badge-info'}`}>
-                {appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}
-              </span>
+              
+              <div className="flex items-center gap-2">
+                <span className={`badge ${appointment.status === 'scheduled' ? 'badge-success' : 'badge-info'}`}>
+                  {appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}
+                </span>
+                
+                <div className="flex gap-1">
+                  <button 
+                    onClick={() => editAppointment(appointment.id)}
+                    className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                    title="Editar compromisso"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </button>
+                  
+                  {appointment.status === 'scheduled' && (
+                    <button 
+                      onClick={() => markAsCompleted(appointment.id)}
+                      className="p-1 text-gray-400 hover:text-green-600 transition-colors"
+                      title="Marcar como concluído"
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         ))}

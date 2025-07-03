@@ -18,11 +18,74 @@ import {
   Calendar
 } from 'lucide-react';
 
+// Função para dados de produtos (movida para fora do componente)
+const getInitialProductData = () => {
+  return [
+    { 
+      id: 1, 
+      name: 'Produto Padrão', 
+      category: 'Geral', 
+      stock: 50, 
+      minStock: 10, 
+      price: 35.00, 
+      isPerishable: false
+    }
+  ];
+};
+
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [products, setProducts] = useState(() => getInitialProductData());
+
+  // Funções operacionais para produtos
+  const replenishStock = (productId: number) => {
+    setProducts(prev => 
+      prev.map(product => 
+        product.id === productId 
+          ? { ...product, stock: product.stock + 50 }
+          : product
+      )
+    );
+    alert('✅ Estoque reposto com sucesso!\n\n+50 unidades adicionadas ao produto.');
+  };
+
+  const markAsExpired = (productId: number) => {
+    setProducts(prev => 
+      prev.map(product => 
+        product.id === productId 
+          ? { ...product, stock: 0, status: 'Vencido' }
+          : product
+      )
+    );
+    alert('⚠️ Produto marcado como vencido!\n\nEstoque zerado automaticamente.');
+  };
+
+  const editProduct = (productId: number) => {
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      alert(`📝 Editando: ${product.name}\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá editar todos os detalhes do produto.`);
+    }
+  };
+
+  const addNewProduct = () => {
+    const newId = Math.max(...products.map(p => p.id)) + 1;
+    const newProduct = {
+      id: newId,
+      name: 'Novo Produto',
+      category: 'Geral',
+      stock: 0,
+      minStock: 5,
+      price: 10.00,
+      isPerishable: false,
+      status: 'Sem Estoque'
+    };
+    
+    setProducts(prev => [...prev, newProduct]);
+    alert('✅ Novo produto adicionado com sucesso!\n\nVocê pode editar os detalhes clicando no botão de edição.');
+  };
 
   // Tabs do sistema
   const tabs = [

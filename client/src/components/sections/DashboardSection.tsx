@@ -86,6 +86,40 @@ const DashboardSection = () => {
 
   const currentMetrics = getCategoryMetrics();
 
+  // Função para filtrar dados baseada nos filtros selecionados
+  const getFilteredMetrics = () => {
+    let metrics = { ...currentMetrics };
+    
+    // Aplicar filtro de data se selecionado
+    if (dateFrom || dateTo) {
+      const now = new Date();
+      const daysDiff = dateFrom ? Math.floor((now.getTime() - dateFrom.getTime()) / (1000 * 60 * 60 * 24)) : 0;
+      
+      // Simular ajuste de métricas baseado no período
+      if (daysDiff > 7) {
+        metrics = {
+          ...metrics,
+          transactions: metrics.transactions.replace(/\d+/, (num) => String(Math.floor(parseInt(num) * 0.7))),
+          revenue: metrics.revenue.replace(/[\d.]+/, (num) => String(Math.floor(parseFloat(num.replace('.', '')) * 0.8))),
+        };
+      }
+    }
+    
+    // Aplicar filtro de busca
+    if (searchTerm) {
+      // Ajustar métricas baseado na busca
+      const searchMultiplier = searchTerm.length > 3 ? 0.3 : 0.8;
+      metrics = {
+        ...metrics,
+        totalRecords: metrics.totalRecords.replace(/\d+/, (num) => String(Math.floor(parseInt(num) * searchMultiplier))),
+      };
+    }
+    
+    return metrics;
+  };
+
+  const filteredMetrics = getFilteredMetrics();
+
   return (
     <div className="app-section">
       {/* Header */}
@@ -112,8 +146,8 @@ const DashboardSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Registros</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.totalRecords}</p>
-              <p className="text-xs mt-1 text-green-600">{currentMetrics.growth} este mês</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.totalRecords}</p>
+              <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} este mês</p>
             </div>
             <div className="p-3 rounded-full bg-gray-100">
               <Database className="h-6 w-6 text-gray-600" />
@@ -125,7 +159,7 @@ const DashboardSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Equipe Ativa</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.activeUsers}</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.activeUsers}</p>
               <p className="text-xs mt-1 text-blue-600">Profissionais ativos</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
@@ -138,8 +172,8 @@ const DashboardSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.revenue}</p>
-              <p className="text-xs mt-1 text-green-600">{currentMetrics.growth} vs ontem</p>
+              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.revenue}</p>
+              <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} vs ontem</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -310,6 +344,17 @@ const DashboardSection = () => {
           <CardContent>
             <div className="space-y-3">
               {(() => {
+                // Função para lidar com cliques nas notificações
+                const handleNotificationClick = (notification: any) => {
+                  if (notification.color === 'red') {
+                    alert(`🚨 URGENTE: ${notification.title}\n\n${notification.desc}\n\nClique em OK para resolver imediatamente.`);
+                  } else if (notification.color === 'orange') {
+                    alert(`⚠️ ATENÇÃO: ${notification.title}\n\n${notification.desc}\n\nAção recomendada: Verificar em breve.`);
+                  } else {
+                    alert(`✅ NOVO: ${notification.title}\n\n${notification.desc}\n\nNotificação marcada como visualizada.`);
+                  }
+                };
+
                 const categoryNotifications = {
                   'pet': [
                     { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação V10', badge: 'Urgente', color: 'red' },
@@ -351,7 +396,11 @@ const DashboardSection = () => {
                 const notifications = categoryNotifications[selectedCategory as keyof typeof categoryNotifications] || categoryNotifications.pet;
                 
                 return notifications.map((notif, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                  <div 
+                    key={index} 
+                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
+                    onClick={() => handleNotificationClick(notif)}
+                  >
                     <notif.icon className="h-4 w-4 text-gray-600 mt-0.5" />
                     <div className="flex-1">
                       <div className="flex items-center justify-between">

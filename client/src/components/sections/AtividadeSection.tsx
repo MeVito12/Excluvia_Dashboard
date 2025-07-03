@@ -186,15 +186,39 @@ const AtividadeSection = () => {
     const matchesStatus = selectedStatus === 'all' || activity.status === selectedStatus;
     const matchesType = selectedType === 'all' || activity.type === selectedType;
     
-    return matchesSearch && matchesStatus && matchesType;
+    // Filtro de data funcional
+    const activityDate = activity.timestamp;
+    const matchesDateFrom = !dateFrom || activityDate >= dateFrom;
+    const matchesDateTo = !dateTo || activityDate <= dateTo;
+    const matchesDate = matchesDateFrom && matchesDateTo;
+    
+    return matchesSearch && matchesStatus && matchesType && matchesDate;
   });
 
   // Estatísticas
   const stats = {
-    total: allActivities.length,
-    success: allActivities.filter(a => a.status === 'success').length,
-    error: allActivities.filter(a => a.status === 'error').length,
-    integrations: integrationLogs.length
+    total: filteredActivities.length,
+    success: filteredActivities.filter(a => a.status === 'success').length,
+    error: filteredActivities.filter(a => a.status === 'error').length,
+    integrations: filteredActivities.filter(a => integrationLogs.some(log => log.id === a.id)).length
+  };
+
+  // Função para exportar dados
+  const handleExport = () => {
+    const csvData = filteredActivities.map(activity => 
+      `"${activity.time}","${activity.action}","${activity.description}","${activity.status}","${activity.user}"`
+    ).join('\n');
+    
+    const header = '"Data/Hora","Ação","Descrição","Status","Usuário"\n';
+    const csvContent = header + csvData;
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `atividades_${selectedCategory}_${format(new Date(), 'dd-MM-yyyy')}.csv`;
+    link.click();
+    
+    alert(`📊 Exportação realizada!\n\n${stats.total} atividades exportadas para CSV.\nArquivo baixado com sucesso.`);
   };
 
   return (
@@ -301,7 +325,7 @@ const AtividadeSection = () => {
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="h-4 w-4 mr-2" />
             Exportar
           </Button>
