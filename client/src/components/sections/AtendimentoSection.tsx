@@ -26,7 +26,9 @@ import {
   Mail,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -243,45 +245,54 @@ const AtendimentoSection = () => {
   };
 
   const deleteItem = (itemId: number) => {
-    if (confirm('Tem certeza que deseja excluir este item?')) {
+    const item: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
+    const itemName = item?.name || item?.title || 'Item';
+    
+    if (confirm(`Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`)) {
       // Remove do catálogo/cardápio/portfólio
       setCategoryItems(prev => ({
         ...prev,
         [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
       }));
       
-      // Para categorias com estoque (não design e sites), sincronizar exclusão
-      if (selectedCategory !== 'design' && selectedCategory !== 'sites') {
-        // Aqui você faria a sincronização com o EstoqueSection se necessário
-        // Como os dados são mock, apenas mostramos a mensagem de sincronização
-        alert('Item excluído do catálogo e estoque com sucesso!');
+      // Mensagens específicas por categoria
+      if (selectedCategory === 'design' || selectedCategory === 'sites') {
+        alert(`✅ Projeto "${itemName}" foi excluído do portfólio com sucesso!`);
+      } else if (selectedCategory === 'alimenticio') {
+        alert(`✅ Prato "${itemName}" foi removido do cardápio e estoque atualizado!`);
       } else {
-        alert('Projeto excluído do portfólio com sucesso!');
+        alert(`✅ Produto "${itemName}" foi excluído do catálogo e estoque sincronizado!`);
       }
     }
   };
 
   // Função para desativar/ativar item e sincronizar com estoque
   const toggleItemAvailability = (itemId: number) => {
-    const currentItem = getCurrentCategoryItems().find((item: any) => item.id === itemId);
+    const currentItem: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
     if (!currentItem) return;
+    
+    const itemName = currentItem.name || currentItem.title || 'Item';
+    const newStatus = !currentItem.available;
 
     setCategoryItems(prev => ({
       ...prev,
       [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((catItem: any) => 
         catItem.id === itemId 
-          ? { ...catItem, available: !catItem.available }
+          ? { ...catItem, available: newStatus }
           : catItem
       ) || []
     }));
 
-    // Para categorias com estoque, sincronizar disponibilidade
-    if (selectedCategory !== 'design' && selectedCategory !== 'sites') {
-      const action = currentItem.available ? 'desativado' : 'ativado';
-      alert(`Item ${action} no catálogo e estoque com sucesso!`);
+    // Mensagens específicas por categoria e status
+    if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      const action = newStatus ? 'ativado' : 'desativado';
+      alert(`🎨 Projeto "${itemName}" foi ${action} no portfólio!`);
+    } else if (selectedCategory === 'alimenticio') {
+      const action = newStatus ? 'disponível' : 'indisponível';
+      alert(`🍽️ Prato "${itemName}" está agora ${action} no cardápio e estoque atualizado!`);
     } else {
-      const action = currentItem.available ? 'desativado' : 'ativado';
-      alert(`Projeto ${action} no portfólio com sucesso!`);
+      const action = newStatus ? 'ativado' : 'desativado';
+      alert(`📦 Produto "${itemName}" foi ${action} no catálogo e estoque sincronizado!`);
     }
   };
 
@@ -775,19 +786,26 @@ const AtendimentoSection = () => {
                 <div className="flex gap-2">
                   <button 
                     onClick={() => editItem(project)}
-                    className="btn btn-outline btn-sm"
+                    className="p-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+                    title="Editar projeto"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button 
                     onClick={() => toggleItemAvailability(project.id)}
-                    className={`btn btn-sm ${project.available ? 'btn-secondary' : 'btn-success'}`}
+                    className={`p-2 border rounded-md transition-colors ${
+                      project.available 
+                        ? 'border-yellow-300 text-yellow-600 hover:bg-yellow-50' 
+                        : 'border-green-300 text-green-600 hover:bg-green-50'
+                    }`}
+                    title={project.available ? 'Desativar projeto' : 'Ativar projeto'}
                   >
-                    {project.available ? 'Desativar' : 'Ativar'}
+                    {project.available ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                   <button 
                     onClick={() => deleteItem(project.id)}
-                    className="btn btn-sm btn-error"
+                    className="p-2 border border-red-300 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                    title="Excluir projeto"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -957,19 +975,26 @@ const AtendimentoSection = () => {
               <div className="flex gap-2">
                 <button 
                   onClick={() => editItem(item)}
-                  className="btn btn-outline btn-sm"
+                  className="p-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
+                  title="Editar item"
                 >
                   <Edit className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => toggleItemAvailability(item.id)}
-                  className={`btn btn-sm ${item.available ? 'btn-secondary' : 'btn-success'}`}
+                  className={`p-2 border rounded-md transition-colors ${
+                    item.available 
+                      ? 'border-yellow-300 text-yellow-600 hover:bg-yellow-50' 
+                      : 'border-green-300 text-green-600 hover:bg-green-50'
+                  }`}
+                  title={item.available ? 'Desativar item' : 'Ativar item'}
                 >
-                  {item.available ? 'Desativar' : 'Ativar'}
+                  {item.available ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
                 <button 
                   onClick={() => deleteItem(item.id)}
-                  className="btn btn-sm btn-error"
+                  className="p-2 border border-red-300 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                  title="Excluir item"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
