@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import UserAvatar from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
 import ModernIcon from '@/components/ui/modern-icon';
 import { 
   BarChart3, 
@@ -24,6 +25,7 @@ interface SidebarProps {
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
   const { user, logout } = useAuth();
+  const { selectedCategory } = useCategory();
 
   const menuItems = [
     {
@@ -95,7 +97,15 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           {/* Navigation */}
           <nav className="flex-1 p-4">
             <ul className="space-y-2">
-              {menuItems.map((item) => {
+              {menuItems
+                .filter(item => {
+                  // Remover estoque das categorias design e sites
+                  if (item.id === 'estoque' && (selectedCategory === 'design' || selectedCategory === 'sites')) {
+                    return false;
+                  }
+                  return true;
+                })
+                .map((item) => {
                 const Icon = item.icon;
                 const isActive = activeSection === item.id;
                 
