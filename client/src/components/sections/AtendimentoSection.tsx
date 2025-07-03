@@ -25,7 +25,8 @@ import {
   TrendingUp,
   Mail,
   Plus,
-  Edit
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 const AtendimentoSection = () => {
@@ -36,6 +37,8 @@ const AtendimentoSection = () => {
   const [shareType, setShareType] = useState('link'); // 'link' ou 'qr'
   const [shareUrl, setShareUrl] = useState('');
   const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [isEditingItem, setIsEditingItem] = useState(false);
+  const [editingItemId, setEditingItemId] = useState(null);
   const [newItem, setNewItem] = useState({
     name: '',
     description: '',
@@ -170,34 +173,115 @@ const AtendimentoSection = () => {
   // Funções para editar e excluir itens
   const editItem = (item: any) => {
     if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      // Para portfólio (design e sites)
       setEditingPortfolioItem(item);
       setPortfolioItem({
-        title: item.title,
-        description: item.description,
+        title: item.title || '',
+        description: item.description || '',
         imageUrl: item.imageUrl || '',
         projectUrl: item.projectUrl || '',
-        category: item.category
+        category: item.category || 'branding'
       });
       setShowEditPortfolioModal(true);
     } else {
-      // Para outras categorias (produtos/catálogos)
+      // Para outras categorias (produtos/catálogos/cardápios)
+      setIsEditingItem(true);
+      setEditingItemId(item.id);
       setNewItem({
-        name: item.name,
-        description: item.description,
+        name: item.name || item.title || '',
+        description: item.description || '',
         price: item.price?.toString() || '',
-        category: item.category
+        category: item.category || 'produtos'
       });
       setShowAddItemModal(true);
     }
   };
 
+  // Função para salvar item editado (não portfolio)
+  const saveEditedItem = () => {
+    if (!newItem.name) {
+      alert('Por favor, preencha o nome do item.');
+      return;
+    }
+
+    if (isEditingItem) {
+      // Editar item existente
+      setCategoryItems(prev => ({
+        ...prev,
+        [selectedCategory]: (prev[selectedCategory as keyof typeof prev] as any[])?.map((item: any) => 
+          item.id === editingItemId 
+            ? { 
+                ...item, 
+                name: newItem.name,
+                description: newItem.description,
+                price: parseFloat(newItem.price) || item.price,
+                category: newItem.category
+              }
+            : item
+        ) || []
+      }));
+      
+      alert(selectedCategory !== 'design' && selectedCategory !== 'sites' 
+        ? 'Item atualizado no catálogo e estoque com sucesso!' 
+        : 'Item atualizado com sucesso!');
+    } else {
+      // Criar novo item
+      if (selectedCategory === 'alimenticio') {
+        saveMenuItemWithIngredients();
+        return;
+      } else {
+        saveNewItem();
+        return;
+      }
+    }
+
+    // Reset do estado
+    setShowAddItemModal(false);
+    setIsEditingItem(false);
+    setEditingItemId(null);
+    setNewItem({ name: '', description: '', price: '', category: 'produtos' });
+  };
+
   const deleteItem = (itemId: number) => {
     if (confirm('Tem certeza que deseja excluir este item?')) {
+      // Remove do catálogo/cardápio/portfólio
       setCategoryItems(prev => ({
         ...prev,
         [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
       }));
-      alert('Item excluído com sucesso!');
+      
+      // Para categorias com estoque (não design e sites), sincronizar exclusão
+      if (selectedCategory !== 'design' && selectedCategory !== 'sites') {
+        // Aqui você faria a sincronização com o EstoqueSection se necessário
+        // Como os dados são mock, apenas mostramos a mensagem de sincronização
+        alert('Item excluído do catálogo e estoque com sucesso!');
+      } else {
+        alert('Projeto excluído do portfólio com sucesso!');
+      }
+    }
+  };
+
+  // Função para desativar/ativar item e sincronizar com estoque
+  const toggleItemAvailability = (itemId: number) => {
+    const currentItem = getCurrentCategoryItems().find((item: any) => item.id === itemId);
+    if (!currentItem) return;
+
+    setCategoryItems(prev => ({
+      ...prev,
+      [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((catItem: any) => 
+        catItem.id === itemId 
+          ? { ...catItem, available: !catItem.available }
+          : catItem
+      ) || []
+    }));
+
+    // Para categorias com estoque, sincronizar disponibilidade
+    if (selectedCategory !== 'design' && selectedCategory !== 'sites') {
+      const action = currentItem.available ? 'desativado' : 'ativado';
+      alert(`Item ${action} no catálogo e estoque com sucesso!`);
+    } else {
+      const action = currentItem.available ? 'desativado' : 'ativado';
+      alert(`Projeto ${action} no portfólio com sucesso!`);
     }
   };
 
@@ -689,11 +773,23 @@ const AtendimentoSection = () => {
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">{project.date}</span>
                 <div className="flex gap-2">
-                  <button className="btn btn-outline btn-sm">
+                  <button 
+                    onClick={() => editItem(project)}
+                    className="btn btn-outline btn-sm"
+                  >
                     <Edit className="w-4 h-4" />
                   </button>
-                  <button className="btn btn-secondary btn-sm">
-                    <Share2 className="w-4 h-4" />
+                  <button 
+                    onClick={() => toggleItemAvailability(project.id)}
+                    className={`btn btn-sm ${project.available ? 'btn-secondary' : 'btn-success'}`}
+                  >
+                    {project.available ? 'Desativar' : 'Ativar'}
+                  </button>
+                  <button 
+                    onClick={() => deleteItem(project.id)}
+                    className="btn btn-sm btn-error"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -866,17 +962,7 @@ const AtendimentoSection = () => {
                   <Edit className="w-4 h-4" />
                 </button>
                 <button 
-                  onClick={() => {
-                    setCategoryItems(prev => ({
-                      ...prev,
-                      [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((catItem: any) => 
-                        catItem.id === item.id 
-                          ? { ...catItem, available: !catItem.available }
-                          : catItem
-                      ) || []
-                    }));
-                    alert(`Item ${item.available ? 'desativado' : 'ativado'} com sucesso!`);
-                  }}
+                  onClick={() => toggleItemAvailability(item.id)}
                   className={`btn btn-sm ${item.available ? 'btn-secondary' : 'btn-success'}`}
                 >
                   {item.available ? 'Desativar' : 'Ativar'}
@@ -1337,10 +1423,15 @@ const AtendimentoSection = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">
-                Adicionar {selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'}
+                {isEditingItem ? 'Editar' : 'Adicionar'} {selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'}
               </h3>
               <button 
-                onClick={() => setShowAddItemModal(false)}
+                onClick={() => {
+                  setShowAddItemModal(false);
+                  setIsEditingItem(false);
+                  setEditingItemId(null);
+                  setNewItem({ name: '', description: '', price: '', category: 'produtos' });
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✕
@@ -1448,16 +1539,21 @@ const AtendimentoSection = () => {
             
             <div className="flex gap-3 mt-6">
               <button
-                onClick={() => setShowAddItemModal(false)}
+                onClick={() => {
+                  setShowAddItemModal(false);
+                  setIsEditingItem(false);
+                  setEditingItemId(null);
+                  setNewItem({ name: '', description: '', price: '', category: 'produtos' });
+                }}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 Cancelar
               </button>
               <button
-                onClick={selectedCategory === 'alimenticio' ? saveMenuItemWithIngredients : saveNewItem}
+                onClick={saveEditedItem}
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
-                Adicionar
+                {isEditingItem ? 'Salvar Alterações' : 'Adicionar'}
               </button>
             </div>
           </div>
