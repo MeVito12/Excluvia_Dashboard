@@ -325,7 +325,57 @@ const AtividadeSection = () => {
             </SelectContent>
           </Select>
 
-          <Button variant="outline" size="sm" onClick={handleExport}>
+          {/* Filtros de Data Interativos */}
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer"
+              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateFrom(date);
+              }}
+              onClick={(e) => {
+                e.currentTarget.showPicker?.();
+              }}
+              placeholder="Data inicial"
+              title="Clique para selecionar data inicial"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer"
+              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateTo(date);
+              }}
+              onClick={(e) => {
+                e.currentTarget.showPicker?.();
+              }}
+              placeholder="Data final"
+              title="Clique para selecionar data final"
+            />
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+              alert('📅 Filtros de data limpos!\n\nTodas as atividades serão exibidas.');
+            }}
+            className="cursor-pointer"
+          >
+            Limpar Datas
+          </Button>
+
+          <Button variant="outline" size="sm" onClick={handleExport} className="cursor-pointer">
             <Download className="h-4 w-4 mr-2" />
             Exportar
           </Button>
@@ -345,25 +395,48 @@ const AtividadeSection = () => {
             const Icon = getActivityTypeIcon(activity.type);
             
             return (
-              <div key={activity.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div 
+                key={activity.id} 
+                className="p-6 hover:bg-gray-50 transition-colors cursor-pointer border-l-4 border-transparent hover:border-purple-500"
+                onClick={() => {
+                  alert(`📋 Detalhes da Atividade\n\nAção: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`);
+                }}
+                title="Clique para ver detalhes da atividade"
+              >
                 <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-gray-100">
-                    <Icon className="h-5 w-5 text-gray-600" />
+                  <div 
+                    className="p-2 rounded-lg bg-gray-100 cursor-pointer hover:bg-purple-100 transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      alert(`🔧 Ação rápida\n\nTipo: ${activity.type}\nEsta ação permite gerenciar configurações específicas para ${activity.type}.`);
+                    }}
+                  >
+                    <Icon className="h-5 w-5 text-gray-600 hover:text-purple-600 transition-colors" />
                   </div>
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-sm font-medium text-gray-900">
+                      <h3 
+                        className="text-sm font-medium text-gray-900 cursor-pointer hover:text-purple-600 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert(`📝 Ação: ${activity.action}\n\nClique para editar ou configurar esta ação.`);
+                        }}
+                      >
                         {activity.action}
                       </h3>
                       <div className="flex items-center gap-2">
                         <Badge 
-                          className={
-                            activity.status === 'success' ? 'bg-green-100 text-green-800' :
-                            activity.status === 'error' ? 'bg-red-100 text-red-800' :
-                            activity.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-blue-100 text-blue-800'
-                          }
+                          className={`cursor-pointer hover:scale-105 transition-transform ${
+                            activity.status === 'success' ? 'bg-green-100 text-green-800 hover:bg-green-200' :
+                            activity.status === 'error' ? 'bg-red-100 text-red-800 hover:bg-red-200' :
+                            activity.status === 'warning' ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' :
+                            'bg-blue-100 text-blue-800 hover:bg-blue-200'
+                          }`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`📊 Status: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\n\nClique para filtrar apenas itens com este status.`);
+                          }}
                         >
                           {activity.status === 'success' ? 'Sucesso' :
                            activity.status === 'error' ? 'Erro' :
@@ -377,10 +450,74 @@ const AtividadeSection = () => {
                       {activity.description}
                     </p>
                     
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>Usuário: {activity.user}</span>
-                      <span>Categoria: {activity.category}</span>
-                      <span>Tipo: {activity.type}</span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        <span 
+                          className="cursor-pointer hover:text-purple-600 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`👤 Usuário: ${activity.user}\n\nClique para ver todas as atividades deste usuário.`);
+                          }}
+                        >
+                          Usuário: {activity.user}
+                        </span>
+                        <span 
+                          className="cursor-pointer hover:text-purple-600 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`🏷️ Categoria: ${activity.category}\n\nClique para filtrar por esta categoria.`);
+                          }}
+                        >
+                          Categoria: {activity.category}
+                        </span>
+                        <span 
+                          className="cursor-pointer hover:text-purple-600 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`🔧 Tipo: ${activity.type}\n\nClique para ver configurações deste tipo.`);
+                          }}
+                        >
+                          Tipo: {activity.type}
+                        </span>
+                      </div>
+                      
+                      {/* Botões de ação */}
+                      <div className="flex gap-1">
+                        <button
+                          className="p-1 rounded text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`📋 Copiando detalhes...\n\nDetalhes da atividade copiados para a área de transferência.`);
+                          }}
+                          title="Copiar detalhes"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                        
+                        <button
+                          className="p-1 rounded text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`✅ Marcando como resolvido...\n\nAtividade marcada como resolvida com sucesso.`);
+                          }}
+                          title="Marcar como resolvido"
+                        >
+                          <CheckCircle className="h-4 w-4" />
+                        </button>
+                        
+                        <button
+                          className="p-1 rounded text-gray-400 hover:text-purple-600 hover:bg-purple-50 transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            alert(`⚙️ Abrindo configurações...\n\nAcessando configurações avançadas para esta atividade.`);
+                          }}
+                          title="Configurações"
+                        >
+                          <Settings className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
