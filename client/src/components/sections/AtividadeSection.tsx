@@ -336,9 +336,6 @@ const AtividadeSection = () => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateFrom(date);
               }}
-              onClick={(e) => {
-                e.currentTarget.showPicker?.();
-              }}
               placeholder="Data inicial"
               title="Clique para selecionar data inicial"
             />
@@ -353,9 +350,6 @@ const AtividadeSection = () => {
               onChange={(e) => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateTo(date);
-              }}
-              onClick={(e) => {
-                e.currentTarget.showPicker?.();
               }}
               placeholder="Data final"
               title="Clique para selecionar data final"
