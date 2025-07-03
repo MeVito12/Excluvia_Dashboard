@@ -41,13 +41,161 @@ const EstoqueSection = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [products, setProducts] = useState(() => getInitialProductData());
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [newProduct, setNewProduct] = useState({
+    name: '',
+    quantity: '',
+    manufacturingDate: '',
+    expiryDate: '',
+    isPerishable: false,
+    category: 'Geral',
+    price: '',
+    minStock: '10'
+  });
+  const [sales, setSales] = useState<any[]>([]);
+  const [showStockModal, setShowStockModal] = useState(false);
+  const [stockProduct, setStockProduct] = useState<any>(null);
+  const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });
 
   // Categorias que não têm sistema de estoque
   const categoriesWithoutStock = ['design', 'sites'];
 
   // Verificar se a categoria atual tem sistema de estoque
   const hasStockSystem = !categoriesWithoutStock.includes(selectedCategory);
+
+  // Função para adicionar novo produto
+  const addProduct = () => {
+    if (!newProduct.name || !newProduct.quantity) {
+      alert('Por favor, preencha nome e quantidade.');
+      return;
+    }
+
+    const product = {
+      id: Date.now(),
+      name: newProduct.name,
+      stock: parseInt(newProduct.quantity),
+      minStock: parseInt(newProduct.minStock),
+      price: parseFloat(newProduct.price) || 0,
+      category: newProduct.category,
+      isPerishable: newProduct.isPerishable,
+      manufacturingDate: newProduct.manufacturingDate || null,
+      expiryDate: newProduct.isPerishable ? newProduct.expiryDate : null,
+      createdAt: new Date().toISOString()
+    };
+
+    setProducts(prev => [...prev, product]);
+    setNewProduct({
+      name: '',
+      quantity: '',
+      manufacturingDate: '',
+      expiryDate: '',
+      isPerishable: false,
+      category: 'Geral',
+      price: '',
+      minStock: '10'
+    });
+    setShowAddProductModal(false);
+    alert(`✅ Produto "${product.name}" adicionado ao estoque com sucesso!`);
+  };
+
+  // Função para ajustar estoque manualmente
+  const adjustStock = () => {
+    if (!stockAdjustment.quantity || !stockProduct) {
+      alert('Por favor, preencha a quantidade.');
+      return;
+    }
+
+    const quantity = parseInt(stockAdjustment.quantity);
+    const newStock = stockAdjustment.operation === 'add' 
+      ? stockProduct.stock + quantity 
+      : stockProduct.stock - quantity;
+
+    if (newStock < 0) {
+      alert('Estoque não pode ficar negativo.');
+      return;
+    }
+
+    setProducts(prev => prev.map(p => 
+      p.id === stockProduct.id 
+        ? { ...p, stock: newStock }
+        : p
+    ));
+
+    const operation = stockAdjustment.operation === 'add' ? 'adicionadas' : 'removidas';
+    alert(`✅ ${quantity} unidades ${operation} do estoque de "${stockProduct.name}"`);
+    
+    setShowStockModal(false);
+    setStockAdjustment({ quantity: '', operation: 'add', reason: '' });
+  };
+
+  // Função para processar venda e deduzir do estoque
+  const processSale = (productId: number, quantitySold: number) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    if (product.stock < quantitySold) {
+      alert(`Estoque insuficiente! Disponível: ${product.stock} unidades`);
+      return;
+    }
+
+    setProducts(prev => prev.map(p => 
+      p.id === productId 
+        ? { ...p, stock: p.stock - quantitySold }
+        : p
+    ));
+
+    // Registrar venda
+    const sale = {
+      id: Date.now(),
+      productId,
+      productName: product.name,
+      quantity: quantitySold,
+      unitPrice: product.price,
+      total: product.price * quantitySold,
+      date: new Date().toISOString()
+    };
+
+    setSales(prev => [...prev, sale]);
+    alert(`✅ Venda processada: ${quantitySold} un. de "${product.name}"`);
+  };
+
+  // Função para calcular uso de ingredientes no cardápio
+  const deductIngredients = (recipeId: number, portions: number = 1) => {
+    // Mapeamento de receitas e ingredientes (exemplo para categoria alimentício)
+    const recipes: any = {
+      1: { // Pizza Margherita
+        ingredients: [
+          { productId: 1, quantity: 0.3 }, // Massa: 300g por pizza
+          { productId: 2, quantity: 0.2 }, // Molho: 200g por pizza
+          { productId: 3, quantity: 0.15 } // Queijo: 150g por pizza
+        ]
+      },
+      2: { // Hambúrguer
+        ingredients: [
+          { productId: 4, quantity: 0.2 }, // Pão: 200g por hambúrguer
+          { productId: 5, quantity: 0.15 }, // Carne: 150g por hambúrguer
+          { productId: 6, quantity: 0.05 } // Verduras: 50g por hambúrguer
+        ]
+      }
+    };
+
+    const recipe = recipes[recipeId];
+    if (!recipe) return;
+
+    recipe.ingredients.forEach((ingredient: any) => {
+      const quantityNeeded = ingredient.quantity * portions;
+      const product = products.find(p => p.id === ingredient.productId);
+      
+      if (product && product.stock >= quantityNeeded) {
+        setProducts(prev => prev.map(p => 
+          p.id === ingredient.productId 
+            ? { ...p, stock: p.stock - quantityNeeded }
+            : p
+        ));
+      }
+    });
+  };
 
   // Funções operacionais para produtos
   const replenishStock = (productId: number) => {
@@ -780,7 +928,10 @@ const EstoqueSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-gray-800">Gestão de Produtos</h3>
-          <button className="btn btn-primary">
+          <button 
+            onClick={() => setShowAddProductModal(true)}
+            className="btn btn-primary"
+          >
             <Plus className="w-4 h-4" />
             Adicionar Produto
           </button>
@@ -931,11 +1082,26 @@ const EstoqueSection = () => {
               </div>
               <div className="flex gap-2">
                 <button 
-                  onClick={() => alert(`👁️ Visualizando detalhes do produto:\n\n${product.name}\nPreço: R$ ${product.price.toFixed(2)}\nEstoque: ${product.stock} unidades\nCategoria: ${product.category}`)}
+                  onClick={() => {
+                    setStockProduct(product);
+                    setShowStockModal(true);
+                  }}
                   className="btn btn-outline p-2" 
-                  title="Visualizar detalhes"
+                  title="Controlar estoque"
                 >
-                  <Eye className="w-4 h-4" />
+                  <Package className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={() => {
+                    const quantity = parseInt(prompt(`Quantas unidades de "${product.name}" foram vendidas?`) || '0');
+                    if (quantity > 0) {
+                      processSale(product.id, quantity);
+                    }
+                  }}
+                  className="btn btn-success p-2" 
+                  title="Processar venda"
+                >
+                  <DollarSign className="w-4 h-4" />
                 </button>
                 <button 
                   onClick={() => editProduct(product.id)}
@@ -1375,6 +1541,243 @@ const EstoqueSection = () => {
                 className="btn btn-outline flex-1"
               >
                 Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Adicionar Produto */}
+      {showAddProductModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Adicionar Produto</h3>
+              <button 
+                onClick={() => {
+                  setShowAddProductModal(false);
+                  setNewProduct({
+                    name: '',
+                    quantity: '',
+                    manufacturingDate: '',
+                    expiryDate: '',
+                    isPerishable: false,
+                    category: 'Geral',
+                    price: '',
+                    minStock: '10'
+                  });
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome do Produto *
+                </label>
+                <input
+                  type="text"
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Digite o nome do produto"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantidade *
+                </label>
+                <input
+                  type="number"
+                  value={newProduct.quantity}
+                  onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Quantidade inicial"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Preço Unitário
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="R$ 0,00"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Estoque Mínimo
+                </label>
+                <input
+                  type="number"
+                  value={newProduct.minStock}
+                  onChange={(e) => setNewProduct({ ...newProduct, minStock: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="10"
+                  min="0"
+                />
+              </div>
+
+              <div>
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={newProduct.isPerishable}
+                    onChange={(e) => setNewProduct({ ...newProduct, isPerishable: e.target.checked })}
+                    className="rounded border-gray-300"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Produto Perecível</span>
+                </label>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Data de Fabricação
+                </label>
+                <input
+                  type="date"
+                  value={newProduct.manufacturingDate}
+                  onChange={(e) => setNewProduct({ ...newProduct, manufacturingDate: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              {newProduct.isPerishable && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Data de Validade *
+                  </label>
+                  <input
+                    type="date"
+                    value={newProduct.expiryDate}
+                    onChange={(e) => setNewProduct({ ...newProduct, expiryDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowAddProductModal(false);
+                  setNewProduct({
+                    name: '',
+                    quantity: '',
+                    manufacturingDate: '',
+                    expiryDate: '',
+                    isPerishable: false,
+                    category: 'Geral',
+                    price: '',
+                    minStock: '10'
+                  });
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={addProduct}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar Produto
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Controle de Estoque */}
+      {showStockModal && stockProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Controle de Estoque</h3>
+              <button 
+                onClick={() => {
+                  setShowStockModal(false);
+                  setStockAdjustment({ quantity: '', operation: 'add', reason: '' });
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+              <h4 className="font-medium text-gray-800">{stockProduct.name}</h4>
+              <p className="text-sm text-gray-600">Estoque atual: {stockProduct.stock} unidades</p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Operação
+                </label>
+                <select
+                  value={stockAdjustment.operation}
+                  onChange={(e) => setStockAdjustment({ ...stockAdjustment, operation: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="add">Adicionar ao Estoque</option>
+                  <option value="remove">Remover do Estoque</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantidade *
+                </label>
+                <input
+                  type="number"
+                  value={stockAdjustment.quantity}
+                  onChange={(e) => setStockAdjustment({ ...stockAdjustment, quantity: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Digite a quantidade"
+                  min="1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Motivo
+                </label>
+                <input
+                  type="text"
+                  value={stockAdjustment.reason}
+                  onChange={(e) => setStockAdjustment({ ...stockAdjustment, reason: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Motivo do ajuste (opcional)"
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setShowStockModal(false);
+                  setStockAdjustment({ quantity: '', operation: 'add', reason: '' });
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={adjustStock}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                {stockAdjustment.operation === 'add' ? 'Adicionar' : 'Remover'}
               </button>
             </div>
           </div>
