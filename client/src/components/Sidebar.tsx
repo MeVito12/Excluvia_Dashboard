@@ -75,7 +75,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
         className="fixed top-4 left-4 z-50 md:hidden"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {isOpen ? <X /> : <Menu />}
+        <Menu />
       </Button>
 
       {/* Sidebar */}
