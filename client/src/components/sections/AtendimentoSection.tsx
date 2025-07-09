@@ -45,8 +45,6 @@ const AtendimentoSection = () => {
   const [shareUrl, setShareUrl] = useState('');
   const [showAddItemModal, setShowAddItemModal] = useState(false);
   const [isEditingItem, setIsEditingItem] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const [editingItemId, setEditingItemId] = useState(null);
   const [newItem, setNewItem] = useState({
     name: '',
@@ -240,15 +238,6 @@ const AtendimentoSection = () => {
       );
     } else {
       // Criar novo item
-    setIsSaving(true);
-    setSaveError(null);
-    
-    try {
-      // Validação básica
-      if (!editingItem.name || editingItem.price <= 0) {
-        throw new Error('Por favor, preencha todos os campos obrigatórios');
-      }
-      
       if (selectedCategory === 'alimenticio') {
         saveMenuItemWithIngredients();
         return;
@@ -261,22 +250,11 @@ const AtendimentoSection = () => {
     // Reset do estado
     setShowAddItemModal(false);
     setIsEditingItem(false);
-      
-      // Simular delay de salvamento
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      alert('✅ Item adicionado com sucesso!');
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Erro ao adicionar item');
-      console.error('Erro ao adicionar item:', error);
-    } finally {
-      setIsSaving(false);
-    }
+    setEditingItemId(null);
     setNewItem({ name: '', description: '', price: '', category: 'produtos' });
   };
 
   const deleteItem = (itemId: number) => {
-    try {
     const item: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
     const itemName = item?.name || item?.title || 'Item';
     
@@ -553,16 +531,6 @@ const AtendimentoSection = () => {
       });
     } else {
       showError('Campos obrigatórios', 'Por favor, preencha pelo menos o título e descrição do projeto.');
-      
-      // Simular delay de salvamento
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      alert('✅ Item atualizado com sucesso!');
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Erro ao salvar item');
-      console.error('Erro ao salvar item:', error);
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -854,7 +822,6 @@ const AtendimentoSection = () => {
                         ? 'border-green-300 text-green-600 hover:bg-green-50' 
                         : 'border-red-300 text-red-600 hover:bg-red-50'
                     }`}
-                    disabled={isSaving}
                     title={project.available ? 'Desativar projeto' : 'Ativar projeto'}
                   >
                     {project.available ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
@@ -862,18 +829,11 @@ const AtendimentoSection = () => {
                   <button 
                     onClick={() => deleteItem(project.id)}
                     className="p-2 border border-red-300 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
-                    disabled={isSaving}
                     title="Excluir projeto"
                   >
-                    {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                
-                {saveError && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-600">{saveError}</p>
-                  </div>
-                )}
               </div>
             </div>
           ))}
@@ -906,7 +866,6 @@ const AtendimentoSection = () => {
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                    disabled={isSaving}
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
@@ -914,18 +873,11 @@ const AtendimentoSection = () => {
                     <span className="text-sm text-gray-600">{specialist.specialty}</span>
                   </div>
                 </div>
-                    disabled={isSaving}
                 <div className="flex gap-2">
                   <button className="btn btn-outline btn-sm">
-                    {isSaving ? 'Salvando...' : (selectedCategory === 'alimenticio' ? 'Adicionar ao Cardápio' : 'Adicionar ao Portfólio')}
+                    <Edit className="w-4 h-4" />
                   </button>
                 </div>
-                
-                {saveError && (
-                  <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                    <p className="text-sm text-red-600">{saveError}</p>
-                  </div>
-                )}
               </div>
 
               <div className="space-y-2 text-sm text-gray-600">
