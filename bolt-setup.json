@@ -1,0 +1,120 @@
+{
+  "name": "Sistema de Gerenciamento - Database Management",
+  "description": "Sistema completo de gerenciamento com dashboard multicategoria, estoque, atendimento e agendamentos",
+  "version": "1.0.0",
+  "technology": {
+    "frontend": "React 18 + TypeScript + Vite",
+    "backend": "Express.js + Node.js",
+    "database": "PostgreSQL + Drizzle ORM",
+    "styling": "Tailwind CSS + shadcn/ui",
+    "state": "TanStack Query"
+  },
+  "requirements": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "environment": {
+    "DATABASE_URL": "postgresql://user:password@host:port/database",
+    "NODE_ENV": "development"
+  },
+  "scripts": {
+    "install": "npm install",
+    "dev": "npm run dev",
+    "build": "npm run build",
+    "start": "npm run start",
+    "db:setup": "npm run db:push"
+  },
+  "features": [
+    "Sistema de autenticação completo",
+    "Dashboard com 6 categorias de negócio",
+    "Gestão de estoque com alertas",
+    "Sistema de atendimento WhatsApp + IA",
+    "Agendamentos com integrações",
+    "Relatórios e gráficos em tempo real",
+    "Design responsivo moderno",
+    "Sistema de fidelidade e campanhas"
+  ],
+  "categories": [
+    {
+      "id": "pet",
+      "name": "Pet Shop",
+      "features": ["Ração", "Medicamentos", "Acessórios", "Veterinário"]
+    },
+    {
+      "id": "medico",
+      "name": "Médico/Saúde", 
+      "features": ["Medicamentos", "Equipamentos", "Consultas", "Prontuários"]
+    },
+    {
+      "id": "alimenticio",
+      "name": "Alimentício",
+      "features": ["Cardápios", "Delivery", "Pagamentos", "Receitas"]
+    },
+    {
+      "id": "vendas",
+      "name": "Vendas/Comércio",
+      "features": ["Eletrônicos", "B2B/B2C", "Relatórios", "Clientes"]
+    },
+    {
+      "id": "design",
+      "name": "Design Gráfico",
+      "features": ["Portfolio", "Projetos", "Galeria", "Branding"]
+    },
+    {
+      "id": "sites",
+      "name": "Criação de Sites",
+      "features": ["Portfolio", "Websites", "E-commerce", "Landing Pages"]
+    }
+  ],
+  "architecture": {
+    "client": {
+      "path": "./client",
+      "entry": "./client/src/main.tsx",
+      "build": "./dist/public"
+    },
+    "server": {
+      "path": "./server",
+      "entry": "./server/index.ts",
+      "build": "./dist/index.js"
+    },
+    "shared": {
+      "path": "./shared",
+      "schemas": "./shared/schema.ts"
+    }
+  },
+  "dependencies": {
+    "core": [
+      "react@^18.3.1",
+      "react-dom@^18.3.1",
+      "express@^4.21.2",
+      "typescript@5.6.3"
+    ],
+    "ui": [
+      "@radix-ui/react-dialog@^1.1.7",
+      "@radix-ui/react-dropdown-menu@^2.1.7",
+      "@radix-ui/react-select@^2.1.7",
+      "@radix-ui/react-tabs@^1.1.4",
+      "tailwindcss@^3.4.17",
+      "lucide-react@^0.453.0"
+    ],
+    "data": [
+      "@tanstack/react-query@^5.60.5",
+      "drizzle-orm@^0.39.1",
+      "@neondatabase/serverless@^0.10.4",
+      "zod@^3.24.2"
+    ],
+    "build": [
+      "vite@^5.4.14",
+      "@vitejs/plugin-react@^4.3.2",
+      "esbuild@^0.25.0",
+      "tsx@^4.19.1"
+    ]
+  },
+  "deployment": {
+    "type": "fullstack",
+    "port": 5000,
+    "build_command": "npm run build",
+    "start_command": "npm run start",
+    "dev_command": "npm run dev"
+  }
+}
