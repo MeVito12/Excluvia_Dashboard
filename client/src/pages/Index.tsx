@@ -1,11 +1,30 @@
-import { useState } from 'react';
+import { useState, Suspense, lazy } from 'react';
 import Sidebar from '@/components/Sidebar';
-import DashboardSection from '@/components/sections/DashboardSection';
-import GraficosSection from '@/components/sections/GraficosSection';
-import AtividadeSection from '@/components/sections/AtividadeSection';
-import AgendamentosSection from '@/components/sections/AgendamentosSection';
-import EstoqueSection from '@/components/sections/EstoqueSection';
-import AtendimentoSection from '@/components/sections/AtendimentoSection';
+import ErrorBoundary from '@/components/ErrorBoundary';
+
+// Lazy load all sections for better performance
+const DashboardSection = lazy(() => import('@/components/sections/DashboardSection'));
+const GraficosSection = lazy(() => import('@/components/sections/GraficosSection'));
+const AtividadeSection = lazy(() => import('@/components/sections/AtividadeSection'));
+const AgendamentosSection = lazy(() => import('@/components/sections/AgendamentosSection'));
+const EstoqueSection = lazy(() => import('@/components/sections/EstoqueSection'));
+const AtendimentoSection = lazy(() => import('@/components/sections/AtendimentoSection'));
+
+// Loading component for better UX
+const SectionLoader = () => (
+  <div className="flex items-center justify-center min-h-[400px]">
+    <div className="relative">
+      <div className="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="w-8 h-8 bg-primary rounded-full animate-pulse"></div>
+      </div>
+    </div>
+    <div className="ml-4 text-gray-400">
+      <div className="text-lg font-medium">Carregando...</div>
+      <div className="text-sm">Preparando seção</div>
+    </div>
+  </div>
+);
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -13,19 +32,61 @@ const Index = () => {
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <DashboardSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       case 'graficos':
-        return <GraficosSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <GraficosSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       case 'atividade':
-        return <AtividadeSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <AtividadeSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       case 'agendamentos':
-        return <AgendamentosSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <AgendamentosSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       case 'estoque':
-        return <EstoqueSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <EstoqueSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       case 'atendimento':
-        return <AtendimentoSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <AtendimentoSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
       default:
-        return <DashboardSection />;
+        return (
+          <ErrorBoundary>
+            <Suspense fallback={<SectionLoader />}>
+              <DashboardSection />
+            </Suspense>
+          </ErrorBoundary>
+        );
     }
   };
 
