@@ -68,16 +68,6 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
   return (
     <>
-      {/* Mobile toggle button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Menu />
-      </Button>
-
       {/* Sidebar */}
       <div className={cn(
         "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-transform duration-300",
