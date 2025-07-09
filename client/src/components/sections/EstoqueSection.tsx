@@ -41,6 +41,8 @@ const EstoqueSection = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [products, setProducts] = useState(() => getInitialProductData());
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
   const [newProduct, setNewProduct] = useState({
@@ -235,8 +237,62 @@ const EstoqueSection = () => {
     }
   };
 
-  // Função para salvar produto editado
+      
+      // Simular delay de salvamento
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      alert('✅ Produto adicionado com sucesso!');
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Erro ao adicionar produto');
+      console.error('Erro ao adicionar produto:', error);
+    } finally {
+      setIsSaving(false);
+    }
   const saveEditedProduct = (editedProduct: any) => {
+    setIsSaving(true);
+    setSaveError(null);
+    
+    try {
+    try {
+      // Validação básica
+        throw new Error('Produto não encontrado');
+      }
+      
+      if (product.currentStock <= 0) {
+        throw new Error('Produto sem estoque disponível');
+      }
+      
+      const quantity = parseInt(prompt(`Quantidade a vender (Estoque: ${product.currentStock}):`) || '0');
+      
+      if (quantity <= 0) {
+        throw new Error('Quantidade deve ser maior que zero');
+      }
+      
+      if (quantity > product.currentStock) {
+        throw new Error('Quantidade maior que o estoque disponível');
+      }
+      
+      // Atualizar estoque
+      const updatedProducts = products.map(p =>
+        p.id === productId ? { ...p, currentStock: p.currentStock - quantity } : p
+      );
+      setProducts(updatedProducts);
+      
+      alert(`✅ Venda processada!\n${quantity} unidades de ${product.name}\nEstoque restante: ${product.currentStock - quantity}`);
+    } catch (error) {
+      alert(`❌ Erro: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
+  };
+
+  // Função para controle de estoque
+  const adjustStock = (productId: number) => {
+    try {
+      const product = products.find(p => p.id === productId);
+      if (!product) {
+        throw new Error('Produto não encontrado');
+        throw new Error('Por favor, preencha todos os campos obrigatórios');
+      }
+      
     setProducts(prev => 
       prev.map(product => 
         product.id === editedProduct.id ? editedProduct : product
@@ -863,16 +919,44 @@ const EstoqueSection = () => {
     
     return [
       { 
-        id: 1, 
-        name: 'Produto Geral', 
-        category: 'Geral', 
-        stock: 10, 
-        minStock: 5, 
-        price: 50.00,
-        isPerishable: false,
-        expiryDate: undefined,
-        status: getProductStatus(10, 5)
+      const action = prompt('Escolha a ação:\n1 - Adicionar estoque\n2 - Remover estoque\n3 - Ajustar estoque');
+      
+      if (!action || !['1', '2', '3'].includes(action)) {
+        return;
       }
+      
+      let newStock = product.currentStock;
+      
+      if (action === '1') {
+        const quantity = parseInt(prompt('Quantidade a adicionar:') || '0');
+        if (quantity > 0) {
+          newStock = product.currentStock + quantity;
+        }
+      } else if (action === '2') {
+        const quantity = parseInt(prompt(`Quantidade a remover (Estoque atual: ${product.currentStock}):`) || '0');
+        if (quantity > 0 && quantity <= product.currentStock) {
+          newStock = product.currentStock - quantity;
+        } else {
+          throw new Error('Quantidade inválida');
+        }
+      } else if (action === '3') {
+        const quantity = parseInt(prompt(`Novo estoque (Atual: ${product.currentStock}):`) || '0');
+        if (quantity >= 0) {
+          newStock = quantity;
+        } else {
+          throw new Error('Estoque deve ser maior ou igual a zero');
+        }
+      }
+      
+      const updatedProducts = products.map(p =>
+        p.id === productId ? { ...p, currentStock: newStock } : p
+      );
+      setProducts(updatedProducts);
+      
+      alert(`✅ Estoque atualizado!\n${product.name}: ${product.currentStock} → ${newStock}`);
+    } catch (error) {
+      alert(`❌ Erro: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
+    }
     ];
   };
 
@@ -1127,9 +1211,13 @@ const EstoqueSection = () => {
                   <button 
                     onClick={() => replenishStock(product.id)}
                     className="btn btn-primary p-2" 
+                    disabled={isSaving}
+                    disabled={isSaving}
+                    disabled={isSaving}
+                    disabled={isSaving}
                     title="Reabastecer estoque"
                   >
-                    <Plus className="w-4 h-4" />
+                    {isSaving ? 'Salvando...' : 'Adicionar Produto'}
                   </button>
                 )}
               </div>

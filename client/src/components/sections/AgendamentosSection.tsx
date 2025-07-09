@@ -35,6 +35,8 @@ const AgendamentosSection = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAppointment, setNewAppointment] = useState({
     title: '',
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
     client: '',
     date: '',
     time: '',
@@ -82,25 +84,39 @@ const AgendamentosSection = () => {
 
   // Função para salvar novo compromisso
   const saveNewAppointment = () => {
-    if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
-      alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
-
-    const newId = Math.max(...appointments.map(a => a.id)) + 1;
-    const appointment = {
-      id: newId,
-      title: newAppointment.title,
-      client: newAppointment.client,
-      date: newAppointment.date,
-      time: newAppointment.time,
-      type: newAppointment.type,
-      status: 'scheduled' as const
-    };
+    setIsSaving(true);
+    setSaveError(null);
     
-    setAppointments(prev => [...prev, appointment]);
-    setShowAddModal(false);
-    alert('✅ Compromisso adicionado com sucesso!');
+    try {
+      // Validação básica
+      if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
+        throw new Error('Por favor, preencha todos os campos obrigatórios');
+      }
+
+      const newId = Math.max(...appointments.map(a => a.id)) + 1;
+      const appointment = {
+        id: newId,
+        title: newAppointment.title,
+        client: newAppointment.client,
+        date: newAppointment.date,
+        time: newAppointment.time,
+        type: newAppointment.type,
+        status: 'scheduled' as const
+      };
+      
+      setAppointments(prev => [...prev, appointment]);
+      setShowAddModal(false);
+      
+      // Simular delay de salvamento
+      setTimeout(() => {
+        alert('✅ Compromisso adicionado com sucesso!');
+        setIsSaving(false);
+      }, 500);
+      
+    } catch (error) {
+      setSaveError(error instanceof Error ? error.message : 'Erro ao adicionar compromisso');
+      setIsSaving(false);
+    }
   };
 
   const renderAgenda = () => (
@@ -247,21 +263,36 @@ const AgendamentosSection = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">WhatsApp Business</span>
-              <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    try {
+      const appointment = appointments.find(app => app.id === appointmentId);
+      if (!appointment) {
+        throw new Error('Compromisso não encontrado');
+      }
+      
+      setAppointments(prev => 
+        prev.map(app => 
+          app.id === appointmentId 
+            ? { ...app, status: 'completed' }
+            : app
+        )
+      );
+      alert('✅ Compromisso marcado como concluído!');
+    } catch (error) {
+      alert(`❌ Erro: ${error instanceof Error ? error.message : 'Erro ao marcar compromisso'}`);
+    }
   );
 
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'agenda': return renderAgenda();
-      case 'notificacoes': return renderNotificacoes();
-      default: return renderAgenda();
+    try {
+      const appointment = appointments.find(app => app.id === appointmentId);
+      if (!appointment) {
+        throw new Error('Compromisso não encontrado');
+      }
+      
+      alert(`📝 Editando: ${appointment.title}\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá editar todos os detalhes do compromisso.`);
+    } catch (error) {
+      alert(`❌ Erro: ${error instanceof Error ? error.message : 'Erro ao editar compromisso'}`);
     }
   };
 
@@ -453,17 +484,25 @@ const AgendamentosSection = () => {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowAddModal(false)}
+                disabled={isSaving}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 Cancelar
               </button>
               <button
                 onClick={saveNewAppointment}
+                disabled={isSaving}
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
-                Adicionar
+                {isSaving ? 'Salvando...' : 'Adicionar'}
               </button>
             </div>
+            
+            {saveError && (
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                <p className="text-sm text-red-600">{saveError}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
