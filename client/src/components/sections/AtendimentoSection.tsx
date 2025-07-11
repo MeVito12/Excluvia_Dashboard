@@ -105,10 +105,26 @@ const AtendimentoSection = () => {
     return { [selectedCategory]: getProductsByCategory(selectedCategory) };
   });
 
+  // Atualizar itens quando a categoria mudar
+  React.useEffect(() => {
+    if (selectedCategory === 'design') {
+      setCategoryItems({ [selectedCategory]: designPortfolio });
+    } else if (selectedCategory === 'sites') {
+      setCategoryItems({ [selectedCategory]: sitesPortfolio });
+    } else {
+      setCategoryItems({ [selectedCategory]: getProductsByCategory(selectedCategory) });
+    }
+  }, [selectedCategory]);
+
   // Estado para especialistas
   const [specialists, setSpecialists] = useState(() => {
     return { [selectedCategory]: getSpecialistsByCategory(selectedCategory) };
   });
+
+  // Atualizar especialistas quando a categoria mudar
+  React.useEffect(() => {
+    setSpecialists({ [selectedCategory]: getSpecialistsByCategory(selectedCategory) });
+  }, [selectedCategory]);
 
   // Função para buscar itens da categoria atual
   const getCurrentCategoryItems = () => {

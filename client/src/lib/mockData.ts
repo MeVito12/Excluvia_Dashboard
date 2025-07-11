@@ -444,6 +444,12 @@ export const categoryAppointments: Record<string, Appointment[]> = {
 
 // Specialists for each category
 export const categorySpecialists: Record<string, Specialist[]> = {
+  farmacia: [
+    { id: 1, name: 'Dr. Fernando Silva', specialty: 'Farmacêutico Clínico', phone: '(11) 99999-0001', email: 'fernando@farmaciacentral.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Especialista em farmácia clínica e atenção farmacêutica', available: true, rating: 4.8, experience: '15 anos' },
+    { id: 2, name: 'Dra. Ana Paula', specialty: 'Farmacêutica Hospitalar', phone: '(11) 99999-0002', email: 'ana.paula@farmaciacentral.com', schedule: 'Seg-Sáb: 7h às 19h', description: 'Especialista em medicamentos hospitalares e oncológicos', available: true, rating: 4.9, experience: '12 anos' },
+    { id: 3, name: 'Dr. Carlos Medicinal', specialty: 'Fitoterapia', phone: '(11) 99999-0003', email: 'carlos@farmaciacentral.com', schedule: 'Ter-Sáb: 9h às 17h', description: 'Especialista em plantas medicinais e produtos naturais', available: true, rating: 4.7, experience: '10 anos' },
+    { id: 4, name: 'Dra. Marina Santos', specialty: 'Cosmetologia', phone: '(11) 99999-0004', email: 'marina@farmaciacentral.com', schedule: 'Qua-Dom: 10h às 18h', description: 'Especialista em dermocosméticos e cuidados com a pele', available: true, rating: 4.6, experience: '8 anos' }
+  ],
   medico: [
     { id: 1, name: 'Dr. João Silva', specialty: 'Cardiologia', phone: '(11) 99999-1111', email: 'joao@clinica.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Especialista em cardiologia com 15 anos de experiência', available: true, rating: 4.9, experience: '15 anos' },
     { id: 2, name: 'Dra. Maria Santos', specialty: 'Pediatria', phone: '(11) 99999-2222', email: 'maria@clinica.com', schedule: 'Seg-Sex: 9h às 17h', description: 'Pediatra especializada em desenvolvimento infantil', available: true, rating: 4.8, experience: '12 anos' },

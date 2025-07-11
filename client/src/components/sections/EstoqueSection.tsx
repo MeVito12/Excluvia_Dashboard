@@ -52,6 +52,11 @@ const EstoqueSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [products, setProducts] = useState(() => getProductsByCategory(selectedCategory));
+  
+  // Atualizar produtos quando a categoria mudar
+  React.useEffect(() => {
+    setProducts(getProductsByCategory(selectedCategory));
+  }, [selectedCategory]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -66,6 +71,11 @@ const EstoqueSection = () => {
     minStock: '10'
   });
   const [sales, setSales] = useState(() => getSalesByCategory(selectedCategory));
+  
+  // Atualizar vendas quando a categoria mudar
+  React.useEffect(() => {
+    setSales(getSalesByCategory(selectedCategory));
+  }, [selectedCategory]);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });
@@ -315,8 +325,14 @@ const EstoqueSection = () => {
     return 'Em Estoque';
   };
 
-  // Dados mockados por categoria com controle de validade
+  // Usar dados específicos do mockData.ts e atualizar para uso automático
   const getProductData = () => {
+    // Usar dados centralizados do mockData.ts automaticamente
+    return getProductsByCategory(selectedCategory);
+  };
+
+  // Função mockada original como fallback (remover depois)
+  const getProductDataOld = () => {
     if (selectedCategory === 'alimenticio') {
       return [
         { 
@@ -548,18 +564,76 @@ const EstoqueSection = () => {
           status: getProductStatus(0, 6)
         }
       ];
-    } else if (selectedCategory === 'medico') {
+    } else if (selectedCategory === 'farmacia') {
       return [
         { 
           id: 1, 
           name: 'Dipirona 500mg', 
           category: 'Analgésicos', 
-          stock: 120, 
-          minStock: 30, 
-          price: 12.50,
+          stock: 250, 
+          minStock: 80, 
+          price: 15.90,
           isPerishable: true,
           expiryDate: '2025-11-20',
-          status: getProductStatus(120, 30, '2025-11-20')
+          status: getProductStatus(250, 80, '2025-11-20')
+        },
+        { 
+          id: 2, 
+          name: 'Amoxicilina 500mg', 
+          category: 'Antibióticos', 
+          stock: 95, 
+          minStock: 30, 
+          price: 28.00,
+          isPerishable: true,
+          expiryDate: '2025-08-15',
+          status: getProductStatus(95, 30, '2025-08-15')
+        },
+        { 
+          id: 3, 
+          name: 'Omeprazol 20mg', 
+          category: 'Gástrico', 
+          stock: 140, 
+          minStock: 45, 
+          price: 16.80,
+          isPerishable: true,
+          expiryDate: '2025-10-10',
+          status: getProductStatus(140, 45, '2025-10-10')
+        },
+        { 
+          id: 4, 
+          name: 'Losartana 50mg', 
+          category: 'Cardiovascular', 
+          stock: 85, 
+          minStock: 25, 
+          price: 12.90,
+          isPerishable: true,
+          expiryDate: '2025-09-20',
+          status: getProductStatus(85, 25, '2025-09-20')
+        },
+        { 
+          id: 5, 
+          name: 'Vitamina D3 2000UI', 
+          category: 'Suplementos', 
+          stock: 75, 
+          minStock: 25, 
+          price: 35.90,
+          isPerishable: false,
+          expiryDate: '2026-02-15',
+          status: getProductStatus(75, 25, '2026-02-15')
+        }
+      ];
+    } else if (selectedCategory === 'medico') {
+      return [
+        { 
+          id: 1, 
+          name: 'Consulta Cardiológica', 
+          category: 'Consultas', 
+          stock: 12, 
+          minStock: 5, 
+          price: 280.00,
+          isPerishable: false,
+          expiryDate: undefined,
+          status: getProductStatus(12, 5)
         },
         { 
           id: 2, 
