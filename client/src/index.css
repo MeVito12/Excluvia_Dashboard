@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Fix para z-index de modais */
+.dialog-overlay {
+  z-index: 9998 !important;
+}
+
+.dialog-content {
+  z-index: 9999 !important;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
