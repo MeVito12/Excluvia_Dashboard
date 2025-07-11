@@ -68,15 +68,6 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
   return (
     <>
-      {/* Mobile toggle button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <Menu />
-      </Button>
 
       {/* Sidebar */}
       <div className={cn(
