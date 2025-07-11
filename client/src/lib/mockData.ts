@@ -121,18 +121,18 @@ export const categoryProducts: Record<string, Product[]> = {
   ],
 
   medico: [
-    { id: 1, name: 'Dipirona 500mg', category: 'analgesicos', stock: 150, minStock: 50, price: 15.90, description: 'Analgésico e antipirético', available: true },
-    { id: 2, name: 'Ibuprofeno 600mg', category: 'analgesicos', stock: 80, minStock: 30, price: 22.50, description: 'Anti-inflamatório não esteroidal', available: true },
-    { id: 3, name: 'Paracetamol 750mg', category: 'analgesicos', stock: 120, minStock: 40, price: 18.90, description: 'Analgésico e antitérmico', available: true },
-    { id: 4, name: 'Amoxicilina 500mg', category: 'antibioticos', stock: 60, minStock: 25, price: 25.00, description: 'Antibiótico de amplo espectro', available: true },
-    { id: 5, name: 'Azitromicina 500mg', category: 'antibioticos', stock: 45, minStock: 20, price: 35.50, description: 'Antibiótico macrolídeo', available: true },
-    { id: 6, name: 'Cefalexina 500mg', category: 'antibioticos', stock: 35, minStock: 15, price: 28.90, description: 'Antibiótico cefalosporínico', available: true },
-    { id: 7, name: 'Termômetro Digital', category: 'equipamentos', stock: 25, minStock: 10, price: 89.90, description: 'Termômetro clínico digital preciso', available: true },
-    { id: 8, name: 'Esfigmomanômetro', category: 'equipamentos', stock: 8, minStock: 3, price: 185.00, description: 'Aparelho para medir pressão arterial', available: true },
-    { id: 9, name: 'Estetoscópio Duplo', category: 'equipamentos', stock: 12, minStock: 5, price: 125.00, description: 'Estetoscópio para ausculta cardíaca', available: true },
-    { id: 10, name: 'Vitamina C 1g', category: 'suplementos', stock: 200, minStock: 80, price: 18.50, description: 'Suplemento de vitamina C', available: true },
-    { id: 11, name: 'Vitamina D3 2000ui', category: 'suplementos', stock: 85, minStock: 30, price: 32.90, description: 'Suplemento de vitamina D3', available: true },
-    { id: 12, name: 'Ômega 3 1000mg', category: 'suplementos', stock: 95, minStock: 35, price: 45.00, description: 'Suplemento de ácidos graxos ômega 3', available: true }
+    { id: 1, name: 'Consulta Cardiológica', category: 'consultas', stock: 1, minStock: 1, price: 280.00, description: 'Consulta com cardiologista especialista', available: true },
+    { id: 2, name: 'Consulta Pediátrica', category: 'consultas', stock: 1, minStock: 1, price: 180.00, description: 'Consulta pediátrica para crianças e adolescentes', available: true },
+    { id: 3, name: 'Consulta Ortopédica', category: 'consultas', stock: 1, minStock: 1, price: 250.00, description: 'Avaliação ortopédica especializada', available: true },
+    { id: 4, name: 'Consulta Ginecológica', category: 'consultas', stock: 1, minStock: 1, price: 220.00, description: 'Consulta ginecológica preventiva', available: true },
+    { id: 5, name: 'Exame de Sangue Completo', category: 'exames', stock: 1, minStock: 1, price: 85.00, description: 'Hemograma completo com análise detalhada', available: true },
+    { id: 6, name: 'Eletrocardiograma (ECG)', category: 'exames', stock: 1, minStock: 1, price: 60.00, description: 'Exame cardíaco não invasivo', available: true },
+    { id: 7, name: 'Ultrassom Abdominal', category: 'exames', stock: 1, minStock: 1, price: 150.00, description: 'Ultrassonografia abdominal completa', available: true },
+    { id: 8, name: 'Raio-X Tórax', category: 'exames', stock: 1, minStock: 1, price: 45.00, description: 'Radiografia do tórax PA e perfil', available: true },
+    { id: 9, name: 'Cirurgia de Apendicite', category: 'cirurgias', stock: 1, minStock: 1, price: 5800.00, description: 'Apendicectomia videolaparoscópica', available: true },
+    { id: 10, name: 'Cirurgia de Vesícula', category: 'cirurgias', stock: 1, minStock: 1, price: 7200.00, description: 'Colecistectomia por videolaparoscopia', available: true },
+    { id: 11, name: 'Fisioterapia Sessão', category: 'terapias', stock: 1, minStock: 1, price: 95.00, description: 'Sessão de fisioterapia especializada', available: true },
+    { id: 12, name: 'Psicoterapia Individual', category: 'terapias', stock: 1, minStock: 1, price: 120.00, description: 'Sessão de psicoterapia individual', available: true }
   ],
 
   tecnologia: [
@@ -230,11 +230,11 @@ export const categorySales: Record<string, Sale[]> = {
   ],
 
   medico: [
-    { id: 1, date: '2024-12-26', client: 'Farmácia Central', items: ['Dipirona 500mg x50', 'Paracetamol x30'], total: 1362.00, status: 'Concluída', paymentMethod: 'Transferência' },
-    { id: 2, date: '2024-12-26', client: 'Hospital São Lucas', items: ['Termômetro Digital x10', 'Estetoscópio x5'], total: 1524.00, status: 'Concluída', paymentMethod: 'Boleto' },
-    { id: 3, date: '2024-12-25', client: 'Clínica Vida', items: ['Amoxicilina x20', 'Vitamina C x15'], total: 777.50, status: 'Pendente', paymentMethod: 'Cartão' },
-    { id: 4, date: '2024-12-25', client: 'UBS Centro', items: ['Ibuprofeno x25', 'Azitromicina x10'], total: 917.50, status: 'Concluída', paymentMethod: 'Transferência' },
-    { id: 5, date: '2024-12-24', client: 'Drogaria Popular', items: ['Vitamina D3 x30', 'Ômega 3 x20'], total: 1887.00, status: 'Concluída', paymentMethod: 'PIX' }
+    { id: 1, date: '2024-12-26', client: 'Maria Silva', items: ['Consulta Cardiológica', 'Eletrocardiograma'], total: 340.00, status: 'Concluída', paymentMethod: 'Cartão' },
+    { id: 2, date: '2024-12-26', client: 'João Santos', items: ['Exame de Sangue Completo', 'Consulta Clínica Geral'], total: 265.00, status: 'Concluída', paymentMethod: 'PIX' },
+    { id: 3, date: '2024-12-25', client: 'Ana Costa', items: ['Ultrassom Abdominal', 'Consulta Ginecológica'], total: 370.00, status: 'Pendente', paymentMethod: 'Convênio' },
+    { id: 4, date: '2024-12-25', client: 'Pedro Lima', items: ['Fisioterapia Sessão x3'], total: 285.00, status: 'Concluída', paymentMethod: 'Dinheiro' },
+    { id: 5, date: '2024-12-24', client: 'Carlos Oliveira', items: ['Raio-X Tórax', 'Consulta Ortopédica'], total: 295.00, status: 'Concluída', paymentMethod: 'Débito' }
   ],
 
   tecnologia: [
@@ -297,11 +297,12 @@ export const categoryClients: Record<string, Client[]> = {
   ],
 
   medico: [
-    { id: 1, name: 'Farmácia Central', email: 'compras@farmaciacentral.com', phone: '(11) 3333-1111', lastOrder: '2024-12-26', totalSpent: 15680.00, status: 'Ativo', type: 'Farmácia', address: 'Av. Principal, 1000' },
-    { id: 2, name: 'Hospital São Lucas', email: 'suprimentos@hsaolucas.com', phone: '(11) 3333-2222', lastOrder: '2024-12-26', totalSpent: 32450.00, status: 'VIP', type: 'Hospital', address: 'Rua da Saúde, 500' },
-    { id: 3, name: 'Clínica Vida', email: 'compras@clinicavida.com', phone: '(11) 3333-3333', lastOrder: '2024-12-25', totalSpent: 8920.50, status: 'Ativo', type: 'Clínica', address: 'Av. Médica, 250' },
-    { id: 4, name: 'UBS Centro', email: 'admin@ubscentro.gov.br', phone: '(11) 3333-4444', lastOrder: '2024-12-25', totalSpent: 12340.00, status: 'Ativo', type: 'UBS', address: 'Praça Central, s/n' },
-    { id: 5, name: 'Drogaria Popular', email: 'gerencia@drogariapopular.com', phone: '(11) 3333-5555', lastOrder: '2024-12-24', totalSpent: 18760.00, status: 'VIP', type: 'Drogaria', address: 'Rua do Povo, 150' }
+    { id: 1, name: 'Maria Silva', email: 'maria.silva@email.com', phone: '(11) 99999-1111', lastOrder: '2024-12-26', totalSpent: 1680.00, status: 'Ativo', type: 'Paciente', address: 'Rua das Flores, 123' },
+    { id: 2, name: 'João Santos', email: 'joao.santos@email.com', phone: '(11) 99999-2222', lastOrder: '2024-12-26', totalSpent: 2450.00, status: 'VIP', type: 'Paciente', address: 'Av. Central, 456' },
+    { id: 3, name: 'Ana Costa', email: 'ana.costa@email.com', phone: '(11) 99999-3333', lastOrder: '2024-12-25', totalSpent: 920.00, status: 'Ativo', type: 'Paciente', address: 'Rua da Saúde, 789' },
+    { id: 4, name: 'Pedro Lima', email: 'pedro.lima@email.com', phone: '(11) 99999-4444', lastOrder: '2024-12-25', totalSpent: 1340.00, status: 'Ativo', type: 'Paciente', address: 'Av. Médica, 321' },
+    { id: 5, name: 'Carlos Oliveira', email: 'carlos.oliveira@email.com', phone: '(11) 99999-5555', lastOrder: '2024-12-24', totalSpent: 1760.00, status: 'VIP', type: 'Paciente', address: 'Rua do Hospital, 654' },
+    { id: 6, name: 'Fernanda Santos', email: 'fernanda.santos@email.com', phone: '(11) 99999-6666', lastOrder: '2024-12-23', totalSpent: 580.00, status: 'Ativo', type: 'Paciente', address: 'Av. Bem-Estar, 987' }
   ],
 
   tecnologia: [
@@ -362,10 +363,12 @@ export const categoryAppointments: Record<string, Appointment[]> = {
   ],
 
   medico: [
-    { id: 1, title: 'Consulta Cardiológica', client: 'João Silva', date: '2024-12-28', time: '08:30', type: 'consulta', status: 'scheduled', service: 'Cardiologia' },
-    { id: 2, title: 'Exame de Sangue', client: 'Maria Santos', date: '2024-12-29', time: '07:00', type: 'exame', status: 'scheduled', service: 'Laboratório' },
-    { id: 3, title: 'Cirurgia Ortopédica', client: 'Pedro Costa', date: '2025-01-02', time: '09:00', type: 'cirurgia', status: 'confirmed', service: 'Ortopedia' },
-    { id: 4, title: 'Consulta Pediátrica', client: 'Ana Oliveira', date: '2025-01-03', time: '15:30', type: 'consulta', status: 'scheduled', service: 'Pediatria' }
+    { id: 1, title: 'Consulta Cardiológica', client: 'Maria Silva', date: '2024-12-28', time: '08:30', type: 'consulta', status: 'scheduled', service: 'Dr. João Silva - Cardiologia' },
+    { id: 2, title: 'Exame de Sangue', client: 'João Santos', date: '2024-12-29', time: '07:00', type: 'exame', status: 'scheduled', service: 'Laboratório - Coleta' },
+    { id: 3, title: 'Fisioterapia', client: 'Pedro Lima', date: '2024-12-30', time: '14:00', type: 'terapia', status: 'confirmed', service: 'Sessão de Fisioterapia' },
+    { id: 4, title: 'Consulta Pediátrica', client: 'Ana Costa Filho', date: '2025-01-03', time: '15:30', type: 'consulta', status: 'scheduled', service: 'Dra. Maria Santos - Pediatria' },
+    { id: 5, title: 'Ultrassom Abdominal', client: 'Carlos Oliveira', date: '2025-01-04', time: '10:00', type: 'exame', status: 'scheduled', service: 'Exame de Imagem' },
+    { id: 6, title: 'Psicoterapia', client: 'Fernanda Santos', date: '2025-01-05', time: '16:00', type: 'terapia', status: 'scheduled', service: 'Sessão Individual' }
   ],
 
   tecnologia: [
@@ -445,10 +448,11 @@ export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[
   ],
 
   medico: [
-    { id: 1, name: 'Farmácia Central', lastMessage: 'Precisamos de mais dipirona urgente', time: '16:00', unread: 2, status: 'online', category: 'medico' },
-    { id: 2, name: 'Hospital São Lucas', lastMessage: 'Pedido de orçamento para termômetros', time: '15:30', unread: 1, status: 'offline', category: 'medico' },
-    { id: 3, name: 'Clínica Vida', lastMessage: 'Entrega confirmada para amanhã?', time: '14:45', unread: 0, status: 'away', category: 'medico' },
-    { id: 4, name: 'UBS Centro', lastMessage: 'Obrigado pela agilidade na entrega', time: '13:20', unread: 0, status: 'offline', category: 'medico' }
+    { id: 1, name: 'Maria Silva', lastMessage: 'Doutor, posso remarcar minha consulta?', time: '16:00', unread: 2, status: 'online', category: 'medico' },
+    { id: 2, name: 'João Santos', lastMessage: 'Resultado do exame já saiu?', time: '15:30', unread: 1, status: 'offline', category: 'medico' },
+    { id: 3, name: 'Ana Costa', lastMessage: 'Obrigada pelo atendimento, me sinto melhor', time: '14:45', unread: 0, status: 'away', category: 'medico' },
+    { id: 4, name: 'Pedro Lima', lastMessage: 'Fisioterapia está me ajudando muito!', time: '13:20', unread: 0, status: 'offline', category: 'medico' },
+    { id: 5, name: 'Carlos Oliveira', lastMessage: 'Preciso agendar retorno da cirurgia', time: '12:15', unread: 1, status: 'online', category: 'medico' }
   ],
 
   tecnologia: [
@@ -504,10 +508,11 @@ export const categoryActivities: Record<string, Activity[]> = {
   ],
 
   medico: [
-    { id: 1, timestamp: new Date('2024-12-26T16:00:00'), type: 'order', action: 'Pedido Urgente', description: 'Farmácia Central solicitou dipirona', category: 'medico', status: 'warning', user: 'Farmácia Central' },
-    { id: 2, timestamp: new Date('2024-12-26T15:30:00'), type: 'quote', action: 'Orçamento Enviado', description: 'Orçamento para Hospital São Lucas', category: 'medico', status: 'success', user: 'Sistema' },
-    { id: 3, timestamp: new Date('2024-12-26T14:45:00'), type: 'delivery', action: 'Entrega Confirmada', description: 'Medicamentos entregues na Clínica Vida', category: 'medico', status: 'success', user: 'Transportadora' },
-    { id: 4, timestamp: new Date('2024-12-26T13:20:00'), type: 'payment', action: 'Pagamento Recebido', description: 'UBS Centro - R$ 917,50', category: 'medico', status: 'success', user: 'Sistema Bancário' }
+    { id: 1, timestamp: new Date('2024-12-26T16:00:00'), type: 'appointment', action: 'Consulta Agendada', description: 'Maria Silva agendou consulta cardiológica para 28/12', category: 'medico', status: 'success', user: 'Maria Silva' },
+    { id: 2, timestamp: new Date('2024-12-26T15:30:00'), type: 'exam', action: 'Resultado Liberado', description: 'Exame de sangue de João Santos disponível', category: 'medico', status: 'success', user: 'Laboratório' },
+    { id: 3, timestamp: new Date('2024-12-26T14:45:00'), type: 'consultation', action: 'Consulta Realizada', description: 'Ana Costa - consulta ginecológica concluída', category: 'medico', status: 'success', user: 'Dra. Maria Santos' },
+    { id: 4, timestamp: new Date('2024-12-26T13:20:00'), type: 'payment', action: 'Pagamento Recebido', description: 'Pedro Lima - fisioterapia R$ 285,00', category: 'medico', status: 'success', user: 'Sistema' },
+    { id: 5, timestamp: new Date('2024-12-26T12:15:00'), type: 'prescription', action: 'Receita Emitida', description: 'Receita médica emitida para Carlos Oliveira', category: 'medico', status: 'success', user: 'Dr. João Silva' }
   ],
 
   tecnologia: [
