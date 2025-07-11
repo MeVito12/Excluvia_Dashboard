@@ -92,6 +92,20 @@ export interface Activity {
 
 // Products for each category
 export const categoryProducts: Record<string, Product[]> = {
+  farmacia: [
+    { id: 1, name: 'Dipirona 500mg', category: 'analgesicos', stock: 250, minStock: 80, price: 15.90, description: 'Analgésico e antipirético - caixa com 20 comprimidos', available: true },
+    { id: 2, name: 'Paracetamol 750mg', category: 'analgesicos', stock: 180, minStock: 60, price: 18.50, description: 'Analgésico e antitérmico - caixa com 20 comprimidos', available: true },
+    { id: 3, name: 'Ibuprofeno 600mg', category: 'antiinflamatorios', stock: 120, minStock: 40, price: 24.90, description: 'Anti-inflamatório - caixa com 20 comprimidos', available: true },
+    { id: 4, name: 'Amoxicilina 500mg', category: 'antibioticos', stock: 95, minStock: 30, price: 28.00, description: 'Antibiótico - caixa com 21 cápsulas', available: true },
+    { id: 5, name: 'Azitromicina 500mg', category: 'antibioticos', stock: 65, minStock: 20, price: 42.50, description: 'Antibiótico - caixa com 5 comprimidos', available: true },
+    { id: 6, name: 'Omeprazol 20mg', category: 'gastrico', stock: 140, minStock: 45, price: 16.80, description: 'Protetor gástrico - caixa com 28 cápsulas', available: true },
+    { id: 7, name: 'Losartana 50mg', category: 'cardiovascular', stock: 85, minStock: 25, price: 12.90, description: 'Anti-hipertensivo - caixa com 30 comprimidos', available: true },
+    { id: 8, name: 'Metformina 850mg', category: 'diabetes', stock: 110, minStock: 35, price: 19.50, description: 'Hipoglicemiante - caixa com 30 comprimidos', available: true },
+    { id: 9, name: 'Vitamina D3 2000UI', category: 'suplementos', stock: 75, minStock: 25, price: 35.90, description: 'Suplemento vitamínico - frasco com 60 cápsulas', available: true },
+    { id: 10, name: 'Ômega 3 1000mg', category: 'suplementos', stock: 55, minStock: 18, price: 48.00, description: 'Suplemento - frasco com 60 cápsulas', available: true },
+    { id: 11, name: 'Protetor Solar FPS 60', category: 'dermatologicos', stock: 45, minStock: 15, price: 32.50, description: 'Protetor solar facial - tubo 60g', available: true },
+    { id: 12, name: 'Termômetro Digital', category: 'equipamentos', stock: 25, minStock: 8, price: 89.90, description: 'Termômetro clínico digital preciso', available: true }
+  ],
   alimenticio: [
     { id: 1, name: 'Pizza Margherita', category: 'pizzas', stock: 50, minStock: 10, price: 35.00, description: 'Pizza tradicional com manjericão fresco', isPerishable: true, expiryDate: '2025-02-15', available: true },
     { id: 2, name: 'Hambúrguer Artesanal', category: 'hamburgueres', stock: 25, minStock: 8, price: 28.90, description: 'Hambúrguer 180g com fritas artesanais', isPerishable: true, expiryDate: '2025-01-05', available: true },
@@ -213,6 +227,13 @@ export const categoryProducts: Record<string, Product[]> = {
 
 // Sales data for each category
 export const categorySales: Record<string, Sale[]> = {
+  farmacia: [
+    { id: 1, date: '2024-12-26', client: 'Maria Santos', items: ['Dipirona 500mg x2', 'Paracetamol 750mg x1'], total: 50.30, status: 'Concluída', paymentMethod: 'Cartão' },
+    { id: 2, date: '2024-12-26', client: 'João Silva', items: ['Amoxicilina 500mg x1', 'Omeprazol 20mg x2'], total: 61.60, status: 'Concluída', paymentMethod: 'PIX' },
+    { id: 3, date: '2024-12-25', client: 'Ana Costa', items: ['Vitamina D3 x1', 'Ômega 3 x1'], total: 83.90, status: 'Pendente', paymentMethod: 'Débito' },
+    { id: 4, date: '2024-12-25', client: 'Carlos Lima', items: ['Losartana 50mg x3', 'Metformina 850mg x2'], total: 77.70, status: 'Concluída', paymentMethod: 'Dinheiro' },
+    { id: 5, date: '2024-12-24', client: 'Fernanda Oliveira', items: ['Ibuprofeno 600mg x2', 'Protetor Solar x1'], total: 82.30, status: 'Concluída', paymentMethod: 'Cartão' }
+  ],
   alimenticio: [
     { id: 1, date: '2024-12-26', client: 'Mesa 5', items: ['Pizza Margherita x2', 'Refrigerante x2'], total: 81.00, status: 'Concluída', paymentMethod: 'Dinheiro' },
     { id: 2, date: '2024-12-26', client: 'Delivery - João Silva', items: ['Hambúrguer Artesanal x1', 'Batata Frita x1'], total: 38.90, status: 'Entregue', paymentMethod: 'PIX' },
@@ -280,6 +301,13 @@ export const categorySales: Record<string, Sale[]> = {
 
 // Clients data for each category
 export const categoryClients: Record<string, Client[]> = {
+  farmacia: [
+    { id: 1, name: 'Maria Santos', email: 'maria.santos@email.com', phone: '(11) 99999-1111', lastOrder: '2024-12-26', totalSpent: 345.80, status: 'Ativo', type: 'Regular', address: 'Rua das Flores, 123' },
+    { id: 2, name: 'João Silva', email: 'joao.silva@email.com', phone: '(11) 99999-2222', lastOrder: '2024-12-26', totalSpent: 528.90, status: 'VIP', type: 'Hipertenso', address: 'Av. Central, 456' },
+    { id: 3, name: 'Ana Costa', email: 'ana.costa@email.com', phone: '(11) 99999-3333', lastOrder: '2024-12-25', totalSpent: 234.70, status: 'Ativo', type: 'Diabético', address: 'Rua da Saúde, 789' },
+    { id: 4, name: 'Carlos Lima', email: 'carlos.lima@email.com', phone: '(11) 99999-4444', lastOrder: '2024-12-25', totalSpent: 456.20, status: 'Ativo', type: 'Cardíaco', address: 'Av. Médica, 321' },
+    { id: 5, name: 'Fernanda Oliveira', email: 'fernanda.oliveira@email.com', phone: '(11) 99999-5555', lastOrder: '2024-12-24', totalSpent: 189.50, status: 'Ativo', type: 'Regular', address: 'Rua do Medicamento, 654' }
+  ],
   alimenticio: [
     { id: 1, name: 'João Silva', email: 'joao.silva@email.com', phone: '(11) 99999-1111', lastOrder: '2024-12-26', totalSpent: 234.50, status: 'Ativo', type: 'Delivery', address: 'Rua das Flores, 123' },
     { id: 2, name: 'Maria Santos', email: 'maria.santos@email.com', phone: '(11) 99999-2222', lastOrder: '2024-12-25', totalSpent: 456.80, status: 'Ativo', type: 'Balcão', address: 'Av. Principal, 456' },
@@ -348,6 +376,13 @@ export const categoryClients: Record<string, Client[]> = {
 
 // Appointments for each category
 export const categoryAppointments: Record<string, Appointment[]> = {
+  farmacia: [
+    { id: 1, title: 'Consulta Farmacêutica', client: 'Maria Santos', date: '2024-12-28', time: '09:00', type: 'consulta', status: 'scheduled', service: 'Orientação sobre medicamentos' },
+    { id: 2, title: 'Aferição de Pressão', client: 'João Silva', date: '2024-12-29', time: '10:30', type: 'procedimento', status: 'scheduled', service: 'Medição pressão arterial' },
+    { id: 3, title: 'Aplicação de Vacina', client: 'Ana Costa', date: '2024-12-30', time: '11:00', type: 'vacina', status: 'confirmed', service: 'Vacina da gripe' },
+    { id: 4, title: 'Teste de Glicemia', client: 'Carlos Lima', date: '2025-01-02', time: '08:30', type: 'exame', status: 'scheduled', service: 'Teste rápido glicemia' },
+    { id: 5, title: 'Entrega de Medicamentos', client: 'Fernanda Oliveira', date: '2025-01-03', time: '14:00', type: 'entrega', status: 'scheduled', service: 'Entrega domiciliar' }
+  ],
   alimenticio: [
     { id: 1, title: 'Reserva Mesa para 6 pessoas', client: 'João Silva', date: '2024-12-30', time: '19:30', type: 'reserva', status: 'scheduled', service: 'Jantar Especial' },
     { id: 2, title: 'Evento Corporativo', client: 'Empresa ABC', date: '2024-12-31', time: '18:00', type: 'evento', status: 'confirmed', service: 'Buffet Executivo' },
@@ -433,6 +468,13 @@ export const categorySpecialists: Record<string, Specialist[]> = {
 
 // WhatsApp conversations for each category
 export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[]> = {
+  farmacia: [
+    { id: 1, name: 'Maria Santos', lastMessage: 'Oi, vocês têm dipirona em estoque?', time: '16:30', unread: 2, status: 'online', category: 'farmacia' },
+    { id: 2, name: 'João Silva', lastMessage: 'Preciso renovar minha receita de losartana', time: '15:45', unread: 1, status: 'offline', category: 'farmacia' },
+    { id: 3, name: 'Ana Costa', lastMessage: 'Qual o valor da vitamina D3?', time: '14:20', unread: 0, status: 'away', category: 'farmacia' },
+    { id: 4, name: 'Carlos Lima', lastMessage: 'Podem entregar os medicamentos em casa?', time: '13:10', unread: 0, status: 'online', category: 'farmacia' },
+    { id: 5, name: 'Fernanda Oliveira', lastMessage: 'Obrigada pela orientação sobre o medicamento!', time: '12:30', unread: 0, status: 'offline', category: 'farmacia' }
+  ],
   alimenticio: [
     { id: 1, name: 'João Silva', lastMessage: 'Gostaria de fazer um pedido para delivery', time: '14:30', unread: 2, status: 'online', category: 'alimenticio' },
     { id: 2, name: 'Maria Santos', lastMessage: 'Qual o horário de funcionamento hoje?', time: '13:45', unread: 1, status: 'offline', category: 'alimenticio' },
@@ -493,6 +535,13 @@ export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[
 
 // Activity logs for each category
 export const categoryActivities: Record<string, Activity[]> = {
+  farmacia: [
+    { id: 1, timestamp: new Date('2024-12-26T16:30:00'), type: 'sale', action: 'Venda Realizada', description: 'Maria Santos - Dipirona e Paracetamol R$ 50,30', category: 'farmacia', status: 'success', user: 'Sistema' },
+    { id: 2, timestamp: new Date('2024-12-26T15:45:00'), type: 'consultation', action: 'Consulta Farmacêutica', description: 'João Silva - orientação sobre hipertensão', category: 'farmacia', status: 'success', user: 'Dr. Fernando Farmacêutico' },
+    { id: 3, timestamp: new Date('2024-12-26T14:20:00'), type: 'stock', action: 'Reposição de Estoque', description: 'Vitamina D3 - recebimento de 100 unidades', category: 'farmacia', status: 'success', user: 'Sistema' },
+    { id: 4, timestamp: new Date('2024-12-26T13:10:00'), type: 'delivery', action: 'Entrega Agendada', description: 'Carlos Lima - medicamentos para entrega domiciliar', category: 'farmacia', status: 'success', user: 'Sistema' },
+    { id: 5, timestamp: new Date('2024-12-26T12:30:00'), type: 'prescription', action: 'Receita Validada', description: 'Fernanda Oliveira - receita de antibiótico aprovada', category: 'farmacia', status: 'success', user: 'Dr. Fernando Farmacêutico' }
+  ],
   alimenticio: [
     { id: 1, timestamp: new Date('2024-12-26T14:30:00'), type: 'order', action: 'Novo Pedido', description: 'Pedido #123 - Pizza Margherita x2', category: 'alimenticio', status: 'success', user: 'João Silva' },
     { id: 2, timestamp: new Date('2024-12-26T13:45:00'), type: 'delivery', action: 'Entrega Realizada', description: 'Delivery para Rua das Flores, 123', category: 'alimenticio', status: 'success', user: 'Sistema' },

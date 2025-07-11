@@ -22,8 +22,9 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
   // Sistema de usuários por categoria
   const categoryUsers = {
+    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central' },
     'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic' },
-    'saude': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde' },
+    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde' },
     'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista' },
     'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech' },
     'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative' },
@@ -58,8 +59,9 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
     if (!userFound) {
       setError('Email ou senha incorretos. Credenciais válidas:\n' +
+        '• farmaceutico@farmaciacentral.com / farm2025 (Farmácia)\n' +
         '• veterinario@petclinic.com / vet2025 (Pet & Veterinário)\n' +
-        '• medico@clinicasaude.com / med2025 (Saúde & Medicamentos)\n' +
+        '• medico@clinicasaude.com / med2025 (Médico & Saúde)\n' +
         '• chef@restaurante.com / chef2025 (Alimentício)\n' +
         '• vendedor@comercial.com / venda2025 (Vendas)\n' +
         '• designer@agencia.com / design2025 (Design Gráfico)\n' +

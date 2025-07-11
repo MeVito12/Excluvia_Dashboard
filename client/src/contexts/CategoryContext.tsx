@@ -8,6 +8,7 @@ interface CategoryContextType {
 const CategoryContext = createContext<CategoryContextType | undefined>(undefined);
 
 export const categories = [
+  { value: 'farmacia', label: 'Farmácia', icon: '💊', description: 'Farmácias, drogarias e serviços farmacêuticos' },
   { value: 'pet', label: 'Pet & Veterinário', icon: '🐕', description: 'Clínicas veterinárias, pet shops e cuidados animais' },
   { value: 'medico', label: 'Médico & Saúde', icon: '⚕️', description: 'Clínicas médicas, consultórios e serviços de saúde' },
   { value: 'estetica', label: 'Estética & Beleza', icon: '💅', description: 'Clínicas de estética, salões e tratamentos de beleza' },
