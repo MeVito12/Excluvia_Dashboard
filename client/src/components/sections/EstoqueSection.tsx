@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { 
+  getProductsByCategory, 
+  getSalesByCategory, 
+  getClientsByCategory,
+  categoryProducts,
+  categorySales,
+  categoryClients,
+  type Product,
+  type Sale,
+  type Client
+} from '@/lib/mockData';
+import { 
   Package, 
   ShoppingCart, 
   Users, 
@@ -19,19 +30,20 @@ import {
   Calendar
 } from 'lucide-react';
 
-// Função para dados de produtos (movida para fora do componente)
-const getInitialProductData = () => {
-  return [
-    { 
-      id: 1, 
-      name: 'Produto Padrão', 
-      category: 'Geral', 
-      stock: 50, 
-      minStock: 10, 
-      price: 35.00, 
-      isPerishable: false
-    }
-  ];
+// Função para obter status do produto baseado no estoque e validade
+const getProductStatus = (stock: number, minStock: number, expiryDate?: string) => {
+  if (stock === 0) return 'Sem Estoque';
+  if (expiryDate) {
+    const today = new Date();
+    const expiry = new Date(expiryDate);
+    const diffTime = expiry.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'Vencido';
+    if (diffDays <= 3) return 'Próximo ao Vencimento';
+  }
+  if (stock <= minStock) return 'Estoque Baixo';
+  return 'Em Estoque';
 };
 
 const EstoqueSection = () => {
@@ -39,7 +51,7 @@ const EstoqueSection = () => {
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
-  const [products, setProducts] = useState(() => getInitialProductData());
+  const [products, setProducts] = useState(() => getProductsByCategory(selectedCategory));
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -53,7 +65,7 @@ const EstoqueSection = () => {
     price: '',
     minStock: '10'
   });
-  const [sales, setSales] = useState<any[]>([]);
+  const [sales, setSales] = useState(() => getSalesByCategory(selectedCategory));
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });

@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { 
+  getAppointmentsByCategory,
+  type Appointment
+} from '@/lib/mockData';
+import { 
   Calendar, 
   Clock, 
   Settings, 
@@ -17,21 +21,14 @@ import {
   AlertTriangle
 } from 'lucide-react';
 
-const getAppointmentData = () => {
-  const commonData = [
-    { id: 1, title: 'Reunião Principal', client: 'Cliente A', date: '2024-12-26', time: '09:00', type: 'reuniao', status: 'scheduled' },
-    { id: 2, title: 'Consulta Importante', client: 'Cliente B', date: '2024-12-26', time: '10:30', type: 'consulta', status: 'scheduled' },
-    { id: 3, title: 'Follow-up', client: 'Cliente C', date: '2024-12-27', time: '14:00', type: 'followup', status: 'completed' }
-  ];
-  return commonData;
-};
+// Removed getAppointmentData function - now using centralized mock data
 
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
   const [activeTab, setActiveTab] = useState('agenda');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [appointments, setAppointments] = useState(() => getAppointmentData());
+  const [appointments, setAppointments] = useState(() => getAppointmentsByCategory(selectedCategory));
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAppointment, setNewAppointment] = useState({
     title: '',

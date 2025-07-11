@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { 
+  getProductsByCategory, 
+  getSpecialistsByCategory, 
+  getWhatsAppConversationsByCategory,
+  designPortfolio,
+  sitesPortfolio,
+  type Product,
+  type Specialist,
+  type WhatsAppConversation
+} from '@/lib/mockData';
+import { 
   MessageCircle, 
   Bot, 
   ShoppingCart, 
@@ -84,92 +94,20 @@ const AtendimentoSection = () => {
 
   // Estado para gerenciar itens de todas as categorias
   const [categoryItems, setCategoryItems] = useState(() => {
-    return {
-      'alimenticio': [
-        { id: 1, name: 'Hambúrguer Artesanal', price: 28.90, category: 'pratos', description: 'Hambúrguer 180g com fritas artesanais', image: '', available: true },
-        { id: 2, name: 'Pizza Margherita', price: 35.00, category: 'pratos', description: 'Pizza tradicional com manjericão fresco', image: '', available: true },
-        { id: 3, name: 'Suco Natural de Laranja', price: 8.50, category: 'bebidas', description: 'Suco natural de laranja 300ml', image: '', available: true },
-        { id: 4, name: 'Tiramisù', price: 15.90, category: 'sobremesas', description: 'Sobremesa italiana tradicional', image: '', available: true }
-      ],
-      'pet': [
-        { id: 1, name: 'Ração Premium Golden', price: 89.90, category: 'racao', description: 'Ração premium para cães adultos', stock: 25, available: true },
-        { id: 2, name: 'Antipulgas Frontline', price: 45.50, category: 'medicamentos', description: 'Proteção contra pulgas e carrapatos', stock: 12, available: true },
-        { id: 3, name: 'Brinquedo Kong', price: 32.00, category: 'brinquedos', description: 'Brinquedo resistente para cães', stock: 8, available: true },
-        { id: 4, name: 'Coleira GPS', price: 199.00, category: 'acessorios', description: 'Coleira com GPS para localização', stock: 5, available: true }
-      ],
-      'medico': [
-        { id: 1, name: 'Dipirona 500mg', price: 15.90, category: 'analgesicos', description: 'Analgésico e antipirético', stock: 50, available: true },
-        { id: 2, name: 'Amoxicilina 500mg', price: 25.00, category: 'antibioticos', description: 'Antibiótico de amplo espectro', stock: 30, available: true },
-        { id: 3, name: 'Termômetro Digital', price: 89.90, category: 'equipamentos', description: 'Termômetro clínico digital', stock: 15, available: true },
-        { id: 4, name: 'Vitamina C 1g', price: 18.50, category: 'suplementos', description: 'Suplemento de vitamina C', stock: 40, available: true }
-      ],
-      'tecnologia': [
-        { id: 1, name: 'Processador Intel i7', price: 1299.00, category: 'componentes', description: 'Processador Intel Core i7 12ª geração', stock: 5, available: true },
-        { id: 2, name: 'Monitor 24" Full HD', price: 699.00, category: 'monitores', description: 'Monitor LED 24 polegadas', stock: 8, available: true },
-        { id: 3, name: 'SSD 1TB', price: 299.00, category: 'armazenamento', description: 'SSD interno 1TB alta velocidade', stock: 12, available: true },
-        { id: 4, name: 'Placa de Vídeo RTX 4060', price: 1899.00, category: 'componentes', description: 'GPU NVIDIA RTX 4060 8GB', stock: 3, available: true }
-      ],
-      'vendas': [
-        { id: 1, name: 'Smartphone Galaxy S24', price: 2899.99, category: 'eletronicos', description: 'Smartphone Samsung Galaxy S24', stock: 6, available: true },
-        { id: 2, name: 'Camiseta Polo', price: 89.99, category: 'vestuario', description: 'Camiseta polo masculina', stock: 20, available: true },
-        { id: 3, name: 'Tênis Esportivo', price: 199.99, category: 'calcados', description: 'Tênis para corrida', stock: 15, available: true },
-        { id: 4, name: 'Notebook Gaming', price: 3499.99, category: 'eletronicos', description: 'Notebook para jogos', stock: 4, available: true }
-      ],
-      'educacao': [
-        { id: 1, name: 'Livro de Matemática', price: 89.90, category: 'livros', description: 'Livro didático de matemática avançada', stock: 25, available: true },
-        { id: 2, name: 'Kit de Experimentos', price: 45.50, category: 'materiais', description: 'Kit para experimentos de química', stock: 12, available: true },
-        { id: 3, name: 'Calculadora Científica', price: 32.00, category: 'papelaria', description: 'Calculadora científica avançada', stock: 18, available: true },
-        { id: 4, name: 'Atlas Mundial', price: 67.90, category: 'livros', description: 'Atlas geográfico mundial atualizado', stock: 8, available: true }
-      ],
-      'beleza': [
-        { id: 1, name: 'Shampoo Hidratante', price: 35.90, category: 'cabelos', description: 'Shampoo para cabelos ressecados', stock: 30, available: true },
-        { id: 2, name: 'Base Líquida FPS 30', price: 89.90, category: 'maquiagem', description: 'Base com proteção solar', stock: 15, available: true },
-        { id: 3, name: 'Perfume Floral 100ml', price: 199.00, category: 'perfumaria', description: 'Perfume feminino com notas florais', stock: 12, available: true },
-        { id: 4, name: 'Creme Anti-idade', price: 149.90, category: 'skincare', description: 'Creme facial anti-idade', stock: 8, available: true }
-      ],
-      'estetica': [
-        { id: 1, name: 'Ácido Hialurônico', price: 299.00, category: 'injetaveis', description: 'Preenchimento facial com ácido hialurônico', stock: 15, available: true },
-        { id: 2, name: 'Botox Allergan', price: 450.00, category: 'injetaveis', description: 'Toxina botulínica para rugas de expressão', stock: 8, available: true },
-        { id: 3, name: 'Peeling Químico', price: 180.00, category: 'tratamentos', description: 'Peeling para renovação celular', stock: 25, available: true },
-        { id: 4, name: 'Laser Fracionado', price: 350.00, category: 'equipamentos', description: 'Tratamento a laser para rejuvenescimento', stock: 5, available: true },
-        { id: 5, name: 'Microagulhamento', price: 120.00, category: 'tratamentos', description: 'Estimulação de colágeno', stock: 20, available: true },
-        { id: 6, name: 'Radiofrequência', price: 200.00, category: 'equipamentos', description: 'Tratamento para flacidez', stock: 10, available: true }
-      ],
-      'design': [
-        { id: 1, title: 'Identidade Visual - Café Aroma', description: 'Desenvolvimento completo da identidade visual para cafeteria premium', category: 'branding', imageUrl: '', projectUrl: 'https://exemplo.com/cafe-aroma', available: true },
-        { id: 2, title: 'Material Gráfico - Eventos ABC', description: 'Criação de convites, banners e cartões para empresa de eventos', category: 'impressos', imageUrl: '', projectUrl: '', available: true },
-        { id: 3, title: 'Posts para Redes Sociais - Tech Start', description: 'Design de posts e stories para startup de tecnologia', category: 'digital', imageUrl: '', projectUrl: 'https://instagram.com/techstart', available: true },
-        { id: 4, title: 'Campanha Publicitária - Eco Fashion', description: 'Peças publicitárias para marca de moda sustentável', category: 'publicidade', imageUrl: '', projectUrl: '', available: true }
-      ],
-      'sites': [
-        { id: 1, title: 'Site Institucional - Dr. Silva', description: 'Website responsivo para clínica médica com agendamento online', category: 'website', imageUrl: '', projectUrl: 'https://clinicadrsilva.com.br', available: true },
-        { id: 2, title: 'E-commerce - Loja Virtual Plus', description: 'Loja virtual completa com carrinho e pagamento', category: 'loja-virtual', imageUrl: '', projectUrl: 'https://lojavirtualplus.com', available: true },
-        { id: 3, title: 'Landing Page - Curso Online', description: 'Página de conversão para curso de marketing digital', category: 'conversao', imageUrl: '', projectUrl: 'https://cursomarketing.com.br', available: true },
-        { id: 4, title: 'Sistema Web - Gestão Escolar', description: 'Sistema completo para gestão de escola', category: 'sistema', imageUrl: '', projectUrl: '', available: true }
-      ]
-    };
+    // Para design e sites, usa dados de portfólio
+    if (selectedCategory === 'design') {
+      return { [selectedCategory]: designPortfolio };
+    }
+    if (selectedCategory === 'sites') {
+      return { [selectedCategory]: sitesPortfolio };
+    }
+    // Para outras categorias, usa produtos
+    return { [selectedCategory]: getProductsByCategory(selectedCategory) };
   });
 
   // Estado para especialistas
   const [specialists, setSpecialists] = useState(() => {
-    return {
-      'medico': [
-        { id: 1, name: 'Dr. João Silva', specialty: 'Cardiologia', phone: '(11) 99999-1111', email: 'joao@clinica.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Especialista em cardiologia com 15 anos de experiência', available: true },
-        { id: 2, name: 'Dra. Maria Santos', specialty: 'Pediatria', phone: '(11) 99999-2222', email: 'maria@clinica.com', schedule: 'Seg-Sex: 9h às 17h', description: 'Pediatra especializada em desenvolvimento infantil', available: true },
-        { id: 3, name: 'Dr. Carlos Oliveira', specialty: 'Ortopedia', phone: '(11) 99999-3333', email: 'carlos@clinica.com', schedule: 'Ter-Sáb: 8h às 16h', description: 'Ortopedista com foco em medicina esportiva', available: true }
-      ],
-      'pet': [
-        { id: 1, name: 'Dr. Pedro Costa', specialty: 'Clínica Geral', phone: '(11) 99999-4444', email: 'pedro@vetpet.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Veterinário clínico geral com experiência em felinos', available: true },
-        { id: 2, name: 'Dra. Ana Lima', specialty: 'Cirurgia', phone: '(11) 99999-5555', email: 'ana@vetpet.com', schedule: 'Seg-Sex: 7h às 15h', description: 'Especialista em cirurgias de pequenos animais', available: true },
-        { id: 3, name: 'Dr. Ricardo Ferreira', specialty: 'Dermatologia', phone: '(11) 99999-6666', email: 'ricardo@vetpet.com', schedule: 'Qua-Dom: 9h às 17h', description: 'Dermatologista veterinário especializado em alergias', available: true }
-      ],
-      'estetica': [
-        { id: 1, name: 'Dra. Fernanda Reis', specialty: 'Harmonização Facial', phone: '(11) 99999-7777', email: 'fernanda@clinicaestetica.com', schedule: 'Seg-Sex: 9h às 18h', description: 'Especialista em harmonização facial e preenchimentos', available: true },
-        { id: 2, name: 'Dr. Bruno Santos', specialty: 'Medicina Estética', phone: '(11) 99999-8888', email: 'bruno@clinicaestetica.com', schedule: 'Ter-Sáb: 8h às 17h', description: 'Médico especializado em tratamentos estéticos e antienvelhecimento', available: true },
-        { id: 3, name: 'Dra. Carla Mendes', specialty: 'Dermatologia Estética', phone: '(11) 99999-9999', email: 'carla@clinicaestetica.com', schedule: 'Seg-Sex: 10h às 19h', description: 'Dermatologista com foco em tratamentos estéticos', available: true },
-        { id: 4, name: 'Luciana Oliveira', specialty: 'Estética Avançada', phone: '(11) 99999-0000', email: 'luciana@clinicaestetica.com', schedule: 'Qua-Dom: 9h às 18h', description: 'Esteticista especializada em tratamentos corporais e faciais', available: true }
-      ]
-    };
+    return { [selectedCategory]: getSpecialistsByCategory(selectedCategory) };
   });
 
   // Função para buscar itens da categoria atual

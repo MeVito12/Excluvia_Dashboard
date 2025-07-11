@@ -9,6 +9,10 @@ import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Sett
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import { 
+  getActivitiesByCategory,
+  type Activity
+} from '@/lib/mockData';
 
 const AtividadeSection = () => {
   const { selectedCategory } = useCategory();
@@ -18,89 +22,8 @@ const AtividadeSection = () => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
-  // Logs de integração em tempo real
-  const integrationLogs = [
-    {
-      id: 'int_1',
-      timestamp: new Date('2024-12-26T08:30:00'),
-      type: 'email',
-      action: 'Lembrete Enviado',
-      description: 'Lembrete de consulta enviado para Maria Silva',
-      category: 'pet',
-      status: 'success',
-      user: 'Sistema Email'
-    },
-    {
-      id: 'int_2',
-      timestamp: new Date('2024-12-26T09:15:00'),
-      type: 'whatsapp',
-      action: 'Mensagem Recebida',
-      description: 'Cliente solicitou cardápio via WhatsApp',
-      category: 'alimenticio',
-      status: 'success',
-      user: 'Bot WhatsApp'
-    },
-    {
-      id: 'int_3',
-      timestamp: new Date('2024-12-26T10:00:00'),
-      type: 'telegram',
-      action: 'Alerta de Estoque',
-      description: 'Alerta de estoque baixo enviado via Telegram',
-      category: 'pet',
-      status: 'success',
-      user: 'Sistema Telegram'
-    },
-    {
-      id: 'int_4',
-      timestamp: new Date('2024-12-26T11:30:00'),
-      type: 'calendar',
-      action: 'Sincronização',
-      description: 'Consulta sincronizada com Google Calendar',
-      category: 'medico',
-      status: 'success',
-      user: 'Google Calendar'
-    },
-    {
-      id: 'int_5',
-      timestamp: new Date('2024-12-26T12:00:00'),
-      type: 'integration',
-      action: 'Sync Doctoralia',
-      description: 'Sincronização com Doctoralia concluída',
-      category: 'medico',
-      status: 'success',
-      user: 'Doctoralia API'
-    },
-    {
-      id: 'int_6',
-      timestamp: new Date('2024-12-26T12:15:00'),
-      type: 'payment',
-      action: 'Pagamento PIX',
-      description: 'Pagamento PIX processado - Pedido #245',
-      category: 'alimenticio',
-      status: 'success',
-      user: 'Sistema PIX'
-    },
-    {
-      id: 'int_7',
-      timestamp: new Date('2024-12-26T13:00:00'),
-      type: 'system',
-      action: 'Erro de Integração',
-      description: 'Erro na sincronização com Outlook Calendar',
-      category: 'vendas',
-      status: 'error',
-      user: 'Sistema'
-    },
-    {
-      id: 'int_8',
-      timestamp: new Date('2024-12-26T14:00:00'),
-      type: 'whatsapp',
-      action: 'Resposta IA',
-      description: 'IA respondeu dúvida sobre ingredientes',
-      category: 'alimenticio',
-      status: 'success',
-      user: 'IA Assistant'
-    }
-  ];
+  // Logs de integração em tempo real - agora usando dados centralizados
+  const integrationLogs = getActivitiesByCategory(selectedCategory);
 
   // Atividades tradicionais do sistema
   const systemActivities = [

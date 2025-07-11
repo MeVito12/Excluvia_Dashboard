@@ -4,6 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCategory } from '@/contexts/CategoryContext';
+import { 
+  getAppointmentsByCategory,
+  getActivitiesByCategory,
+  getSalesByCategory,
+  getProductsByCategory,
+  type Appointment,
+  type Activity
+} from '@/lib/mockData';
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
