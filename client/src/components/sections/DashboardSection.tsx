@@ -23,6 +23,15 @@ const DashboardSection = () => {
   // Dados de métricas específicos por categoria
   const getCategoryMetrics = () => {
     const categoryData = {
+      'farmacia': {
+        totalRecords: '1.234 Pacientes',
+        activeUsers: '4 Farmacêuticos',
+        transactions: '68 Vendas',
+        appointments: '15 Consultas Hoje',
+        revenue: 'R$ 3.240',
+        growth: '+22%',
+        satisfaction: '4.8'
+      },
       'pet': {
         totalRecords: '445 Pets',
         activeUsers: '12 Veterinários',
