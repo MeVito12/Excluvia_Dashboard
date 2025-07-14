@@ -68,41 +68,23 @@ const DashboardSection = () => {
         growth: '+15%',
         satisfaction: '4.6'
       },
-      'tecnologia': {
-        totalRecords: '156 Clientes',
-        activeUsers: '6 Técnicos',
-        transactions: '8 Vendas',
-        appointments: '3 Demos Hoje',
-        revenue: 'R$ 12.450',
-        growth: '+25%',
-        satisfaction: '4.5'
-      },
-      'educacao': {
-        totalRecords: '523 Alunos',
-        activeUsers: '9 Professores',
-        transactions: '28 Matrículas',
-        appointments: '4 Aulas Hoje',
-        revenue: 'R$ 1.950',
-        growth: '+8%',
-        satisfaction: '4.6'
-      },
-      'beleza': {
-        totalRecords: '687 Clientes',
-        activeUsers: '11 Profissionais',
-        transactions: '36 Atendimentos',
-        appointments: '9 Agendamentos Hoje',
-        revenue: 'R$ 2.180',
-        growth: '+14%',
-        satisfaction: '4.8'
-      },
-      'estetica': {
-        totalRecords: '389 Pacientes',
-        activeUsers: '7 Especialistas',
-        transactions: '18 Procedimentos',
-        appointments: '6 Consultas Hoje',
-        revenue: 'R$ 4.350',
-        growth: '+22%',
+      'design': {
+        totalRecords: '89 Projetos',
+        activeUsers: '4 Designers',
+        transactions: '12 Entregas',
+        appointments: '4 Briefings Hoje',
+        revenue: 'R$ 18.500',
+        growth: '+28%',
         satisfaction: '4.9'
+      },
+      'sites': {
+        totalRecords: '47 Sites',
+        activeUsers: '4 Desenvolvedores',
+        transactions: '6 Lançamentos',
+        appointments: '3 Demos Hoje',
+        revenue: 'R$ 25.800',
+        growth: '+35%',
+        satisfaction: '4.8'
       }
     };
     

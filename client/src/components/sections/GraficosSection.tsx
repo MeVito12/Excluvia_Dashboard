@@ -57,21 +57,28 @@ const GraficosSection = () => {
         month: { sales: 'R$ 98.200', growth: '+14%', orders: 896, avgTicket: 'R$ 109,60' },
         customers: { total: 672, new: 35, retention: '88%', satisfaction: '4.7' }
       };
-    } else if (selectedCategory === 'tecnologia') {
+    } else if (selectedCategory === 'design') {
       return {
-        today: { sales: 'R$ 12.450', growth: '+25%', orders: 8, avgTicket: 'R$ 1.556,25' },
-        week: { sales: 'R$ 78.900', growth: '+20%', orders: 52, avgTicket: 'R$ 1.517,31' },
-        month: { sales: 'R$ 298.500', growth: '+32%', orders: 194, avgTicket: 'R$ 1.538,66' },
-        customers: { total: 156, new: 12, retention: '75%', satisfaction: '4.5' }
+        today: { sales: 'R$ 18.500', growth: '+28%', orders: 12, avgTicket: 'R$ 1.541,67' },
+        week: { sales: 'R$ 98.200', growth: '+22%', orders: 64, avgTicket: 'R$ 1.534,38' },
+        month: { sales: 'R$ 387.600', growth: '+31%', orders: 254, avgTicket: 'R$ 1.525,98' },
+        customers: { total: 89, new: 8, retention: '92%', satisfaction: '4.9' }
       };
-    } else if (selectedCategory === 'educacao') {
+    } else if (selectedCategory === 'sites') {
       return {
-        today: { sales: 'R$ 1.950', growth: '+8%', orders: 28, avgTicket: 'R$ 69,64' },
-        week: { sales: 'R$ 12.800', growth: '+11%', orders: 186, avgTicket: 'R$ 68,82' },
-        month: { sales: 'R$ 52.400', growth: '+15%', orders: 756, avgTicket: 'R$ 69,31' },
-        customers: { total: 523, new: 22, retention: '80%', satisfaction: '4.6' }
+        today: { sales: 'R$ 25.800', growth: '+35%', orders: 6, avgTicket: 'R$ 4.300,00' },
+        week: { sales: 'R$ 142.400', growth: '+28%', orders: 32, avgTicket: 'R$ 4.450,00' },
+        month: { sales: 'R$ 589.200', growth: '+42%', orders: 134, avgTicket: 'R$ 4.397,01' },
+        customers: { total: 47, new: 5, retention: '95%', satisfaction: '4.8' }
       };
-    } else if (selectedCategory === 'beleza') {
+    } else if (selectedCategory === 'farmacia') {
+      return {
+        today: { sales: 'R$ 3.240', growth: '+22%', orders: 68, avgTicket: 'R$ 47,65' },
+        week: { sales: 'R$ 19.800', growth: '+18%', orders: 412, avgTicket: 'R$ 48,06' },
+        month: { sales: 'R$ 84.300', growth: '+24%', orders: 1756, avgTicket: 'R$ 48,01' },
+        customers: { total: 1234, new: 58, retention: '85%', satisfaction: '4.8' }
+      };
+    } else {
       return {
         today: { sales: 'R$ 2.180', growth: '+14%', orders: 36, avgTicket: 'R$ 60,56' },
         week: { sales: 'R$ 14.200', growth: '+13%', orders: 234, avgTicket: 'R$ 60,68' },

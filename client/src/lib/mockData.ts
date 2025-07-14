@@ -90,7 +90,7 @@ export interface Activity {
   details?: any;
 }
 
-// Products for each category
+// Products for each business profile login
 export const categoryProducts: Record<string, Product[]> = {
   farmacia: [
     { id: 1, name: 'Dipirona 500mg', category: 'analgesicos', stock: 15, minStock: 80, price: 15.90, description: 'Analgésico e antipirético - caixa com 20 comprimidos', isPerishable: true, expiryDate: '2025-03-15', manufacturingDate: '2024-03-15', status: 'Estoque Baixo', available: true },
@@ -157,21 +157,6 @@ export const categoryProducts: Record<string, Product[]> = {
     { id: 12, name: 'Dipirona Injetável', category: 'medicamentos', stock: 12, minStock: 10, price: 35.00, description: 'Dipirona para uso injetável', isPerishable: true, expiryDate: '2025-01-16', manufacturingDate: '2024-01-16', status: 'Vencimento Próximo', available: true }
   ],
 
-  tecnologia: [
-    { id: 1, name: 'Processador Intel Core i7-13700K', category: 'componentes', stock: 2, minStock: 3, price: 1899.00, description: 'Processador Intel Core i7 13ª geração', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 2, name: 'Placa de Vídeo RTX 4070', category: 'componentes', stock: 0, minStock: 2, price: 2899.00, description: 'GPU NVIDIA RTX 4070 12GB GDDR6X', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 3, name: 'Placa-Mãe ASUS ROG Strix', category: 'componentes', stock: 12, minStock: 5, price: 899.00, description: 'Placa-mãe para processadores Intel', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 4, name: 'Memória RAM 32GB DDR5', category: 'componentes', stock: 4, minStock: 6, price: 649.00, description: 'Kit memória DDR5 5600MHz 32GB', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 5, name: 'SSD NVMe 1TB Samsung 980', category: 'armazenamento', stock: 25, minStock: 10, price: 389.00, description: 'SSD NVMe M.2 1TB alta velocidade', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 6, name: 'HD Seagate 2TB 7200rpm', category: 'armazenamento', stock: 5, minStock: 8, price: 299.00, description: 'HD interno 2TB para armazenamento', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 7, name: 'Monitor LG 27" 4K UltraWide', category: 'monitores', stock: 6, minStock: 2, price: 1299.00, description: 'Monitor 27 polegadas 4K UltraWide', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 8, name: 'Monitor Gamer 24" 144Hz', category: 'monitores', stock: 3, minStock: 5, price: 899.00, description: 'Monitor gamer 24" Full HD 144Hz', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 9, name: 'Teclado Mecânico RGB', category: 'perifericos', stock: 20, minStock: 8, price: 289.00, description: 'Teclado mecânico com iluminação RGB', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 10, name: 'Mouse Gamer Logitech G502', category: 'perifericos', stock: 6, minStock: 12, price: 189.00, description: 'Mouse gamer com sensor de alta precisão', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 11, name: 'Fonte 850W 80+ Gold', category: 'componentes', stock: 0, minStock: 4, price: 599.00, description: 'Fonte modular 850W certificação 80+ Gold', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 12, name: 'Gabinete Gamer RGB', category: 'gabinetes', stock: 7, minStock: 3, price: 459.00, description: 'Gabinete gamer com iluminação RGB', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true }
-  ],
-
   vendas: [
     { id: 1, name: 'iPhone 15 Pro 256GB', category: 'eletronicos', stock: 1, minStock: 2, price: 6999.99, description: 'Smartphone Apple iPhone 15 Pro', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
     { id: 2, name: 'Samsung Galaxy S24 Ultra', category: 'eletronicos', stock: 0, minStock: 3, price: 5299.99, description: 'Smartphone Samsung Galaxy S24 Ultra', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
@@ -187,53 +172,12 @@ export const categoryProducts: Record<string, Product[]> = {
     { id: 12, name: 'Bolsa Louis Vuitton', category: 'acessorios', stock: 3, minStock: 1, price: 8999.99, description: 'Bolsa feminina Louis Vuitton original', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true }
   ],
 
-  educacao: [
-    { id: 1, name: 'Livro Cálculo Vol. 1 - Stewart', category: 'livros', stock: 8, minStock: 20, price: 189.90, description: 'Livro de cálculo diferencial e integral', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 2, name: 'Atlas Geográfico Mundial', category: 'livros', stock: 32, minStock: 15, price: 87.90, description: 'Atlas geográfico mundial atualizado', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 3, name: 'Dicionário Michaelis Inglês', category: 'livros', stock: 5, minStock: 12, price: 65.90, description: 'Dicionário inglês-português completo', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 4, name: 'Kit Experimentos Química', category: 'materiais', stock: 0, minStock: 6, price: 145.50, description: 'Kit completo para experimentos de química', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 5, name: 'Microscópio Escolar 400x', category: 'materiais', stock: 8, minStock: 3, price: 289.00, description: 'Microscópio para uso educacional', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 6, name: 'Kit Robótica Arduino', category: 'materiais', stock: 2, minStock: 5, price: 199.90, description: 'Kit educacional de robótica com Arduino', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 7, name: 'Calculadora Científica HP', category: 'papelaria', stock: 35, minStock: 15, price: 125.00, description: 'Calculadora científica HP-12C', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 8, name: 'Régua T Técnica 60cm', category: 'papelaria', stock: 12, minStock: 20, price: 28.50, description: 'Régua T para desenho técnico', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 9, name: 'Compasso Técnico Staedtler', category: 'papelaria', stock: 42, minStock: 18, price: 45.90, description: 'Compasso profissional para desenho', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 10, name: 'Tablet Educacional 10"', category: 'tecnologia', stock: 1, minStock: 3, price: 899.99, description: 'Tablet com aplicativos educacionais', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 11, name: 'Projetor Multimídia', category: 'tecnologia', stock: 0, minStock: 2, price: 1299.99, description: 'Projetor para apresentações escolares', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 12, name: 'Lousa Digital Interativa', category: 'tecnologia', stock: 2, minStock: 1, price: 2899.99, description: 'Lousa digital interativa para salas de aula', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true }
-  ],
-
-  beleza: [
-    { id: 1, name: 'Shampoo L\'Oréal Profissional', category: 'cabelos', stock: 8, minStock: 20, price: 89.90, description: 'Shampoo profissional para cabelos danificados', isPerishable: true, expiryDate: '2025-08-15', manufacturingDate: '2024-08-15', status: 'Estoque Baixo', available: true },
-    { id: 2, name: 'Condicionador Kerastase', category: 'cabelos', stock: 0, minStock: 15, price: 125.90, description: 'Condicionador reparador intensivo', isPerishable: true, expiryDate: '2025-01-14', manufacturingDate: '2024-01-14', status: 'Vencimento Próximo', available: true },
-    { id: 3, name: 'Máscara Capilar Olaplex', category: 'cabelos', stock: 22, minStock: 10, price: 179.90, description: 'Máscara reparadora de vínculos capilares', isPerishable: true, expiryDate: '2025-12-31', manufacturingDate: '2024-12-31', status: 'Em Estoque', available: true },
-    { id: 4, name: 'Base Líquida Fenty Beauty', category: 'maquiagem', stock: 5, minStock: 12, price: 159.90, description: 'Base líquida com 40 tons', isPerishable: true, expiryDate: '2025-06-20', manufacturingDate: '2024-06-20', status: 'Estoque Baixo', available: true },
-    { id: 5, name: 'Paleta de Sombras Urban Decay', category: 'maquiagem', stock: 0, minStock: 8, price: 289.90, description: 'Paleta com 12 sombras profissionais', isPerishable: true, expiryDate: '2024-11-30', manufacturingDate: '2023-11-30', status: 'Vencido', available: false },
-    { id: 6, name: 'Batom Líquido MAC', category: 'maquiagem', stock: 45, minStock: 18, price: 98.90, description: 'Batom líquido matte de longa duração', isPerishable: true, expiryDate: '2025-09-15', manufacturingDate: '2024-09-15', status: 'Em Estoque', available: true },
-    { id: 7, name: 'Perfume Chanel No. 5', category: 'perfumaria', stock: 2, minStock: 3, price: 899.90, description: 'Perfume feminino clássico Chanel', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 8, name: 'Perfume Dior Sauvage', category: 'perfumaria', stock: 12, minStock: 5, price: 459.90, description: 'Perfume masculino Dior Sauvage', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 9, name: 'Água de Colônia Natura', category: 'perfumaria', stock: 0, minStock: 10, price: 89.90, description: 'Água de colônia nacional', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 10, name: 'Sérum Vitamina C Skinceuticals', category: 'skincare', stock: 3, minStock: 6, price: 289.90, description: 'Sérum antioxidante com vitamina C', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2024-01-15', status: 'Vencimento Próximo', available: true },
-    { id: 11, name: 'Protetor Solar La Roche-Posay', category: 'skincare', stock: 38, minStock: 15, price: 78.90, description: 'Protetor solar facial FPS 60', isPerishable: true, expiryDate: '2025-07-20', manufacturingDate: '2024-07-20', status: 'Em Estoque', available: true },
-    { id: 12, name: 'Creme Anti-idade Estée Lauder', category: 'skincare', stock: 4, minStock: 8, price: 459.90, description: 'Creme facial anti-idade premium', isPerishable: true, expiryDate: '2025-04-10', manufacturingDate: '2024-04-10', status: 'Estoque Baixo', available: true }
-  ],
-
-  estetica: [
-    { id: 1, name: 'Ácido Hialurônico Juvederm', category: 'injetaveis', stock: 3, minStock: 5, price: 899.00, description: 'Preenchimento facial de alta qualidade', isPerishable: true, expiryDate: '2025-01-16', manufacturingDate: '2024-01-16', status: 'Estoque Baixo', available: true },
-    { id: 2, name: 'Botox Allergan 100ui', category: 'injetaveis', stock: 0, minStock: 3, price: 1250.00, description: 'Toxina botulínica para rugas de expressão', isPerishable: true, expiryDate: '2024-12-31', manufacturingDate: '2024-06-30', status: 'Vencido', available: false },
-    { id: 3, name: 'Sculptra Poly-L-Láctico', category: 'injetaveis', stock: 6, minStock: 2, price: 1899.00, description: 'Bioestimulador de colágeno', isPerishable: true, expiryDate: '2025-03-15', manufacturingDate: '2024-03-15', status: 'Em Estoque', available: true },
-    { id: 4, name: 'Peeling TCA 35%', category: 'tratamentos', stock: 5, minStock: 10, price: 180.00, description: 'Peeling químico para renovação celular', isPerishable: true, expiryDate: '2025-01-14', manufacturingDate: '2024-01-14', status: 'Vencimento Próximo', available: true },
-    { id: 5, name: 'Microagulhamento Facial', category: 'tratamentos', stock: 30, minStock: 12, price: 120.00, description: 'Estimulação natural de colágeno', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 6, name: 'Hydrafacial Completo', category: 'tratamentos', stock: 4, minStock: 8, price: 350.00, description: 'Limpeza profunda e hidratação facial', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
-    { id: 7, name: 'Laser CO2 Fracionado', category: 'equipamentos', stock: 1, minStock: 1, price: 89999.00, description: 'Equipamento para rejuvenescimento', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 8, name: 'Radiofrequência Accent', category: 'equipamentos', stock: 0, minStock: 1, price: 45999.00, description: 'Equipamento para flacidez', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
-    { id: 9, name: 'Criolipólise CoolSculpting', category: 'equipamentos', stock: 1, minStock: 1, price: 125999.00, description: 'Equipamento para redução de gordura', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
-    { id: 10, name: 'Fios de PDO Mono', category: 'fios', stock: 8, minStock: 20, price: 45.00, description: 'Fios de sustentação facial', isPerishable: true, expiryDate: '2025-06-15', manufacturingDate: '2024-06-15', status: 'Estoque Baixo', available: true },
-    { id: 11, name: 'Fios de PDO Espira', category: 'fios', stock: 0, minStock: 15, price: 65.00, description: 'Fios lifting facial', isPerishable: true, expiryDate: '2024-11-20', manufacturingDate: '2024-05-20', status: 'Vencido', available: false },
-    { id: 12, name: 'Anestésico Tópico EMLA', category: 'anestesicos', stock: 2, minStock: 12, price: 35.90, description: 'Anestésico tópico para procedimentos', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2024-01-15', status: 'Vencimento Próximo', available: true }
-  ]
+  // Design e Sites não têm produtos - só portfolios
+  design: [],
+  sites: []
 };
 
-// Sales data for each category
+// Sales data for each business profile login
 export const categorySales: Record<string, Sale[]> = {
   farmacia: [
     { id: 1, date: '2024-12-26', client: 'Maria Santos', items: ['Dipirona 500mg x2', 'Paracetamol 750mg x1'], total: 50.30, status: 'Concluída', paymentMethod: 'Cartão' },
@@ -266,13 +210,7 @@ export const categorySales: Record<string, Sale[]> = {
     { id: 5, date: '2024-12-24', client: 'Carlos Oliveira', items: ['Raio-X Tórax', 'Consulta Ortopédica'], total: 295.00, status: 'Concluída', paymentMethod: 'Débito' }
   ],
 
-  tecnologia: [
-    { id: 1, date: '2024-12-26', client: 'TechBuilder Ltda', items: ['Processador i7 x1', 'Placa de Vídeo RTX x1'], total: 4798.00, status: 'Concluída', paymentMethod: 'Transferência' },
-    { id: 2, date: '2024-12-26', client: 'Gaming Setup', items: ['Monitor Gamer x2', 'Teclado RGB x2'], total: 2376.00, status: 'Pendente', paymentMethod: 'Cartão' },
-    { id: 3, date: '2024-12-25', client: 'João Gamer', items: ['SSD NVMe x1', 'Memória DDR5 x1'], total: 1038.00, status: 'Concluída', paymentMethod: 'PIX' },
-    { id: 4, date: '2024-12-25', client: 'Empresa InfoTech', items: ['HD Seagate x5', 'Monitor LG x2'], total: 4093.00, status: 'Concluída', paymentMethod: 'Boleto' },
-    { id: 5, date: '2024-12-24', client: 'Carlos Silva', items: ['Mouse Gamer x1', 'Gabinete RGB x1'], total: 648.00, status: 'Concluída', paymentMethod: 'Débito' }
-  ],
+
 
   vendas: [
     { id: 1, date: '2024-12-26', client: 'Maria Executiva', items: ['iPhone 15 Pro x1', 'Camiseta Polo x2'], total: 7599.97, status: 'Concluída', paymentMethod: 'Cartão' },
@@ -282,29 +220,9 @@ export const categorySales: Record<string, Sale[]> = {
     { id: 5, date: '2024-12-24', client: 'Ana Fashion', items: ['Jeans Diesel x3', 'Vestido Social x2'], total: 1759.95, status: 'Concluída', paymentMethod: 'Cartão' }
   ],
 
-  educacao: [
-    { id: 1, date: '2024-12-26', client: 'Universidade Federal', items: ['Kit Robótica x10', 'Microscópio x5'], total: 3444.00, status: 'Concluída', paymentMethod: 'Transferência' },
-    { id: 2, date: '2024-12-26', client: 'Escola Particular Elite', items: ['Livro Cálculo x20', 'Atlas Mundial x15'], total: 5117.50, status: 'Pendente', paymentMethod: 'Boleto' },
-    { id: 3, date: '2024-12-25', client: 'Colégio Técnico', items: ['Kit Química x8', 'Calculadora HP x25'], total: 4289.00, status: 'Concluída', paymentMethod: 'PIX' },
-    { id: 4, date: '2024-12-25', client: 'Instituto de Idiomas', items: ['Dicionário Inglês x30', 'Tablet Educacional x5'], total: 6476.70, status: 'Concluída', paymentMethod: 'Cartão' },
-    { id: 5, date: '2024-12-24', client: 'Escola Municipal', items: ['Projetor x2', 'Lousa Digital x1'], total: 8498.97, status: 'Concluída', paymentMethod: 'Transferência' }
-  ],
-
-  beleza: [
-    { id: 1, date: '2024-12-26', client: 'Salão Glamour', items: ['Shampoo L\'Oréal x5', 'Condicionador Kerastase x3'], total: 827.20, status: 'Concluída', paymentMethod: 'PIX' },
-    { id: 2, date: '2024-12-26', client: 'Marina Bella', items: ['Perfume Chanel x1', 'Base Fenty x2'], total: 1219.70, status: 'Concluída', paymentMethod: 'Cartão' },
-    { id: 3, date: '2024-12-25', client: 'Loja Beauty Store', items: ['Paleta Urban Decay x3', 'Batom MAC x10'], total: 1858.70, status: 'Pendente', paymentMethod: 'Transferência' },
-    { id: 4, date: '2024-12-25', client: 'Ana Maquiadora', items: ['Sérum Vitamina C x2', 'Creme Anti-idade x1'], total: 1039.70, status: 'Concluída', paymentMethod: 'Débito' },
-    { id: 5, date: '2024-12-24', client: 'Spa Relax', items: ['Máscara Olaplex x4', 'Protetor Solar x8'], total: 1351.80, status: 'Concluída', paymentMethod: 'PIX' }
-  ],
-
-  estetica: [
-    { id: 1, date: '2024-12-26', client: 'Clínica Estética Premium', items: ['Ácido Hialurônico x3', 'Botox x2'], total: 5197.00, status: 'Concluída', paymentMethod: 'Transferência' },
-    { id: 2, date: '2024-12-26', client: 'Dra. Fernanda Reis', items: ['Sculptra x1', 'Fios PDO Mono x20'], total: 2799.00, status: 'Pendente', paymentMethod: 'PIX' },
-    { id: 3, date: '2024-12-25', client: 'Centro de Beleza Avançada', items: ['Peeling TCA x5', 'Microagulhamento x8'], total: 1860.00, status: 'Concluída', paymentMethod: 'Cartão' },
-    { id: 4, date: '2024-12-25', client: 'Spa Medical', items: ['Hydrafacial x3', 'Fios PDO Espira x10'], total: 1700.00, status: 'Concluída', paymentMethod: 'Débito' },
-    { id: 5, date: '2024-12-24', client: 'Clínica Renovar', items: ['Anestésico EMLA x15', 'Fios PDO Mono x25'], total: 1663.50, status: 'Concluída', paymentMethod: 'PIX' }
-  ]
+  // Design e Sites não têm vendas - só projetos
+  design: [],
+  sites: []
 };
 
 // Clients data for each category
@@ -341,13 +259,7 @@ export const categoryClients: Record<string, Client[]> = {
     { id: 6, name: 'Fernanda Santos', email: 'fernanda.santos@email.com', phone: '(11) 99999-6666', lastOrder: '2024-12-23', totalSpent: 580.00, status: 'Ativo', type: 'Paciente', address: 'Av. Bem-Estar, 987' }
   ],
 
-  tecnologia: [
-    { id: 1, name: 'TechBuilder Ltda', email: 'vendas@techbuilder.com', phone: '(11) 4444-1111', lastOrder: '2024-12-26', totalSpent: 45780.00, status: 'VIP', type: 'Empresa', address: 'Av. Tecnológica, 1500' },
-    { id: 2, name: 'Gaming Setup', email: 'contato@gamingsetup.com', phone: '(11) 4444-2222', lastOrder: '2024-12-26', totalSpent: 12340.00, status: 'Ativo', type: 'Loja', address: 'Rua dos Gamers, 200' },
-    { id: 3, name: 'João Gamer', email: 'joao.gamer@email.com', phone: '(11) 99999-6666', lastOrder: '2024-12-25', totalSpent: 5670.00, status: 'Ativo', type: 'Pessoa Física', address: 'Av. Central, 789' },
-    { id: 4, name: 'Empresa InfoTech', email: 'ti@infotech.com.br', phone: '(11) 4444-3333', lastOrder: '2024-12-25', totalSpent: 67890.00, status: 'VIP', type: 'Empresa', address: 'Complexo Empresarial, 300' },
-    { id: 5, name: 'Carlos Silva', email: 'carlos.tech@email.com', phone: '(11) 99999-7777', lastOrder: '2024-12-24', totalSpent: 3450.00, status: 'Ativo', type: 'Pessoa Física', address: 'Rua Moderna, 456' }
-  ],
+
 
   vendas: [
     { id: 1, name: 'Maria Executiva', email: 'maria.exec@empresa.com', phone: '(11) 99999-8888', lastOrder: '2024-12-26', totalSpent: 45670.00, status: 'VIP', type: 'Executiva', address: 'Av. Empresarial, 1200' },
@@ -357,29 +269,9 @@ export const categoryClients: Record<string, Client[]> = {
     { id: 5, name: 'Ana Fashion', email: 'ana.fashion@email.com', phone: '(11) 99999-0000', lastOrder: '2024-12-24', totalSpent: 8760.00, status: 'Ativo', type: 'Pessoa Física', address: 'Av. Moda, 234' }
   ],
 
-  educacao: [
-    { id: 1, name: 'Universidade Federal', email: 'compras@universidade.edu.br', phone: '(11) 6666-1111', lastOrder: '2024-12-26', totalSpent: 234560.00, status: 'VIP', type: 'Universidade', address: 'Campus Universitário, s/n' },
-    { id: 2, name: 'Escola Particular Elite', email: 'admin@escolaelite.com.br', phone: '(11) 6666-2222', lastOrder: '2024-12-26', totalSpent: 89750.00, status: 'VIP', type: 'Escola', address: 'Av. Educação, 500' },
-    { id: 3, name: 'Colégio Técnico', email: 'secretaria@colegiotecnico.edu.br', phone: '(11) 6666-3333', lastOrder: '2024-12-25', totalSpent: 45680.00, status: 'Ativo', type: 'Colégio', address: 'Rua Técnica, 300' },
-    { id: 4, name: 'Instituto de Idiomas', email: 'direcao@institutoidiomas.com', phone: '(11) 6666-4444', lastOrder: '2024-12-25', totalSpent: 67890.00, status: 'VIP', type: 'Instituto', address: 'Centro de Ensino, 150' },
-    { id: 5, name: 'Escola Municipal', email: 'diretoria@escolamunicipal.gov.br', phone: '(11) 6666-5555', lastOrder: '2024-12-24', totalSpent: 123450.00, status: 'Ativo', type: 'Pública', address: 'Praça da Educação, 100' }
-  ],
-
-  beleza: [
-    { id: 1, name: 'Salão Glamour', email: 'contato@salaoglamour.com', phone: '(11) 7777-1111', lastOrder: '2024-12-26', totalSpent: 23450.00, status: 'VIP', type: 'Salão', address: 'Av. Beleza, 200' },
-    { id: 2, name: 'Marina Bella', email: 'marina.bella@email.com', phone: '(11) 99999-1234', lastOrder: '2024-12-26', totalSpent: 5670.00, status: 'Ativo', type: 'Pessoa Física', address: 'Rua Elegante, 456' },
-    { id: 3, name: 'Loja Beauty Store', email: 'vendas@beautystore.com', phone: '(11) 7777-2222', lastOrder: '2024-12-25', totalSpent: 34680.00, status: 'VIP', type: 'Loja', address: 'Shopping Center, Loja 89' },
-    { id: 4, name: 'Ana Maquiadora', email: 'ana.maquiadora@email.com', phone: '(11) 99999-5678', lastOrder: '2024-12-25', totalSpent: 8920.00, status: 'Ativo', type: 'Profissional', address: 'Studio Maquiagem, 123' },
-    { id: 5, name: 'Spa Relax', email: 'reservas@sparelax.com', phone: '(11) 7777-3333', lastOrder: '2024-12-24', totalSpent: 12340.00, status: 'Ativo', type: 'Spa', address: 'Resort Wellness, 789' }
-  ],
-
-  estetica: [
-    { id: 1, name: 'Clínica Estética Premium', email: 'admin@clinicapremium.com', phone: '(11) 8888-1111', lastOrder: '2024-12-26', totalSpent: 156780.00, status: 'VIP', type: 'Clínica', address: 'Av. Estética, 1000' },
-    { id: 2, name: 'Dra. Fernanda Reis', email: 'dra.fernanda@clinica.com', phone: '(11) 99999-9876', lastOrder: '2024-12-26', totalSpent: 89450.00, status: 'VIP', type: 'Médica', address: 'Consultório Premium, 250' },
-    { id: 3, name: 'Centro de Beleza Avançada', email: 'contato@centrobeleza.com', phone: '(11) 8888-2222', lastOrder: '2024-12-25', totalSpent: 67890.00, status: 'Ativo', type: 'Centro', address: 'Complexo Beleza, 500' },
-    { id: 4, name: 'Spa Medical', email: 'recepcao@spamedical.com', phone: '(11) 8888-3333', lastOrder: '2024-12-25', totalSpent: 45670.00, status: 'Ativo', type: 'Spa', address: 'Resort Medical, 300' },
-    { id: 5, name: 'Clínica Renovar', email: 'atendimento@clinicarenovar.com', phone: '(11) 8888-4444', lastOrder: '2024-12-24', totalSpent: 78920.00, status: 'VIP', type: 'Clínica', address: 'Centro Médico, 150' }
-  ]
+  // Design e Sites não têm clientes tradicionais - só contatos de projetos
+  design: [],
+  sites: []
 };
 
 // Appointments for each category
@@ -414,12 +306,7 @@ export const categoryAppointments: Record<string, Appointment[]> = {
     { id: 6, title: 'Psicoterapia', client: 'Fernanda Santos', date: '2025-01-05', time: '16:00', type: 'terapia', status: 'scheduled', service: 'Sessão Individual' }
   ],
 
-  tecnologia: [
-    { id: 1, title: 'Entrega PC Gamer', client: 'João Gamer', date: '2024-12-28', time: '14:00', type: 'entrega', status: 'scheduled', service: 'Montagem PC' },
-    { id: 2, title: 'Suporte Técnico', client: 'Empresa InfoTech', date: '2024-12-30', time: '09:00', type: 'suporte', status: 'scheduled', service: 'Manutenção' },
-    { id: 3, title: 'Instalação de Rede', client: 'TechBuilder Ltda', date: '2025-01-02', time: '08:00', type: 'instalacao', status: 'confirmed', service: 'Infraestrutura' },
-    { id: 4, title: 'Treinamento Software', client: 'Carlos Silva', date: '2025-01-05', time: '16:00', type: 'treinamento', status: 'scheduled', service: 'Capacitação' }
-  ],
+
 
   vendas: [
     { id: 1, title: 'Reunião Comercial', client: 'Empresa TechCorp', date: '2024-12-28', time: '10:00', type: 'reuniao', status: 'scheduled', service: 'Proposta Comercial' },
@@ -428,25 +315,18 @@ export const categoryAppointments: Record<string, Appointment[]> = {
     { id: 4, title: 'Follow-up de Vendas', client: 'Pedro Santos', date: '2025-01-04', time: '09:30', type: 'followup', status: 'scheduled', service: 'Pós-venda' }
   ],
 
-  educacao: [
-    { id: 1, title: 'Entrega Material Didático', client: 'Universidade Federal', date: '2024-12-28', time: '08:00', type: 'entrega', status: 'scheduled', service: 'Logística' },
-    { id: 2, title: 'Treinamento Equipamentos', client: 'Escola Particular Elite', date: '2024-12-30', time: '13:00', type: 'treinamento', status: 'scheduled', service: 'Capacitação' },
-    { id: 3, title: 'Instalação Laboratório', client: 'Colégio Técnico', date: '2025-01-02', time: '07:30', type: 'instalacao', status: 'confirmed', service: 'Setup' },
-    { id: 4, title: 'Manutenção Projetores', client: 'Instituto de Idiomas', date: '2025-01-05', time: '15:00', type: 'manutencao', status: 'scheduled', service: 'Suporte Técnico' }
+  // Design e Sites trabalham com briefings e reuniões criativas
+  design: [
+    { id: 1, title: 'Briefing Logo Empresa', client: 'Startup Tech', date: '2024-12-28', time: '10:00', type: 'briefing', status: 'scheduled', service: 'Criação de Identidade' },
+    { id: 2, title: 'Apresentação Campanha', client: 'Loja Fashion', date: '2024-12-30', time: '14:00', type: 'apresentacao', status: 'scheduled', service: 'Material Publicitário' },
+    { id: 3, title: 'Revisão de Arte', client: 'Restaurante Gourmet', date: '2025-01-02', time: '09:00', type: 'revisao', status: 'confirmed', service: 'Cardápio e Identidade' },
+    { id: 4, title: 'Brainstorming Criativo', client: 'Agência de Eventos', date: '2025-01-04', time: '15:30', type: 'brainstorming', status: 'scheduled', service: 'Conceito Visual' }
   ],
-
-  beleza: [
-    { id: 1, title: 'Entrega Produtos Salão', client: 'Salão Glamour', date: '2024-12-28', time: '10:00', type: 'entrega', status: 'scheduled', service: 'Fornecimento' },
-    { id: 2, title: 'Consultoria de Produtos', client: 'Marina Bella', date: '2024-12-30', time: '16:00', type: 'consultoria', status: 'scheduled', service: 'Personal Beauty' },
-    { id: 3, title: 'Treinamento Maquiagem', client: 'Ana Maquiadora', date: '2025-01-02', time: '14:00', type: 'treinamento', status: 'confirmed', service: 'Curso Avançado' },
-    { id: 4, title: 'Demonstração Skincare', client: 'Spa Relax', date: '2025-01-04', time: '11:30', type: 'demo', status: 'scheduled', service: 'Workshop' }
-  ],
-
-  estetica: [
-    { id: 1, title: 'Aplicação Botox', client: 'Dra. Fernanda Reis', date: '2024-12-28', time: '09:00', type: 'procedimento', status: 'scheduled', service: 'Harmonização' },
-    { id: 2, title: 'Preenchimento Facial', client: 'Clínica Premium', date: '2024-12-30', time: '11:00', type: 'procedimento', status: 'scheduled', service: 'Estética Facial' },
-    { id: 3, title: 'Treinamento Fios PDO', client: 'Centro de Beleza', date: '2025-01-02', time: '08:30', type: 'treinamento', status: 'confirmed', service: 'Capacitação' },
-    { id: 4, title: 'Entrega Equipamentos', client: 'Spa Medical', date: '2025-01-03', time: '13:00', type: 'entrega', status: 'scheduled', service: 'Instalação' }
+  sites: [
+    { id: 1, title: 'Reunião Kickoff Site', client: 'Clínica Médica', date: '2024-12-28', time: '11:00', type: 'kickoff', status: 'scheduled', service: 'Desenvolvimento Web' },
+    { id: 2, title: 'Demo Protótipo', client: 'E-commerce Fashion', date: '2024-12-30', time: '16:00', type: 'demo', status: 'scheduled', service: 'Loja Virtual' },
+    { id: 3, title: 'Homologação Final', client: 'Consultoria Jurídica', date: '2025-01-02', time: '10:30', type: 'homologacao', status: 'confirmed', service: 'Site Institucional' },
+    { id: 4, title: 'Treinamento CMS', client: 'Imobiliária Premium', date: '2025-01-05', time: '14:00', type: 'treinamento', status: 'scheduled', service: 'Portal Imobiliário' }
   ]
 };
 
@@ -472,11 +352,27 @@ export const categorySpecialists: Record<string, Specialist[]> = {
     { id: 4, name: 'Dra. Carla Mendes', specialty: 'Exóticos', phone: '(11) 99999-7777', email: 'carla@vetpet.com', schedule: 'Ter-Sáb: 10h às 18h', description: 'Especialista em animais silvestres e exóticos', available: true, rating: 4.6, experience: '12 anos' }
   ],
 
-  estetica: [
-    { id: 1, name: 'Dra. Fernanda Reis', specialty: 'Harmonização Facial', phone: '(11) 99999-7777', email: 'fernanda@clinicaestetica.com', schedule: 'Seg-Sex: 9h às 18h', description: 'Especialista em harmonização facial e preenchimentos', available: true, rating: 4.9, experience: '12 anos' },
-    { id: 2, name: 'Dr. Bruno Santos', specialty: 'Medicina Estética', phone: '(11) 99999-8888', email: 'bruno@clinicaestetica.com', schedule: 'Ter-Sáb: 8h às 17h', description: 'Médico especializado em tratamentos estéticos e antienvelhecimento', available: true, rating: 4.8, experience: '15 anos' },
-    { id: 3, name: 'Dra. Carla Mendes', specialty: 'Dermatologia Estética', phone: '(11) 99999-9999', email: 'carla@clinicaestetica.com', schedule: 'Seg-Sex: 10h às 19h', description: 'Dermatologista com foco em tratamentos estéticos', available: true, rating: 4.7, experience: '18 anos' },
-    { id: 4, name: 'Luciana Oliveira', specialty: 'Estética Avançada', phone: '(11) 99999-0000', email: 'luciana@clinicaestetica.com', schedule: 'Qua-Dom: 9h às 18h', description: 'Esteticista especializada em tratamentos corporais e faciais', available: true, rating: 4.6, experience: '10 anos' }
+  // Perfis de vendas usam equipe comercial
+  vendas: [
+    { id: 1, name: 'João Vendedor', specialty: 'Consultor Comercial', phone: '(11) 99999-9001', email: 'joao@comercialtech.com', schedule: 'Seg-Sex: 8h às 18h', description: 'Especialista em eletrônicos e dispositivos móveis', available: true, rating: 4.8, experience: '8 anos' },
+    { id: 2, name: 'Maria Consultora', specialty: 'Account Manager', phone: '(11) 99999-9002', email: 'maria@comercialtech.com', schedule: 'Seg-Sex: 9h às 17h', description: 'Gestora de contas corporativas e grandes empresas', available: true, rating: 4.9, experience: '12 anos' },
+    { id: 3, name: 'Pedro Técnico', specialty: 'Suporte Técnico', phone: '(11) 99999-9003', email: 'pedro@comercialtech.com', schedule: 'Ter-Sáb: 8h às 16h', description: 'Especialista em suporte e instalação de produtos', available: true, rating: 4.7, experience: '10 anos' },
+    { id: 4, name: 'Ana Varejo', specialty: 'Consultora de Moda', phone: '(11) 99999-9004', email: 'ana@comercialtech.com', schedule: 'Qua-Dom: 10h às 18h', description: 'Especialista em moda e acessórios', available: true, rating: 4.6, experience: '6 anos' }
+  ],
+
+  // Design e Sites trabalham com freelancers criativos
+  design: [
+    { id: 1, name: 'Maria Designer', specialty: 'Design Gráfico', phone: '(11) 99999-8001', email: 'maria@agenciacreative.com', schedule: 'Seg-Sex: 9h às 18h', description: 'Especialista em identidade visual e branding', available: true, rating: 4.9, experience: '10 anos' },
+    { id: 2, name: 'Carlos Criativo', specialty: 'Direção de Arte', phone: '(11) 99999-8002', email: 'carlos@agenciacreative.com', schedule: 'Ter-Sáb: 10h às 19h', description: 'Diretor de arte especializado em campanhas publicitárias', available: true, rating: 4.8, experience: '15 anos' },
+    { id: 3, name: 'Ana Ilustradora', specialty: 'Ilustração', phone: '(11) 99999-8003', email: 'ana@agenciacreative.com', schedule: 'Seg-Sex: 8h às 16h', description: 'Ilustradora digital e tradicional', available: true, rating: 4.7, experience: '8 anos' },
+    { id: 4, name: 'Roberto Motion', specialty: 'Motion Graphics', phone: '(11) 99999-8004', email: 'roberto@agenciacreative.com', schedule: 'Qua-Dom: 11h às 20h', description: 'Especialista em animação e motion graphics', available: true, rating: 4.6, experience: '7 anos' }
+  ],
+
+  sites: [
+    { id: 1, name: 'Pedro Desenvolvedor', specialty: 'Full Stack Developer', phone: '(11) 99999-7001', email: 'pedro@webagency.com', schedule: 'Seg-Sex: 9h às 18h', description: 'Desenvolvedor full-stack especializado em React e Node.js', available: true, rating: 4.9, experience: '12 anos' },
+    { id: 2, name: 'Carla Frontend', specialty: 'Frontend Developer', phone: '(11) 99999-7002', email: 'carla@webagency.com', schedule: 'Ter-Sáb: 8h às 17h', description: 'Especialista em interfaces modernas e responsivas', available: true, rating: 4.8, experience: '8 anos' },
+    { id: 3, name: 'Lucas Backend', specialty: 'Backend Developer', phone: '(11) 99999-7003', email: 'lucas@webagency.com', schedule: 'Seg-Sex: 10h às 19h', description: 'Especialista em APIs e infraestrutura de backend', available: true, rating: 4.7, experience: '10 anos' },
+    { id: 4, name: 'Julia UX/UI', specialty: 'UX/UI Designer', phone: '(11) 99999-7004', email: 'julia@webagency.com', schedule: 'Qua-Dom: 9h às 18h', description: 'Designer de experiência e interface do usuário', available: true, rating: 4.8, experience: '9 anos' }
   ]
 };
 
@@ -511,12 +407,7 @@ export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[
     { id: 5, name: 'Carlos Oliveira', lastMessage: 'Preciso agendar retorno da cirurgia', time: '12:15', unread: 1, status: 'online', category: 'medico' }
   ],
 
-  tecnologia: [
-    { id: 1, name: 'TechBuilder Ltda', lastMessage: 'Precisamos de 10 processadores i7', time: '15:45', unread: 2, status: 'online', category: 'tecnologia' },
-    { id: 2, name: 'Gaming Setup', lastMessage: 'Têm placa de vídeo RTX em estoque?', time: '14:20', unread: 1, status: 'offline', category: 'tecnologia' },
-    { id: 3, name: 'João Gamer', lastMessage: 'Meu PC está com problema, podem ajudar?', time: '13:15', unread: 0, status: 'away', category: 'tecnologia' },
-    { id: 4, name: 'Empresa InfoTech', lastMessage: 'Orçamento aprovado, podem entregar', time: '12:30', unread: 0, status: 'online', category: 'tecnologia' }
-  ],
+
 
   vendas: [
     { id: 1, name: 'Maria Executiva', lastMessage: 'Interesse no iPhone 15 Pro, qual o melhor preço?', time: '16:15', unread: 3, status: 'online', category: 'vendas' },
@@ -525,25 +416,19 @@ export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[
     { id: 4, name: 'Loja Varejo Plus', lastMessage: 'Entrega realizada com sucesso!', time: '13:50', unread: 0, status: 'online', category: 'vendas' }
   ],
 
-  educacao: [
-    { id: 1, name: 'Universidade Federal', lastMessage: 'Precisamos de mais 20 kits de robótica', time: '15:30', unread: 2, status: 'online', category: 'educacao' },
-    { id: 2, name: 'Escola Particular Elite', lastMessage: 'Quando chegam os livros de matemática?', time: '14:45', unread: 1, status: 'offline', category: 'educacao' },
-    { id: 3, name: 'Colégio Técnico', lastMessage: 'Laboratório montado perfeitamente!', time: '13:20', unread: 0, status: 'away', category: 'educacao' },
-    { id: 4, name: 'Instituto de Idiomas', lastMessage: 'Tablets funcionando muito bem', time: '12:10', unread: 0, status: 'offline', category: 'educacao' }
+  // Design e Sites usam comunicação profissional para projetos
+  design: [
+    { id: 1, name: 'Startup Tech', lastMessage: 'Logo ficou perfeita! Quando podemos ver o manual?', time: '16:10', unread: 2, status: 'online', category: 'design' },
+    { id: 2, name: 'Loja Fashion', lastMessage: 'Precisamos acelerar a campanha de verão', time: '15:25', unread: 1, status: 'offline', category: 'design' },
+    { id: 3, name: 'Restaurante Gourmet', lastMessage: 'Cardápio aprovado, vamos imprimir!', time: '14:40', unread: 0, status: 'away', category: 'design' },
+    { id: 4, name: 'Agência de Eventos', lastMessage: 'Conceitual visual surpreendeu o cliente', time: '13:55', unread: 0, status: 'online', category: 'design' }
   ],
 
-  beleza: [
-    { id: 1, name: 'Salão Glamour', lastMessage: 'Produtos L\'Oréal chegaram hoje?', time: '16:20', unread: 2, status: 'online', category: 'beleza' },
-    { id: 2, name: 'Marina Bella', lastMessage: 'Qual o melhor sérum para minha pele?', time: '15:15', unread: 1, status: 'offline', category: 'beleza' },
-    { id: 3, name: 'Loja Beauty Store', lastMessage: 'Precisamos repor o estoque de batons', time: '14:30', unread: 0, status: 'away', category: 'beleza' },
-    { id: 4, name: 'Ana Maquiadora', lastMessage: 'Paleta Urban Decay é perfeita!', time: '13:45', unread: 0, status: 'online', category: 'beleza' }
-  ],
-
-  estetica: [
-    { id: 1, name: 'Clínica Premium', lastMessage: 'Ácido hialurônico chegou dentro do prazo', time: '16:10', unread: 2, status: 'online', category: 'estetica' },
-    { id: 2, name: 'Dra. Fernanda Reis', lastMessage: 'Preciso de mais Botox para semana que vem', time: '15:25', unread: 1, status: 'offline', category: 'estetica' },
-    { id: 3, name: 'Centro de Beleza', lastMessage: 'Treinamento foi excelente!', time: '14:40', unread: 0, status: 'away', category: 'estetica' },
-    { id: 4, name: 'Spa Medical', lastMessage: 'Equipamento instalado perfeitamente', time: '13:55', unread: 0, status: 'online', category: 'estetica' }
+  sites: [
+    { id: 1, name: 'Clínica Médica', lastMessage: 'Site responsivo ficou excelente!', time: '16:05', unread: 3, status: 'online', category: 'sites' },
+    { id: 2, name: 'E-commerce Fashion', lastMessage: 'Checkout está funcionando perfeitamente', time: '15:30', unread: 1, status: 'offline', category: 'sites' },
+    { id: 3, name: 'Consultoria Jurídica', lastMessage: 'Portal foi ao ar sem problemas', time: '14:15', unread: 0, status: 'away', category: 'sites' },
+    { id: 4, name: 'Imobiliária Premium', lastMessage: 'CMS está muito intuitivo, obrigado!', time: '13:45', unread: 0, status: 'online', category: 'sites' }
   ]
 };
 
@@ -578,12 +463,7 @@ export const categoryActivities: Record<string, Activity[]> = {
     { id: 5, timestamp: new Date('2024-12-26T12:15:00'), type: 'prescription', action: 'Receita Emitida', description: 'Receita médica emitida para Carlos Oliveira', category: 'medico', status: 'success', user: 'Dr. João Silva' }
   ],
 
-  tecnologia: [
-    { id: 1, timestamp: new Date('2024-12-26T15:45:00'), type: 'order', action: 'Pedido Corporativo', description: 'TechBuilder - 10 processadores i7', category: 'tecnologia', status: 'success', user: 'TechBuilder Ltda' },
-    { id: 2, timestamp: new Date('2024-12-26T14:20:00'), type: 'stock', action: 'Consulta Estoque', description: 'Gaming Setup verificou RTX 4070', category: 'tecnologia', status: 'info', user: 'Gaming Setup' },
-    { id: 3, timestamp: new Date('2024-12-26T13:15:00'), type: 'support', action: 'Suporte Técnico', description: 'Atendimento para João Gamer', category: 'tecnologia', status: 'success', user: 'Suporte Técnico' },
-    { id: 4, timestamp: new Date('2024-12-26T12:30:00'), type: 'delivery', action: 'Entrega Autorizada', description: 'Empresa InfoTech aprovou orçamento', category: 'tecnologia', status: 'success', user: 'Empresa InfoTech' }
-  ],
+
 
   vendas: [
     { id: 1, timestamp: new Date('2024-12-26T16:15:00'), type: 'inquiry', action: 'Consulta de Preço', description: 'Maria Executiva interessada em iPhone 15 Pro', category: 'vendas', status: 'success', user: 'Maria Executiva' },
@@ -592,25 +472,20 @@ export const categoryActivities: Record<string, Activity[]> = {
     { id: 4, timestamp: new Date('2024-12-26T13:50:00'), type: 'delivery', action: 'Entrega Confirmada', description: 'Loja Varejo Plus recebeu mercadorias', category: 'vendas', status: 'success', user: 'Loja Varejo Plus' }
   ],
 
-  educacao: [
-    { id: 1, timestamp: new Date('2024-12-26T15:30:00'), type: 'order', action: 'Pedido Adicional', description: 'Universidade Federal - 20 kits robótica', category: 'educacao', status: 'success', user: 'Universidade Federal' },
-    { id: 2, timestamp: new Date('2024-12-26T14:45:00'), type: 'delivery', action: 'Consulta Entrega', description: 'Escola Elite perguntou sobre livros', category: 'educacao', status: 'info', user: 'Escola Elite' },
-    { id: 3, timestamp: new Date('2024-12-26T13:20:00'), type: 'installation', action: 'Instalação Concluída', description: 'Laboratório do Colégio Técnico pronto', category: 'educacao', status: 'success', user: 'Equipe Técnica' },
-    { id: 4, timestamp: new Date('2024-12-26T12:10:00'), type: 'feedback', action: 'Feedback Positivo', description: 'Instituto de Idiomas elogiou tablets', category: 'educacao', status: 'success', user: 'Instituto de Idiomas' }
+  // Design foca em projetos criativos e aprovações
+  design: [
+    { id: 1, timestamp: new Date('2024-12-26T16:10:00'), type: 'approval', action: 'Arte Aprovada', description: 'Startup Tech aprovou logo final', category: 'design', status: 'success', user: 'Startup Tech' },
+    { id: 2, timestamp: new Date('2024-12-26T15:25:00'), type: 'briefing', action: 'Briefing Recebido', description: 'Loja Fashion solicitou campanha verão', category: 'design', status: 'warning', user: 'Loja Fashion' },
+    { id: 3, timestamp: new Date('2024-12-26T14:40:00'), type: 'delivery', action: 'Material Entregue', description: 'Cardápio do Restaurante Gourmet finalizado', category: 'design', status: 'success', user: 'Maria Designer' },
+    { id: 4, timestamp: new Date('2024-12-26T13:55:00'), type: 'revision', action: 'Revisão Solicitada', description: 'Agência de Eventos pediu ajustes no conceito', category: 'design', status: 'info', user: 'Agência de Eventos' }
   ],
 
-  beleza: [
-    { id: 1, timestamp: new Date('2024-12-26T16:20:00'), type: 'delivery', action: 'Consulta Entrega', description: 'Salão Glamour perguntou sobre L\'Oréal', category: 'beleza', status: 'info', user: 'Salão Glamour' },
-    { id: 2, timestamp: new Date('2024-12-26T15:15:00'), type: 'consultation', action: 'Consultoria Solicitada', description: 'Marina Bella pediu recomendação de sérum', category: 'beleza', status: 'success', user: 'Marina Bella' },
-    { id: 3, timestamp: new Date('2024-12-26T14:30:00'), type: 'restock', action: 'Pedido Reposição', description: 'Beauty Store precisa de batons MAC', category: 'beleza', status: 'warning', user: 'Loja Beauty Store' },
-    { id: 4, timestamp: new Date('2024-12-26T13:45:00'), type: 'feedback', action: 'Avaliação Positiva', description: 'Ana Maquiadora elogiou paleta Urban Decay', category: 'beleza', status: 'success', user: 'Ana Maquiadora' }
-  ],
-
-  estetica: [
-    { id: 1, timestamp: new Date('2024-12-26T16:10:00'), type: 'delivery', action: 'Entrega Confirmada', description: 'Clínica Premium recebeu ácido hialurônico', category: 'estetica', status: 'success', user: 'Clínica Premium' },
-    { id: 2, timestamp: new Date('2024-12-26T15:25:00'), type: 'order', action: 'Pedido Antecipado', description: 'Dra. Fernanda precisa de Botox', category: 'estetica', status: 'warning', user: 'Dra. Fernanda Reis' },
-    { id: 3, timestamp: new Date('2024-12-26T14:40:00'), type: 'training', action: 'Treinamento Concluído', description: 'Centro de Beleza finalizou capacitação', category: 'estetica', status: 'success', user: 'Centro de Beleza' },
-    { id: 4, timestamp: new Date('2024-12-26T13:55:00'), type: 'installation', action: 'Equipamento Instalado', description: 'Spa Medical com novo equipamento', category: 'estetica', status: 'success', user: 'Equipe Técnica' }
+  // Sites foca em desenvolvimento e lançamentos
+  sites: [
+    { id: 1, timestamp: new Date('2024-12-26T16:05:00'), type: 'launch', action: 'Site No Ar', description: 'Portal da Clínica Médica foi ao ar', category: 'sites', status: 'success', user: 'Pedro Desenvolvedor' },
+    { id: 2, timestamp: new Date('2024-12-26T15:30:00'), type: 'testing', action: 'Teste Aprovado', description: 'E-commerce Fashion passou em homologação', category: 'sites', status: 'success', user: 'Carla Frontend' },
+    { id: 3, timestamp: new Date('2024-12-26T14:15:00'), type: 'deployment', action: 'Deploy Realizado', description: 'Site da Consultoria Jurídica atualizado', category: 'sites', status: 'success', user: 'Lucas Backend' },
+    { id: 4, timestamp: new Date('2024-12-26T13:45:00'), type: 'training', action: 'Treinamento CMS', description: 'Imobiliária Premium capacitada no sistema', category: 'sites', status: 'success', user: 'Julia UX/UI' }
   ]
 };
 
