@@ -361,16 +361,8 @@ const AtividadeSection = () => {
 
   const renderSales = () => (
     <div>
-      {/* Cabeçalho padronizado */}
+      {/* Filtros */}
       <div className="main-card p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Gestão de Vendas</h3>
-          <Button className="bg-purple-600 text-white hover:bg-purple-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Venda
-          </Button>
-        </div>
-
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-gray-500" />
@@ -457,16 +449,8 @@ const AtividadeSection = () => {
 
   const renderClients = () => (
     <div>
-      {/* Cabeçalho padronizado */}
+      {/* Filtros */}
       <div className="main-card p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Gestão de Clientes</h3>
-          <Button className="bg-purple-600 text-white hover:bg-purple-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Cliente
-          </Button>
-        </div>
-
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-gray-500" />
@@ -553,16 +537,8 @@ const AtividadeSection = () => {
 
   const renderReports = () => (
     <div>
-      {/* Cabeçalho padronizado */}
+      {/* Filtros */}
       <div className="main-card p-6 mb-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Relatórios de Negócios</h3>
-          <Button className="bg-purple-600 text-white hover:bg-purple-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Relatório
-          </Button>
-        </div>
-
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
             <Search className="h-4 w-4 text-gray-500" />
