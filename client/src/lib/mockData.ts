@@ -107,16 +107,24 @@ export const categoryProducts: Record<string, Product[]> = {
     { id: 12, name: 'Termômetro Digital', category: 'equipamentos', stock: 25, minStock: 8, price: 89.90, description: 'Termômetro clínico digital preciso', available: true }
   ],
   alimenticio: [
-    { id: 1, name: 'Pizza Margherita', category: 'pizzas', stock: 50, minStock: 10, price: 35.00, description: 'Pizza tradicional com manjericão fresco', isPerishable: true, expiryDate: '2025-02-15', available: true },
-    { id: 2, name: 'Hambúrguer Artesanal', category: 'hamburgueres', stock: 25, minStock: 8, price: 28.90, description: 'Hambúrguer 180g com fritas artesanais', isPerishable: true, expiryDate: '2025-01-05', available: true },
-    { id: 3, name: 'Lasanha Bolonhesa', category: 'massas', stock: 15, minStock: 5, price: 32.50, description: 'Lasanha tradicional com molho bolonhesa', isPerishable: true, expiryDate: '2025-01-08', available: true },
-    { id: 4, name: 'Salmão Grelhado', category: 'peixes', stock: 8, minStock: 3, price: 45.00, description: 'Salmão fresco grelhado com legumes', isPerishable: true, expiryDate: '2024-12-28', available: true },
+    { id: 1, name: 'Pizza Margherita', category: 'pizzas', stock: 50, minStock: 10, price: 35.00, description: 'Pizza tradicional com manjericão fresco', isPerishable: true, expiryDate: '2025-01-15', available: true },
+    { id: 2, name: 'Hambúrguer Artesanal', category: 'hamburgueres', stock: 25, minStock: 8, price: 28.90, description: 'Hambúrguer 180g com fritas artesanais', isPerishable: true, expiryDate: '2025-01-14', available: true },
+    { id: 3, name: 'Lasanha Bolonhesa', category: 'massas', stock: 15, minStock: 5, price: 32.50, description: 'Lasanha tradicional com molho bolonhesa', isPerishable: true, expiryDate: '2025-01-16', available: true },
+    { id: 4, name: 'Salmão Grelhado', category: 'peixes', stock: 8, minStock: 3, price: 45.00, description: 'Salmão fresco grelhado com legumes', isPerishable: true, expiryDate: '2025-01-13', available: true },
     { id: 5, name: 'Suco Natural de Laranja', category: 'bebidas', stock: 30, minStock: 15, price: 8.50, description: 'Suco natural de laranja 300ml', isPerishable: true, expiryDate: '2025-01-15', available: true },
-    { id: 6, name: 'Refrigerante Cola 350ml', category: 'bebidas', stock: 3, minStock: 20, price: 5.00, description: 'Refrigerante sabor cola gelado', isPerishable: true, expiryDate: '2025-06-15', available: true },
-    { id: 7, name: 'Água Mineral 500ml', category: 'bebidas', stock: 45, minStock: 25, price: 3.50, description: 'Água mineral natural sem gás', isPerishable: false, available: true },
-    { id: 8, name: 'Tiramisù', category: 'sobremesas', stock: 12, minStock: 4, price: 15.90, description: 'Sobremesa italiana tradicional', isPerishable: true, expiryDate: '2025-01-02', available: true },
-    { id: 9, name: 'Sorvete Chocolate', category: 'sobremesas', stock: 0, minStock: 5, price: 12.00, description: 'Sorvete artesanal de chocolate', isPerishable: true, expiryDate: '2025-03-20', available: false },
-    { id: 10, name: 'Torta de Limão', category: 'sobremesas', stock: 8, minStock: 3, price: 18.50, description: 'Torta cremosa de limão siciliano', isPerishable: true, expiryDate: '2025-01-10', available: true }
+    { id: 6, name: 'Refrigerante Cola 350ml', category: 'bebidas', stock: 45, minStock: 20, price: 5.00, description: 'Refrigerante sabor cola gelado', isPerishable: true, expiryDate: '2025-08-15', available: true },
+    { id: 7, name: 'Água Mineral 500ml', category: 'bebidas', stock: 80, minStock: 25, price: 3.50, description: 'Água mineral natural sem gás', isPerishable: false, available: true },
+    { id: 8, name: 'Tiramisù', category: 'sobremesas', stock: 12, minStock: 4, price: 15.90, description: 'Sobremesa italiana tradicional', isPerishable: true, expiryDate: '2025-01-18', available: true },
+    { id: 9, name: 'Sorvete Chocolate', category: 'sobremesas', stock: 6, minStock: 5, price: 12.00, description: 'Sorvete artesanal de chocolate', isPerishable: true, expiryDate: '2025-06-20', available: true },
+    { id: 10, name: 'Torta de Limão', category: 'sobremesas', stock: 8, minStock: 3, price: 18.50, description: 'Torta cremosa de limão siciliano', isPerishable: true, expiryDate: '2025-01-20', available: true },
+    { id: 11, name: 'Pão Francês', category: 'ingredientes', stock: 100, minStock: 30, price: 0.80, description: 'Pão francês tradicional fresquinho', isPerishable: true, expiryDate: '2025-01-13', available: true },
+    { id: 12, name: 'Leite Integral 1L', category: 'ingredientes', stock: 40, minStock: 15, price: 5.20, description: 'Leite integral pasteurizado', isPerishable: true, expiryDate: '2025-01-25', available: true },
+    { id: 13, name: 'Queijo Mussarela 500g', category: 'ingredientes', stock: 25, minStock: 8, price: 28.90, description: 'Queijo mussarela fatiado', isPerishable: true, expiryDate: '2025-02-10', available: true },
+    { id: 14, name: 'Açaí na Tigela', category: 'sobremesas', stock: 20, minStock: 8, price: 14.90, description: 'Açaí cremoso com granola e banana', isPerishable: true, expiryDate: '2025-04-30', available: true },
+    { id: 15, name: 'Sanduíche Natural', category: 'pratos', stock: 12, minStock: 6, price: 18.50, description: 'Sanduíche integral com peito de peru', isPerishable: true, expiryDate: '2025-01-14', available: true },
+    { id: 16, name: 'Sopa de Legumes', category: 'pratos', stock: 18, minStock: 5, price: 16.90, description: 'Sopa caseira de legumes frescos', isPerishable: true, expiryDate: '2025-01-15', available: true },
+    { id: 17, name: 'Brownie de Chocolate', category: 'sobremesas', stock: 15, minStock: 5, price: 12.90, description: 'Brownie artesanal com chocolate belga', isPerishable: true, expiryDate: '2025-01-22', available: true },
+    { id: 18, name: 'Café Expresso', category: 'bebidas', stock: 50, minStock: 20, price: 4.50, description: 'Café expresso tradicional', isPerishable: false, available: true }
   ],
 
   pet: [
