@@ -354,8 +354,8 @@ const EstoqueSection = () => {
           minStock: 8, 
           price: 28.00,
           isPerishable: true,
-          expiryDate: '2025-01-05',
-          status: getProductStatus(25, 8, '2025-01-05')
+          expiryDate: '2025-01-14',
+          status: getProductStatus(25, 8, '2025-01-14')
         },
         { 
           id: 3, 
@@ -387,8 +387,8 @@ const EstoqueSection = () => {
           minStock: 10, 
           price: 4.50,
           isPerishable: true,
-          expiryDate: '2024-12-30',
-          status: getProductStatus(15, 10, '2024-12-30')
+          expiryDate: '2025-01-25',
+          status: getProductStatus(15, 10, '2025-01-25')
         },
         { 
           id: 6, 
@@ -409,8 +409,41 @@ const EstoqueSection = () => {
           minStock: 8, 
           price: 22.90,
           isPerishable: true,
-          expiryDate: '2025-01-08',
-          status: getProductStatus(12, 8, '2025-01-08')
+          expiryDate: '2025-02-10',
+          status: getProductStatus(12, 8, '2025-02-10')
+        },
+        { 
+          id: 8, 
+          name: 'Suco Natural Laranja', 
+          category: 'Bebidas', 
+          stock: 30, 
+          minStock: 15, 
+          price: 8.50,
+          isPerishable: true,
+          expiryDate: '2025-01-15',
+          status: getProductStatus(30, 15, '2025-01-15')
+        },
+        { 
+          id: 9, 
+          name: 'Lasanha Bolonhesa', 
+          category: 'Massas', 
+          stock: 18, 
+          minStock: 5, 
+          price: 32.50,
+          isPerishable: true,
+          expiryDate: '2025-01-16',
+          status: getProductStatus(18, 5, '2025-01-16')
+        },
+        { 
+          id: 10, 
+          name: 'Brownie Chocolate', 
+          category: 'Sobremesas', 
+          stock: 15, 
+          minStock: 5, 
+          price: 12.90,
+          isPerishable: true,
+          expiryDate: '2025-01-22',
+          status: getProductStatus(15, 5, '2025-01-22')
         }
       ];
     } else if (selectedCategory === 'vendas') {
