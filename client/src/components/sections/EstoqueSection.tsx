@@ -1182,6 +1182,7 @@ const EstoqueSection = () => {
                     product.status === 'Em Estoque' ? 'badge-success' : 
                     product.status === 'Estoque Baixo' ? 'badge-warning' : 
                     product.status === 'Vencimento Próximo' ? 'badge-warning' :
+                    product.status === 'Sem Estoque' ? 'badge-error' :
                     'badge-error'
                   }`}>
                     {product.status}
@@ -1195,6 +1196,9 @@ const EstoqueSection = () => {
                     )}
                     {product.status === 'Estoque Baixo' && (
                       <Package className="w-4 h-4 text-orange-500" title="Estoque baixo" />
+                    )}
+                    {product.status === 'Sem Estoque' && (
+                      <XCircle className="w-4 h-4 text-red-600" title="Sem estoque" />
                     )}
                     {product.status === 'Em Estoque' && (
                       <CheckCircle className="w-4 h-4 text-green-500" title="Em estoque" />
