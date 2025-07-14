@@ -1223,7 +1223,7 @@ const EstoqueSection = () => {
                       processSale(product.id, quantity);
                     }
                   }}
-                  className="btn btn-success p-2" 
+                  className="btn btn-outline p-2" 
                   title="Processar venda"
                 >
                   <DollarSign className="w-4 h-4" />
