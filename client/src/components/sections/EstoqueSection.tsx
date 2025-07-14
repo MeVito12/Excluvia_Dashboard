@@ -297,12 +297,9 @@ const EstoqueSection = () => {
 
 
 
-  // Tabs do sistema
+  // Apenas aba de produtos
   const tabs = [
-    { id: 'produtos', label: 'Produtos', icon: Package },
-    { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
-    { id: 'clientes', label: 'Clientes', icon: Users },
-    { id: 'relatorios', label: 'Relatórios', icon: BarChart3 }
+    { id: 'produtos', label: 'Produtos', icon: Package }
   ];
 
   // Função para calcular dias até o vencimento
@@ -1458,12 +1455,7 @@ const EstoqueSection = () => {
     switch (activeTab) {
       case 'produtos':
         return renderProducts();
-      case 'vendas':
-        return renderSales();
-      case 'clientes':
-        return renderClients();
-      case 'relatorios':
-        return renderReports();
+
       default:
         return renderProducts();
     }
@@ -1505,7 +1497,7 @@ const EstoqueSection = () => {
       <div className="section-header">
         <h1 className="section-title">Gestão de Estoque</h1>
         <p className="section-subtitle">
-          Controle total dos seus produtos, vendas e clientes
+          Controle de produtos e inventário
         </p>
       </div>
 
@@ -1527,9 +1519,9 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Vendas Hoje</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">R$ 6.499</p>
-              <p className="text-xs text-green-600 mt-1">+18% vs ontem</p>
+              <p className="text-sm font-medium text-gray-600">Valor Total</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">R$ 18.240</p>
+              <p className="text-xs text-green-600 mt-1">+8% este mês</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <DollarSign className="h-6 w-6 text-green-600" />
@@ -1540,12 +1532,12 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Clientes Ativos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">89</p>
-              <p className="text-xs text-blue-600 mt-1">+12 este mês</p>
+              <p className="text-sm font-medium text-gray-600">Produtos Ativos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">119</p>
+              <p className="text-xs text-blue-600 mt-1">94% disponível</p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
-              <Users className="h-6 w-6 text-purple-600" />
+              <CheckCircle className="h-6 w-6 text-purple-600" />
             </div>
           </div>
         </div>
