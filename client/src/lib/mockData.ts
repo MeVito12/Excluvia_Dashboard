@@ -218,18 +218,18 @@ export const categoryProducts: Record<string, Product[]> = {
   ],
 
   estetica: [
-    { id: 1, name: 'Ácido Hialurônico Juvederm', category: 'injetaveis', stock: 15, minStock: 5, price: 899.00, description: 'Preenchimento facial de alta qualidade', available: true },
-    { id: 2, name: 'Botox Allergan 100ui', category: 'injetaveis', stock: 8, minStock: 3, price: 1250.00, description: 'Toxina botulínica para rugas de expressão', available: true },
-    { id: 3, name: 'Sculptra Poly-L-Láctico', category: 'injetaveis', stock: 6, minStock: 2, price: 1899.00, description: 'Bioestimulador de colágeno', available: true },
-    { id: 4, name: 'Peeling TCA 35%', category: 'tratamentos', stock: 25, minStock: 10, price: 180.00, description: 'Peeling químico para renovação celular', available: true },
-    { id: 5, name: 'Microagulhamento Facial', category: 'tratamentos', stock: 30, minStock: 12, price: 120.00, description: 'Estimulação natural de colágeno', available: true },
-    { id: 6, name: 'Hydrafacial Completo', category: 'tratamentos', stock: 20, minStock: 8, price: 350.00, description: 'Limpeza profunda e hidratação facial', available: true },
-    { id: 7, name: 'Laser CO2 Fracionado', category: 'equipamentos', stock: 1, minStock: 1, price: 89999.00, description: 'Equipamento para rejuvenescimento', available: true },
-    { id: 8, name: 'Radiofrequência Accent', category: 'equipamentos', stock: 1, minStock: 1, price: 45999.00, description: 'Equipamento para flacidez', available: true },
-    { id: 9, name: 'Criolipólise CoolSculpting', category: 'equipamentos', stock: 1, minStock: 1, price: 125999.00, description: 'Equipamento para redução de gordura', available: true },
-    { id: 10, name: 'Fios de PDO Mono', category: 'fios', stock: 50, minStock: 20, price: 45.00, description: 'Fios de sustentação facial', available: true },
-    { id: 11, name: 'Fios de PDO Espira', category: 'fios', stock: 35, minStock: 15, price: 65.00, description: 'Fios lifting facial', available: true },
-    { id: 12, name: 'Anestésico Tópico EMLA', category: 'anestesicos', stock: 28, minStock: 12, price: 35.90, description: 'Anestésico tópico para procedimentos', available: true }
+    { id: 1, name: 'Ácido Hialurônico Juvederm', category: 'injetaveis', stock: 3, minStock: 5, price: 899.00, description: 'Preenchimento facial de alta qualidade', isPerishable: true, expiryDate: '2025-01-16', manufacturingDate: '2024-01-16', status: 'Estoque Baixo', available: true },
+    { id: 2, name: 'Botox Allergan 100ui', category: 'injetaveis', stock: 0, minStock: 3, price: 1250.00, description: 'Toxina botulínica para rugas de expressão', isPerishable: true, expiryDate: '2024-12-31', manufacturingDate: '2024-06-30', status: 'Vencido', available: false },
+    { id: 3, name: 'Sculptra Poly-L-Láctico', category: 'injetaveis', stock: 6, minStock: 2, price: 1899.00, description: 'Bioestimulador de colágeno', isPerishable: true, expiryDate: '2025-03-15', manufacturingDate: '2024-03-15', status: 'Em Estoque', available: true },
+    { id: 4, name: 'Peeling TCA 35%', category: 'tratamentos', stock: 5, minStock: 10, price: 180.00, description: 'Peeling químico para renovação celular', isPerishable: true, expiryDate: '2025-01-14', manufacturingDate: '2024-01-14', status: 'Vencimento Próximo', available: true },
+    { id: 5, name: 'Microagulhamento Facial', category: 'tratamentos', stock: 30, minStock: 12, price: 120.00, description: 'Estimulação natural de colágeno', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
+    { id: 6, name: 'Hydrafacial Completo', category: 'tratamentos', stock: 4, minStock: 8, price: 350.00, description: 'Limpeza profunda e hidratação facial', isPerishable: false, expiryDate: '2027-01-01', manufacturingDate: '2024-01-01', status: 'Estoque Baixo', available: true },
+    { id: 7, name: 'Laser CO2 Fracionado', category: 'equipamentos', stock: 1, minStock: 1, price: 89999.00, description: 'Equipamento para rejuvenescimento', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
+    { id: 8, name: 'Radiofrequência Accent', category: 'equipamentos', stock: 0, minStock: 1, price: 45999.00, description: 'Equipamento para flacidez', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false },
+    { id: 9, name: 'Criolipólise CoolSculpting', category: 'equipamentos', stock: 1, minStock: 1, price: 125999.00, description: 'Equipamento para redução de gordura', isPerishable: false, expiryDate: '2030-01-01', manufacturingDate: '2024-01-01', status: 'Em Estoque', available: true },
+    { id: 10, name: 'Fios de PDO Mono', category: 'fios', stock: 8, minStock: 20, price: 45.00, description: 'Fios de sustentação facial', isPerishable: true, expiryDate: '2025-06-15', manufacturingDate: '2024-06-15', status: 'Estoque Baixo', available: true },
+    { id: 11, name: 'Fios de PDO Espira', category: 'fios', stock: 0, minStock: 15, price: 65.00, description: 'Fios lifting facial', isPerishable: true, expiryDate: '2024-11-20', manufacturingDate: '2024-05-20', status: 'Vencido', available: false },
+    { id: 12, name: 'Anestésico Tópico EMLA', category: 'anestesicos', stock: 2, minStock: 12, price: 35.90, description: 'Anestésico tópico para procedimentos', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2024-01-15', status: 'Vencimento Próximo', available: true }
   ]
 };
 
