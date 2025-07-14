@@ -360,156 +360,353 @@ const AtividadeSection = () => {
   );
 
   const renderSales = () => (
-    <div className="main-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-800">Gestão de Vendas</h3>
-        <Button className="bg-purple-600 text-white hover:bg-purple-700">
-          <Plus className="w-4 h-4 mr-2" />
-          Nova Venda
-        </Button>
-      </div>
+    <div>
+      {/* Cabeçalho padronizado */}
+      <div className="main-card p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">Gestão de Vendas</h3>
+          <Button className="bg-purple-600 text-white hover:bg-purple-700">
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Venda
+          </Button>
+        </div>
 
-      <div className="flex gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Buscar vendas..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Buscar vendas..."
+              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">De:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateFrom(date);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">Até:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateTo(date);
+              }}
+            />
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+            }}
+            className="cursor-pointer"
+          >
+            Limpar Filtros
+          </Button>
         </div>
       </div>
 
-      <div className="space-y-4">
-        {sales.map((sale) => (
-          <div key={sale.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-800">{sale.clientName}</h4>
-                <p className="text-sm text-gray-600">{sale.productName} x{sale.quantity}</p>
-                <p className="text-xs text-gray-500">{format(new Date(sale.date), 'dd/MM/yyyy HH:mm', { locale: ptBR })}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">R$ {sale.total.toFixed(2)}</p>
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  sale.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {sale.status === 'completed' ? 'Concluída' : 'Pendente'}
-                </span>
+      {/* Lista de vendas */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Vendas ({sales.length})
+          </h2>
+        </div>
+        
+        <div className="divide-y divide-gray-200">
+          {sales.map((sale) => (
+            <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium text-gray-800">{sale.clientName}</h4>
+                  <p className="text-sm text-gray-600">{sale.productName} x{sale.quantity}</p>
+                  <p className="text-xs text-gray-500">{format(new Date(sale.date), 'dd/MM/yyyy HH:mm', { locale: ptBR })}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-gray-900">R$ {sale.total.toFixed(2)}</p>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    sale.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {sale.status === 'completed' ? 'Concluída' : 'Pendente'}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 
   const renderClients = () => (
-    <div className="main-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-800">Gestão de Clientes</h3>
-        <Button className="bg-purple-600 text-white hover:bg-purple-700">
-          <Plus className="w-4 h-4 mr-2" />
-          Novo Cliente
-        </Button>
-      </div>
+    <div>
+      {/* Cabeçalho padronizado */}
+      <div className="main-card p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">Gestão de Clientes</h3>
+          <Button className="bg-purple-600 text-white hover:bg-purple-700">
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Cliente
+          </Button>
+        </div>
 
-      <div className="flex gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="Buscar clientes..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          />
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Buscar clientes..."
+              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">De:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateFrom(date);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">Até:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateTo(date);
+              }}
+            />
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+            }}
+            className="cursor-pointer"
+          >
+            Limpar Filtros
+          </Button>
         </div>
       </div>
 
-      <div className="space-y-4">
-        {clients.map((client) => (
-          <div key={client.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-800">{client.name}</h4>
-                <p className="text-sm text-gray-600">{client.email}</p>
-                <p className="text-xs text-gray-500">{client.phone}</p>
-              </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">Total: R$ {client.totalSpent?.toFixed(2) || '0.00'}</p>
-                <span className={`text-xs px-2 py-1 rounded-full ${
-                  client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                }`}>
-                  {client.status === 'active' ? 'Ativo' : 'Inativo'}
-                </span>
+      {/* Lista de clientes */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Clientes ({clients.length})
+          </h2>
+        </div>
+        
+        <div className="divide-y divide-gray-200">
+          {clients.map((client) => (
+            <div key={client.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium text-gray-800">{client.name}</h4>
+                  <p className="text-sm text-gray-600">{client.email}</p>
+                  <p className="text-xs text-gray-500">{client.phone}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold text-gray-900">Total: R$ {client.totalSpent?.toFixed(2) || '0.00'}</p>
+                  <span className={`text-xs px-2 py-1 rounded-full ${
+                    client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {client.status === 'active' ? 'Ativo' : 'Inativo'}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
 
   const renderReports = () => (
-    <div className="main-card p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-semibold text-gray-800">Relatórios de Negócios</h3>
+    <div>
+      {/* Cabeçalho padronizado */}
+      <div className="main-card p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-800">Relatórios de Negócios</h3>
+          <Button className="bg-purple-600 text-white hover:bg-purple-700">
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Relatório
+          </Button>
+        </div>
+
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Search className="h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Buscar relatórios..."
+              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">De:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateFrom(date);
+              }}
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600">Até:</span>
+            <input
+              type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              onChange={(e) => {
+                const date = e.target.value ? new Date(e.target.value) : undefined;
+                setDateTo(date);
+              }}
+            />
+          </div>
+
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => {
+              setDateFrom(undefined);
+              setDateTo(undefined);
+            }}
+            className="cursor-pointer"
+          >
+            Limpar Filtros
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Button 
-          onClick={() => {
-            const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ 6.499,97"\n"Transações","45 vendas"`;
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `daily_report_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            alert('📊 Relatório Diário exportado!');
-          }}
-          className="bg-purple-600 text-white hover:bg-purple-700"
-        >
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          Relatório Diário
-        </Button>
-        <Button 
-          onClick={() => {
-            const csvContent = `"Relatório","Relatório Semanal"\n"Período","Última semana"\n"Total de Vendas","R$ 15.299,95"\n"Transações","127 vendas"`;
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `weekly_report_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            alert('📊 Relatório Semanal exportado!');
-          }}
-          variant="outline"
-          className="border-purple-200 text-purple-700 hover:bg-purple-50"
-        >
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          Relatório Semanal
-        </Button>
-        <Button 
-          onClick={() => {
-            const csvContent = `"Relatório","Relatório Mensal"\n"Período","Este mês"\n"Total de Vendas","R$ 45.899,20"\n"Transações","389 vendas"`;
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `monthly_report_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-            alert('📊 Relatório Mensal exportado!');
-          }}
-          variant="outline"
-          className="border-purple-200 text-purple-700 hover:bg-purple-50"
-        >
-          <CalendarIcon className="w-4 h-4 mr-2" />
-          Relatório Mensal
-        </Button>
-      </div>
+      {/* Lista de relatórios */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Relatórios Disponíveis
+          </h2>
+        </div>
+        
+        <div className="divide-y divide-gray-200">
+          <div className="p-6 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-800">Relatório Diário</h4>
+                <p className="text-sm text-gray-600">Vendas e atividades do dia</p>
+                <p className="text-xs text-gray-500">Gerado diariamente às 23:59</p>
+              </div>
+              <div className="text-right">
+                <Button 
+                  onClick={() => {
+                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ 6.499,97"\n"Transações","45 vendas"`;
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `daily_report_${new Date().toISOString().split('T')[0]}.csv`;
+                    link.click();
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
+              </div>
+            </div>
+          </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-medium text-blue-800 mb-2">Notificações Automáticas</h4>
-        <p className="text-sm text-blue-700">
-          Você receberá alertas automáticos para: vendas processadas, novos clientes, metas atingidas e análises semanais.
-        </p>
+          <div className="p-6 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-800">Relatório Semanal</h4>
+                <p className="text-sm text-gray-600">Resumo semanal de vendas e clientes</p>
+                <p className="text-xs text-gray-500">Gerado toda segunda-feira</p>
+              </div>
+              <div className="text-right">
+                <Button 
+                  onClick={() => {
+                    const csvContent = `"Relatório","Relatório Semanal"\n"Período","Última semana"\n"Total de Vendas","R$ 15.299,95"\n"Transações","127 vendas"`;
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `weekly_report_${new Date().toISOString().split('T')[0]}.csv`;
+                    link.click();
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-6 hover:bg-gray-50 transition-colors">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className="font-medium text-gray-800">Relatório Mensal</h4>
+                <p className="text-sm text-gray-600">Análise completa do mês</p>
+                <p className="text-xs text-gray-500">Gerado no primeiro dia do mês</p>
+              </div>
+              <div className="text-right">
+                <Button 
+                  onClick={() => {
+                    const csvContent = `"Relatório","Relatório Mensal"\n"Período","Este mês"\n"Total de Vendas","R$ 45.899,20"\n"Transações","389 vendas"`;
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `monthly_report_${new Date().toISOString().split('T')[0]}.csv`;
+                    link.click();
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Exportar
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
