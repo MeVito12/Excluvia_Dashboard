@@ -1174,18 +1174,6 @@ const EstoqueSection = () => {
                         product.stock <= product.minStock ? 'text-red-600' : 'text-green-600'
                       }`}>{product.stock}</span> / Mín: {product.minStock}
                     </p>
-                    {(product as any).expiryDate && (
-                      <p className="text-sm text-gray-600">
-                        Validade: <span className={`font-medium ${
-                          getDaysUntilExpiry((product as any).expiryDate) <= 3 ? 'text-red-600' : 'text-gray-700'
-                        }`}>
-                          {getDaysUntilExpiry((product as any).expiryDate) > 0 
-                            ? `${getDaysUntilExpiry((product as any).expiryDate)} dias`
-                            : 'Vencido'
-                          }
-                        </span>
-                      </p>
-                    )}
                   </div>
                 </div>
                 <div className="text-right">
@@ -1198,11 +1186,20 @@ const EstoqueSection = () => {
                   }`}>
                     {product.status}
                   </span>
-                  {(product.status === 'Vencido' || product.status === 'Vencimento Próximo' || product.status === 'Estoque Baixo') && (
-                    <div className="mt-1">
-                      <AlertTriangle className="w-4 h-4 text-red-500 mx-auto" />
-                    </div>
-                  )}
+                  <div className="mt-1 flex justify-center">
+                    {product.status === 'Vencido' && (
+                      <AlertTriangle className="w-4 h-4 text-red-500" title="Produto vencido" />
+                    )}
+                    {product.status === 'Vencimento Próximo' && (
+                      <Clock className="w-4 h-4 text-yellow-500" title="Vencimento próximo" />
+                    )}
+                    {product.status === 'Estoque Baixo' && (
+                      <Package className="w-4 h-4 text-orange-500" title="Estoque baixo" />
+                    )}
+                    {product.status === 'Em Estoque' && (
+                      <CheckCircle className="w-4 h-4 text-green-500" title="Em estoque" />
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex gap-2">
