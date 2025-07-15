@@ -278,26 +278,28 @@ const EstoqueFunctional = () => {
 
   return (
     <div className="p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-white drop-shadow-lg">Controle de Estoque</h2>
-          <p className="text-gray-300">Gerenciamento completo de produtos</p>
+      {/* Header com fundo para contraste */}
+      <div className="bg-black/20 backdrop-blur-sm rounded-lg p-6 mb-6 border border-white/10">
+        <div className="flex justify-between items-center">
+          <div>
+            <h2 className="text-3xl font-bold text-white drop-shadow-lg">Controle de Estoque</h2>
+            <p className="text-gray-200 mt-2">Sistema de gerenciamento completo de produtos</p>
+          </div>
+          <button
+            onClick={() => {
+              resetForm();
+              setShowAddModal(true);
+            }}
+            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+          >
+            <Plus className="h-5 w-5" />
+            Novo Produto
+          </button>
         </div>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowAddModal(true);
-          }}
-          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 flex items-center gap-2 transition-colors"
-        >
-          <Plus className="h-4 w-4" />
-          Novo Produto
-        </button>
       </div>
 
       {/* Filtros */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+      <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-4 mb-6">
         <div className="flex gap-4">
           <div className="flex-1">
             <div className="relative">
@@ -326,12 +328,12 @@ const EstoqueFunctional = () => {
 
       {/* Lista de produtos */}
       {isLoading ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/20 p-8 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Carregando produtos...</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
