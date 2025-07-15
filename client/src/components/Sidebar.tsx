@@ -23,7 +23,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false); // Mobile-first: começa fechado
   const { user, logout } = useAuth();
   const { selectedCategory } = useCategory();
 
@@ -66,18 +66,44 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
     }
   ];
 
+  const handleMenuClick = (itemId: string) => {
+    onSectionChange(itemId);
+    // Auto-close sidebar on mobile after selection
+    if (window.innerWidth < 768) {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <>
+      {/* Mobile Menu Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="fixed top-4 left-4 z-50 md:hidden bg-[hsl(var(--dashboard-dark))] hover:bg-[hsl(var(--dashboard-darker))] text-white border border-[hsl(var(--dashboard-darker))]"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-30 bg-black/50 md:hidden backdrop-blur-sm"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-transform duration-300",
-        "w-64 shadow-lg",
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-transform duration-300 shadow-xl",
+        "w-64",
+        "md:translate-x-0",
+        isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-[hsl(var(--dashboard-darker))]">
+          <div className="p-4 md:p-6 border-b border-[hsl(var(--dashboard-darker))]">
             <div className="mb-4">
               <UserAvatar username={user?.name || 'Usuário'} size="medium" />
             </div>
@@ -86,7 +112,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className="flex-1 p-3 md:p-4 overflow-y-auto custom-scroll">
             <ul className="space-y-2">
               {menuItems
                 .filter(item => {
@@ -105,14 +131,14 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[60px] modern-card-hover",
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px] modern-card-hover",
                         "hover:text-white modern-shine",
                         isActive && "bg-primary text-primary-foreground modern-glow"
                       )}
                       style={{
                         '--hover-bg': 'hsl(158 89% 53%)'
                       } as React.CSSProperties}
-                      onClick={() => onSectionChange(item.id)}
+                      onClick={() => handleMenuClick(item.id)}
                     >
                       <ModernIcon 
                         icon={Icon}
@@ -124,8 +150,8 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm leading-tight">{item.label}</div>
                         <div className={cn(
-                          "text-xs mt-1 leading-tight break-words",
-                          isActive ? "text-primary-foreground/80" : "text-blue-200"
+                          "text-xs mt-1 leading-tight break-words hidden md:block",
+                          isActive ? "text-blue-100" : "text-blue-200"
                         )}>
                           {item.description}
                         </div>
@@ -137,37 +163,25 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
             </ul>
           </nav>
 
-          {/* Footer */}
-          <div className="p-4 border-t border-[hsl(var(--dashboard-darker))]">
+          {/* Footer - Logout */}
+          <div className="p-3 md:p-4 border-t border-[hsl(var(--dashboard-darker))]">
             <Button
               variant="ghost"
-              size="sm"
-              className="w-full text-blue-200 hover:text-white hover:bg-red-500/20"
               onClick={logout}
+              className="w-full justify-start text-white hover:text-white hover:bg-red-600/20 transition-all duration-300 p-3"
             >
               <ModernIcon 
                 icon={LogOut}
-                variant="default"
-                size="sm"
+                variant="danger"
+                size="md"
                 animated={true}
-                className="mr-2 !text-blue-200 hover:!text-white"
+                className="mr-3 flex-shrink-0 !text-red-400"
               />
-              Sair
+              <span className="font-medium text-sm">Sair do Sistema</span>
             </Button>
-            <div className="text-xs text-blue-200 text-center mt-2">
-              Sistema v1.0
-            </div>
           </div>
         </div>
       </div>
-
-      {/* Overlay for mobile */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-30 bg-black/50 md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
     </>
   );
 };

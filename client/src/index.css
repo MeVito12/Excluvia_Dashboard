@@ -108,6 +108,30 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
+    overflow-x: hidden; /* Previne scroll horizontal em mobile */
+  }
+
+  /* Scroll responsivo */
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) transparent;
+  }
+
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary));
+    border-radius: 3px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary)/0.8);
   }
 }
 
@@ -115,13 +139,50 @@ All colors MUST be HSL.
 @layer components {
   /* Container principal das seções */
   .app-section {
-    @apply min-h-screen p-6 space-y-6;
+    @apply min-h-screen p-4 md:p-6 space-y-4 md:space-y-6;
     background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
   }
 
   /* Cabeçalho das seções */
   .section-header {
-    @apply mb-6;
+    @apply mb-4 md:mb-6;
+  }
+
+  /* Responsividade para cards principais */
+  .main-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 md:p-6 min-h-[120px] transition-all duration-300;
+  }
+
+  /* Grid responsivo */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6;
+  }
+
+  /* Grid para métricas */
+  .metrics-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4;
+  }
+
+  /* Metric cards responsivos */
+  .metric-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-3 md:p-4 text-center min-h-[80px] md:min-h-[100px];
+  }
+
+  /* Navegação em abas responsiva */
+  .tab-navigation {
+    @apply flex flex-wrap gap-2 md:gap-4 mb-6 p-2 bg-white/5 rounded-lg border border-white/10;
+  }
+
+  .tab-button {
+    @apply flex-1 min-w-[120px] px-3 md:px-4 py-2 md:py-3 rounded-lg text-sm md:text-base font-medium transition-all duration-300 text-center;
+  }
+
+  .tab-button.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .tab-button:not(.active) {
+    @apply text-white/70 hover:text-white hover:bg-white/10;
   }
 
   .section-title {

@@ -137,16 +137,18 @@ const DashboardSection = () => {
       </div>
 
       {/* Filtros de Data */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
+      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 mb-6">
+        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
         
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Data inicial:</span>
+        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-start sm:items-center">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-gray-500" />
+              <span className="text-sm font-medium text-gray-700">Data inicial:</span>
+            </div>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full sm:w-auto px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
               value={dateFrom || ''}
               onChange={(e) => setDateFrom(e.target.value || undefined)}
             />
@@ -187,124 +189,124 @@ const DashboardSection = () => {
       </div>
 
       {/* Primary Metrics Grid */}
-      <div className="metrics-grid">
+      <div className="metrics-grid mb-6">
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total de Registros</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.totalRecords}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Total de Registros</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.totalRecords}</p>
               <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} este mês</p>
             </div>
-            <div className="p-3 rounded-full bg-gray-100">
-              <Database className="h-6 w-6 text-gray-600" />
+            <div className="p-2 md:p-3 rounded-full bg-gray-100 flex-shrink-0">
+              <Database className="h-4 w-4 md:h-6 md:w-6 text-gray-600" />
             </div>
           </div>
         </div>
         
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Equipe Ativa</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.activeUsers}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Equipe Ativa</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.activeUsers}</p>
               <p className="text-xs mt-1 text-blue-600">Profissionais ativos</p>
             </div>
-            <div className="p-3 rounded-full bg-blue-100">
-              <Users className="h-6 w-6 text-blue-600" />
+            <div className="p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
+              <Users className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
         
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Receita Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.revenue}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Receita Hoje</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.revenue}</p>
               <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} vs ontem</p>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <TrendingUp className="h-6 w-6 text-green-600" />
+            <div className="p-2 md:p-3 rounded-full bg-green-100 flex-shrink-0">
+              <TrendingUp className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
             </div>
           </div>
         </div>
         
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Agendamentos Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.appointments}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Agendamentos Hoje</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.appointments}</p>
               <p className="text-xs mt-1 text-purple-600">Próximos</p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <Calendar className="h-6 w-6 text-purple-600" />
+            <div className="p-2 md:p-3 rounded-full bg-purple-100 flex-shrink-0">
+              <Calendar className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Secondary Metrics Grid */}
-      <div className="metrics-grid">
+      <div className="metrics-grid mb-6">
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Transações Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Transações Hoje</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
               <p className="text-xs mt-1 text-green-600">Volume do dia</p>
             </div>
-            <div className="p-3 rounded-full bg-blue-100">
-              <ShoppingCart className="h-6 w-6 text-blue-600" />
+            <div className="p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
+              <ShoppingCart className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
 
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Satisfação</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{currentMetrics.satisfaction}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Satisfação</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.satisfaction}</p>
               <p className="text-xs mt-1 text-yellow-600">⭐ Avaliação média</p>
             </div>
-            <div className="p-3 rounded-full bg-yellow-100">
-              <Clock className="h-6 w-6 text-yellow-600" />
+            <div className="p-2 md:p-3 rounded-full bg-yellow-100 flex-shrink-0">
+              <Clock className="h-4 w-4 md:h-6 md:w-6 text-yellow-600" />
             </div>
           </div>
         </div>
 
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Alertas Ativos</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Alertas Ativos</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">
                 {selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
               </p>
               <p className="text-xs mt-1 text-red-600">Requer atenção</p>
             </div>
-            <div className="p-3 rounded-full bg-red-100">
-              <AlertTriangle className="h-6 w-6 text-red-600" />
+            <div className="p-2 md:p-3 rounded-full bg-red-100 flex-shrink-0">
+              <AlertTriangle className="h-4 w-4 md:h-6 md:w-6 text-red-600" />
             </div>
           </div>
         </div>
 
         <div className="metric-card">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Notificações</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Notificações</p>
+              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">
                 {selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
               </p>
               <p className="text-xs mt-1 text-blue-600">Não lidas</p>
             </div>
-            <div className="p-3 rounded-full bg-indigo-100">
-              <Bell className="h-6 w-6 text-indigo-600" />
+            <div className="p-2 md:p-3 rounded-full bg-indigo-100 flex-shrink-0">
+              <Bell className="h-4 w-4 md:h-6 md:w-6 text-indigo-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Seção de Compromissos */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <div className="flex items-center mb-6">
-          <h3 className="text-lg font-semibold text-black flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-purple-600" />
+      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 md:mb-6 gap-3 sm:gap-0">
+          <h3 className="text-base md:text-lg font-semibold text-black flex items-center gap-2">
+            <Calendar className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
             Compromissos
           </h3>
         </div>
