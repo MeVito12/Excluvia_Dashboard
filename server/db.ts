@@ -1,17 +1,34 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import * as schema from "@shared/schema";
 
 // Only initialize database if DATABASE_URL is available
 let db: ReturnType<typeof drizzle> | null = null;
-let sql: any = null;
+let pool: Pool | null = null;
 
 if (process.env.DATABASE_URL) {
   try {
-    // Create Neon serverless connection
-    sql = neon(process.env.DATABASE_URL);
-    // Initialize Drizzle with Neon
-    db = drizzle(sql, { schema });
+    // Parse DATABASE_URL to extract components
+    const url = new URL(process.env.DATABASE_URL);
+    
+    // Create PostgreSQL connection pool with individual config
+    pool = new Pool({
+      user: url.username,
+      password: url.password,
+      host: url.hostname,
+      port: parseInt(url.port) || 5432,
+      database: url.pathname.slice(1), // Remove leading slash
+      ssl: {
+        rejectUnauthorized: false
+      },
+      max: 10,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 15000,
+    });
+    
+    // Initialize Drizzle with PostgreSQL
+    db = drizzle(pool, { schema });
+    console.log(`🔌 Database pool configured for ${url.hostname}:${url.port}`);
   } catch (error) {
     console.warn("⚠️  Failed to initialize database:", error);
   }
@@ -21,13 +38,16 @@ export { db };
 
 // Connection health check
 export async function checkDatabaseConnection() {
-  if (!sql || !db) {
+  if (!pool || !db) {
     console.log("📦 No database configured, using mock data");
     return false;
   }
   
   try {
-    await sql`SELECT 1`;
+    // Test connection with a simple query
+    const client = await pool.connect();
+    await client.query('SELECT 1');
+    client.release();
     console.log("✅ Database connection successful");
     return true;
   } catch (error) {

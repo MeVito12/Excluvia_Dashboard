@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { databaseManager } from "./database-manager";
 import { 
   insertAppointmentSchema, 
   insertReminderSchema,
@@ -10,13 +10,18 @@ import {
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check
-  app.get("/api/health", (_req, res) => {
-    res.json({ status: "ok" });
+  app.get("/api/health", async (_req, res) => {
+    const dbStatus = databaseManager.getStatus();
+    res.json({ 
+      status: "ok", 
+      database: dbStatus 
+    });
   });
 
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
+      const storage = await databaseManager.getStorage();
       const userId = 1; // TODO: Get from session/auth
       const appointments = await storage.getAppointments(userId);
       res.json(appointments);
@@ -29,6 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/appointments", async (req, res) => {
     try {
+      const storage = await databaseManager.getStorage();
       const userId = 1; // TODO: Get from session/auth
       const validatedData = insertAppointmentSchema.parse({
         ...req.body,

@@ -29,10 +29,11 @@ This is a full-stack database management application built with React, Express, 
 ## Key Components
 
 ### Database Layer
-- **Integration**: Multiple Supabase database connections
-- **Schema**: TypeScript interfaces in `shared/schema.ts` prepared for Supabase
-- **Database**: Multiple Supabase PostgreSQL databases
-- **Connection**: Multi-database connection manager with environment-based configuration
+- **Integration**: Supabase PostgreSQL database with Drizzle ORM
+- **Schema**: Complete schema with 13 tables in `shared/schema.ts`
+- **Database**: Production-ready PostgreSQL database with connection pooling
+- **Storage**: Hybrid storage system with automatic fallback to mock data
+- **Connection**: PostgreSQL driver with SSL support and connection pooling
 
 ### API Layer
 - **Storage Interface**: Abstracted storage layer prepared for Supabase multi-database integration
@@ -147,6 +148,7 @@ Changelog:
 - July 11, 2025. Enhanced mock data system with comprehensive, varied, and realistic data across all business categories: Created centralized mock data library with detailed product inventories, sales records, client databases, appointments, specialists, WhatsApp conversations, and activities for each category (Pet, Medical, Food, Technology, Sales, Education, Beauty, Aesthetics, Design, Sites). Each category now has 12+ products with realistic pricing, stock levels, expiry dates, and business-appropriate descriptions. Added comprehensive sales data with varied payment methods, client types, and transaction amounts. Implemented detailed client profiles with contact information, purchase history, and category-specific attributes. Enhanced all sections to use the centralized data system for consistency and easier maintenance.
 - July 14, 2025. Completed major data cleanup focused on 7 specific login profiles: Removed unnecessary categories (tecnologia, educacao, beleza, estetica) from all mock data sections to focus exclusively on the defined business profiles: farmacia (Farmácia Central), pet (Pet Clinic), medico (Clínica Saúde), alimenticio (Restaurante Bella Vista), vendas (Comercial Tech), design (Agência Creative), and sites (Web Agency). Updated all data structures (products, sales, clients, appointments, specialists, WhatsApp conversations, activities) to maintain only relevant business-specific information. Corrected dashboard and graphics metrics to reflect realistic scenarios for each profile type. Enhanced design and sites categories with appropriate creative and development team data instead of inventory-based information.
 - July 14, 2025. Restructured Activity section with tabbed navigation and standardized filtering system: Moved Sales, Clients, and Reports tabs from Inventory to Activity section. Focused Inventory section exclusively on product management. Implemented uniform filtering system across all Activity tabs using date range filters (from/to dates) and search functionality. Removed type filters, export functions, and header sections from Activity tabs as requested. All Activity tabs now maintain consistent layout with only filters (search + date range + clear filters button) without title/action button headers.
+- July 15, 2025. Implemented comprehensive Supabase database integration with hybrid fallback system: Created complete PostgreSQL schema with 13 tables using Drizzle ORM, implemented database storage interface with full CRUD operations, configured hybrid system that automatically falls back to mock data when Supabase is not accessible. Added database manager for transparent storage handling, updated API routes to work with both database and mock storage. System is fully prepared for Supabase deployment while maintaining development functionality with realistic mock data for all 7 business categories.
 ```
 
 ## User Preferences

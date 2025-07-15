@@ -38,12 +38,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize database connection
-  try {
-    await initializeDatabase();
-  } catch (error) {
-    console.error("⚠️  Database initialization failed, continuing with mock data:", error);
-  }
+  // Initialize database manager
+  const { databaseManager } = await import("./database-manager");
+  await databaseManager.initialize();
   
   const server = await registerRoutes(app);
 
