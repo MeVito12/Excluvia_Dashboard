@@ -156,54 +156,54 @@ const GraficosSection = () => {
 
       {/* Métricas de Vendas */}
       <div className="metrics-grid">
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Vendas Hoje</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.today.sales}</p>
-              <p className="text-xs mt-1 text-green-600">{metrics.today.growth} vs ontem</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Vendas Hoje</p>
+              <p className="metric-card-value">{metrics.today.sales}</p>
+              <p className="metric-card-description text-green-600">{metrics.today.growth} vs ontem</p>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <Calendar className="h-6 w-6 text-green-600" />
+            <div className="metric-card-icon bg-green-100">
+              <Calendar className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Vendas Esta Semana</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.week.sales}</p>
-              <p className="text-xs mt-1 text-blue-600">{metrics.week.growth} vs sem. anterior</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Vendas Esta Semana</p>
+              <p className="metric-card-value">{metrics.week.sales}</p>
+              <p className="metric-card-description text-blue-600">{metrics.week.growth} vs sem. anterior</p>
             </div>
-            <div className="p-3 rounded-full bg-blue-100">
-              <BarChart3 className="h-6 w-6 text-blue-600" />
+            <div className="metric-card-icon bg-blue-100">
+              <BarChart3 className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Vendas Este Mês</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.month.sales}</p>
-              <p className="text-xs mt-1 text-purple-600">{metrics.month.growth} vs mês anterior</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Vendas Este Mês</p>
+              <p className="metric-card-value">{metrics.month.sales}</p>
+              <p className="metric-card-description text-purple-600">{metrics.month.growth} vs mês anterior</p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <TrendingUp className="h-6 w-6 text-purple-600" />
+            <div className="metric-card-icon bg-purple-100">
+              <TrendingUp className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Ticket Médio</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.month.avgTicket}</p>
-              <p className="text-xs mt-1 text-orange-600">Média mensal</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Ticket Médio</p>
+              <p className="metric-card-value">{metrics.month.avgTicket}</p>
+              <p className="metric-card-description text-orange-600">Média mensal</p>
             </div>
-            <div className="p-3 rounded-full bg-orange-100">
-              <PieChart className="h-6 w-6 text-orange-600" />
+            <div className="metric-card-icon bg-orange-100">
+              <PieChart className="h-4 w-4 md:h-6 md:w-6 text-orange-600" />
             </div>
           </div>
         </div>
@@ -211,58 +211,58 @@ const GraficosSection = () => {
 
       {/* Métricas de Performance */}
       <div className="metrics-grid">
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Clientes</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.customers.total}</p>
-              <p className="text-xs mt-1 text-blue-600">+{metrics.customers.new} novos</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Total Clientes</p>
+              <p className="metric-card-value">{metrics.customers.total}</p>
+              <p className="metric-card-description text-blue-600">+{metrics.customers.new} novos</p>
             </div>
-            <div className="p-3 rounded-full bg-cyan-100">
-              <Users className="h-6 w-6 text-cyan-600" />
+            <div className="metric-card-icon bg-cyan-100">
+              <Users className="h-4 w-4 md:h-6 md:w-6 text-cyan-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Taxa Retenção</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">{metrics.customers.retention}</p>
-              <p className="text-xs mt-1 text-green-600">Últimos 90 dias</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Taxa Retenção</p>
+              <p className="metric-card-value">{metrics.customers.retention}</p>
+              <p className="metric-card-description text-green-600">Últimos 90 dias</p>
             </div>
-            <div className="p-3 rounded-full bg-emerald-100">
-              <Target className="h-6 w-6 text-emerald-600" />
+            <div className="metric-card-icon bg-emerald-100">
+              <Target className="h-4 w-4 md:h-6 md:w-6 text-emerald-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Meta Mensal</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Meta Mensal</p>
+              <p className="metric-card-value">
                 {selectedCategory === 'alimenticio' ? '85%' : selectedCategory === 'vendas' ? '92%' : selectedCategory === 'pet' ? '78%' : '88%'}
               </p>
-              <p className="text-xs mt-1 text-green-600">Do objetivo alcançado</p>
+              <p className="metric-card-description text-green-600">Do objetivo alcançado</p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <Activity className="h-6 w-6 text-purple-600" />
+            <div className="metric-card-icon bg-purple-100">
+              <Activity className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Conversão</p>
-              <p className="text-2xl font-bold mt-1 text-gray-900">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Conversão</p>
+              <p className="metric-card-value">
                 {selectedCategory === 'alimenticio' ? '24%' : selectedCategory === 'vendas' ? '18%' : selectedCategory === 'pet' ? '31%' : '26%'}
               </p>
-              <p className="text-xs mt-1 text-orange-600">Taxa de conversão</p>
+              <p className="metric-card-description text-orange-600">Taxa de conversão</p>
             </div>
-            <div className="p-3 rounded-full bg-orange-100">
-              <Zap className="h-6 w-6 text-orange-600" />
+            <div className="metric-card-icon bg-orange-100">
+              <Zap className="h-4 w-4 md:h-6 md:w-6 text-orange-600" />
             </div>
           </div>
         </div>

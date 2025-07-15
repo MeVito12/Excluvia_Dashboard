@@ -190,53 +190,53 @@ const DashboardSection = () => {
 
       {/* Primary Metrics Grid */}
       <div className="metrics-grid mb-6">
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Total de Registros</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.totalRecords}</p>
-              <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} este mês</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Total de Registros</p>
+              <p className="metric-card-value">{filteredMetrics.totalRecords}</p>
+              <p className="metric-card-description text-green-600">{filteredMetrics.growth} este mês</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-gray-100 flex-shrink-0">
+            <div className="metric-card-icon bg-gray-100">
               <Database className="h-4 w-4 md:h-6 md:w-6 text-gray-600" />
             </div>
           </div>
         </div>
         
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Equipe Ativa</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.activeUsers}</p>
-              <p className="text-xs mt-1 text-blue-600">Profissionais ativos</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Equipe Ativa</p>
+              <p className="metric-card-value">{filteredMetrics.activeUsers}</p>
+              <p className="metric-card-description text-blue-600">Profissionais ativos</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
+            <div className="metric-card-icon bg-blue-100">
               <Users className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
         
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Receita Hoje</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{filteredMetrics.revenue}</p>
-              <p className="text-xs mt-1 text-green-600">{filteredMetrics.growth} vs ontem</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Receita Hoje</p>
+              <p className="metric-card-value">{filteredMetrics.revenue}</p>
+              <p className="metric-card-description text-green-600">{filteredMetrics.growth} vs ontem</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-green-100 flex-shrink-0">
+            <div className="metric-card-icon bg-green-100">
               <TrendingUp className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
             </div>
           </div>
         </div>
         
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Agendamentos Hoje</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.appointments}</p>
-              <p className="text-xs mt-1 text-purple-600">Próximos</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Agendamentos Hoje</p>
+              <p className="metric-card-value">{currentMetrics.appointments}</p>
+              <p className="metric-card-description text-purple-600">Próximos</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-purple-100 flex-shrink-0">
+            <div className="metric-card-icon bg-purple-100">
               <Calendar className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
             </div>
           </div>
@@ -245,57 +245,57 @@ const DashboardSection = () => {
 
       {/* Secondary Metrics Grid */}
       <div className="metrics-grid mb-6">
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Transações Hoje</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.transactions}</p>
-              <p className="text-xs mt-1 text-green-600">Volume do dia</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Transações Hoje</p>
+              <p className="metric-card-value">{currentMetrics.transactions}</p>
+              <p className="metric-card-description text-green-600">Volume do dia</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-blue-100 flex-shrink-0">
+            <div className="metric-card-icon bg-blue-100">
               <ShoppingCart className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Satisfação</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">{currentMetrics.satisfaction}</p>
-              <p className="text-xs mt-1 text-yellow-600">⭐ Avaliação média</p>
+            <div className="metric-card-content">
+              <p className="metric-card-label">Satisfação</p>
+              <p className="metric-card-value">{currentMetrics.satisfaction}</p>
+              <p className="metric-card-description text-yellow-600">⭐ Avaliação média</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-yellow-100 flex-shrink-0">
+            <div className="metric-card-icon bg-yellow-100">
               <Clock className="h-4 w-4 md:h-6 md:w-6 text-yellow-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Alertas Ativos</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Alertas Ativos</p>
+              <p className="metric-card-value">
                 {selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
               </p>
-              <p className="text-xs mt-1 text-red-600">Requer atenção</p>
+              <p className="metric-card-description text-red-600">Requer atenção</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-red-100 flex-shrink-0">
+            <div className="metric-card-icon bg-red-100">
               <AlertTriangle className="h-4 w-4 md:h-6 md:w-6 text-red-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-xs md:text-sm font-medium text-gray-600 truncate">Notificações</p>
-              <p className="text-lg md:text-2xl font-bold mt-1 text-gray-900">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Notificações</p>
+              <p className="metric-card-value">
                 {selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
               </p>
-              <p className="text-xs mt-1 text-blue-600">Não lidas</p>
+              <p className="metric-card-description text-blue-600">Não lidas</p>
             </div>
-            <div className="p-2 md:p-3 rounded-full bg-indigo-100 flex-shrink-0">
+            <div className="metric-card-icon bg-indigo-100">
               <Bell className="h-4 w-4 md:h-6 md:w-6 text-indigo-600" />
             </div>
           </div>
@@ -360,21 +360,21 @@ const DashboardSection = () => {
             const appointments = categoryAppointments[selectedCategory as keyof typeof categoryAppointments] || categoryAppointments.pet;
             
             return appointments.map((apt, index) => (
-              <div key={index} className="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                      <Calendar className="h-5 w-5 text-purple-600" />
+              <div key={index} className="list-card">
+                <div className="list-card-header">
+                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                    <div className="metric-card-icon bg-purple-100 !p-2">
+                      <Calendar className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900">{apt.title}</h4>
-                      <p className="text-sm text-gray-600">{apt.client}</p>
-                      <p className="text-sm text-gray-500">{apt.time}</p>
+                    <div className="min-w-0 flex-1">
+                      <h4 className="list-card-title">{apt.title}</h4>
+                      <p className="text-xs md:text-sm text-gray-600">{apt.client}</p>
+                      <p className="list-card-meta">{apt.time}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-shrink-0">
                     <Badge 
-                      className={`${
+                      className={`text-xs ${
                         apt.status.includes('Em') ? 'bg-green-100 text-green-800' :
                         apt.status === 'Amanhã' ? 'bg-blue-100 text-blue-800' :
                         'bg-gray-100 text-gray-800'
@@ -382,19 +382,19 @@ const DashboardSection = () => {
                     >
                       {apt.status}
                     </Badge>
-                    <div className="flex gap-1">
-                      <button className="p-1 text-gray-400 hover:text-purple-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 text-gray-400 hover:text-green-600">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
+                </div>
+                <div className="list-card-footer">
+                  <button className="p-1 text-gray-400 hover:text-purple-600 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button className="p-1 text-gray-400 hover:text-green-600 transition-colors">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
                 </div>
               </div>
             ));
