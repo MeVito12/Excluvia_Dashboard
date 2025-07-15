@@ -1,6 +1,5 @@
-// Database manager that handles Supabase connection (database-only mode)
-import { db, checkDatabaseConnection } from "./db";
-import { DatabaseStorage } from "./storage";
+// Database manager that handles Supabase connection via REST API (database-only mode)
+import { SupabaseRestStorage } from "./supabase-rest-storage";
 import { ensureTablesExist } from "./supabase-admin-setup";
 
 class DatabaseManager {
@@ -27,9 +26,10 @@ class DatabaseManager {
         });
 
         if (testResponse.ok) {
-          console.log("✅ Supabase tables exist and accessible via API");
+          console.log("✅ Supabase tables exist and accessible");
           console.log("✅ Using Supabase database via REST API");
-          this.storage = new DatabaseStorage();
+          const { SupabaseRestStorage } = await import("./supabase-rest-storage");
+          this.storage = new SupabaseRestStorage();
           this.usingDatabase = true;
         } else {
           console.log("❌ Supabase tables not found - database setup required");
