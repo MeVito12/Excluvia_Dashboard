@@ -18,6 +18,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Authentication route
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email e senha são obrigatórios" });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const user = await storage.getUserByEmail(email);
+      
+      if (!user || user.password !== password) {
+        return res.status(401).json({ error: "Credenciais inválidas" });
+      }
+
+      // Return user data without password
+      const { password: _, ...userWithoutPassword } = user;
+      res.json({ 
+        user: userWithoutPassword,
+        message: "Login realizado com sucesso" 
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
+    }
+  });
+
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {

@@ -24,8 +24,9 @@ DROP TABLE IF EXISTS users CASCADE;
 -- ============================================
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL,
     business_category VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
@@ -248,16 +249,16 @@ CREATE TABLE reminders (
 -- INSERÇÃO DE DADOS DE EXEMPLO
 -- ============================================
 
--- Usuários para cada categoria de negócio
-INSERT INTO users (username, password, business_category) VALUES
-('farmacia', 'demo123', 'farmacia'),
-('pet', 'demo123', 'pet'),
-('medico', 'demo123', 'medico'),
-('alimenticio', 'demo123', 'alimenticio'),
-('vendas', 'demo123', 'vendas'),
-('design', 'demo123', 'design'),
-('sites', 'demo123', 'sites')
-ON CONFLICT (username) DO NOTHING;
+-- Usuários para cada categoria de negócio (sincronizado com frontend)
+INSERT INTO users (email, password, name, business_category) VALUES
+('farmaceutico@farmaciacentral.com', 'farm2025', 'Dr. Fernando Farmacêutico', 'farmacia'),
+('veterinario@petclinic.com', 'vet2025', 'Dr. Carlos Veterinário', 'pet'),
+('medico@clinicasaude.com', 'med2025', 'Dra. Ana Médica', 'medico'),
+('chef@restaurante.com', 'chef2025', 'Chef Roberto', 'alimenticio'),
+('vendedor@comercial.com', 'venda2025', 'João Vendedor', 'vendas'),
+('designer@agencia.com', 'design2025', 'Maria Designer', 'design'),
+('dev@webagency.com', 'web2025', 'Pedro Desenvolvedor', 'sites')
+ON CONFLICT (email) DO NOTHING;
 
 -- Produtos para farmácia
 INSERT INTO products (name, category, sku, stock, min_stock, price, is_perishable, manufacturing_date, expiry_date, business_category, user_id) VALUES

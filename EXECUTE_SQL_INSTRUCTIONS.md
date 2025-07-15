@@ -64,6 +64,18 @@ Após executar o SQL:
    }
    ```
 
+## 🔑 Credenciais de Login
+
+Após ativação, use estes emails/senhas sincronizados:
+
+- **Farmácia**: `farmaceutico@farmaciacentral.com` / `farm2025`
+- **Pet Shop**: `veterinario@petclinic.com` / `vet2025`
+- **Médico**: `medico@clinicasaude.com` / `med2025`
+- **Alimentício**: `chef@restaurante.com` / `chef2025`
+- **Vendas**: `vendedor@comercial.com` / `venda2025`
+- **Design**: `designer@agencia.com` / `design2025`
+- **Sites**: `dev@webagency.com` / `web2025`
+
 ## 🎉 Resultado Final
 
 Com as tabelas criadas, o sistema:

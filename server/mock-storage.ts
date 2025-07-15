@@ -15,15 +15,15 @@ import {
 } from "@shared/schema";
 import { IStorage } from "./storage";
 
-// Convert existing mock data to database format
+// Convert existing mock data to database format (sincronizado com frontend)
 const mockUsers: User[] = [
-  { id: 1, username: "farmacia", password: "demo123", businessCategory: "farmacia", createdAt: new Date(), updatedAt: new Date() },
-  { id: 2, username: "pet", password: "demo123", businessCategory: "pet", createdAt: new Date(), updatedAt: new Date() },
-  { id: 3, username: "medico", password: "demo123", businessCategory: "medico", createdAt: new Date(), updatedAt: new Date() },
-  { id: 4, username: "alimenticio", password: "demo123", businessCategory: "alimenticio", createdAt: new Date(), updatedAt: new Date() },
-  { id: 5, username: "vendas", password: "demo123", businessCategory: "vendas", createdAt: new Date(), updatedAt: new Date() },
-  { id: 6, username: "design", password: "demo123", businessCategory: "design", createdAt: new Date(), updatedAt: new Date() },
-  { id: 7, username: "sites", password: "demo123", businessCategory: "sites", createdAt: new Date(), updatedAt: new Date() },
+  { id: 1, email: "farmaceutico@farmaciacentral.com", password: "farm2025", name: "Dr. Fernando Farmacêutico", businessCategory: "farmacia", createdAt: new Date(), updatedAt: new Date() },
+  { id: 2, email: "veterinario@petclinic.com", password: "vet2025", name: "Dr. Carlos Veterinário", businessCategory: "pet", createdAt: new Date(), updatedAt: new Date() },
+  { id: 3, email: "medico@clinicasaude.com", password: "med2025", name: "Dra. Ana Médica", businessCategory: "medico", createdAt: new Date(), updatedAt: new Date() },
+  { id: 4, email: "chef@restaurante.com", password: "chef2025", name: "Chef Roberto", businessCategory: "alimenticio", createdAt: new Date(), updatedAt: new Date() },
+  { id: 5, email: "vendedor@comercial.com", password: "venda2025", name: "João Vendedor", businessCategory: "vendas", createdAt: new Date(), updatedAt: new Date() },
+  { id: 6, email: "designer@agencia.com", password: "design2025", name: "Maria Designer", businessCategory: "design", createdAt: new Date(), updatedAt: new Date() },
+  { id: 7, email: "dev@webagency.com", password: "web2025", name: "Pedro Desenvolvedor", businessCategory: "sites", createdAt: new Date(), updatedAt: new Date() },
 ];
 
 let mockProducts: Product[] = [];
@@ -39,8 +39,8 @@ let nextId = 1;
 const generateId = () => nextId++;
 
 export class MockStorage implements IStorage {
-  async getUserByUsername(username: string): Promise<User | null> {
-    return mockUsers.find(user => user.username === username) || null;
+  async getUserByEmail(email: string): Promise<User | null> {
+    return mockUsers.find(user => user.email === email) || null;
   }
 
   async createUser(user: InsertUser): Promise<User> {

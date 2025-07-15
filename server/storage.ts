@@ -23,7 +23,7 @@ import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
-  getUserByUsername(username: string): Promise<User | null>;
+  getUserByEmail(email: string): Promise<User | null>;
   createUser(user: InsertUser): Promise<User>;
   
   // Product operations
@@ -61,12 +61,12 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getUserByUsername(username: string): Promise<User | null> {
+  async getUserByEmail(email: string): Promise<User | null> {
     try {
-      const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
       return result[0] || null;
     } catch (error) {
-      console.error("Database error in getUserByUsername:", error);
+      console.error("Database error in getUserByEmail:", error);
       return null;
     }
   }
