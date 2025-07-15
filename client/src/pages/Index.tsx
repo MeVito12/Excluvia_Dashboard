@@ -4,7 +4,7 @@ import DashboardSection from '@/components/sections/DashboardSection';
 import GraficosSection from '@/components/sections/GraficosSection';
 import AtividadeSection from '@/components/sections/AtividadeSection';
 import AgendamentosSection from '@/components/sections/AgendamentosSection';
-import EstoqueFunctional from '@/components/sections/EstoqueFunctional';
+import EstoqueSection from '@/components/sections/EstoqueSection';
 import AtendimentoSection from '@/components/sections/AtendimentoSection';
 
 const Index = () => {
@@ -21,7 +21,7 @@ const Index = () => {
       case 'agendamentos':
         return <AgendamentosSection />;
       case 'estoque':
-        return <EstoqueFunctional />;
+        return <EstoqueSection />;
       case 'atendimento':
         return <AtendimentoSection />;
       default:
