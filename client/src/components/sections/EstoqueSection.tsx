@@ -51,11 +51,14 @@ const EstoqueSection = () => {
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
-  const [products, setProducts] = useState(() => getProductsByCategory(selectedCategory));
+  const [products, setProducts] = useState<any[]>([]);
   
-  // Atualizar produtos quando a categoria mudar
+  // Buscar produtos da API quando a categoria mudar
   React.useEffect(() => {
-    setProducts(getProductsByCategory(selectedCategory));
+    fetch(`/api/products?businessCategory=${selectedCategory}`)
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error('Error loading products:', err));
   }, [selectedCategory]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -70,11 +73,14 @@ const EstoqueSection = () => {
     price: '',
     minStock: '10'
   });
-  const [sales, setSales] = useState(() => getSalesByCategory(selectedCategory));
+  const [sales, setSales] = useState<any[]>([]);
   
-  // Atualizar vendas quando a categoria mudar
+  // Buscar vendas da API quando a categoria mudar
   React.useEffect(() => {
-    setSales(getSalesByCategory(selectedCategory));
+    fetch(`/api/sales?businessCategory=${selectedCategory}`)
+      .then(res => res.json())
+      .then(data => setSales(data))
+      .catch(err => console.error('Error loading sales:', err));
   }, [selectedCategory]);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
