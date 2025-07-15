@@ -15,47 +15,16 @@ export interface SupabaseDatabaseConfig {
 export function loadSupabaseConfigs(): SupabaseDatabaseConfig[] {
   const configs: SupabaseDatabaseConfig[] = [];
   
-  // Example of how to load multiple database configurations
-  // The actual implementation will read from environment variables
-  
-  // Database 1 - Main
-  if (process.env.SUPABASE_URL_MAIN && process.env.SUPABASE_ANON_KEY_MAIN) {
-    configs.push({
-      id: 'main',
-      name: 'Main Database',
-      url: process.env.SUPABASE_URL_MAIN,
-      anonKey: process.env.SUPABASE_ANON_KEY_MAIN,
-      serviceKey: process.env.SUPABASE_SERVICE_KEY_MAIN,
-      isActive: true,
-      description: 'Primary database for appointments and users'
-    });
-  }
-  
-  // Database 2 - Secondary
-  if (process.env.SUPABASE_URL_SECONDARY && process.env.SUPABASE_ANON_KEY_SECONDARY) {
-    configs.push({
-      id: 'secondary',
-      name: 'Secondary Database',
-      url: process.env.SUPABASE_URL_SECONDARY,
-      anonKey: process.env.SUPABASE_ANON_KEY_SECONDARY,
-      serviceKey: process.env.SUPABASE_SERVICE_KEY_SECONDARY,
-      isActive: true,
-      description: 'Secondary database for backup and additional data'
-    });
-  }
-  
-  // Database 3 - Analytics
-  if (process.env.SUPABASE_URL_ANALYTICS && process.env.SUPABASE_ANON_KEY_ANALYTICS) {
-    configs.push({
-      id: 'analytics',
-      name: 'Analytics Database',
-      url: process.env.SUPABASE_URL_ANALYTICS,
-      anonKey: process.env.SUPABASE_ANON_KEY_ANALYTICS,
-      serviceKey: process.env.SUPABASE_SERVICE_KEY_ANALYTICS,
-      isActive: true,
-      description: 'Database for analytics and reporting data'
-    });
-  }
+  // Primary Supabase Database Configuration
+  configs.push({
+    id: 'main',
+    name: 'Business Management Database',
+    url: 'https://mjydrjmckcoixrnnrehm.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qeWRyam1ja2NvaXhybm5yZWhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyNTc4MDgsImV4cCI6MjA2NzgzMzgwOH0.eYTUOTN5m_M3C-_0viLNU-MLjraNc-DHFooCwHa2WIo',
+    serviceKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qeWRyam1ja2NvaXhybm5yZWhtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MjI1NzgwOCwiZXhwIjoyMDY3ODMzODA4fQ._HjvF-0uX3t3QXlx6XoESxcdGqV0P3J4Kb00FzpAp0k',
+    isActive: true,
+    description: 'Primary database for all business management operations - appointments, inventory, sales, clients, and customer service'
+  });
   
   return configs;
 }

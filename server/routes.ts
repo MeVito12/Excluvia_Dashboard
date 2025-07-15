@@ -18,41 +18,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/appointments", async (req, res) => {
     try {
       const userId = 1; // TODO: Get from session/auth
-      const { startDate, endDate } = req.query;
-      
-      let appointments;
-      if (startDate && endDate) {
-        appointments = await storage.getAppointmentsByDateRange(
-          userId, 
-          new Date(startDate as string), 
-          new Date(endDate as string)
-        );
-      } else {
-        appointments = await storage.getAppointments(userId);
-      }
-      
+      const appointments = await storage.getAppointments(userId);
       res.json(appointments);
     } catch (error) {
       res.status(500).json({ error: "Erro ao buscar agendamentos" });
     }
   });
 
-  app.get("/api/appointments/:id", async (req, res) => {
-    try {
-      const appointment = await storage.getAppointment(parseInt(req.params.id));
-      if (!appointment) {
-        return res.status(404).json({ error: "Agendamento não encontrado" });
-      }
-      res.json(appointment);
-    } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar agendamento" });
-    }
-  });
+  // Get single appointment route removed as not in storage interface
 
   app.post("/api/appointments", async (req, res) => {
     try {
+      const userId = 1; // TODO: Get from session/auth
       const validatedData = insertAppointmentSchema.parse({
         ...req.body,
+        userId,
         userId: 1, // TODO: Get from session/auth
         startTime: new Date(req.body.startTime),
         endTime: new Date(req.body.endTime),

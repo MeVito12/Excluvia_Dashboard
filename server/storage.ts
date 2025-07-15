@@ -1,306 +1,327 @@
+// Storage interface for database operations
 import { 
-  type User, 
-  type InsertUser,
-  type Appointment,
-  type InsertAppointment,
-  type Reminder,
-  type InsertReminder,
-  type IntegrationSettings,
-  type InsertIntegrationSettings,
-  type NotificationSettings,
-  type InsertNotificationSettings,
-  type Product,
-  type InsertProduct,
-  type Sale,
-  type InsertSale,
-  type StockMovement,
-  type InsertStockMovement,
-  type Client,
-  type InsertClient,
-  type WhatsAppChat,
-  type InsertWhatsAppChat,
-  type BotConfig,
-  type InsertBotConfig,
-  type LoyaltyCampaign,
-  type InsertLoyaltyCampaign,
-  type SupportAgent,
-  type InsertSupportAgent
+  User, InsertUser,
+  Product, InsertProduct, 
+  Sale, InsertSale,
+  Client, InsertClient,
+  Appointment, InsertAppointment,
+  LoyaltyCampaign, InsertLoyaltyCampaign,
+  WhatsAppChat, InsertWhatsAppChat,
+  StockMovement, InsertStockMovement,
+  BotConfig, InsertBotConfig,
+  SupportAgent, InsertSupportAgent,
+  IntegrationSettings, InsertIntegrationSettings,
+  NotificationSettings, InsertNotificationSettings
 } from "@shared/schema";
+import { db } from "./db";
+import { 
+  users, products, sales, clients, appointments, 
+  campaigns, whatsappChats, stockMovements, botConfigs, 
+  supportAgents, integrationSettings, notificationSettings 
+} from "@shared/schema";
+import { eq, desc, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
-  getUser(id: number): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
+  getUserByUsername(username: string): Promise<User | null>;
   createUser(user: InsertUser): Promise<User>;
+  
+  // Product operations
+  getProducts(userId: number, businessCategory: string): Promise<Product[]>;
+  createProduct(product: InsertProduct): Promise<Product>;
+  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | null>;
+  deleteProduct(id: number): Promise<boolean>;
+  
+  // Sale operations
+  getSales(userId: number, businessCategory: string): Promise<Sale[]>;
+  createSale(sale: InsertSale): Promise<Sale>;
+  
+  // Client operations
+  getClients(userId: number, businessCategory: string): Promise<Client[]>;
+  createClient(client: InsertClient): Promise<Client>;
+  updateClient(id: number, client: Partial<InsertClient>): Promise<Client | null>;
+  deleteClient(id: number): Promise<boolean>;
   
   // Appointment operations
   getAppointments(userId: number): Promise<Appointment[]>;
-  getAppointmentsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Appointment[]>;
-  getAppointment(id: number): Promise<Appointment | undefined>;
   createAppointment(appointment: InsertAppointment): Promise<Appointment>;
-  updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment>;
-  deleteAppointment(id: number): Promise<void>;
+  updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment | null>;
+  deleteAppointment(id: number): Promise<boolean>;
   
-  // Reminder operations
-  getReminders(appointmentId: number): Promise<Reminder[]>;
-  getPendingReminders(): Promise<Reminder[]>;
-  createReminder(reminder: InsertReminder): Promise<Reminder>;
-  markReminderSent(id: number): Promise<void>;
-  
-  // Integration settings
-  getIntegrationSettings(userId: number): Promise<IntegrationSettings[]>;
-  getIntegrationSettingsByPlatform(userId: number, platform: string): Promise<IntegrationSettings | undefined>;
-  createIntegrationSettings(settings: InsertIntegrationSettings): Promise<IntegrationSettings>;
-  updateIntegrationSettings(id: number, settings: Partial<InsertIntegrationSettings>): Promise<IntegrationSettings>;
-  
-  // Notification settings
-  getNotificationSettings(userId: number): Promise<NotificationSettings | undefined>;
-  createNotificationSettings(settings: InsertNotificationSettings): Promise<NotificationSettings>;
-  updateNotificationSettings(id: number, settings: Partial<InsertNotificationSettings>): Promise<NotificationSettings>;
-  
-  // Product/Inventory operations
-  getProducts(): Promise<Product[]>;
-  getProduct(id: number): Promise<Product | undefined>;
-  getProductBySku(sku: string): Promise<Product | undefined>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product>;
-  deleteProduct(id: number): Promise<void>;
-  getLowStockProducts(): Promise<Product[]>;
-  getExpiringProducts(days: number): Promise<Product[]>;
-  
-  // Sale operations
-  getSales(): Promise<Sale[]>;
-  getSale(id: number): Promise<Sale | undefined>;
-  getSalesByDateRange(startDate: Date, endDate: Date): Promise<Sale[]>;
-  getSalesByProduct(productId: number): Promise<Sale[]>;
-  createSale(sale: InsertSale): Promise<Sale>;
-  updateSale(id: number, sale: Partial<InsertSale>): Promise<Sale>;
-  deleteSale(id: number): Promise<void>;
-  getDailySales(date: Date): Promise<Sale[]>;
-  getWeeklySales(startDate: Date): Promise<Sale[]>;
-  
-  // Stock Movement operations
-  getStockMovements(productId?: number): Promise<StockMovement[]>;
-  createStockMovement(movement: InsertStockMovement): Promise<StockMovement>;
-  getStockMovementsByDateRange(startDate: Date, endDate: Date): Promise<StockMovement[]>;
-  
-  // Client operations
-  getClients(): Promise<Client[]>;
-  getClient(id: number): Promise<Client | undefined>;
-  getClientByEmail(email: string): Promise<Client | undefined>;
-  createClient(client: InsertClient): Promise<Client>;
-  updateClient(id: number, client: Partial<InsertClient>): Promise<Client>;
-  deleteClient(id: number): Promise<void>;
-  getInactiveClients(days: number): Promise<Client[]>;
-  getNewClients(days: number): Promise<Client[]>;
+  // Campaign operations
+  getCampaigns(userId: number, businessCategory: string): Promise<LoyaltyCampaign[]>;
+  createCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign>;
   
   // WhatsApp Chat operations
-  getWhatsAppChats(): Promise<WhatsAppChat[]>;
-  getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined>;
-  getActiveChats(): Promise<WhatsAppChat[]>;
-  createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat>;
-  updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat>;
-  markChatAsRead(id: number): Promise<void>;
+  getWhatsAppChats(userId: number, businessCategory: string): Promise<WhatsAppChat[]>;
   
-  // Bot Configuration operations
-  getBotConfigs(): Promise<BotConfig[]>;
-  getBotConfig(id: number): Promise<BotConfig | undefined>;
-  getActiveBotConfig(): Promise<BotConfig | undefined>;
-  createBotConfig(config: InsertBotConfig): Promise<BotConfig>;
-  updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig>;
-  
-  // Loyalty Campaign operations
-  getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]>;
-  getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined>;
-  getActiveCampaigns(): Promise<LoyaltyCampaign[]>;
-  createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign>;
-  updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign>;
-  deleteLoyaltyCampaign(id: number): Promise<void>;
-  
-  // Support Agent operations
-  getSupportAgents(): Promise<SupportAgent[]>;
-  getSupportAgent(id: number): Promise<SupportAgent | undefined>;
-  getOnlineAgents(): Promise<SupportAgent[]>;
-  createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent>;
-  updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent>;
-  updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent>;
+  // Stock Movement operations
+  getStockMovements(productId: number): Promise<StockMovement[]>;
+  createStockMovement(movement: InsertStockMovement): Promise<StockMovement>;
 }
 
-export class SupabaseMultiStorage implements IStorage {
-  private databases: Map<string, any> = new Map();
-
-  async getUser(id: number): Promise<User | undefined> {
-    throw new Error('User operations will be implemented with Supabase integration');
+export class DatabaseStorage implements IStorage {
+  async getUserByUsername(username: string): Promise<User | null> {
+    try {
+      const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      return result[0] || null;
+    } catch (error) {
+      console.error("Database error in getUserByUsername:", error);
+      return null;
+    }
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    throw new Error('User operations will be implemented with Supabase integration');
+  async createUser(user: InsertUser): Promise<User> {
+    try {
+      const result = await db.insert(users).values(user).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createUser:", error);
+      throw error;
+    }
   }
 
-  async createUser(insertUser: InsertUser): Promise<User> {
-    throw new Error('User operations will be implemented with Supabase integration');
+  async getProducts(userId: number, businessCategory: string): Promise<Product[]> {
+    try {
+      return await db.select().from(products)
+        .where(and(eq(products.userId, userId), eq(products.businessCategory, businessCategory)))
+        .orderBy(desc(products.createdAt));
+    } catch (error) {
+      console.error("Database error in getProducts:", error);
+      return [];
+    }
+  }
+
+  async createProduct(product: InsertProduct): Promise<Product> {
+    try {
+      const result = await db.insert(products).values(product).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createProduct:", error);
+      throw error;
+    }
+  }
+
+  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | null> {
+    try {
+      const result = await db.update(products).set(product).where(eq(products.id, id)).returning();
+      return result[0] || null;
+    } catch (error) {
+      console.error("Database error in updateProduct:", error);
+      return null;
+    }
+  }
+
+  async deleteProduct(id: number): Promise<boolean> {
+    try {
+      const result = await db.delete(products).where(eq(products.id, id));
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error("Database error in deleteProduct:", error);
+      return false;
+    }
+  }
+
+  async getSales(userId: number, businessCategory: string): Promise<Sale[]> {
+    try {
+      return await db.select().from(sales)
+        .where(and(eq(sales.userId, userId), eq(sales.businessCategory, businessCategory)))
+        .orderBy(desc(sales.saleDate));
+    } catch (error) {
+      console.error("Database error in getSales:", error);
+      return [];
+    }
+  }
+
+  async createSale(sale: InsertSale): Promise<Sale> {
+    try {
+      const result = await db.insert(sales).values(sale).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createSale:", error);
+      throw error;
+    }
+  }
+
+  async getClients(userId: number, businessCategory: string): Promise<Client[]> {
+    try {
+      return await db.select().from(clients)
+        .where(and(eq(clients.userId, userId), eq(clients.businessCategory, businessCategory)))
+        .orderBy(desc(clients.createdAt));
+    } catch (error) {
+      console.error("Database error in getClients:", error);
+      return [];
+    }
+  }
+
+  async createClient(client: InsertClient): Promise<Client> {
+    try {
+      const result = await db.insert(clients).values(client).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createClient:", error);
+      throw error;
+    }
+  }
+
+  async updateClient(id: number, client: Partial<InsertClient>): Promise<Client | null> {
+    try {
+      const result = await db.update(clients).set(client).where(eq(clients.id, id)).returning();
+      return result[0] || null;
+    } catch (error) {
+      console.error("Database error in updateClient:", error);
+      return null;
+    }
+  }
+
+  async deleteClient(id: number): Promise<boolean> {
+    try {
+      const result = await db.delete(clients).where(eq(clients.id, id));
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error("Database error in deleteClient:", error);
+      return false;
+    }
   }
 
   async getAppointments(userId: number): Promise<Appointment[]> {
-    // Mock data simples para demonstração
-    return [
-      {
-        id: 1,
-        userId: 1,
-        title: 'Consulta Veterinária - Rex',
-        description: 'Consulta de rotina e vacinação do cachorro Rex',
-        startTime: new Date('2024-07-01T10:00:00'),
-        endTime: new Date('2024-07-01T11:00:00'),
-        location: 'Clínica Veterinária Bichos & Cia',
-        clientName: 'Ana Maria Oliveira',
-        clientEmail: 'ana.oliveira@email.com',
-        clientPhone: '(11) 99999-1111',
-        status: 'scheduled' as const,
-        scheduledAt: new Date('2024-06-30T12:00:00'),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ];
-  }
-
-  async getAppointmentsByDateRange(userId: number, startDate: Date, endDate: Date): Promise<Appointment[]> {
-    throw new Error('Appointment operations will be implemented with Supabase integration');
-  }
-
-  async getAppointment(id: number): Promise<Appointment | undefined> {
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+    try {
+      return await db.select().from(appointments)
+        .where(eq(appointments.userId, userId))
+        .orderBy(desc(appointments.startTime));
+    } catch (error) {
+      console.error("Database error in getAppointments:", error);
+      return [];
+    }
   }
 
   async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+    try {
+      const result = await db.insert(appointments).values(appointment).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createAppointment:", error);
+      throw error;
+    }
   }
 
-  async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment> {
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+  async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment | null> {
+    try {
+      const result = await db.update(appointments).set(appointment).where(eq(appointments.id, id)).returning();
+      return result[0] || null;
+    } catch (error) {
+      console.error("Database error in updateAppointment:", error);
+      return null;
+    }
   }
 
-  async deleteAppointment(id: number): Promise<void> {
-    throw new Error('Appointment operations will be implemented with Supabase integration');
+  async deleteAppointment(id: number): Promise<boolean> {
+    try {
+      const result = await db.delete(appointments).where(eq(appointments.id, id));
+      return result.rowCount > 0;
+    } catch (error) {
+      console.error("Database error in deleteAppointment:", error);
+      return false;
+    }
   }
 
-  async getReminders(appointmentId: number): Promise<Reminder[]> {
-    throw new Error('Reminder operations will be implemented with Supabase integration');
+  async getCampaigns(userId: number, businessCategory: string): Promise<LoyaltyCampaign[]> {
+    try {
+      return await db.select().from(campaigns)
+        .where(and(eq(campaigns.userId, userId), eq(campaigns.businessCategory, businessCategory)))
+        .orderBy(desc(campaigns.createdAt));
+    } catch (error) {
+      console.error("Database error in getCampaigns:", error);
+      return [];
+    }
   }
 
-  async getPendingReminders(): Promise<Reminder[]> {
-    throw new Error('Reminder operations will be implemented with Supabase integration');
+  async createCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> {
+    try {
+      const result = await db.insert(campaigns).values(campaign).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createCampaign:", error);
+      throw error;
+    }
   }
 
-  async createReminder(reminder: InsertReminder): Promise<Reminder> {
-    throw new Error('Reminder operations will be implemented with Supabase integration');
+  async getWhatsAppChats(userId: number, businessCategory: string): Promise<WhatsAppChat[]> {
+    try {
+      return await db.select().from(whatsappChats)
+        .where(and(eq(whatsappChats.userId, userId), eq(whatsappChats.businessCategory, businessCategory)))
+        .orderBy(desc(whatsappChats.lastActivity));
+    } catch (error) {
+      console.error("Database error in getWhatsAppChats:", error);
+      return [];
+    }
   }
 
-  async markReminderSent(id: number): Promise<void> {
-    throw new Error('Reminder operations will be implemented with Supabase integration');
+  async getStockMovements(productId: number): Promise<StockMovement[]> {
+    try {
+      return await db.select().from(stockMovements)
+        .where(eq(stockMovements.productId, productId))
+        .orderBy(desc(stockMovements.movementDate));
+    } catch (error) {
+      console.error("Database error in getStockMovements:", error);
+      return [];
+    }
   }
 
-  async getIntegrationSettings(userId: number): Promise<IntegrationSettings[]> {
-    return [
-      {
-        id: 1,
-        userId: 1,
-        platform: 'google_calendar',
-        accessToken: 'mock_token',
-        refreshToken: 'mock_refresh',
-        calendarId: 'primary',
-        isActive: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ];
+  async createStockMovement(movement: InsertStockMovement): Promise<StockMovement> {
+    try {
+      const result = await db.insert(stockMovements).values(movement).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Database error in createStockMovement:", error);
+      throw error;
+    }
   }
-
-  async getIntegrationSettingsByPlatform(userId: number, platform: string): Promise<IntegrationSettings | undefined> {
-    throw new Error('Integration operations will be implemented with Supabase integration');
-  }
-
-  async createIntegrationSettings(settings: InsertIntegrationSettings): Promise<IntegrationSettings> {
-    throw new Error('Integration operations will be implemented with Supabase integration');
-  }
-
-  async updateIntegrationSettings(id: number, settings: Partial<InsertIntegrationSettings>): Promise<IntegrationSettings> {
-    throw new Error('Integration operations will be implemented with Supabase integration');
-  }
-
-  async getNotificationSettings(userId: number): Promise<NotificationSettings | undefined> {
-    return {
-      id: 1,
-      userId: 1,
-      emailEnabled: true,
-      telegramEnabled: false,
-      telegramChatId: null,
-      emailAddress: 'user@example.com',
-      reminderMinutesBefore: 60,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-  }
-
-  async createNotificationSettings(settings: InsertNotificationSettings): Promise<NotificationSettings> {
-    throw new Error('Notification operations will be implemented with Supabase integration');
-  }
-
-  async updateNotificationSettings(id: number, settings: Partial<InsertNotificationSettings>): Promise<NotificationSettings> {
-    throw new Error('Notification operations will be implemented with Supabase integration');
-  }
-
-  // Implementações básicas para as outras operações
-  async getProducts(): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async getProduct(id: number): Promise<Product | undefined> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async getProductBySku(sku: string): Promise<Product | undefined> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async createProduct(product: InsertProduct): Promise<Product> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async deleteProduct(id: number): Promise<void> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async getLowStockProducts(): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async getExpiringProducts(days: number): Promise<Product[]> { throw new Error('Product operations will be implemented with Supabase integration'); }
-  async getSales(): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getSale(id: number): Promise<Sale | undefined> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getSalesByDateRange(startDate: Date, endDate: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getSalesByProduct(productId: number): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async createSale(sale: InsertSale): Promise<Sale> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async updateSale(id: number, sale: Partial<InsertSale>): Promise<Sale> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async deleteSale(id: number): Promise<void> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getDailySales(date: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getWeeklySales(startDate: Date): Promise<Sale[]> { throw new Error('Sale operations will be implemented with Supabase integration'); }
-  async getStockMovements(productId?: number): Promise<StockMovement[]> { throw new Error('Stock operations will be implemented with Supabase integration'); }
-  async createStockMovement(movement: InsertStockMovement): Promise<StockMovement> { throw new Error('Stock operations will be implemented with Supabase integration'); }
-  async getStockMovementsByDateRange(startDate: Date, endDate: Date): Promise<StockMovement[]> { throw new Error('Stock operations will be implemented with Supabase integration'); }
-  async getClients(): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async getClient(id: number): Promise<Client | undefined> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async getClientByEmail(email: string): Promise<Client | undefined> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async createClient(client: InsertClient): Promise<Client> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async updateClient(id: number, client: Partial<InsertClient>): Promise<Client> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async deleteClient(id: number): Promise<void> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async getInactiveClients(days: number): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async getNewClients(days: number): Promise<Client[]> { throw new Error('Client operations will be implemented with Supabase integration'); }
-  async getWhatsAppChats(): Promise<WhatsAppChat[]> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async getWhatsAppChat(id: number): Promise<WhatsAppChat | undefined> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async getActiveChats(): Promise<WhatsAppChat[]> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async createWhatsAppChat(chat: InsertWhatsAppChat): Promise<WhatsAppChat> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async updateWhatsAppChat(id: number, chat: Partial<InsertWhatsAppChat>): Promise<WhatsAppChat> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async markChatAsRead(id: number): Promise<void> { throw new Error('WhatsApp operations will be implemented with Supabase integration'); }
-  async getBotConfigs(): Promise<BotConfig[]> { throw new Error('Bot operations will be implemented with Supabase integration'); }
-  async getBotConfig(id: number): Promise<BotConfig | undefined> { throw new Error('Bot operations will be implemented with Supabase integration'); }
-  async getActiveBotConfig(): Promise<BotConfig | undefined> { throw new Error('Bot operations will be implemented with Supabase integration'); }
-  async createBotConfig(config: InsertBotConfig): Promise<BotConfig> { throw new Error('Bot operations will be implemented with Supabase integration'); }
-  async updateBotConfig(id: number, config: Partial<InsertBotConfig>): Promise<BotConfig> { throw new Error('Bot operations will be implemented with Supabase integration'); }
-  async getLoyaltyCampaigns(): Promise<LoyaltyCampaign[]> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async getLoyaltyCampaign(id: number): Promise<LoyaltyCampaign | undefined> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async getActiveCampaigns(): Promise<LoyaltyCampaign[]> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async createLoyaltyCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async updateLoyaltyCampaign(id: number, campaign: Partial<InsertLoyaltyCampaign>): Promise<LoyaltyCampaign> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async deleteLoyaltyCampaign(id: number): Promise<void> { throw new Error('Loyalty operations will be implemented with Supabase integration'); }
-  async getSupportAgents(): Promise<SupportAgent[]> { throw new Error('Support operations will be implemented with Supabase integration'); }
-  async getSupportAgent(id: number): Promise<SupportAgent | undefined> { throw new Error('Support operations will be implemented with Supabase integration'); }
-  async getOnlineAgents(): Promise<SupportAgent[]> { throw new Error('Support operations will be implemented with Supabase integration'); }
-  async createSupportAgent(agent: InsertSupportAgent): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
-  async updateSupportAgent(id: number, agent: Partial<InsertSupportAgent>): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
-  async updateAgentStatus(id: number, status: 'online' | 'offline' | 'busy' | 'away'): Promise<SupportAgent> { throw new Error('Support operations will be implemented with Supabase integration'); }
 }
 
-export const storage = new SupabaseMultiStorage();
+import { mockStorage } from "./mock-storage";
+
+// Check if database is available
+let databaseAvailable = false;
+
+// Test database connection
+async function testDatabaseConnection(): Promise<boolean> {
+  if (!db) {
+    console.log("🔄 Database not available, using mock data for demonstration");
+    return false;
+  }
+  try {
+    // Simple query to test connection
+    await checkDatabaseConnection();
+    return true;
+  } catch (error) {
+    console.log("🔄 Database not available, using mock data for demonstration");
+    return false;
+  }
+}
+
+// Initialize storage based on database availability
+async function initializeStorage(): Promise<IStorage> {
+  databaseAvailable = await testDatabaseConnection();
+  
+  if (databaseAvailable) {
+    console.log("✅ Using Supabase database");
+    return new DatabaseStorage();
+  } else {
+    console.log("📦 Using mock data storage");
+    return mockStorage;
+  }
+}
+
+// Export storage instance
+let storageInstance: IStorage;
+
+export const getStorage = async (): Promise<IStorage> => {
+  if (!storageInstance) {
+    storageInstance = await initializeStorage();
+  }
+  return storageInstance;
+};
+
+// Export singleton instance for immediate use (will fallback to mock if DB unavailable)
+export const storage = mockStorage;

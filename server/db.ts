@@ -1,22 +1,58 @@
-// Database configuration for multiple Supabase connections
-// This will be configured to connect to multiple Supabase databases
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { neon } from "@neondatabase/serverless";
+import * as schema from "@shared/schema";
 
-export interface DatabaseConfig {
-  id: string;
-  name: string;
-  connectionString: string;
-  isActive: boolean;
+// Only initialize database if DATABASE_URL is available
+let db: ReturnType<typeof drizzle> | null = null;
+let sql: any = null;
+
+if (process.env.DATABASE_URL) {
+  try {
+    // Create Neon serverless connection
+    sql = neon(process.env.DATABASE_URL);
+    // Initialize Drizzle with Neon
+    db = drizzle(sql, { schema });
+  } catch (error) {
+    console.warn("⚠️  Failed to initialize database:", error);
+  }
 }
 
-// Database connections will be managed here
-export const databases: Map<string, any> = new Map();
+export { db };
 
-// Initialize database connections from environment variables
-export function initializeDatabases() {
-  // This function will be implemented to connect to multiple Supabase databases
-  // based on environment configuration
-  console.log('Database connections will be initialized here for Supabase integration');
+// Connection health check
+export async function checkDatabaseConnection() {
+  if (!sql || !db) {
+    console.log("📦 No database configured, using mock data");
+    return false;
+  }
+  
+  try {
+    await sql`SELECT 1`;
+    console.log("✅ Database connection successful");
+    return true;
+  } catch (error) {
+    console.error("❌ Database connection failed:", error);
+    return false;
+  }
 }
 
-// Placeholder for database connection
-export const db = null;
+// Initialize database connection on startup
+export async function initializeDatabase() {
+  if (!process.env.DATABASE_URL) {
+    console.log("📦 DATABASE_URL not configured, using mock data for demonstration");
+    return null;
+  }
+  
+  console.log("🔗 Connecting to Supabase database...");
+  const isConnected = await checkDatabaseConnection();
+  
+  if (isConnected) {
+    console.log("🚀 Database initialized successfully");
+    return db;
+  } else {
+    console.log("⚠️  Database connection failed, falling back to mock data");
+    return null;
+  }
+}
+
+export default db;
