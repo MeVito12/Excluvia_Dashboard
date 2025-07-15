@@ -54,7 +54,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const appointments = await storage.getAppointments(userId);
       res.json(appointments);
     } catch (error) {
-      res.status(500).json({ error: "Erro ao buscar agendamentos" });
+      console.error("Error fetching appointments:", error);
+      res.status(503).json({ 
+        error: "Database not available", 
+        message: "Please execute SQL schema in Supabase Dashboard first"
+      });
     }
   });
 

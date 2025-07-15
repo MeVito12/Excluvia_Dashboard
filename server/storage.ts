@@ -279,49 +279,5 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-import { mockStorage } from "./mock-storage";
-
-// Check if database is available
-let databaseAvailable = false;
-
-// Test database connection
-async function testDatabaseConnection(): Promise<boolean> {
-  if (!db) {
-    console.log("🔄 Database not available, using mock data for demonstration");
-    return false;
-  }
-  try {
-    // Simple query to test connection
-    await checkDatabaseConnection();
-    return true;
-  } catch (error) {
-    console.log("🔄 Database not available, using mock data for demonstration");
-    return false;
-  }
-}
-
-// Initialize storage based on database availability
-async function initializeStorage(): Promise<IStorage> {
-  databaseAvailable = await testDatabaseConnection();
-  
-  if (databaseAvailable) {
-    console.log("✅ Using Supabase database");
-    return new DatabaseStorage();
-  } else {
-    console.log("📦 Using mock data storage");
-    return mockStorage;
-  }
-}
-
-// Export storage instance
-let storageInstance: IStorage;
-
-export const getStorage = async (): Promise<IStorage> => {
-  if (!storageInstance) {
-    storageInstance = await initializeStorage();
-  }
-  return storageInstance;
-};
-
-// Export singleton instance for immediate use (will fallback to mock if DB unavailable)
-export const storage = mockStorage;
+// Storage is now managed exclusively by DatabaseManager
+// No mock data fallback - database connection is required

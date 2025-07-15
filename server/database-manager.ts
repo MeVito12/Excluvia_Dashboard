@@ -1,6 +1,5 @@
-// Database manager that handles Supabase connection with fallback to mock data
+// Database manager that handles Supabase connection (database-only mode)
 import { db, checkDatabaseConnection } from "./db";
-import { storage as mockStorage } from "./storage";
 import { DatabaseStorage } from "./storage";
 import { ensureTablesExist } from "./supabase-admin-setup";
 
@@ -29,37 +28,25 @@ class DatabaseManager {
 
         if (testResponse.ok) {
           console.log("✅ Supabase tables exist and accessible via API");
-          
-          // Try direct database connection
-          const connected = await checkDatabaseConnection();
-          
-          if (connected && db) {
-            console.log("✅ Using Supabase database with live tables");
-            this.storage = new DatabaseStorage();
-            this.usingDatabase = true;
-          } else {
-            console.log("⚠️ Tables exist but direct connection failed, using mock data");
-            this.storage = mockStorage;
-            this.usingDatabase = false;
-          }
+          console.log("✅ Using Supabase database via REST API");
+          this.storage = new DatabaseStorage();
+          this.usingDatabase = true;
         } else {
-          console.log("📋 Supabase tables not found - manual setup required");
+          console.log("❌ Supabase tables not found - database setup required");
           console.log("🎯 Execute SQL schema in Supabase Dashboard SQL Editor");
           console.log("📖 Complete instructions: MANUAL_SETUP_GUIDE.md");
-          console.log("📄 SQL file to execute: migrations/schema.sql");
+          console.log("📄 SQL file to execute: supabase-complete-schema.sql");
           console.log("🔄 Restart workflow after creating tables");
-          this.storage = mockStorage;
-          this.usingDatabase = false;
+          throw new Error("Database tables not found. Manual setup required.");
         }
       } else {
-        console.log("⚠️ SUPABASE_SERVICE_KEY not configured");
-        this.storage = mockStorage;
-        this.usingDatabase = false;
+        console.log("❌ SUPABASE_SERVICE_KEY not configured");
+        throw new Error("SUPABASE_SERVICE_KEY environment variable is required");
       }
     } catch (error) {
-      console.log("📦 Database initialization failed, using mock data storage");
-      this.storage = mockStorage;
-      this.usingDatabase = false;
+      console.log("❌ Database initialization failed");
+      console.log("Error:", error instanceof Error ? error.message : error);
+      throw error;
     }
 
     this.initialized = true;
@@ -81,7 +68,7 @@ class DatabaseManager {
     return {
       initialized: this.initialized,
       usingDatabase: this.usingDatabase,
-      storage: this.usingDatabase ? 'supabase' : 'mock'
+      storage: this.usingDatabase ? 'supabase' : 'error'
     };
   }
 }
