@@ -56,13 +56,24 @@ The Supabase API is fully accessible and responding correctly. The database tabl
 ### Fallback System
 The system currently uses comprehensive mock data while the database setup is completed. Once tables are created in Supabase, the system will automatically switch to using live database data.
 
-## 🚀 Production Deployment
+## 🚀 Ativação do Sistema
 
-When deploying to production (outside Replit):
-1. Database will automatically connect to Supabase
-2. All CRUD operations will use PostgreSQL
-3. Mock data system will be bypassed
-4. Full performance with connection pooling
+Para ativar o Supabase database:
+
+### Passo 1: Executar SQL no Dashboard
+1. Acesse: https://supabase.com/dashboard/projects
+2. Projeto: `mjydrjmckcoixrnnrehm`
+3. SQL Editor → New Query
+4. Execute o arquivo: `migrations/schema.sql`
+
+### Passo 2: Reiniciar Sistema
+1. Restart workflow no Replit
+2. Sistema detecta tabelas automaticamente
+3. Muda para dados reais do Supabase
+
+### Passo 3: Verificação
+- Endpoint: `/api/health`
+- Procurar: `"usingDatabase": true`
 
 ## 📊 Mock Data Coverage
 

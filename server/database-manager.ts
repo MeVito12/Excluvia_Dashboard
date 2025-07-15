@@ -2,7 +2,7 @@
 import { db, checkDatabaseConnection } from "./db";
 import { storage as mockStorage } from "./storage";
 import { DatabaseStorage } from "./storage";
-import { createTablesViaRPC, insertSampleDataViaAPI } from "./create-tables-api";
+import { ensureTablesExist } from "./supabase-admin-setup";
 
 class DatabaseManager {
   private storage: any = null;
@@ -44,7 +44,10 @@ class DatabaseManager {
           }
         } else {
           console.log("📋 Supabase tables not found - manual setup required");
-          console.log("📖 See SUPABASE_SETUP.md for instructions");
+          console.log("🎯 Execute SQL schema in Supabase Dashboard SQL Editor");
+          console.log("📖 Complete instructions: MANUAL_SETUP_GUIDE.md");
+          console.log("📄 SQL file to execute: migrations/schema.sql");
+          console.log("🔄 Restart workflow after creating tables");
           this.storage = mockStorage;
           this.usingDatabase = false;
         }
