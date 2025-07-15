@@ -1556,31 +1556,8 @@ const EstoqueSection = () => {
         </div>
       </div>
 
-      {/* Navegação por Tabs */}
-      <div className="tab-navigation">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              console.log('Estoque tab clicked:', tab.id);
-              setActiveTab(tab.id);
-            }}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-            type="button"
-            style={{ 
-              cursor: 'pointer',
-              pointerEvents: 'auto',
-              userSelect: 'none'
-            }}
-          >
-            <tab.icon className="w-5 h-5" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Conteúdo das Tabs */}
-      {renderTabContent()}
+      {/* Conteúdo direto dos produtos (sem tabs) */}
+      {renderProducts()}
 
       {/* Modal de Edição */}
       {showEditModal && editingProduct && (
