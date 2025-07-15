@@ -5,7 +5,11 @@ import {
   insertAppointmentSchema, 
   insertReminderSchema,
   insertIntegrationSettingsSchema,
-  insertNotificationSettingsSchema
+  insertNotificationSettingsSchema,
+  insertProductSchema,
+  insertSaleSchema,
+  insertClientSchema,
+  insertStockMovementSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -140,6 +144,204 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(reminder);
     } catch (error) {
       res.status(400).json({ error: "Dados inválidos para criar lembrete" });
+    }
+  });
+
+  // ============================================
+  // PRODUCTS ROUTES - Sistema de Estoque Completo
+  // ============================================
+
+  // Get all products for user/category
+  app.get("/api/products", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = parseInt(req.query.userId as string) || 1; // TODO: Get from session/auth
+      const businessCategory = req.query.businessCategory as string || "farmacia";
+      
+      const products = await storage.getProducts(userId, businessCategory);
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      res.status(503).json({ 
+        error: "Database not available", 
+        message: "Please execute SQL schema in Supabase Dashboard first"
+      });
+    }
+  });
+
+  // Get single product
+  app.get("/api/products/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = 1; // TODO: Get from session/auth
+      const businessCategory = req.query.businessCategory as string || "farmacia";
+      
+      const products = await storage.getProducts(userId, businessCategory);
+      const product = products.find(p => p.id === parseInt(req.params.id));
+      
+      if (!product) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      res.status(503).json({ 
+        error: "Database not available", 
+        message: "Please execute SQL schema in Supabase Dashboard first"
+      });
+    }
+  });
+
+  // Create new product
+  app.post("/api/products", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = 1; // TODO: Get from session/auth
+      
+      const validatedData = insertProductSchema.parse({
+        ...req.body,
+        userId,
+        manufacturingDate: req.body.manufacturingDate ? new Date(req.body.manufacturingDate) : null,
+        expiryDate: req.body.expiryDate ? new Date(req.body.expiryDate) : null,
+        stock: parseInt(req.body.stock) || 0,
+        minStock: parseInt(req.body.minStock) || 5,
+        price: parseFloat(req.body.price) || 0,
+        isPerishable: Boolean(req.body.isPerishable)
+      });
+      
+      const product = await storage.createProduct(validatedData);
+      
+      // Create initial stock movement record
+      if (validatedData.stock > 0) {
+        await storage.createStockMovement({
+          productId: product.id,
+          type: "in",
+          quantity: validatedData.stock,
+          reason: "Estoque inicial",
+          reference: "INITIAL",
+          userId
+        });
+      }
+      
+      res.status(201).json(product);
+    } catch (error) {
+      console.error("Error creating product:", error);
+      res.status(400).json({ 
+        error: "Dados inválidos para criar produto", 
+        details: error instanceof Error ? error.message : 'Unknown error' 
+      });
+    }
+  });
+
+  // Update product
+  app.put("/api/products/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const id = parseInt(req.params.id);
+      
+      const updateData = {
+        ...req.body,
+        ...(req.body.manufacturingDate && { manufacturingDate: new Date(req.body.manufacturingDate) }),
+        ...(req.body.expiryDate && { expiryDate: new Date(req.body.expiryDate) }),
+        ...(req.body.stock !== undefined && { stock: parseInt(req.body.stock) }),
+        ...(req.body.minStock !== undefined && { minStock: parseInt(req.body.minStock) }),
+        ...(req.body.price !== undefined && { price: parseFloat(req.body.price) }),
+        ...(req.body.isPerishable !== undefined && { isPerishable: Boolean(req.body.isPerishable) })
+      };
+      
+      const product = await storage.updateProduct(id, updateData);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(400).json({ error: "Erro ao atualizar produto" });
+    }
+  });
+
+  // Delete product
+  app.delete("/api/products/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const id = parseInt(req.params.id);
+      
+      const success = await storage.deleteProduct(id);
+      
+      if (!success) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      res.json({ message: "Produto excluído com sucesso" });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.status(500).json({ error: "Erro ao excluir produto" });
+    }
+  });
+
+  // Update stock quantity (add/remove)
+  app.post("/api/products/:id/stock", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const productId = parseInt(req.params.id);
+      const { quantity, reason, type } = req.body; // type: 'in' or 'out'
+      const userId = 1; // TODO: Get from session/auth
+      
+      if (!quantity || !reason || !type) {
+        return res.status(400).json({ error: "Quantidade, motivo e tipo são obrigatórios" });
+      }
+      
+      // Get current product
+      const businessCategory = req.query.businessCategory as string || "farmacia";
+      const products = await storage.getProducts(userId, businessCategory);
+      const currentProduct = products.find(p => p.id === productId);
+      
+      if (!currentProduct) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      // Calculate new stock
+      const currentStock = currentProduct.stock || 0;
+      const quantityChange = type === 'in' ? quantity : -quantity;
+      const newStock = Math.max(0, currentStock + quantityChange);
+      
+      // Update product stock
+      const updatedProduct = await storage.updateProduct(productId, { stock: newStock });
+      
+      // Create stock movement record
+      await storage.createStockMovement({
+        productId,
+        type,
+        quantity: Math.abs(quantity),
+        reason,
+        reference: `MANUAL_${type.toUpperCase()}`,
+        userId
+      });
+      
+      res.json({ 
+        product: updatedProduct,
+        message: `Estoque ${type === 'in' ? 'adicionado' : 'removido'} com sucesso`
+      });
+    } catch (error) {
+      console.error("Error updating stock:", error);
+      res.status(400).json({ error: "Erro ao atualizar estoque" });
+    }
+  });
+
+  // Get stock movements for a product
+  app.get("/api/products/:id/movements", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const productId = parseInt(req.params.id);
+      
+      const movements = await storage.getStockMovements(productId);
+      res.json(movements);
+    } catch (error) {
+      console.error("Error fetching stock movements:", error);
+      res.status(500).json({ error: "Erro ao buscar movimentações" });
     }
   });
 
