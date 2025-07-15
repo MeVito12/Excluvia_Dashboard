@@ -2,6 +2,7 @@
 import { db, checkDatabaseConnection } from "./db";
 import { storage as mockStorage } from "./storage";
 import { DatabaseStorage } from "./storage";
+import { createTablesViaRPC, insertSampleDataViaAPI } from "./create-tables-api";
 
 class DatabaseManager {
   private storage: any = null;
@@ -14,20 +15,46 @@ class DatabaseManager {
     console.log("🔄 Initializing database manager...");
     
     try {
-      // Try to connect to Supabase database
-      const connected = await checkDatabaseConnection();
-      
-      if (connected && db) {
-        console.log("✅ Using Supabase database");
-        this.storage = new DatabaseStorage();
-        this.usingDatabase = true;
+      // Test if tables already exist via API
+      const serviceKey = process.env.SUPABASE_SERVICE_KEY;
+      if (serviceKey) {
+        const testResponse = await fetch('https://mjydrjmckcoixrnnrehm.supabase.co/rest/v1/users?select=count', {
+          method: 'GET',
+          headers: {
+            'apikey': serviceKey,
+            'Authorization': `Bearer ${serviceKey}`,
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (testResponse.ok) {
+          console.log("✅ Supabase tables exist and accessible via API");
+          
+          // Try direct database connection
+          const connected = await checkDatabaseConnection();
+          
+          if (connected && db) {
+            console.log("✅ Using Supabase database with live tables");
+            this.storage = new DatabaseStorage();
+            this.usingDatabase = true;
+          } else {
+            console.log("⚠️ Tables exist but direct connection failed, using mock data");
+            this.storage = mockStorage;
+            this.usingDatabase = false;
+          }
+        } else {
+          console.log("📋 Supabase tables not found - manual setup required");
+          console.log("📖 See SUPABASE_SETUP.md for instructions");
+          this.storage = mockStorage;
+          this.usingDatabase = false;
+        }
       } else {
-        console.log("📦 Using mock data storage for demonstration");
+        console.log("⚠️ SUPABASE_SERVICE_KEY not configured");
         this.storage = mockStorage;
         this.usingDatabase = false;
       }
     } catch (error) {
-      console.log("📦 Database connection failed, using mock data storage");
+      console.log("📦 Database initialization failed, using mock data storage");
       this.storage = mockStorage;
       this.usingDatabase = false;
     }
