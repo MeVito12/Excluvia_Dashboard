@@ -281,8 +281,8 @@ const EstoqueFunctional = () => {
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Estoque</h2>
-          <p className="text-gray-600">Gerenciamento completo de produtos</p>
+          <h2 className="text-2xl font-bold text-white drop-shadow-lg">Controle de Estoque</h2>
+          <p className="text-gray-300">Gerenciamento completo de produtos</p>
         </div>
         <button
           onClick={() => {
@@ -427,8 +427,8 @@ const EstoqueFunctional = () => {
 
       {/* Modal Adicionar/Editar Produto */}
       {(showAddModal || showEditModal) && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[60]">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
             <div className="p-6">
               <h3 className="text-lg font-semibold mb-4">
                 {editingProduct ? 'Editar Produto' : 'Novo Produto'}
@@ -565,7 +565,7 @@ const EstoqueFunctional = () => {
 
       {/* Modal Gerenciar Estoque */}
       {showStockModal && stockProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-[60]">
           <div className="bg-white rounded-lg max-w-md w-full">
             <div className="p-6">
               <h3 className="text-lg font-semibold mb-4">
