@@ -152,7 +152,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Senha
                 </Label>
-                <div className="relative w-full">
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -160,20 +160,32 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pr-12"
-                    style={{ paddingRight: '2.5rem' }}
+                    className="w-full"
+                    style={{ paddingRight: '40px' }}
                   />
-                  <div 
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  <button
+                    type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{ top: 0, bottom: 0, right: 0, position: 'absolute' }}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+                      <EyeOff style={{ width: '16px', height: '16px', color: '#6b7280' }} />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
+                      <Eye style={{ width: '16px', height: '16px', color: '#6b7280' }} />
                     )}
-                  </div>
+                  </button>
                 </div>
               </div>
 
