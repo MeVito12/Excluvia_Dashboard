@@ -2,10 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./database-manager";
 import { 
-  insertAppointmentSchema, 
-  insertReminderSchema,
-  insertIntegrationSettingsSchema,
-  insertNotificationSettingsSchema
+  insertAppointmentSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {

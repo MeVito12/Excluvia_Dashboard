@@ -28,15 +28,14 @@ This is a full-stack database management application built with React, Express, 
 
 ## Key Components
 
-### Database Layer
-- **Integration**: Supabase PostgreSQL database with Drizzle ORM
-- **Schema**: Complete schema with 13 tables in `shared/schema.ts`
-- **Database**: Production-ready PostgreSQL database with connection pooling
-- **Storage**: Hybrid storage system with automatic fallback to mock data
-- **Connection**: PostgreSQL driver with SSL support and connection pooling
+### Storage Layer
+- **Integration**: In-memory storage system with mock data
+- **Schema**: TypeScript interfaces and types in `shared/schema.ts`
+- **Storage**: Memory-based storage with realistic business data
+- **Data**: Comprehensive mock data for development and demonstration
 
 ### API Layer
-- **Storage Interface**: Abstracted storage layer prepared for Supabase multi-database integration
+- **Storage Interface**: Simple abstracted storage layer with in-memory implementation
 - **Route Registration**: Modular route organization in `server/routes.ts`
 - **Error Handling**: Centralized error middleware with proper status codes
 - **Logging**: Request/response logging with performance metrics
@@ -69,7 +68,7 @@ This is a full-stack database management application built with React, Express, 
 
 1. **Client Requests**: React components make API calls using TanStack Query
 2. **Server Processing**: Express routes handle requests through the storage interface
-3. **Database Operations**: Drizzle ORM executes type-safe SQL operations
+3. **Memory Operations**: In-memory storage performs CRUD operations on mock data
 4. **Data Transformation**: Server formats data before sending to client
 5. **UI Updates**: React components update based on query results
 6. **State Management**: TanStack Query handles caching and synchronization
@@ -77,10 +76,9 @@ This is a full-stack database management application built with React, Express, 
 ## External Dependencies
 
 ### Core Dependencies
-- **@neondatabase/serverless**: PostgreSQL serverless driver for Neon
-- **drizzle-orm**: Type-safe ORM with excellent TypeScript support
 - **@tanstack/react-query**: Powerful data synchronization for React
 - **express**: Fast, unopinionated web framework for Node.js
+- **zod**: TypeScript-first schema validation with static type inference
 
 ### UI Dependencies
 - **@radix-ui/***: Unstyled, accessible UI primitives
@@ -153,6 +151,7 @@ Changelog:
 - July 15, 2025. Finalized Supabase integration with comprehensive documentation and manual setup workflow: Created complete SQL schema file (migrations/schema.sql) with all 13 tables and sample data, implemented intelligent database manager that provides clear setup instructions and automatic detection, developed hybrid system that maintains full functionality with mock data while awaiting manual schema execution. System is production-ready with automatic switching to live Supabase database once tables are created via dashboard SQL Editor. All API endpoints, CRUD operations, and business logic fully compatible with both mock and live database storage.
 - July 15, 2025. Implemented email-based authentication system: Updated database schema and mock storage to use email instead of username for login, synchronized credentials between frontend and backend, created comprehensive SQL schema with realistic user data for all 7 business categories. Authentication API endpoint (/api/auth/login) fully functional with proper validation and error handling. All login credentials updated to professional email format (farmaceutico@farmaciacentral.com, veterinario@petclinic.com, etc.) with corresponding passwords (farm2025, vet2025, etc.).
 - July 15, 2025. Converted system to database-only mode: Completely removed mock data system and mock-storage.ts file, configured exclusive Supabase database access with no fallback options. System now requires manual SQL execution in Supabase Dashboard to function - will throw clear errors if tables don't exist. Database manager validates table existence via REST API and provides setup instructions when needed. All routes now return proper error messages directing users to execute schema when database is not configured. System operates at production-level reliability with authentic data only.
+- July 18, 2025. Simplified architecture to in-memory storage only: Removed all database dependencies (Supabase, Drizzle ORM, PostgreSQL drivers) and cleaned up unnecessary files. Converted schema from Drizzle table definitions to simple TypeScript interfaces. Implemented comprehensive in-memory storage with realistic mock data for salão de beleza business category. System now runs entirely in-memory for development and demonstration purposes without external database requirements.
 - July 15, 2025. Implemented comprehensive card standardization system: Created unified CSS classes for consistent card formatting across all sections including metric-card-standard, list-card, and standard-card variants. Updated Dashboard, Graphics, and Appointments sections to use standardized card components with responsive design, consistent padding, hover effects, and unified layout structure. All cards now follow the same visual hierarchy with standardized headers, content areas, icons, and action buttons for improved user experience and visual consistency throughout the application.
 ```
 
