@@ -152,7 +152,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Senha
                 </Label>
-                <div className="relative flex items-center">
+                <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -164,7 +164,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   />
                   <button
                     type="button"
-                    className="absolute right-2 p-1 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 z-10"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
