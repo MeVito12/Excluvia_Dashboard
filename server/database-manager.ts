@@ -13,10 +13,20 @@ class DatabaseManager {
     console.log("🔄 Initializing database manager...");
     
     try {
-      // Test if tables already exist via API
+      // Parse environment variables (handle malformed values with prefixes)
       const serviceKey = process.env.SUPABASE_SERVICE_KEY;
-      if (serviceKey) {
-        const testResponse = await fetch('https://mjydrjmckcoixrnnrehm.supabase.co/rest/v1/users?select=count', {
+      let supabaseUrl = process.env.SUPABASE_URL || '';
+      
+      // Clean up malformed SUPABASE_URL if it has the prefix
+      if (supabaseUrl.includes('NEXT_PUBLIC_SUPABASE_URL=')) {
+        supabaseUrl = supabaseUrl.replace('NEXT_PUBLIC_SUPABASE_URL=', '');
+      }
+      
+      if (serviceKey && supabaseUrl) {
+        console.log(`🔗 Attempting to connect to: ${supabaseUrl}`);
+        
+        // Test if tables already exist via API
+        const testResponse = await fetch(`${supabaseUrl}/rest/v1/users?select=count`, {
           method: 'GET',
           headers: {
             'apikey': serviceKey,
