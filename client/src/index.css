@@ -304,9 +304,10 @@ All colors MUST be HSL.
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Força cor branca dos ícones em hover */
+  /* Força cor branca dos ícones em hover com mesma transição */
   .tab-button:hover:not(.active) svg {
     color: white !important;
+    transition: all 0.3s ease;
   }
 
   .tab-button:active {
@@ -325,9 +326,10 @@ All colors MUST be HSL.
     transform: translateY(-2px);
   }
   
-  /* Força cor branca dos ícones nas abas ativas */
+  /* Força cor branca dos ícones nas abas ativas com transição */
   .tab-button.active svg {
     color: white !important;
+    transition: all 0.3s ease;
   }
   
   /* Força cor dos botões não ativos */
@@ -335,9 +337,10 @@ All colors MUST be HSL.
     color: #374151 !important;
   }
   
-  /* Força cor dos ícones nas abas */
+  /* Força cor dos ícones nas abas com transição sincronizada */
   .tab-button:not(.active) svg {
     color: #374151 !important;
+    transition: all 0.3s ease;
   }
 
   /* Grade de métricas */
