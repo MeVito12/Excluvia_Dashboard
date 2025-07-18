@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Eye, EyeOff, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
 
@@ -152,40 +152,26 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Senha
                 </Label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Digite sua senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full"
-                    style={{ paddingRight: '40px' }}
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Digite sua senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full"
+                />
+                <div className="flex items-center space-x-2 mt-2">
+                  <input
+                    type="checkbox"
+                    id="showPassword"
+                    checked={showPassword}
+                    onChange={(e) => setShowPassword(e.target.checked)}
+                    className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '0',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    {showPassword ? (
-                      <EyeOff style={{ width: '16px', height: '16px', color: '#6b7280' }} />
-                    ) : (
-                      <Eye style={{ width: '16px', height: '16px', color: '#6b7280' }} />
-                    )}
-                  </button>
+                  <Label htmlFor="showPassword" className="text-sm text-gray-600 cursor-pointer">
+                    Mostrar senha
+                  </Label>
                 </div>
               </div>
 
