@@ -160,12 +160,14 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pr-12"
+                    className="w-full pr-10"
+                    style={{ paddingRight: '40px' }}
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-50 rounded transition-colors z-10"
+                    className="absolute top-0 right-0 h-full px-3 flex items-center justify-center hover:bg-gray-50/50 transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
+                    style={{ width: '40px' }}
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4 text-gray-400" />
