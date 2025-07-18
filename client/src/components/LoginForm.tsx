@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Eye, EyeOff, Mail } from 'lucide-react';
@@ -123,56 +122,46 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
         {/* Formulário de Login */}
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Fazer Login
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl font-bold text-gray-900">
+              Login
             </CardTitle>
-            <CardDescription className="text-gray-600">
-              Entre com suas credenciais para acessar o sistema
-            </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-6 pb-6">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                  Email
-                </Label>
+              <div>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Digite seu email"
+                  placeholder="email@exemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full"
+                  className="w-full h-12 text-base border-gray-300 focus:border-blue-500"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-gray-700">
-                  Senha
-                </Label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Digite sua senha"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm pr-12"
-                  />
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </span>
-                </div>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="****"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full h-12 text-base border-gray-300 focus:border-blue-500 pr-12"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
 
               {error && (
@@ -185,25 +174,23 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-primary hover:bg-primary/90" 
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white text-base font-medium rounded-md" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {isLoading ? 'Entrando...' : 'Enviar'}
               </Button>
 
-              <div className="text-center">
+              <div className="text-center pt-2">
                 <Button
                   type="button"
                   variant="link"
-                  className="text-sm text-primary hover:text-primary/80 p-0 h-auto"
+                  className="text-sm text-blue-600 hover:text-blue-800 p-0 h-auto"
                   onClick={openForgotPassword}
                 >
                   Esqueceu sua senha?
                 </Button>
               </div>
             </form>
-
-
           </CardContent>
         </Card>
 
@@ -226,9 +213,6 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
             {!resetSuccess ? (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="resetEmail" className="text-sm font-medium">
-                    Email
-                  </Label>
                   <Input
                     id="resetEmail"
                     type="email"
