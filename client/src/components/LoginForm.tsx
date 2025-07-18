@@ -152,7 +152,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Senha
                 </Label>
-                <div className="relative">
+                <div className="relative flex items-center">
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
@@ -160,17 +160,17 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pr-12"
+                    className="w-full pr-10"
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute right-2 p-1 text-gray-400 hover:text-gray-600"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="h-4 w-4" />
                     )}
                   </button>
                 </div>
