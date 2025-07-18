@@ -319,6 +319,16 @@ All colors MUST be HSL.
     color: white !important;
     transform: translateY(-2px);
   }
+  
+  /* Força cor dos botões não ativos */
+  .tab-button:not(.active) {
+    color: #374151 !important;
+  }
+  
+  /* Força cor dos ícones nas abas */
+  .tab-button:not(.active) svg {
+    color: #374151 !important;
+  }
 
   /* Grade de métricas */
   .metrics-grid {
