@@ -303,6 +303,11 @@ All colors MUST be HSL.
     cursor: pointer !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+  
+  /* Força cor branca dos ícones em hover */
+  .tab-button:hover:not(.active) svg {
+    color: white !important;
+  }
 
   .tab-button:active {
     transform: scale(0.98);
@@ -318,6 +323,11 @@ All colors MUST be HSL.
     background: hsl(var(--brand-primary)) !important;
     color: white !important;
     transform: translateY(-2px);
+  }
+  
+  /* Força cor branca dos ícones nas abas ativas */
+  .tab-button.active svg {
+    color: white !important;
   }
   
   /* Força cor dos botões não ativos */
