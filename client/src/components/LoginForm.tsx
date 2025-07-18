@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Eye, EyeOff } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Eye, EyeOff, Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
 
@@ -19,6 +20,9 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSuccess, setResetSuccess] = useState(false);
 
   // Sistema de usuários por categoria
   const categoryUsers = {
@@ -58,17 +62,39 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     }
 
     if (!userFound) {
-      setError('Email ou senha incorretos. Credenciais válidas:\n' +
-        '• farmaceutico@farmaciacentral.com / farm2025 (Farmácia)\n' +
-        '• veterinario@petclinic.com / vet2025 (Pet & Veterinário)\n' +
-        '• medico@clinicasaude.com / med2025 (Médico & Saúde)\n' +
-        '• chef@restaurante.com / chef2025 (Alimentício)\n' +
-        '• vendedor@comercial.com / venda2025 (Vendas)\n' +
-        '• designer@agencia.com / design2025 (Design Gráfico)\n' +
-        '• dev@webagency.com / web2025 (Criação de Sites)');
+      setError('Email ou senha incorretos.');
     }
 
     setIsLoading(false);
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Verificar se o email existe no sistema
+    const emailExists = Object.values(categoryUsers).some(user => user.email === resetEmail);
+    
+    if (emailExists) {
+      // Simular envio de email
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setResetSuccess(true);
+    } else {
+      setError('Email não encontrado no sistema.');
+    }
+  };
+
+  const openForgotPassword = () => {
+    setForgotPasswordOpen(true);
+    setResetEmail(email); // Pre-preencher com o email digitado
+    setResetSuccess(false);
+    setError('');
+  };
+
+  const closeForgotPassword = () => {
+    setForgotPasswordOpen(false);
+    setResetEmail('');
+    setResetSuccess(false);
+    setError('');
   };
 
   return (
@@ -140,7 +166,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -154,7 +180,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription className="whitespace-pre-line text-sm">
+                  <AlertDescription className="text-sm">
                     {error}
                   </AlertDescription>
                 </Alert>
@@ -167,11 +193,103 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
               >
                 {isLoading ? 'Entrando...' : 'Entrar'}
               </Button>
+
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-sm text-primary hover:text-primary/80 p-0 h-auto"
+                  onClick={openForgotPassword}
+                >
+                  Esqueceu sua senha?
+                </Button>
+              </div>
             </form>
 
 
           </CardContent>
         </Card>
+
+        {/* Modal de Esqueceu a Senha */}
+        <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                <Mail className="h-6 w-6 mx-auto mb-2 text-primary" />
+                Recuperar Senha
+              </DialogTitle>
+              <DialogDescription className="text-center">
+                {resetSuccess 
+                  ? "Email de recuperação enviado com sucesso!"
+                  : "Digite seu email para receber as instruções de recuperação"
+                }
+              </DialogDescription>
+            </DialogHeader>
+            
+            {!resetSuccess ? (
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="resetEmail" className="text-sm font-medium">
+                    Email
+                  </Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="Digite seu email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    className="w-full"
+                  />
+                </div>
+                
+                {error && (
+                  <Alert variant="destructive">
+                    <AlertDescription className="text-sm">
+                      {error}
+                    </AlertDescription>
+                  </Alert>
+                )}
+                
+                <div className="flex space-x-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1"
+                    onClick={closeForgotPassword}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    className="flex-1 bg-primary hover:bg-primary/90"
+                  >
+                    Enviar
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <div className="space-y-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <p className="text-green-800 text-sm">
+                    Enviamos um email com as instruções para recuperação de senha para:{" "}
+                    <strong>{resetEmail}</strong>
+                  </p>
+                  <p className="text-green-600 text-xs mt-2">
+                    Verifique sua caixa de entrada e spam.
+                  </p>
+                </div>
+                
+                <Button 
+                  onClick={closeForgotPassword}
+                  className="w-full bg-primary hover:bg-primary/90"
+                >
+                  Fechar
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
