@@ -162,11 +162,9 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     required
                     className="w-full pr-10"
                   />
-                  <Button
+                  <button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-md transition-colors"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -174,7 +172,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     ) : (
                       <Eye className="h-4 w-4 text-gray-500" />
                     )}
-                  </Button>
+                  </button>
                 </div>
               </div>
 
