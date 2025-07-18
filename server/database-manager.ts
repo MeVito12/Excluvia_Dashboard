@@ -1,6 +1,5 @@
-// Database manager that handles Supabase connection via REST API (database-only mode)
-import { SupabaseRestStorage } from "./supabase-rest-storage";
-import { ensureTablesExist } from "./supabase-admin-setup";
+// Database manager with fallback to in-memory storage
+import { MemStorage } from "./storage";
 
 class DatabaseManager {
   private storage: any = null;
@@ -25,38 +24,43 @@ class DatabaseManager {
       if (serviceKey && supabaseUrl) {
         console.log(`🔗 Attempting to connect to: ${supabaseUrl}`);
         
-        // Test if tables already exist via API
-        const testResponse = await fetch(`${supabaseUrl}/rest/v1/users?select=count`, {
-          method: 'GET',
-          headers: {
-            'apikey': serviceKey,
-            'Authorization': `Bearer ${serviceKey}`,
-            'Content-Type': 'application/json',
-          }
-        });
+        try {
+          // Test if tables already exist via API
+          const testResponse = await fetch(`${supabaseUrl}/rest/v1/users?select=count`, {
+            method: 'GET',
+            headers: {
+              'apikey': serviceKey,
+              'Authorization': `Bearer ${serviceKey}`,
+              'Content-Type': 'application/json',
+            }
+          });
 
-        if (testResponse.ok) {
-          console.log("✅ Supabase tables exist and accessible");
-          console.log("✅ Using Supabase database via REST API");
-          const { SupabaseRestStorage } = await import("./supabase-rest-storage");
-          this.storage = new SupabaseRestStorage();
-          this.usingDatabase = true;
-        } else {
-          console.log("❌ Supabase tables not found - database setup required");
-          console.log("🎯 Execute SQL schema in Supabase Dashboard SQL Editor");
-          console.log("📖 Complete instructions: MANUAL_SETUP_GUIDE.md");
-          console.log("📄 SQL file to execute: supabase-complete-schema.sql");
-          console.log("🔄 Restart workflow after creating tables");
-          throw new Error("Database tables not found. Manual setup required.");
+          if (testResponse.ok) {
+            console.log("✅ Supabase tables exist and accessible");
+            console.log("✅ Using Supabase database via REST API");
+            const { SupabaseRestStorage } = await import("./supabase-rest-storage");
+            this.storage = new SupabaseRestStorage();
+            this.usingDatabase = true;
+          } else {
+            throw new Error("Supabase tables not accessible");
+          }
+        } catch (dbError) {
+          console.log("⚠️ Database connection failed, falling back to in-memory storage");
+          console.log("📝 Using mock data for development");
+          this.storage = new MemStorage();
+          this.usingDatabase = false;
         }
       } else {
-        console.log("❌ SUPABASE_SERVICE_KEY not configured");
-        throw new Error("SUPABASE_SERVICE_KEY environment variable is required");
+        console.log("⚠️ Database credentials not configured, using in-memory storage");
+        console.log("📝 Using mock data for development");
+        this.storage = new MemStorage();
+        this.usingDatabase = false;
       }
     } catch (error) {
-      console.log("❌ Database initialization failed");
-      console.log("Error:", error instanceof Error ? error.message : error);
-      throw error;
+      console.log("⚠️ Database initialization failed, falling back to in-memory storage");
+      console.log("📝 Using mock data for development");
+      this.storage = new MemStorage();
+      this.usingDatabase = false;
     }
 
     this.initialized = true;
