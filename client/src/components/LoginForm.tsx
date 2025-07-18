@@ -152,27 +152,28 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Senha
                 </Label>
-                <div className="relative">
-                  <input
+                <div className="relative w-full">
+                  <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Digite sua senha"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-12"
+                    className="w-full pr-12"
+                    style={{ paddingRight: '2.5rem' }}
                   />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  <div 
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
                     onClick={() => setShowPassword(!showPassword)}
+                    style={{ top: 0, bottom: 0, right: 0, position: 'absolute' }}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="h-4 w-4 text-gray-500 hover:text-gray-700" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="h-4 w-4 text-gray-500 hover:text-gray-700" />
                     )}
-                  </button>
+                  </div>
                 </div>
               </div>
 
