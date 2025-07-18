@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import UserAvatar from '@/components/UserAvatar';
@@ -12,8 +12,6 @@ import {
   Calendar,
   Package,
   MessageCircle,
-  Menu,
-  X,
   LogOut
 } from 'lucide-react';
 
@@ -23,7 +21,6 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
-  const [isOpen, setIsOpen] = useState(false); // Mobile-first: começa fechado
   const { user, logout } = useAuth();
   const { selectedCategory } = useCategory();
 
@@ -68,38 +65,16 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
 
   const handleMenuClick = (itemId: string) => {
     onSectionChange(itemId);
-    // Auto-close sidebar on mobile after selection
-    if (window.innerWidth < 768) {
-      setIsOpen(false);
-    }
   };
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden bg-[hsl(var(--dashboard-dark))] hover:bg-[hsl(var(--dashboard-darker))] text-white border border-[hsl(var(--dashboard-darker))]"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-      </Button>
-
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-30 bg-black/50 md:hidden backdrop-blur-sm"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
 
       {/* Sidebar */}
       <div className={cn(
         "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-transform duration-300 shadow-xl",
         "w-64",
-        "md:translate-x-0",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        "translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
