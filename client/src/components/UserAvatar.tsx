@@ -1,4 +1,4 @@
-import avatarImage from "@assets/2-_1751286302473.png";
+import { X } from 'lucide-react';
 
 interface UserAvatarProps {
   username: string;
@@ -16,13 +16,20 @@ const UserAvatar = ({ username, size = "medium" }: UserAvatarProps) => {
     medium: "text-base"
   };
 
+  const iconSizes = {
+    small: "w-4 h-4",
+    medium: "w-6 h-6"
+  };
+
   return (
     <div className="flex items-center gap-3">
-      <div className={`${avatarSizes[size]} rounded-2xl overflow-hidden shadow-lg bg-gradient-to-br from-primary to-primary/80 transition-all duration-300 hover:scale-105 modern-card-hover`}>
-        <img 
-          src={avatarImage} 
-          alt={`Avatar de ${username}`} 
-          className="w-full h-full object-cover"
+      <div className={`${avatarSizes[size]} rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 modern-card-hover flex items-center justify-center`}
+           style={{ 
+             background: 'linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%)' 
+           }}>
+        <X 
+          className={`${iconSizes[size]} text-purple-600`}
+          strokeWidth={3}
         />
       </div>
       <div className="flex flex-col">
