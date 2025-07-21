@@ -13,42 +13,42 @@ export const availableSections: SectionPermission[] = [
   {
     id: 'dashboard',
     label: 'Dashboard',
-    description: 'Visão geral e métricas do sistema',
+    description: 'Visão geral e métricas',
     icon: 'Database',
     defaultEnabled: true
   },
   {
     id: 'graficos',
     label: 'Gráficos',
-    description: 'Análises, relatórios e visualizações',
+    description: 'Análises e relatórios',
     icon: 'BarChart3',
     defaultEnabled: true
   },
   {
     id: 'atividade',
     label: 'Atividade',
-    description: 'Log de atividades e histórico',
+    description: 'Log de atividades',
     icon: 'Activity',
     defaultEnabled: true
   },
   {
     id: 'agendamentos',
     label: 'Agendamentos',
-    description: 'Agenda, compromissos e lembretes',
+    description: 'Agenda e compromissos',
     icon: 'Calendar',
     defaultEnabled: true
   },
   {
     id: 'estoque',
     label: 'Estoque',
-    description: 'Produtos, vendas e controle de estoque',
+    description: 'Produtos e vendas',
     icon: 'Package',
     defaultEnabled: true
   },
   {
     id: 'atendimento',
     label: 'Atendimento',
-    description: 'Chat, WhatsApp e assistente virtual',
+    description: 'Chat e assistente',
     icon: 'MessageCircle',
     defaultEnabled: true
   }

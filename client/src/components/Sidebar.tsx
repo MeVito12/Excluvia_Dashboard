@@ -68,7 +68,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       id: 'controle',
       label: 'Controle',
       icon: Settings,
-      description: 'Configuração de permissões de usuários'
+      description: 'Configuração de permissões'
     }
   ];
 

@@ -113,7 +113,7 @@ const ControleSection = () => {
       <div className="main-card">
         <div className="flex items-center gap-3 mb-6">
           <Settings className="w-6 h-6 text-purple-600" />
-          <h1 className="text-xl font-semibold text-gray-800">Controle de Acesso</h1>
+          <h1 className="text-xl font-semibold text-gray-800">Controle</h1>
         </div>
 
         {/* Informações do Master */}
@@ -123,7 +123,7 @@ const ControleSection = () => {
             <div>
               <h3 className="font-medium text-purple-800">Usuário Master</h3>
               <p className="text-sm text-purple-600">
-                {user?.name} - Acesso total ao sistema e configuração de permissões
+                {user?.name} - Acesso total e configuração
               </p>
             </div>
           </div>
