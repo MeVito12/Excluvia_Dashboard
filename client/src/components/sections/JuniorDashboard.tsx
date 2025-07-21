@@ -113,20 +113,15 @@ const JuniorDashboard = () => {
   };
 
   return (
-    <div className="app-section">
-      {/* Header Principal */}
-      <div className="section-header">
-        <div className="flex items-center gap-3">
-          <Building2 className="w-6 h-6 text-purple-600" />
-          <div>
-            <h1 className="text-2xl font-bold text-gray-800">Dashboard Multi-Unidades</h1>
-            <p className="text-sm text-gray-600">Controle operacional de 5 unidades de distribuição</p>
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Header Principal seguindo padrão */}
+      <div>
+        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Multi-Unidades</h1>
+        <p className="text-white/80">Controle operacional de 5 unidades de distribuição</p>
       </div>
 
-      {/* Filtros de Período */}
-      <div className="main-card p-4 mb-6">
+      {/* Filtros de Período seguindo padrão exato */}
+      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
         <h3 className="text-lg font-medium text-gray-800 mb-4">Filtrar por Período</h3>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
@@ -136,7 +131,8 @@ const JuniorDashboard = () => {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="border border-gray-200 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
+              className="border border-gray-200 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
             />
           </div>
           <div className="flex items-center gap-2">
@@ -146,18 +142,19 @@ const JuniorDashboard = () => {
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="border border-gray-200 rounded-md px-3 py-1 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
+              className="border border-gray-200 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white"
             />
           </div>
           <button
             onClick={clearFilters}
-            className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors bg-white rounded-md border border-gray-200"
           >
             Limpar Filtros
           </button>
           <button
             onClick={applyFilters}
-            className="btn btn-primary px-4 py-1 text-sm"
+            className="px-4 py-2 text-sm bg-purple-600 hover:bg-purple-700 text-white rounded-md transition-colors"
           >
             Aplicar Filtros
           </button>
