@@ -4,15 +4,32 @@
 
 /* Hierarquia de z-index organizada */
 .modal-overlay {
-  z-index: 50 !important;
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
 }
 
 .modal-content {
-  z-index: 50 !important;
+  z-index: 10000 !important;
+  position: relative !important;
 }
 
 .sheets-integration-panel {
-  z-index: 60 !important;
+  z-index: 10001 !important;
+}
+
+/* Garantir que nenhum elemento interfira com modais */
+.app-section {
+  position: relative;
+  z-index: 1;
+}
+
+.main-card {
+  position: relative;
+  z-index: 2;
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 

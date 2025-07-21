@@ -1688,8 +1688,8 @@ const EstoqueSection = () => {
 
       {/* Modal de Edição */}
       {showEditModal && editingProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative z-50">
+        <div className="modal-overlay bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Editar Produto</h3>
             <div className="space-y-4">
               <div>
@@ -1771,8 +1771,8 @@ const EstoqueSection = () => {
 
       {/* Modal de Adicionar Produto */}
       {showAddProductModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto relative z-50">
+        <div className="modal-overlay bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Adicionar Produto</h3>
               <button 
@@ -1924,8 +1924,8 @@ const EstoqueSection = () => {
 
       {/* Modal de Controle de Estoque */}
       {showStockModal && stockProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 relative z-50">
+        <div className="modal-overlay bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Controle de Estoque</h3>
               <button 
