@@ -1620,8 +1620,12 @@ const EstoqueSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Produtos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">126</p>
-              <p className="text-xs text-green-600 mt-1">+5 esta semana</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {productsLoading ? '...' : products.length}
+              </p>
+              <p className="text-xs text-green-600 mt-1">
+                {products.length > 0 ? 'Dados atualizados' : 'Carregando...'}
+              </p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <Package className="h-6 w-6 text-blue-600" />
@@ -1633,8 +1637,10 @@ const EstoqueSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Valor Total</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">R$ 18.240</p>
-              <p className="text-xs text-green-600 mt-1">+8% este mês</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {productsLoading ? '...' : `R$ ${products.reduce((total, product) => total + (product.price * (product.stock || 0)), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+              </p>
+              <p className="text-xs text-green-600 mt-1">Valor em estoque</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <DollarSign className="h-6 w-6 text-green-600" />
@@ -1646,8 +1652,12 @@ const EstoqueSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Produtos Ativos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">119</p>
-              <p className="text-xs text-blue-600 mt-1">94% disponível</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {productsLoading ? '...' : products.filter(p => (p.stock || 0) > 0).length}
+              </p>
+              <p className="text-xs text-blue-600 mt-1">
+                {products.length > 0 ? `${Math.round((products.filter(p => (p.stock || 0) > 0).length / products.length) * 100)}% disponível` : 'Carregando...'}
+              </p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
               <CheckCircle className="h-6 w-6 text-purple-600" />
@@ -1659,8 +1669,12 @@ const EstoqueSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">7</p>
-              <p className="text-xs text-yellow-600 mt-1">Requer atenção</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {productsLoading ? '...' : products.filter(p => (p.stock || 0) <= (p.minStock || 0) && (p.stock || 0) >= 0).length}
+              </p>
+              <p className="text-xs text-yellow-600 mt-1">
+                {products.filter(p => (p.stock || 0) <= (p.minStock || 0) && (p.stock || 0) >= 0).length > 0 ? 'Requer atenção' : 'Tudo ok'}
+              </p>
             </div>
             <div className="p-3 rounded-full bg-yellow-100">
               <AlertTriangle className="h-6 w-6 text-yellow-600" />
