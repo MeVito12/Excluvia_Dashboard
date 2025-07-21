@@ -12,10 +12,8 @@ class DatabaseManager {
   async initialize() {
     if (this.initialized) return this.storage;
 
-    console.log("🔄 Inicializando sistema de dados...");
-    console.log("🔗 Sistema preparado para receber dados reais das empresas");
-    console.log("📊 Aguardando configuração de integrações com APIs externas");
-    console.log("🔑 Configure as credenciais das empresas para ativar os dados reais");
+    console.log("🔄 Initializing in-memory storage...");
+    console.log("📝 Using mock data for development");
     
     this.initialized = true;
     return this.storage;
