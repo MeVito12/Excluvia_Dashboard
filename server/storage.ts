@@ -59,10 +59,35 @@ export class MemStorage implements Storage {
   ];
   
   private products: Product[] = [
+    // Produtos para Salão
     { id: 1, userId: 1, businessCategory: "salao", name: "Corte de Cabelo", description: "Corte masculino tradicional", price: 35.00, stock: 0, createdAt: new Date() },
     { id: 2, userId: 1, businessCategory: "salao", name: "Escova Progressiva", description: "Tratamento alisante", price: 180.00, stock: 0, createdAt: new Date() },
     { id: 3, userId: 1, businessCategory: "salao", name: "Coloração", description: "Tintura completa", price: 120.00, stock: 0, createdAt: new Date() },
-    { id: 4, userId: 1, businessCategory: "salao", name: "Manicure", description: "Cuidados com as unhas", price: 25.00, stock: 0, createdAt: new Date() }
+    { id: 4, userId: 1, businessCategory: "salao", name: "Manicure", description: "Cuidados com as unhas", price: 25.00, stock: 0, createdAt: new Date() },
+    
+    // Produtos para Alimentício
+    { id: 5, userId: 1, businessCategory: "alimenticio", name: "Pizza Margherita", description: "Pizza tradicional com tomate e mussarela", price: 35.00, stock: 25, minStock: 10, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 2), createdAt: new Date() },
+    { id: 6, userId: 1, businessCategory: "alimenticio", name: "Hambúrguer Artesanal", description: "Hambúrguer com carne artesanal", price: 28.00, stock: 15, minStock: 8, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 1), createdAt: new Date() },
+    { id: 7, userId: 1, businessCategory: "alimenticio", name: "Refrigerante Lata", description: "Refrigerante lata 350ml", price: 5.50, stock: 120, minStock: 50, isPerishable: false, createdAt: new Date() },
+    { id: 8, userId: 1, businessCategory: "alimenticio", name: "Açúcar Cristal", description: "Açúcar cristal 1kg", price: 4.90, stock: 8, minStock: 20, isPerishable: false, createdAt: new Date() },
+    
+    // Produtos para Pet
+    { id: 9, userId: 1, businessCategory: "pet", name: "Ração Premium Golden", description: "Ração para cães adultos", price: 89.90, stock: 45, minStock: 15, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 240), createdAt: new Date() },
+    { id: 10, userId: 1, businessCategory: "pet", name: "Vacina V10 Cães", description: "Vacina múltipla para cães", price: 85.00, stock: 8, minStock: 5, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 60), createdAt: new Date() },
+    { id: 11, userId: 1, businessCategory: "pet", name: "Coleira Antipulgas", description: "Coleira com proteção antipulgas", price: 35.50, stock: 2, minStock: 10, isPerishable: false, createdAt: new Date() },
+    
+    // Produtos para Farmácia
+    { id: 12, userId: 1, businessCategory: "farmacia", name: "Dipirona 500mg", description: "Analgésico e antitérmico", price: 15.90, stock: 250, minStock: 80, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 330), createdAt: new Date() },
+    { id: 13, userId: 1, businessCategory: "farmacia", name: "Amoxicilina 500mg", description: "Antibiótico de amplo espectro", price: 28.00, stock: 95, minStock: 30, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 200), createdAt: new Date() },
+    
+    // Produtos para Vendas/Loja
+    { id: 14, userId: 1, businessCategory: "vendas", name: "Smartphone Galaxy S24", description: "Smartphone Samsung Galaxy", price: 2899.99, stock: 12, minStock: 5, isPerishable: false, createdAt: new Date() },
+    { id: 15, userId: 1, businessCategory: "vendas", name: "Notebook Dell Inspiron", description: "Notebook Dell Core i5", price: 2350.00, stock: 8, minStock: 3, isPerishable: false, createdAt: new Date() },
+    { id: 16, userId: 1, businessCategory: "vendas", name: "Camiseta Polo", description: "Camiseta polo masculina", price: 89.99, stock: 45, minStock: 20, isPerishable: false, createdAt: new Date() },
+    
+    // Produtos para Estética
+    { id: 17, userId: 1, businessCategory: "estetica", name: "Ácido Hialurônico", description: "Preenchimento facial", price: 320.00, stock: 15, minStock: 8, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 180), createdAt: new Date() },
+    { id: 18, userId: 1, businessCategory: "estetica", name: "Botox", description: "Toxina botulínica tipo A", price: 280.00, stock: 12, minStock: 6, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 150), createdAt: new Date() }
   ];
   
   private sales: Sale[] = [
