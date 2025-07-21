@@ -1769,159 +1769,6 @@ const EstoqueSection = () => {
         </div>
       )}
 
-      {/* Modal de Adicionar Produto */}
-      {showAddProductModal && (
-        <div className="modal-overlay bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="modal-content bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Adicionar Produto</h3>
-              <button 
-                onClick={() => {
-                  setShowAddProductModal(false);
-                  setNewProduct({
-                    name: '',
-                    currentStock: '',
-                    manufacturingDate: '',
-                    expiryDate: '',
-                    isPerishable: false,
-                    category: 'Geral',
-                    price: '',
-                    minStock: '10'
-                  });
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nome do Produto *
-                </label>
-                <input
-                  type="text"
-                  value={newProduct.name}
-                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Digite o nome do produto"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Estoque Atual *
-                </label>
-                <input
-                  type="number"
-                  value={newProduct.currentStock}
-                  onChange={(e) => setNewProduct({ ...newProduct, currentStock: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Quantidade em estoque"
-                  min="0"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Preço Unitário
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  value={newProduct.price}
-                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="R$ 0,00"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Estoque Mínimo
-                </label>
-                <input
-                  type="number"
-                  value={newProduct.minStock}
-                  onChange={(e) => setNewProduct({ ...newProduct, minStock: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="10"
-                  min="0"
-                />
-              </div>
-
-              <div>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={newProduct.isPerishable}
-                    onChange={(e) => setNewProduct({ ...newProduct, isPerishable: e.target.checked })}
-                    className="rounded border-gray-300"
-                  />
-                  <span className="text-sm font-medium text-gray-700">Produto Perecível</span>
-                </label>
-              </div>
-
-              {newProduct.isPerishable && (
-                <>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Data de Fabricação *
-                    </label>
-                    <input
-                      type="date"
-                      value={newProduct.manufacturingDate}
-                      onChange={(e) => setNewProduct({ ...newProduct, manufacturingDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Data de Validade *
-                    </label>
-                    <input
-                      type="date"
-                      value={newProduct.expiryDate}
-                      onChange={(e) => setNewProduct({ ...newProduct, expiryDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-            
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => {
-                  setShowAddProductModal(false);
-                  setNewProduct({
-                    name: '',
-                    currentStock: '',
-                    manufacturingDate: '',
-                    expiryDate: '',
-                    isPerishable: false,
-                    category: 'Geral',
-                    price: '',
-                    minStock: '10'
-                  });
-                }}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={addProduct}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
-              >
-                Adicionar Produto
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Modal de Controle de Estoque */}
       {showStockModal && stockProduct && (
         <div className="modal-overlay bg-black bg-opacity-50 flex items-center justify-center">
@@ -2032,6 +1879,114 @@ const EstoqueSection = () => {
           isVisible={showSheetsPanel}
           onClose={() => setShowSheetsPanel(false)}
         />
+      )}
+
+      {/* Modal de Adicionar Produto */}
+      {showAddProductModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+          style={{ zIndex: 99999 }}
+        >
+          <div 
+            className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto"
+            style={{ zIndex: 100000 }}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Adicionar Produto</h3>
+              <button
+                onClick={() => setShowAddProductModal(false)}
+                className="text-gray-500 hover:text-gray-700 text-xl"
+              >
+                ×
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome do Produto *
+                </label>
+                <input
+                  type="text"
+                  value={newProduct.name}
+                  onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                  placeholder="Digite o nome do produto"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantidade Inicial
+                </label>
+                <input
+                  type="number"
+                  value={newProduct.currentStock}
+                  onChange={(e) => setNewProduct({ ...newProduct, currentStock: e.target.value })}
+                  min="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Preço Unitário
+                </label>
+                <input
+                  type="text"
+                  value={newProduct.price}
+                  onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                  placeholder="0,00"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Estoque Mínimo
+                </label>
+                <input
+                  type="text"
+                  value={newProduct.minStock}
+                  onChange={(e) => setNewProduct({ ...newProduct, minStock: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={newProduct.isPerishable}
+                  onChange={(e) => setNewProduct({ ...newProduct, isPerishable: e.target.checked })}
+                  className="mr-2"
+                />
+                <label className="text-sm text-gray-700">Produto Perecível</label>
+              </div>
+              {newProduct.isPerishable && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Data de Validade
+                  </label>
+                  <input
+                    type="date"
+                    value={newProduct.expiryDate}
+                    onChange={(e) => setNewProduct({ ...newProduct, expiryDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowAddProductModal(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={addProduct}
+                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Adicionar Produto
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
