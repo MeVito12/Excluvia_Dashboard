@@ -4,6 +4,7 @@ import { databaseManager } from "./database-manager";
 import { 
   appointmentSchema
 } from "@shared/schema";
+import GoogleSheetsManager from './google-sheets';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check
@@ -119,6 +120,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching clients:", error);
       res.status(500).json({ error: "Erro ao buscar clientes" });
+    }
+  });
+
+  // Google Sheets Integration Routes para Junior Profile
+  let sheetsManager: GoogleSheetsManager | null = null;
+  const initSheetsManager = () => {
+    if (!sheetsManager) {
+      sheetsManager = new GoogleSheetsManager();
+    }
+    return sheetsManager;
+  };
+
+  // Inicializar planilha Google Sheets
+  app.post("/api/sheets/init", async (req, res) => {
+    try {
+      const manager = initSheetsManager();
+      const spreadsheetId = await manager.createBaseSheet();
+      
+      res.json({
+        success: true,
+        message: 'Planilha inicializada com sucesso',
+        spreadsheetId
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao inicializar planilha',
+        error: error.message
+      });
+    }
+  });
+
+  // Obter produtos da planilha
+  app.get("/api/sheets/products", async (req, res) => {
+    try {
+      const manager = initSheetsManager();
+      const products = await manager.getProductsFromSheets();
+      
+      res.json({
+        success: true,
+        products
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao buscar produtos da planilha',
+        error: error.message
+      });
+    }
+  });
+
+  // Adicionar produto à planilha
+  app.post("/api/sheets/products", async (req, res) => {
+    try {
+      const manager = initSheetsManager();
+      const product = req.body;
+      
+      if (!product.id) {
+        product.id = 'PROD' + Date.now().toString().slice(-6);
+      }
+      
+      await manager.syncProductToSheets(product);
+      
+      res.json({
+        success: true,
+        message: 'Produto adicionado à planilha',
+        product
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao adicionar produto',
+        error: error.message
+      });
+    }
+  });
+
+  // Atualizar estoque na planilha
+  app.put("/api/sheets/products/:id/stock", async (req, res) => {
+    try {
+      const manager = initSheetsManager();
+      const { id } = req.params;
+      const { quantity, movement } = req.body;
+      
+      await manager.updateStock(id, quantity, movement || 'Ajuste Manual');
+      
+      res.json({
+        success: true,
+        message: 'Estoque atualizado na planilha'
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao atualizar estoque',
+        error: error.message
+      });
+    }
+  });
+
+  // Obter estatísticas da planilha
+  app.get("/api/sheets/stats", async (req, res) => {
+    try {
+      const manager = initSheetsManager();
+      const stats = await manager.getSheetStats();
+      
+      res.json({
+        success: true,
+        stats
+      });
+    } catch (error: any) {
+      res.status(500).json({
+        success: false,
+        message: 'Erro ao obter estatísticas',
+        error: error.message
+      });
     }
   });
 
