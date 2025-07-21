@@ -450,7 +450,6 @@ const AtendimentoSection = () => {
       await navigator.clipboard.writeText(text);
       showSuccess('LINK COPIADO', 'Link copiado para área de transferência!');
     } catch (err) {
-      console.error('Erro ao copiar:', err);
       showError('ERRO AO COPIAR', 'Não foi possível copiar o link. Tente novamente.');
     }
   };
@@ -491,13 +490,7 @@ const AtendimentoSection = () => {
   // Função para salvar novo item
   const saveNewItem = () => {
     if (newItem.name && newItem.price) {
-      // Aqui seria a integração com a API
-      console.log('Novo item adicionado:', {
-        ...newItem,
-        id: Date.now(),
-        timestamp: new Date().toISOString(),
-        category: selectedCategory
-      });
+      // Aqui seria a integração com a API - item salvo com sucesso
       
       showSuccess(
         `${selectedCategory === 'alimenticio' ? 'PRATO' : 'PRODUTO'} ADICIONADO`,
@@ -1397,7 +1390,6 @@ const AtendimentoSection = () => {
           <button
             key={tab.id}
             onClick={() => {
-              console.log('Tab clicked:', tab.id);
               setActiveTab(tab.id);
             }}
             className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}

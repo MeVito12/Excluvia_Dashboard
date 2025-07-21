@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useToast } from '@/hooks/use-toast';
 import { 
   getProductsByCategory, 
   getSalesByCategory, 
@@ -48,6 +49,7 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
@@ -58,7 +60,13 @@ const EstoqueSection = () => {
     fetch(`/api/products?businessCategory=${selectedCategory}`)
       .then(res => res.json())
       .then(data => setProducts(data))
-      .catch(err => console.error('Error loading products:', err));
+      .catch(err => {
+        toast({
+          variant: "destructive",
+          title: "Erro ao carregar produtos",
+          description: "Não foi possível carregar os produtos. Tente novamente."
+        });
+      });
   }, [selectedCategory]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
@@ -80,7 +88,13 @@ const EstoqueSection = () => {
     fetch(`/api/sales?businessCategory=${selectedCategory}`)
       .then(res => res.json())
       .then(data => setSales(data))
-      .catch(err => console.error('Error loading sales:', err));
+      .catch(err => {
+        toast({
+          variant: "destructive",
+          title: "Erro ao carregar vendas",
+          description: "Não foi possível carregar as vendas. Tente novamente."
+        });
+      });
   }, [selectedCategory]);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
