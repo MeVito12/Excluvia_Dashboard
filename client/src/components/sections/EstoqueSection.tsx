@@ -337,13 +337,16 @@ const EstoqueSection = () => {
   // Função para excluir produto
   const deleteProduct = (productId: number) => {
     const product = products.find(p => p.id === productId);
-    if (product && confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`)) {
-      setProducts(prev => prev.filter(p => p.id !== productId));
-      showAlert({
-        title: "Produto Excluído",
-        description: "O produto foi removido do sistema com sucesso",
-        variant: "success"
-      });
+    if (product) {
+      const confirmed = window.confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`);
+      if (confirmed) {
+        setProducts(prev => prev.filter(p => p.id !== productId));
+        showAlert({
+          title: "Produto Excluído",
+          description: "O produto foi removido do sistema com sucesso",
+          variant: "success"
+        });
+      }
     }
   };
 
@@ -361,7 +364,11 @@ const EstoqueSection = () => {
     };
     
     setProducts(prev => [...prev, newProduct]);
-    alert('✅ Novo produto adicionado com sucesso!\n\nVocê pode editar os detalhes clicando no botão de edição.');
+    showAlert({
+      title: "Produto Adicionado com Sucesso!",
+      description: "Você pode editar os detalhes clicando no botão de edição.",
+      variant: "success"
+    });
   };
 
 
@@ -1470,7 +1477,11 @@ const EstoqueSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `daily_report_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('📊 Relatório Diário exportado!\n\nArquivo CSV baixado com dados de hoje.');
+              showAlert({
+                title: "Relatório Diário Exportado!",
+                description: "Arquivo CSV baixado com dados de hoje.",
+                variant: "success"
+              });
             }}
             className="btn btn-primary"
           >
@@ -1485,7 +1496,11 @@ const EstoqueSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `weekly_report_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('📊 Relatório Semanal exportado!\n\nArquivo CSV baixado com dados da semana.');
+              showAlert({
+                title: "Relatório Semanal Exportado!",
+                description: "Arquivo CSV baixado com dados da semana.",
+                variant: "success"
+              });
             }}
             className="btn btn-secondary"
           >

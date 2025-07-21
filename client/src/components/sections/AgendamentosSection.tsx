@@ -237,7 +237,11 @@ const AgendamentosSection = () => {
               <div className="list-card-footer">
                 <button 
                   onClick={() => {
-                    alert(`👁️ Visualizando compromisso:\n\n${appointment.title}\nCliente: ${appointment.client}\nData: ${appointment.date} às ${appointment.time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`);
+                    showAlert({
+                      title: `Visualizando Compromisso`,
+                      description: `${appointment.title}\nCliente: ${appointment.client}\nData: ${appointment.date} às ${appointment.time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
+                      variant: "default"
+                    });
                   }}
                   className="p-1 text-gray-400 hover:text-purple-600 transition-colors"
                   title="Visualizar"

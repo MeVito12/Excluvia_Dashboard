@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,6 +24,7 @@ import React from 'react';
 
 const AtividadeSection = () => {
   const { selectedCategory } = useCategory();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
@@ -310,7 +313,11 @@ const AtividadeSection = () => {
                 key={activity.id} 
                 className="p-6 hover:bg-gray-50 transition-colors cursor-pointer border-l-4 border-transparent hover:border-purple-500"
                 onClick={() => {
-                  alert(`📋 Detalhes da Atividade\n\nAção: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`);
+                  showAlert({
+                    title: "Detalhes da Atividade",
+                    description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`,
+                    variant: "default"
+                  });
                 }}
               >
                 <div className="flex items-start gap-4">
@@ -817,6 +824,14 @@ const AtividadeSection = () => {
           </div>
         </div>
       )}
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };

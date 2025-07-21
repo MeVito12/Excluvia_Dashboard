@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { 
@@ -47,6 +49,7 @@ import {
 
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
@@ -212,7 +215,8 @@ const AtendimentoSection = () => {
     const item: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
     const itemName = item?.name || item?.title || 'Item';
     
-    if (confirm(`Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`)) {
+    const confirmed = window.confirm(`Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`);
+    if (confirmed) {
       // Remove do catálogo/cardápio/portfólio
       setCategoryItems(prev => ({
         ...prev,
@@ -1787,6 +1791,14 @@ const AtendimentoSection = () => {
           </div>
         </div>
       )}
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };
