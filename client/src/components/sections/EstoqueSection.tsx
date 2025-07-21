@@ -4,18 +4,10 @@ import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { useCustomConfirm } from '@/hooks/use-custom-confirm';
 import { CustomConfirm } from '@/components/ui/custom-confirm';
-import { 
-  getProductsByCategory, 
-  getSalesByCategory, 
-  getClientsByCategory,
-  categoryProducts,
-  categorySales,
-  categoryClients,
-  type Product,
-  type Sale,
-  type Client
-} from '@/lib/mockData';
 import { useAuth } from '@/contexts/AuthContext';
+import { useProducts } from '@/hooks/useProducts';
+import { useSales } from '@/hooks/useSales';
+import { useClients } from '@/hooks/useClients';
 import { SheetsIntegrationPanel } from '@/components/SheetsIntegrationPanel';
 import { 
   Package, 
@@ -62,16 +54,21 @@ const EstoqueSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterUnit, setFilterUnit] = useState('all');
-  const [products, setProducts] = useState<any[]>([]);
   const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
   const [showSheetsPanel, setShowSheetsPanel] = useState(false);
+  const userId = isJuniorProfile ? 3 : 1;
   
-  // Buscar produtos da API quando a categoria mudar
-  React.useEffect(() => {
-    const userId = isJuniorProfile ? 3 : 1;
-    const mockProducts = getProductsByCategory(selectedCategory, userId);
-    setProducts(mockProducts);
-  }, [selectedCategory, isJuniorProfile]);
+  // Usar hooks para dados reais da API
+  const {
+    products,
+    isLoading: productsLoading,
+    createProduct,
+    updateProduct,
+    deleteProduct,
+    isCreating,
+    isUpdating,
+    isDeleting
+  } = useProducts(userId, selectedCategory);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -85,14 +82,17 @@ const EstoqueSection = () => {
     price: '',
     minStock: '10'
   });
-  const [sales, setSales] = useState<any[]>([]);
-  
-  // Buscar vendas da API quando a categoria mudar
-  React.useEffect(() => {
-    const userId = isJuniorProfile ? 3 : 1;
-    const mockSales = getSalesByCategory(selectedCategory, userId);
-    setSales(mockSales);
-  }, [selectedCategory, isJuniorProfile]);
+  // Usar hooks para vendas e clientes
+  const {
+    sales,
+    isLoading: salesLoading,
+    createSale
+  } = useSales(userId, selectedCategory);
+
+  const {
+    clients,
+    isLoading: clientsLoading
+  } = useClients(userId, selectedCategory);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });
@@ -124,20 +124,20 @@ const EstoqueSection = () => {
       return;
     }
 
-    const product = {
-      id: Date.now(),
+    const productData = {
       name: newProduct.name,
       stock: parseInt(newProduct.currentStock),
       minStock: parseInt(newProduct.minStock),
       price: parseFloat(newProduct.price) || 0,
-      category: newProduct.category,
+      description: '',
       isPerishable: newProduct.isPerishable,
-      manufacturingDate: newProduct.isPerishable ? newProduct.manufacturingDate : null,
-      expiryDate: newProduct.isPerishable ? newProduct.expiryDate : null,
-      createdAt: new Date().toISOString()
+      manufacturingDate: newProduct.isPerishable ? new Date(newProduct.manufacturingDate) : undefined,
+      expiryDate: newProduct.isPerishable ? new Date(newProduct.expiryDate) : undefined,
+      businessCategory: selectedCategory,
+      userId: userId
     };
 
-    setProducts(prev => [...prev, product]);
+    createProduct(productData);
     setNewProduct({
       name: '',
       currentStock: '',
@@ -151,7 +151,7 @@ const EstoqueSection = () => {
     setShowAddProductModal(false);
     showAlert({
       title: "Produto Adicionado",
-      description: `"${product.name}" foi adicionado ao estoque com ${product.stock} unidades!`,
+      description: `"${productData.name}" foi adicionado ao estoque com ${productData.stock} unidades!`,
       variant: "success"
     });
   };
@@ -181,11 +181,10 @@ const EstoqueSection = () => {
       return;
     }
 
-    setProducts(prev => prev.map(p => 
-      p.id === stockProduct.id 
-        ? { ...p, stock: newStock }
-        : p
-    ));
+    updateProduct({ 
+      id: stockProduct.id, 
+      data: { stock: newStock }
+    });
 
     const operation = stockAdjustment.operation === 'add' ? 'adicionadas' : 'removidas';
     showAlert({
@@ -212,24 +211,25 @@ const EstoqueSection = () => {
       return;
     }
 
-    setProducts(prev => prev.map(p => 
-      p.id === productId 
-        ? { ...p, stock: p.stock - quantitySold }
-        : p
-    ));
+    // Atualizar estoque do produto
+    updateProduct({ 
+      id: productId, 
+      data: { stock: product.stock - quantitySold }
+    });
 
-    // Registrar venda
-    const sale = {
-      id: Date.now(),
+    // Registrar venda usando a API
+    const saleData = {
       productId,
-      productName: product.name,
+      clientId: 1, // Usar cliente padrão por enquanto
       quantity: quantitySold,
-      unitPrice: product.price,
-      total: product.price * quantitySold,
-      date: new Date().toISOString()
+      totalPrice: product.price * quantitySold,
+      paymentMethod: 'Dinheiro',
+      businessCategory: selectedCategory,
+      userId: userId,
+      saleDate: new Date()
     };
 
-    setSales(prev => [...prev, sale]);
+    createSale(saleData);
     showAlert({
       title: "Venda Processada",
       description: `${quantitySold} unidades de "${product.name}" vendidas com sucesso`,
@@ -237,67 +237,27 @@ const EstoqueSection = () => {
     });
   };
 
-  // Função para calcular uso de ingredientes no cardápio
-  const deductIngredients = (recipeId: number, portions: number = 1) => {
-    // Mapeamento de receitas e ingredientes (exemplo para categoria alimentício)
-    const recipes: any = {
-      1: { // Pizza Margherita
-        ingredients: [
-          { productId: 1, quantity: 0.3 }, // Massa: 300g por pizza
-          { productId: 2, quantity: 0.2 }, // Molho: 200g por pizza
-          { productId: 3, quantity: 0.15 } // Queijo: 150g por pizza
-        ]
-      },
-      2: { // Hambúrguer
-        ingredients: [
-          { productId: 4, quantity: 0.2 }, // Pão: 200g por hambúrguer
-          { productId: 5, quantity: 0.15 }, // Carne: 150g por hambúrguer
-          { productId: 6, quantity: 0.05 } // Verduras: 50g por hambúrguer
-        ]
-      }
-    };
-
-    const recipe = recipes[recipeId];
-    if (!recipe) return;
-
-    recipe.ingredients.forEach((ingredient: any) => {
-      const quantityNeeded = ingredient.quantity * portions;
-      const product = products.find(p => p.id === ingredient.productId);
-      
-      if (product && product.stock >= quantityNeeded) {
-        setProducts(prev => prev.map(p => 
-          p.id === ingredient.productId 
-            ? { ...p, stock: p.stock - quantityNeeded }
-            : p
-        ));
-      }
-    });
-  };
-
   // Funções operacionais para produtos
   const replenishStock = (productId: number) => {
-    setProducts(prev => 
-      prev.map(product => 
-        product.id === productId 
-          ? { ...product, stock: product.stock + 50 }
-          : product
-      )
-    );
-    showAlert({
-      title: "Estoque Reposto",
-      description: "+50 unidades adicionadas ao produto com sucesso",
-      variant: "success"
-    });
+    const product = products.find(p => p.id === productId);
+    if (product) {
+      updateProduct({ 
+        id: productId, 
+        data: { stock: product.stock + 50 }
+      });
+      showAlert({
+        title: "Estoque Reposto",
+        description: "+50 unidades adicionadas ao produto com sucesso",
+        variant: "success"
+      });
+    }
   };
 
   const markAsExpired = (productId: number) => {
-    setProducts(prev => 
-      prev.map(product => 
-        product.id === productId 
-          ? { ...product, stock: 0, status: 'Vencido' }
-          : product
-      )
-    );
+    updateProduct({ 
+      id: productId, 
+      data: { stock: 0 }
+    });
     showAlert({
       variant: "destructive",
       title: "Produto Vencido",
@@ -316,11 +276,10 @@ const EstoqueSection = () => {
 
   // Função para salvar produto editado
   const saveEditedProduct = (editedProduct: any) => {
-    setProducts(prev => 
-      prev.map(product => 
-        product.id === editedProduct.id ? editedProduct : product
-      )
-    );
+    updateProduct({ 
+      id: editedProduct.id, 
+      data: editedProduct 
+    });
     setShowEditModal(false);
     setEditingProduct(null);
     showAlert({
@@ -331,7 +290,7 @@ const EstoqueSection = () => {
   };
 
   // Função para excluir produto
-  const deleteProduct = (productId: number) => {
+  const handleDeleteProduct = (productId: number) => {
     const product = products.find(p => p.id === productId);
     if (product) {
       showConfirm(
@@ -342,7 +301,7 @@ const EstoqueSection = () => {
           cancelText: "Cancelar"
         },
         () => {
-          setProducts(prev => prev.filter(p => p.id !== productId));
+          deleteProduct(productId);
           showAlert({
             title: "Produto Excluído",
             description: "O produto foi removido do sistema com sucesso",
@@ -354,19 +313,18 @@ const EstoqueSection = () => {
   };
 
   const addNewProduct = () => {
-    const newId = Math.max(...products.map(p => p.id)) + 1;
-    const newProduct = {
-      id: newId,
+    const productData = {
       name: 'Novo Produto',
-      category: 'Geral',
+      description: '',
       stock: 0,
       minStock: 5,
       price: 10.00,
       isPerishable: false,
-      status: 'Sem Estoque'
+      businessCategory: selectedCategory,
+      userId: userId
     };
     
-    setProducts(prev => [...prev, newProduct]);
+    createProduct(productData);
     showAlert({
       title: "Produto Adicionado com Sucesso!",
       description: "Você pode editar os detalhes clicando no botão de edição.",
@@ -401,12 +359,17 @@ const EstoqueSection = () => {
     return 'Em Estoque';
   };
 
-  // Usar dados específicos do mockData.ts e atualizar para uso automático
-  const getProductData = () => {
-    // Usar dados centralizados do mockData.ts automaticamente
-    const userId = isJuniorProfile ? 3 : 1;
-    return getProductsByCategory(selectedCategory, userId);
-  };
+  // Estado de loading para mostrar feedback ao usuário
+  if (productsLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-center">
+          <Package className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+          <p className="text-gray-600">Carregando produtos...</p>
+        </div>
+      </div>
+    );
+  }
 
   // Função mockada original como fallback (remover depois)
   const getProductDataOld = () => {
@@ -1239,14 +1202,18 @@ const EstoqueSection = () => {
         </div>
 
         <div className="item-list">
-          {getProductData()
+          {products
+            .map(product => ({
+              ...product,
+              status: getProductStatus(product.stock, product.minStock || 0, product.expiryDate?.toString())
+            }))
             .filter(product => {
               // Filtro por termo de busca
               const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
               
               // Filtro por categoria
               const categoryMatch = filterCategory === 'all' || 
-                product.category?.toLowerCase() === filterCategory.toLowerCase();
+                product.name?.toLowerCase().includes(filterCategory.toLowerCase());
               
               // Filtro por unidade (específico do Junior)
               const unitMatch = filterUnit === 'all' || 
@@ -1355,7 +1322,7 @@ const EstoqueSection = () => {
                   <Edit className="w-4 h-4" />
                 </button>
                 <button 
-                  onClick={() => deleteProduct(product.id)}
+                  onClick={() => handleDeleteProduct(product.id)}
                   className="btn btn-outline p-2 text-red-600 hover:text-red-700 hover:bg-red-50" 
                   title="Excluir produto"
                 >

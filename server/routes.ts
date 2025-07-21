@@ -81,12 +81,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rotas básicas de produtos
+  app.put("/api/appointments/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const appointmentId = parseInt(req.params.id);
+      const appointmentData = {
+        ...req.body,
+        startTime: req.body.startTime ? new Date(req.body.startTime) : undefined,
+        endTime: req.body.endTime ? new Date(req.body.endTime) : undefined,
+      };
+      
+      const updatedAppointment = await storage.updateAppointment(appointmentId, appointmentData);
+      if (!updatedAppointment) {
+        return res.status(404).json({ error: "Agendamento não encontrado" });
+      }
+      
+      res.json(updatedAppointment);
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      res.status(500).json({ error: "Erro ao atualizar agendamento" });
+    }
+  });
+
+  app.delete("/api/appointments/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const appointmentId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteAppointment(appointmentId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Agendamento não encontrado" });
+      }
+      
+      res.json({ message: "Agendamento excluído com sucesso" });
+    } catch (error) {
+      console.error("Error deleting appointment:", error);
+      res.status(500).json({ error: "Erro ao excluir agendamento" });
+    }
+  });
+
+  // Rotas de produtos
   app.get("/api/products", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = 1;
-      const businessCategory = "salao";
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "salao";
       const products = await storage.getProducts(userId, businessCategory);
       res.json(products);
     } catch (error) {
@@ -95,12 +134,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rotas básicas de vendas
+  app.post("/api/products", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const productData = req.body;
+      
+      // Validação básica
+      if (!productData.name || productData.price == null || productData.stock == null) {
+        return res.status(400).json({ error: "Nome, preço e estoque são obrigatórios" });
+      }
+
+      const newProduct = await storage.createProduct(productData);
+      res.json(newProduct);
+    } catch (error) {
+      console.error("Error creating product:", error);
+      res.status(500).json({ error: "Erro ao criar produto" });
+    }
+  });
+
+  app.put("/api/products/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const productId = parseInt(req.params.id);
+      const productData = req.body;
+      
+      const updatedProduct = await storage.updateProduct(productId, productData);
+      if (!updatedProduct) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ error: "Erro ao atualizar produto" });
+    }
+  });
+
+  app.delete("/api/products/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const productId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteProduct(productId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Produto não encontrado" });
+      }
+      
+      res.json({ message: "Produto excluído com sucesso" });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      res.status(500).json({ error: "Erro ao excluir produto" });
+    }
+  });
+
+  // Rotas de vendas
   app.get("/api/sales", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = 1;
-      const businessCategory = "salao";
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "salao";
       const sales = await storage.getSales(userId, businessCategory);
       res.json(sales);
     } catch (error) {
@@ -109,17 +201,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Rotas básicas de clientes
+  app.post("/api/sales", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const saleData = req.body;
+      
+      // Validação básica
+      if (!saleData.productId || !saleData.clientId || !saleData.quantity || !saleData.totalPrice) {
+        return res.status(400).json({ error: "Produto, cliente, quantidade e preço total são obrigatórios" });
+      }
+
+      const newSale = await storage.createSale(saleData);
+      res.json(newSale);
+    } catch (error) {
+      console.error("Error creating sale:", error);
+      res.status(500).json({ error: "Erro ao criar venda" });
+    }
+  });
+
+  // Rotas de clientes
   app.get("/api/clients", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = 1;
-      const businessCategory = "salao";
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "salao";
       const clients = await storage.getClients(userId, businessCategory);
       res.json(clients);
     } catch (error) {
       console.error("Error fetching clients:", error);
       res.status(500).json({ error: "Erro ao buscar clientes" });
+    }
+  });
+
+  app.post("/api/clients", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const clientData = req.body;
+      
+      // Validação básica
+      if (!clientData.name || !clientData.email || !clientData.phone) {
+        return res.status(400).json({ error: "Nome, email e telefone são obrigatórios" });
+      }
+
+      const newClient = await storage.createClient(clientData);
+      res.json(newClient);
+    } catch (error) {
+      console.error("Error creating client:", error);
+      res.status(500).json({ error: "Erro ao criar cliente" });
+    }
+  });
+
+  app.put("/api/clients/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const clientId = parseInt(req.params.id);
+      const clientData = req.body;
+      
+      const updatedClient = await storage.updateClient(clientId, clientData);
+      if (!updatedClient) {
+        return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+      
+      res.json(updatedClient);
+    } catch (error) {
+      console.error("Error updating client:", error);
+      res.status(500).json({ error: "Erro ao atualizar cliente" });
+    }
+  });
+
+  app.delete("/api/clients/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const clientId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteClient(clientId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Cliente não encontrado" });
+      }
+      
+      res.json({ message: "Cliente excluído com sucesso" });
+    } catch (error) {
+      console.error("Error deleting client:", error);
+      res.status(500).json({ error: "Erro ao excluir cliente" });
     }
   });
 
