@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { 
@@ -14,10 +15,20 @@ import {
   type Appointment,
   type Activity
 } from '@/lib/mockData';
+import JuniorDashboard from './JuniorDashboard';
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
+  const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  
+  // Verificar se é o perfil Junior
+  const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
+  
+  // Se for Junior, mostrar dashboard específico
+  if (isJuniorProfile) {
+    return <JuniorDashboard />;
+  }
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();

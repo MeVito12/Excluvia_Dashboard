@@ -15,6 +15,9 @@ export interface Product {
   status?: string;
   available: boolean;
   image?: string;
+  unit?: string;
+  supplier?: string;
+  lastRestock?: string;
 }
 
 export interface Sale {
@@ -89,6 +92,9 @@ export interface Activity {
   user: string;
   details?: any;
 }
+
+// Import Junior's specialized data
+import { getJuniorData } from './juniorMockData';
 
 // Products for each business profile login
 export const categoryProducts: Record<string, Product[]> = {
@@ -505,15 +511,25 @@ export const sitesPortfolio = [
 ];
 
 // Helper functions to get data by category
-export const getProductsByCategory = (category: string): Product[] => {
+export const getProductsByCategory = (category: string, userId?: number): Product[] => {
+  // Se for o usuário Junior (ID 3), usar dados especializados
+  if (userId === 3 && category === 'vendas') {
+    return getJuniorData().products;
+  }
   return categoryProducts[category] || [];
 };
 
-export const getSalesByCategory = (category: string): Sale[] => {
+export const getSalesByCategory = (category: string, userId?: number): Sale[] => {
+  if (userId === 3 && category === 'vendas') {
+    return getJuniorData().sales;
+  }
   return categorySales[category] || [];
 };
 
-export const getClientsByCategory = (category: string): Client[] => {
+export const getClientsByCategory = (category: string, userId?: number): Client[] => {
+  if (userId === 3 && category === 'vendas') {
+    return getJuniorData().clients;
+  }
   return categoryClients[category] || [];
 };
 
@@ -525,11 +541,17 @@ export const getSpecialistsByCategory = (category: string): Specialist[] => {
   return categorySpecialists[category] || [];
 };
 
-export const getWhatsAppConversationsByCategory = (category: string): WhatsAppConversation[] => {
+export const getWhatsAppConversationsByCategory = (category: string, userId?: number): WhatsAppConversation[] => {
+  if (userId === 3 && category === 'vendas') {
+    return getJuniorData().whatsapp;
+  }
   return categoryWhatsAppConversations[category] || [];
 };
 
-export const getActivitiesByCategory = (category: string): Activity[] => {
+export const getActivitiesByCategory = (category: string, userId?: number): Activity[] => {
+  if (userId === 3 && category === 'vendas') {
+    return getJuniorData().activities;
+  }
   return categoryActivities[category] || [];
 };
 

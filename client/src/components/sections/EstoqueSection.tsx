@@ -15,6 +15,7 @@ import {
   type Sale,
   type Client
 } from '@/lib/mockData';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
   Package, 
   ShoppingCart, 
@@ -55,23 +56,19 @@ const EstoqueSection = () => {
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
   const [activeTab, setActiveTab] = useState('produtos');
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [filterUnit, setFilterUnit] = useState('all');
   const [products, setProducts] = useState<any[]>([]);
+  const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
   
   // Buscar produtos da API quando a categoria mudar
   React.useEffect(() => {
-    fetch(`/api/products?businessCategory=${selectedCategory}`)
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(err => {
-        showAlert({
-          variant: "destructive",
-          title: "Erro ao carregar produtos",
-          description: "Não foi possível carregar os produtos. Tente novamente."
-        });
-      });
-  }, [selectedCategory]);
+    const userId = isJuniorProfile ? 3 : 1;
+    const mockProducts = getProductsByCategory(selectedCategory, userId);
+    setProducts(mockProducts);
+  }, [selectedCategory, isJuniorProfile]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -89,17 +86,10 @@ const EstoqueSection = () => {
   
   // Buscar vendas da API quando a categoria mudar
   React.useEffect(() => {
-    fetch(`/api/sales?businessCategory=${selectedCategory}`)
-      .then(res => res.json())
-      .then(data => setSales(data))
-      .catch(err => {
-        showAlert({
-          variant: "destructive",
-          title: "Erro ao carregar vendas",
-          description: "Não foi possível carregar as vendas. Tente novamente."
-        });
-      });
-  }, [selectedCategory]);
+    const userId = isJuniorProfile ? 3 : 1;
+    const mockSales = getSalesByCategory(selectedCategory, userId);
+    setSales(mockSales);
+  }, [selectedCategory, isJuniorProfile]);
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });
@@ -411,7 +401,8 @@ const EstoqueSection = () => {
   // Usar dados específicos do mockData.ts e atualizar para uso automático
   const getProductData = () => {
     // Usar dados centralizados do mockData.ts automaticamente
-    return getProductsByCategory(selectedCategory);
+    const userId = isJuniorProfile ? 3 : 1;
+    return getProductsByCategory(selectedCategory, userId);
   };
 
   // Função mockada original como fallback (remover depois)
@@ -1225,11 +1216,43 @@ const EstoqueSection = () => {
               </>
             )}
             </select>
+            
+            {/* Filtro por unidade específico do perfil Junior */}
+            {isJuniorProfile && (
+              <select 
+                value={filterUnit}
+                onChange={(e) => setFilterUnit(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent w-48"
+              >
+                <option value="all">Todas as unidades</option>
+                <option value="Centro">Centro (Hub)</option>
+                <option value="Norte">Norte</option>
+                <option value="Sul">Sul</option>
+                <option value="Leste">Leste</option>
+                <option value="Oeste">Oeste</option>
+              </select>
+            )}
           </div>
         </div>
 
         <div className="item-list">
-          {getProductData().map((product) => (
+          {getProductData()
+            .filter(product => {
+              // Filtro por termo de busca
+              const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+              
+              // Filtro por categoria
+              const categoryMatch = filterCategory === 'all' || 
+                product.category?.toLowerCase() === filterCategory.toLowerCase();
+              
+              // Filtro por unidade (específico do Junior)
+              const unitMatch = filterUnit === 'all' || 
+                !isJuniorProfile || 
+                (product as any).unit === filterUnit;
+              
+              return searchMatch && categoryMatch && unitMatch;
+            })
+            .map((product) => (
             <div key={product.id} className="list-item">
               <div className="flex items-center gap-4 flex-1">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
@@ -1253,11 +1276,18 @@ const EstoqueSection = () => {
                     )}
                   </div>
                   <p className="text-sm text-gray-600">Categoria: {product.category}</p>
+                  {/* Informações específicas do perfil Junior */}
+                  {isJuniorProfile && (product as any).unit && (
+                    <p className="text-sm text-blue-600 font-medium">
+                      📍 Unidade: {(product as any).unit} | 
+                      🏢 Fornecedor: {(product as any).supplier || 'N/A'}
+                    </p>
+                  )}
                   <div className="flex items-center gap-4 mt-1">
                     <p className="text-sm text-gray-600">
                       Estoque: <span className={`font-medium ${
-                        product.stock <= product.minStock ? 'text-red-600' : 'text-green-600'
-                      }`}>{product.stock}</span> / Mín: {product.minStock}
+                        (product.stock || 0) <= (product.minStock || 0) ? 'text-red-600' : 'text-green-600'
+                      }`}>{product.stock || 0}</span> / Mín: {product.minStock || 0}
                     </p>
                   </div>
                 </div>
@@ -1274,19 +1304,19 @@ const EstoqueSection = () => {
                   </span>
                   <div className="mt-1 flex justify-center">
                     {product.status === 'Vencido' && (
-                      <AlertTriangle className="w-4 h-4 text-red-500" title="Produto vencido" />
+                      <AlertTriangle className="w-4 h-4 text-red-500" />
                     )}
                     {product.status === 'Vencimento Próximo' && (
-                      <Clock className="w-4 h-4 text-yellow-500" title="Vencimento próximo" />
+                      <Clock className="w-4 h-4 text-yellow-500" />
                     )}
                     {product.status === 'Estoque Baixo' && (
-                      <Package className="w-4 h-4 text-orange-500" title="Estoque baixo" />
+                      <Package className="w-4 h-4 text-orange-500" />
                     )}
                     {product.status === 'Sem Estoque' && (
-                      <XCircle className="w-4 h-4 text-red-600" title="Sem estoque" />
+                      <XCircle className="w-4 h-4 text-red-600" />
                     )}
                     {product.status === 'Em Estoque' && (
-                      <CheckCircle className="w-4 h-4 text-green-500" title="Em estoque" />
+                      <CheckCircle className="w-4 h-4 text-green-500" />
                     )}
                   </div>
                 </div>
@@ -1328,7 +1358,7 @@ const EstoqueSection = () => {
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
-                {product.stock <= product.minStock && (
+                {(product.stock || 0) <= (product.minStock || 0) && (
                   <button 
                     onClick={() => replenishStock(product.id)}
                     className="btn btn-primary p-2" 
