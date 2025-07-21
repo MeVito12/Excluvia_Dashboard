@@ -127,55 +127,48 @@ const ControleSection = () => {
 
   return (
     <div className="app-section">
-      <div className="main-card">
-        {/* Título da seção */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Settings className="w-5 h-5 text-purple-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-800">Controle</h1>
+      {/* Cabeçalho da seção - igual ao padrão das imagens */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-white mb-2">Controle</h1>
+        <p className="text-white/80">Configuração de permissões e acesso dos usuários</p>
+      </div>
+
+      {/* Seção de filtros - seguindo padrão das outras páginas */}
+      <div className="main-card mb-6">
+        <h3 className="text-lg font-semibold mb-4">Filtrar Usuários</h3>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+            <Input
+              placeholder="Pesquisar por usuário, email ou categoria..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-10 h-12"
+            />
+            {searchTerm && (
+              <Button
+                onClick={clearSearch}
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
+              >
+                <X className="w-4 h-4 text-gray-400" />
+              </Button>
+            )}
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700">
-            <Shield className="w-4 h-4 mr-2" />
-            Sistema Master
+          <Button 
+            onClick={clearSearch}
+            variant="outline" 
+            className="h-12 px-6"
+          >
+            Limpar Filtros
           </Button>
         </div>
+      </div>
 
-        {/* Filtros */}
-        <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-200/60">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
-              <Input
-                placeholder="Pesquisar por usuário, email ou categoria..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-10 h-12 bg-white/80 border-gray-300/60 focus:border-purple-500 focus:ring-purple-500/20 rounded-xl shadow-sm"
-              />
-              {searchTerm && (
-                <Button
-                  onClick={clearSearch}
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
-                >
-                  <X className="w-4 h-4 text-gray-400" />
-                </Button>
-              )}
-            </div>
-            <Button 
-              onClick={clearSearch}
-              variant="outline" 
-              className="h-12 px-6 border-gray-300 hover:bg-gray-100"
-            >
-              Limpar Filtros
-            </Button>
-          </div>
-        </div>
-
-        {/* Informações do Master - Card de Status */}
-        <div className="list-card bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 mb-8">
+      {/* Card de Status Master - seguindo o padrão visual das outras páginas */}
+      <div className="main-card mb-6">
+        <div className="list-card bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200">
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -193,36 +186,33 @@ const ControleSection = () => {
             </Badge>
           </div>
         </div>
+      </div>
 
-        {/* Lista de Usuários - Título da seção */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex-shrink-0">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-600" />
-            </div>
-          </div>
+      {/* Conteúdo principal - Lista de usuários */}
+      <div className="main-card">
+        <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-800">Gerenciar Usuários</h2>
-          <Badge variant="outline" className="ml-2">
-            {filteredUsers.length} usuários
+          <Badge variant="outline">
+            {filteredUsers.length} usuários encontrados
           </Badge>
         </div>
 
-        <div className="space-y-4">{/* Removendo espaçamento extra */}
+        {filteredUsers.length === 0 && searchTerm && (
+          <div className="list-card text-center py-12">
+            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-600 mb-2">
+              Nenhum usuário encontrado
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Não encontramos usuários que correspondam à pesquisa "{searchTerm}"
+            </p>
+            <Button onClick={clearSearch} variant="outline">
+              Limpar pesquisa
+            </Button>
+          </div>
+        )}
 
-          {filteredUsers.length === 0 && searchTerm && (
-            <div className="list-card text-center py-12">
-              <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-600 mb-2">
-                Nenhum usuário encontrado
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Não encontramos usuários que correspondam à pesquisa "{searchTerm}"
-              </p>
-              <Button onClick={clearSearch} variant="outline">
-                Limpar pesquisa
-              </Button>
-            </div>
-          )}
+        <div className="space-y-4">
 
           {filteredUsers.map(userData => {
             const permissions = userPermissions[userData.id] || [];
