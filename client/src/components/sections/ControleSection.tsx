@@ -134,35 +134,32 @@ const ControleSection = () => {
       </div>
 
       {/* Seção de filtros - seguindo padrão das outras páginas */}
-      <div className="main-card mb-6">
-        <h3 className="text-lg font-semibold mb-4">Filtrar Usuários</h3>
-        <div className="flex flex-col sm:flex-row gap-4">
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5 z-10" />
-            <Input
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 z-10" />
+            <input
+              type="text"
               placeholder="Pesquisar por usuário, email ou categoria..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 h-11"
+              className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
             {searchTerm && (
-              <Button
+              <button
                 onClick={clearSearch}
-                variant="ghost"
-                size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100 rounded-full"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full flex items-center justify-center"
               >
                 <X className="w-4 h-4 text-gray-500" />
-              </Button>
+              </button>
             )}
           </div>
-          <Button 
+          <button 
             onClick={clearSearch}
-            variant="outline" 
-            className="h-11 px-6"
+            className="px-4 py-2 border border-gray-200 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           >
             Limpar Filtros
-          </Button>
+          </button>
         </div>
       </div>
 

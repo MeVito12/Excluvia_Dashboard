@@ -180,23 +180,25 @@ const AgendamentosSection = () => {
         </div>
 
         {/* Barra de busca e filtros */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="flex-1 relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Buscar compromissos..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
+              <input
+                type="text"
+                placeholder="Buscar compromissos..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+              <option>Todos os status</option>
+              <option>Agendado</option>
+              <option>Concluído</option>
+              <option>Cancelado</option>
+            </select>
           </div>
-          <select className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-            <option>Todos os status</option>
-            <option>Agendado</option>
-            <option>Concluído</option>
-            <option>Cancelado</option>
-          </select>
         </div>
 
         {/* Lista de compromissos */}

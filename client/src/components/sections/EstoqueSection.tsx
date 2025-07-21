@@ -1145,22 +1145,23 @@ const EstoqueSection = () => {
           </button>
         </div>
 
-        <div className="flex gap-4 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Buscar produtos..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="modern-input pl-10"
-            />
-          </div>
-          <select 
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="modern-input w-48"
-          >
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+          <div className="flex gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 z-10" />
+              <input
+                type="text"
+                placeholder="Buscar produtos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              />
+            </div>
+            <select 
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent w-48"
+            >
             <option value="all">Todas as categorias</option>
             {selectedCategory === 'alimenticio' && (
               <>
@@ -1223,7 +1224,8 @@ const EstoqueSection = () => {
                 <option value="cuidados">Cuidados</option>
               </>
             )}
-          </select>
+            </select>
+          </div>
         </div>
 
         <div className="item-list">
