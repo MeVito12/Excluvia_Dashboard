@@ -62,7 +62,7 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       id: 'atendimento',
       label: 'Atendimento',
       icon: MessageCircle,
-      description: 'Mensagens e assistente virtual'
+      description: 'Mensagens e assistente'
     },
     {
       id: 'controle',
