@@ -113,15 +113,20 @@ const JuniorDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="app-section">
       {/* Header Principal seguindo padrão */}
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Multi-Unidades</h1>
-        <p className="text-white/80">Controle operacional de 5 unidades de distribuição</p>
+      <div className="section-header">
+        <div className="flex items-center gap-3">
+          <Building2 className="w-6 h-6 text-purple-600" />
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Dashboard Multi-Unidades</h1>
+            <p className="text-sm text-gray-600">Controle operacional de 5 unidades de distribuição</p>
+          </div>
+        </div>
       </div>
 
       {/* Filtros de Período seguindo padrão exato */}
-      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+      <div className="main-card p-6 mb-6">
         <h3 className="text-lg font-medium text-gray-800 mb-4">Filtrar por Período</h3>
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
