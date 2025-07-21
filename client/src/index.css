@@ -4,15 +4,15 @@
 
 /* Hierarquia de z-index organizada */
 .modal-overlay {
-  z-index: 40;
+  z-index: 50 !important;
 }
 
 .modal-content {
-  z-index: 40;
+  z-index: 50 !important;
 }
 
 .sheets-integration-panel {
-  z-index: 60;
+  z-index: 60 !important;
 }
 
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
