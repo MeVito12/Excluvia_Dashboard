@@ -51,48 +51,24 @@ export interface Storage {
 
 
 
-// Armazenamento em memória
+// Sistema de armazenamento preparado para dados reais das empresas
 export class MemStorage implements Storage {
+  // Sistema de usuários master para gerenciamento
   private users: User[] = [
-    { id: 1, email: "master@sistema.com", name: "Administrador Master", businessCategory: "salao", userType: "master", createdAt: new Date() },
-    { id: 2, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento"], createdAt: new Date() }
+    { id: 1, email: "master@sistema.com", name: "Administrador Master", businessCategory: "salao", userType: "master", createdAt: new Date() }
   ];
   
-  private products: Product[] = [
-    { id: 1, userId: 1, businessCategory: "salao", name: "Corte de Cabelo", description: "Corte masculino tradicional", price: 35.00, stock: 0, createdAt: new Date() },
-    { id: 2, userId: 1, businessCategory: "salao", name: "Escova Progressiva", description: "Tratamento alisante", price: 180.00, stock: 0, createdAt: new Date() },
-    { id: 3, userId: 1, businessCategory: "salao", name: "Coloração", description: "Tintura completa", price: 120.00, stock: 0, createdAt: new Date() },
-    { id: 4, userId: 1, businessCategory: "salao", name: "Manicure", description: "Cuidados com as unhas", price: 25.00, stock: 0, createdAt: new Date() }
-  ];
-  
-  private sales: Sale[] = [
-    { id: 1, userId: 1, businessCategory: "salao", productId: 1, clientId: 1, quantity: 1, totalPrice: 35.00, saleDate: new Date(Date.now() - 86400000) },
-    { id: 2, userId: 1, businessCategory: "salao", productId: 2, clientId: 2, quantity: 1, totalPrice: 180.00, saleDate: new Date(Date.now() - 172800000) },
-    { id: 3, userId: 1, businessCategory: "salao", productId: 3, clientId: 1, quantity: 1, totalPrice: 120.00, saleDate: new Date() }
-  ];
-  
-  private clients: Client[] = [
-    { id: 1, userId: 1, businessCategory: "salao", name: "Maria Silva", email: "maria@email.com", phone: "11999999999", createdAt: new Date() },
-    { id: 2, userId: 1, businessCategory: "salao", name: "João Santos", email: "joao@email.com", phone: "11888888888", createdAt: new Date() },
-    { id: 3, userId: 1, businessCategory: "salao", name: "Ana Costa", email: "ana@email.com", phone: "11777777777", createdAt: new Date() }
-  ];
-  
-  private appointments: Appointment[] = [
-    { id: 1, userId: 1, clientId: 1, serviceId: 1, startTime: new Date(Date.now() + 86400000), endTime: new Date(Date.now() + 90000000), status: "agendado", notes: "Cliente preferencial" },
-    { id: 2, userId: 1, clientId: 2, serviceId: 2, startTime: new Date(Date.now() + 172800000), endTime: new Date(Date.now() + 183600000), status: "agendado", notes: "Primeira vez no salão" }
-  ];
-  
-  private campaigns: LoyaltyCampaign[] = [
-    { id: 1, userId: 1, businessCategory: "salao", name: "Desconto Verão", description: "20% de desconto em cortes", discountPercentage: 20, isActive: true, createdAt: new Date() }
-  ];
-  
-  private whatsappChats: WhatsAppChat[] = [
-    { id: 1, userId: 1, businessCategory: "salao", contactName: "Maria Silva", contactPhone: "11999999999", lastMessage: "Obrigada pelo atendimento!", lastActivity: new Date(), isActive: true }
-  ];
-  
+  // Arrays vazios aguardando dados reais das empresas via API
+  private products: Product[] = [];
+  private sales: Sale[] = [];
+  private clients: Client[] = [];
+  private appointments: Appointment[] = [];
+  private campaigns: LoyaltyCampaign[] = [];
+  private whatsappChats: WhatsAppChat[] = [];
   private stockMovements: StockMovement[] = [];
   
-  private nextId = { user: 2, product: 5, sale: 4, client: 4, appointment: 3, campaign: 2, chat: 2, movement: 1 };
+  // Contadores para IDs únicos quando dados reais chegarem
+  private nextId = { user: 2, product: 1, sale: 1, client: 1, appointment: 1, campaign: 1, chat: 1, movement: 1 };
 
   async getUserByEmail(email: string): Promise<User | null> {
     return this.users.find(u => u.email === email) || null;
