@@ -4,7 +4,8 @@ import { JWT } from 'google-auth-library';
 // Configuração da autenticação com Google Sheets
 const createSheetsAuth = () => {
   if (!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
-    throw new Error('Google Sheets credentials not configured');
+    console.log('Google Sheets em modo simulação - credenciais não configuradas');
+    return null;
   }
 
   // Verificar se é uma chave privada (Service Account) ou API Key
@@ -15,8 +16,9 @@ const createSheetsAuth = () => {
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
   } else {
-    // Se for API key, usar autenticação por API key
-    return null; // Vamos usar a API key diretamente no GoogleSpreadsheet
+    // Modo simulação para desenvolvimento
+    console.log('Google Sheets em modo simulação - usando dados locais');
+    return null;
   }
 };
 
