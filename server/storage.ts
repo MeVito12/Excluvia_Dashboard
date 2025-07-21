@@ -1,58 +1,58 @@
-// Storage interface for in-memory data operations
+// Interface para operações de dados
 import { 
-  User, InsertUser,
-  Product, InsertProduct, 
-  Sale, InsertSale,
-  Client, InsertClient,
-  Appointment, InsertAppointment,
-  LoyaltyCampaign, InsertLoyaltyCampaign,
-  WhatsAppChat, InsertWhatsAppChat,
-  StockMovement, InsertStockMovement
+  User, NewUser,
+  Product, NewProduct, 
+  Sale, NewSale,
+  Client, NewClient,
+  Appointment, NewAppointment,
+  LoyaltyCampaign, NewLoyaltyCampaign,
+  WhatsAppChat, NewWhatsAppChat,
+  StockMovement, NewStockMovement
 } from "@shared/schema";
 
-export interface IStorage {
-  // User operations
+export interface Storage {
+  // Usuários
   getUserByEmail(email: string): Promise<User | null>;
-  createUser(user: InsertUser): Promise<User>;
+  createUser(user: NewUser): Promise<User>;
   
-  // Product operations
+  // Produtos
   getProducts(userId: number, businessCategory: string): Promise<Product[]>;
-  createProduct(product: InsertProduct): Promise<Product>;
-  updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | null>;
+  createProduct(product: NewProduct): Promise<Product>;
+  updateProduct(id: number, product: Partial<NewProduct>): Promise<Product | null>;
   deleteProduct(id: number): Promise<boolean>;
   
-  // Sale operations
+  // Vendas
   getSales(userId: number, businessCategory: string): Promise<Sale[]>;
-  createSale(sale: InsertSale): Promise<Sale>;
+  createSale(sale: NewSale): Promise<Sale>;
   
-  // Client operations
+  // Clientes
   getClients(userId: number, businessCategory: string): Promise<Client[]>;
-  createClient(client: InsertClient): Promise<Client>;
-  updateClient(id: number, client: Partial<InsertClient>): Promise<Client | null>;
+  createClient(client: NewClient): Promise<Client>;
+  updateClient(id: number, client: Partial<NewClient>): Promise<Client | null>;
   deleteClient(id: number): Promise<boolean>;
   
-  // Appointment operations
+  // Agendamentos
   getAppointments(userId: number): Promise<Appointment[]>;
-  createAppointment(appointment: InsertAppointment): Promise<Appointment>;
-  updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment | null>;
+  createAppointment(appointment: NewAppointment): Promise<Appointment>;
+  updateAppointment(id: number, appointment: Partial<NewAppointment>): Promise<Appointment | null>;
   deleteAppointment(id: number): Promise<boolean>;
   
-  // Campaign operations
+  // Campanhas
   getCampaigns(userId: number, businessCategory: string): Promise<LoyaltyCampaign[]>;
-  createCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign>;
+  createCampaign(campaign: NewLoyaltyCampaign): Promise<LoyaltyCampaign>;
   
-  // WhatsApp Chat operations
+  // WhatsApp
   getWhatsAppChats(userId: number, businessCategory: string): Promise<WhatsAppChat[]>;
   
-  // Stock Movement operations
+  // Movimentos de estoque
   getStockMovements(productId: number): Promise<StockMovement[]>;
-  createStockMovement(movement: InsertStockMovement): Promise<StockMovement>;
+  createStockMovement(movement: NewStockMovement): Promise<StockMovement>;
 }
 
 
 
-// In-memory storage with mock data for development
-export class MemStorage implements IStorage {
+// Armazenamento em memória
+export class MemStorage implements Storage {
   private users: User[] = [
     { id: 1, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", createdAt: new Date() }
   ];
@@ -97,7 +97,7 @@ export class MemStorage implements IStorage {
     return this.users.find(u => u.email === email) || null;
   }
 
-  async createUser(user: InsertUser): Promise<User> {
+  async createUser(user: NewUser): Promise<User> {
     const newUser: User = { ...user, id: this.nextId.user++, createdAt: new Date() };
     this.users.push(newUser);
     return newUser;
@@ -107,13 +107,13 @@ export class MemStorage implements IStorage {
     return this.products.filter(p => p.userId === userId && p.businessCategory === businessCategory);
   }
 
-  async createProduct(product: InsertProduct): Promise<Product> {
+  async createProduct(product: NewProduct): Promise<Product> {
     const newProduct: Product = { ...product, id: this.nextId.product++, createdAt: new Date() };
     this.products.push(newProduct);
     return newProduct;
   }
 
-  async updateProduct(id: number, product: Partial<InsertProduct>): Promise<Product | null> {
+  async updateProduct(id: number, product: Partial<NewProduct>): Promise<Product | null> {
     const index = this.products.findIndex(p => p.id === id);
     if (index === -1) return null;
     this.products[index] = { ...this.products[index], ...product };
@@ -131,7 +131,7 @@ export class MemStorage implements IStorage {
     return this.sales.filter(s => s.userId === userId && s.businessCategory === businessCategory);
   }
 
-  async createSale(sale: InsertSale): Promise<Sale> {
+  async createSale(sale: NewSale): Promise<Sale> {
     const newSale: Sale = { ...sale, id: this.nextId.sale++ };
     this.sales.push(newSale);
     return newSale;
@@ -141,13 +141,13 @@ export class MemStorage implements IStorage {
     return this.clients.filter(c => c.userId === userId && c.businessCategory === businessCategory);
   }
 
-  async createClient(client: InsertClient): Promise<Client> {
+  async createClient(client: NewClient): Promise<Client> {
     const newClient: Client = { ...client, id: this.nextId.client++, createdAt: new Date() };
     this.clients.push(newClient);
     return newClient;
   }
 
-  async updateClient(id: number, client: Partial<InsertClient>): Promise<Client | null> {
+  async updateClient(id: number, client: Partial<NewClient>): Promise<Client | null> {
     const index = this.clients.findIndex(c => c.id === id);
     if (index === -1) return null;
     this.clients[index] = { ...this.clients[index], ...client };
@@ -165,13 +165,13 @@ export class MemStorage implements IStorage {
     return this.appointments.filter(a => a.userId === userId);
   }
 
-  async createAppointment(appointment: InsertAppointment): Promise<Appointment> {
+  async createAppointment(appointment: NewAppointment): Promise<Appointment> {
     const newAppointment: Appointment = { ...appointment, id: this.nextId.appointment++ };
     this.appointments.push(newAppointment);
     return newAppointment;
   }
 
-  async updateAppointment(id: number, appointment: Partial<InsertAppointment>): Promise<Appointment | null> {
+  async updateAppointment(id: number, appointment: Partial<NewAppointment>): Promise<Appointment | null> {
     const index = this.appointments.findIndex(a => a.id === id);
     if (index === -1) return null;
     this.appointments[index] = { ...this.appointments[index], ...appointment };
@@ -189,7 +189,7 @@ export class MemStorage implements IStorage {
     return this.campaigns.filter(c => c.userId === userId && c.businessCategory === businessCategory);
   }
 
-  async createCampaign(campaign: InsertLoyaltyCampaign): Promise<LoyaltyCampaign> {
+  async createCampaign(campaign: NewLoyaltyCampaign): Promise<LoyaltyCampaign> {
     const newCampaign: LoyaltyCampaign = { ...campaign, id: this.nextId.campaign++, createdAt: new Date() };
     this.campaigns.push(newCampaign);
     return newCampaign;
@@ -203,7 +203,7 @@ export class MemStorage implements IStorage {
     return this.stockMovements.filter(m => m.productId === productId);
   }
 
-  async createStockMovement(movement: InsertStockMovement): Promise<StockMovement> {
+  async createStockMovement(movement: NewStockMovement): Promise<StockMovement> {
     const newMovement: StockMovement = { ...movement, id: this.nextId.movement++ };
     this.stockMovements.push(newMovement);
     return newMovement;

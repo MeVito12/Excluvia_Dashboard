@@ -1,7 +1,6 @@
-// Type definitions for in-memory storage
 import { z } from "zod";
 
-// Base Types
+// Tipos de dados
 export interface User {
   id: number;
   email: string;
@@ -90,25 +89,25 @@ export interface StockMovement {
   notes?: string;
 }
 
-// Insert Types (without id and auto-generated fields)
-export type InsertUser = Omit<User, 'id' | 'createdAt'>;
-export type InsertProduct = Omit<Product, 'id' | 'createdAt'>;
-export type InsertSale = Omit<Sale, 'id'>;
-export type InsertClient = Omit<Client, 'id' | 'createdAt'>;
-export type InsertAppointment = Omit<Appointment, 'id'>;
-export type InsertLoyaltyCampaign = Omit<LoyaltyCampaign, 'id' | 'createdAt'>;
-export type InsertWhatsAppChat = Omit<WhatsAppChat, 'id'>;
-export type InsertStockMovement = Omit<StockMovement, 'id'>;
+// Tipos para criar novos registros
+export type NewUser = Omit<User, 'id' | 'createdAt'>;
+export type NewProduct = Omit<Product, 'id' | 'createdAt'>;
+export type NewSale = Omit<Sale, 'id'>;
+export type NewClient = Omit<Client, 'id' | 'createdAt'>;
+export type NewAppointment = Omit<Appointment, 'id'>;
+export type NewLoyaltyCampaign = Omit<LoyaltyCampaign, 'id' | 'createdAt'>;
+export type NewWhatsAppChat = Omit<WhatsAppChat, 'id'>;
+export type NewStockMovement = Omit<StockMovement, 'id'>;
 
-// Validation Schemas
-export const insertUserSchema = z.object({
+// Validações
+export const userSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   name: z.string().min(2),
   businessCategory: z.string().min(2)
 });
 
-export const insertProductSchema = z.object({
+export const productSchema = z.object({
   name: z.string().min(2),
   description: z.string().optional(),
   price: z.number().positive(),
@@ -121,7 +120,7 @@ export const insertProductSchema = z.object({
   userId: z.number().positive()
 });
 
-export const insertSaleSchema = z.object({
+export const saleSchema = z.object({
   productId: z.number().positive(),
   clientId: z.number().positive(),
   quantity: z.number().positive(),
@@ -132,7 +131,7 @@ export const insertSaleSchema = z.object({
   saleDate: z.date()
 });
 
-export const insertClientSchema = z.object({
+export const clientSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().min(10),
@@ -140,7 +139,7 @@ export const insertClientSchema = z.object({
   userId: z.number().positive()
 });
 
-export const insertAppointmentSchema = z.object({
+export const appointmentSchema = z.object({
   userId: z.number().positive(),
   clientId: z.number().positive(),
   serviceId: z.number().positive(),
