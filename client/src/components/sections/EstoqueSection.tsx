@@ -16,6 +16,7 @@ import {
   type Client
 } from '@/lib/mockData';
 import { useAuth } from '@/contexts/AuthContext';
+import { SheetsIntegrationPanel } from '@/components/SheetsIntegrationPanel';
 import { 
   Package, 
   ShoppingCart, 
@@ -32,7 +33,8 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  Calendar
+  Calendar,
+  Sheet
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -62,6 +64,7 @@ const EstoqueSection = () => {
   const [filterUnit, setFilterUnit] = useState('all');
   const [products, setProducts] = useState<any[]>([]);
   const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
+  const [showSheetsPanel, setShowSheetsPanel] = useState(false);
   
   // Buscar produtos da API quando a categoria mudar
   React.useEffect(() => {
@@ -1625,10 +1628,23 @@ const EstoqueSection = () => {
   return (
     <div className="app-section">
       <div className="section-header">
-        <h1 className="section-title">Gestão de Estoque</h1>
-        <p className="section-subtitle">
-          Controle de produtos e inventário
-        </p>
+        <div>
+          <h1 className="section-title">Gestão de Estoque</h1>
+          <p className="section-subtitle">
+            Controle de produtos e inventário
+          </p>
+        </div>
+        
+        {/* Botão Google Sheets - exclusivo para perfil Junior */}
+        {isJuniorProfile && (
+          <button 
+            onClick={() => setShowSheetsPanel(true)}
+            className="btn btn-outline flex items-center gap-2 bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
+          >
+            <Sheet className="w-4 h-4" />
+            Integração Google Sheets
+          </button>
+        )}
       </div>
 
       {/* Métricas de Estoque */}
@@ -2028,6 +2044,14 @@ const EstoqueSection = () => {
         confirmText={confirmData.confirmText}
         cancelText={confirmData.cancelText}
       />
+
+      {/* Painel de Integração Google Sheets - exclusivo para perfil Junior */}
+      {isJuniorProfile && (
+        <SheetsIntegrationPanel 
+          isVisible={showSheetsPanel}
+          onClose={() => setShowSheetsPanel(false)}
+        />
+      )}
     </div>
   );
 };

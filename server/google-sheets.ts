@@ -7,11 +7,17 @@ const createSheetsAuth = () => {
     throw new Error('Google Sheets credentials not configured');
   }
 
-  return new JWT({
-    email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+  // Verificar se é uma chave privada (Service Account) ou API Key
+  if (process.env.GOOGLE_PRIVATE_KEY.startsWith('-----BEGIN PRIVATE KEY-----')) {
+    return new JWT({
+      email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+  } else {
+    // Se for API key, usar autenticação por API key
+    return null; // Vamos usar a API key diretamente no GoogleSpreadsheet
+  }
 };
 
 // Interface para produto no Google Sheets
@@ -33,7 +39,7 @@ interface SheetsProduct {
 export class GoogleSheetsManager {
   private doc: GoogleSpreadsheet | null = null;
   private spreadsheetId: string;
-  private auth: JWT;
+  private auth: JWT | null;
 
   constructor(spreadsheetId?: string) {
     this.auth = createSheetsAuth();
@@ -46,7 +52,14 @@ export class GoogleSheetsManager {
       throw new Error('Spreadsheet ID não configurado');
     }
 
-    this.doc = new GoogleSpreadsheet(this.spreadsheetId, this.auth);
+    if (this.auth) {
+      // Usar Service Account
+      this.doc = new GoogleSpreadsheet(this.spreadsheetId, this.auth);
+    } else {
+      // Usar API Key - criar mock para desenvolvimento
+      throw new Error('Configuração de Service Account necessária. API Key não suportada nesta versão.');
+    }
+    
     await this.doc.loadInfo();
   }
 
