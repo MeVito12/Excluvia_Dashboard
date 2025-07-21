@@ -128,15 +128,21 @@ const ControleSection = () => {
   return (
     <div className="app-section">
       <div className="main-card">
-        {/* Header Section */}
+        {/* Título da seção */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <Settings className="w-6 h-6 text-purple-600" />
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <Settings className="w-5 h-5 text-purple-600" />
+            </div>
             <h1 className="text-2xl font-bold text-gray-800">Controle</h1>
           </div>
+          <Button className="bg-purple-600 hover:bg-purple-700">
+            <Shield className="w-4 h-4 mr-2" />
+            Sistema Master
+          </Button>
         </div>
 
-        {/* Search and Filter Section */}
+        {/* Filtros */}
         <div className="bg-gray-50/80 backdrop-blur-sm rounded-xl p-6 mb-8 border border-gray-200/60">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
@@ -158,11 +164,18 @@ const ControleSection = () => {
                 </Button>
               )}
             </div>
+            <Button 
+              onClick={clearSearch}
+              variant="outline" 
+              className="h-12 px-6 border-gray-300 hover:bg-gray-100"
+            >
+              Limpar Filtros
+            </Button>
           </div>
         </div>
 
-        {/* Informações do Master */}
-        <div className="standard-card bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 mb-8">
+        {/* Informações do Master - Card de Status */}
+        <div className="list-card bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 mb-8">
           <div className="flex items-center gap-4">
             <div className="flex-shrink-0">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -170,9 +183,9 @@ const ControleSection = () => {
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-purple-900">Usuário Master</h3>
+              <h3 className="text-lg font-semibold text-purple-900">{user?.name}</h3>
               <p className="text-purple-700 text-sm mt-1">
-                {user?.name} - Acesso total e configuração
+                Administrador com acesso total ao sistema
               </p>
             </div>
             <Badge className="bg-purple-100 text-purple-800 border-purple-200">
@@ -181,22 +194,23 @@ const ControleSection = () => {
           </div>
         </div>
 
-        {/* Lista de Usuários */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-blue-600" />
-              </div>
+        {/* Lista de Usuários - Título da seção */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="flex-shrink-0">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Users className="w-5 h-5 text-blue-600" />
             </div>
-            <h3 className="text-xl font-bold text-gray-800">Gerenciar Usuários</h3>
-            <Badge variant="outline" className="ml-2">
-              {filteredUsers.length} usuários
-            </Badge>
           </div>
+          <h2 className="text-xl font-bold text-gray-800">Gerenciar Usuários</h2>
+          <Badge variant="outline" className="ml-2">
+            {filteredUsers.length} usuários
+          </Badge>
+        </div>
+
+        <div className="space-y-4">{/* Removendo espaçamento extra */}
 
           {filteredUsers.length === 0 && searchTerm && (
-            <div className="standard-card text-center py-12">
+            <div className="list-card text-center py-12">
               <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-600 mb-2">
                 Nenhum usuário encontrado
@@ -215,7 +229,7 @@ const ControleSection = () => {
             const isExpanded = selectedUser === userData.id;
 
             return (
-              <div key={userData.id} className="standard-card hover:shadow-lg transition-all duration-200">
+              <div key={userData.id} className="list-card hover:shadow-lg transition-all duration-200">
                 <div 
                   className="flex items-center justify-between cursor-pointer"
                   onClick={() => setSelectedUser(isExpanded ? null : userData.id)}
@@ -333,7 +347,7 @@ const ControleSection = () => {
         </div>
 
         {/* Informações sobre o sistema */}
-        <div className="standard-card bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 mt-8">
+        <div className="list-card bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 mt-8">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
