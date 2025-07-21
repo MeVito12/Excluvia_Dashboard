@@ -55,7 +55,8 @@ export interface Storage {
 export class MemStorage implements Storage {
   private users: User[] = [
     { id: 1, email: "master@sistema.com", name: "Administrador Master", businessCategory: "salao", userType: "master", createdAt: new Date() },
-    { id: 2, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento"], createdAt: new Date() }
+    { id: 2, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento"], createdAt: new Date() },
+    { id: 3, email: "junior@mercado.com", name: "Junior Silva - Coordenador", businessCategory: "alimenticio", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento"], createdAt: new Date() }
   ];
   
   private products: Product[] = [
@@ -87,7 +88,25 @@ export class MemStorage implements Storage {
     
     // Produtos para Estética
     { id: 17, userId: 1, businessCategory: "estetica", name: "Ácido Hialurônico", description: "Preenchimento facial", price: 320.00, stock: 15, minStock: 8, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 180), createdAt: new Date() },
-    { id: 18, userId: 1, businessCategory: "estetica", name: "Botox", description: "Toxina botulínica tipo A", price: 280.00, stock: 12, minStock: 6, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 150), createdAt: new Date() }
+    { id: 18, userId: 1, businessCategory: "estetica", name: "Botox", description: "Toxina botulínica tipo A", price: 280.00, stock: 12, minStock: 6, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 150), createdAt: new Date() },
+    
+    // Produtos de Mercado para Junior (userId: 3) - Alimentício
+    { id: 19, userId: 3, businessCategory: "alimenticio", name: "Arroz Branco Tipo 1", description: "Arroz branco longo fino 5kg", price: 18.90, stock: 150, minStock: 50, isPerishable: false, createdAt: new Date() },
+    { id: 20, userId: 3, businessCategory: "alimenticio", name: "Feijão Preto", description: "Feijão preto 1kg", price: 8.50, stock: 200, minStock: 80, isPerishable: false, createdAt: new Date() },
+    { id: 21, userId: 3, businessCategory: "alimenticio", name: "Óleo de Soja", description: "Óleo de soja 900ml", price: 5.90, stock: 85, minStock: 30, isPerishable: false, createdAt: new Date() },
+    { id: 22, userId: 3, businessCategory: "alimenticio", name: "Açúcar Cristal", description: "Açúcar cristal 1kg", price: 4.50, stock: 12, minStock: 40, isPerishable: false, createdAt: new Date() },
+    { id: 23, userId: 3, businessCategory: "alimenticio", name: "Sal Refinado", description: "Sal refinado iodado 1kg", price: 2.80, stock: 95, minStock: 25, isPerishable: false, createdAt: new Date() },
+    { id: 24, userId: 3, businessCategory: "alimenticio", name: "Macarrão Espaguete", description: "Macarrão espaguete 500g", price: 3.20, stock: 0, minStock: 60, isPerishable: false, createdAt: new Date() },
+    { id: 25, userId: 3, businessCategory: "alimenticio", name: "Leite Integral", description: "Leite integral UHT 1L", price: 4.90, stock: 240, minStock: 100, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 15), createdAt: new Date() },
+    { id: 26, userId: 3, businessCategory: "alimenticio", name: "Pão de Forma", description: "Pão de forma tradicional", price: 6.80, stock: 45, minStock: 20, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 3), createdAt: new Date() },
+    { id: 27, userId: 3, businessCategory: "alimenticio", name: "Ovos Brancos", description: "Ovos brancos cartela 12 unidades", price: 8.90, stock: 8, minStock: 30, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 10), createdAt: new Date() },
+    { id: 28, userId: 3, businessCategory: "alimenticio", name: "Frango Congelado", description: "Frango inteiro congelado 1,5kg", price: 12.90, stock: 25, minStock: 15, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 90), createdAt: new Date() },
+    { id: 29, userId: 3, businessCategory: "alimenticio", name: "Banana Prata", description: "Banana prata por kg", price: 5.80, stock: 18, minStock: 25, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 5), createdAt: new Date() },
+    { id: 30, userId: 3, businessCategory: "alimenticio", name: "Tomate", description: "Tomate salada por kg", price: 7.90, stock: 22, minStock: 15, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 4), createdAt: new Date() },
+    { id: 31, userId: 3, businessCategory: "alimenticio", name: "Cebola", description: "Cebola comum por kg", price: 4.20, stock: 35, minStock: 20, isPerishable: true, expiryDate: new Date(Date.now() + 86400000 * 7), createdAt: new Date() },
+    { id: 32, userId: 3, businessCategory: "alimenticio", name: "Detergente", description: "Detergente líquido 500ml", price: 2.90, stock: 65, minStock: 25, isPerishable: false, createdAt: new Date() },
+    { id: 33, userId: 3, businessCategory: "alimenticio", name: "Papel Higiênico", description: "Papel higiênico 4 rolos", price: 8.50, stock: 0, minStock: 40, isPerishable: false, createdAt: new Date() },
+    { id: 34, userId: 3, businessCategory: "alimenticio", name: "Sabão em Pó", description: "Sabão em pó 1kg", price: 12.90, stock: 28, minStock: 15, isPerishable: false, createdAt: new Date() }
   ];
   
   private sales: Sale[] = [
@@ -117,7 +136,7 @@ export class MemStorage implements Storage {
   
   private stockMovements: StockMovement[] = [];
   
-  private nextId = { user: 2, product: 5, sale: 4, client: 4, appointment: 3, campaign: 2, chat: 2, movement: 1 };
+  private nextId = { user: 4, product: 35, sale: 4, client: 4, appointment: 3, campaign: 2, chat: 2, movement: 1 };
 
   async getUserByEmail(email: string): Promise<User | null> {
     return this.users.find(u => u.email === email) || null;
