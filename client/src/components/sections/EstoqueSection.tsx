@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
+import { useCustomConfirm } from '@/hooks/use-custom-confirm';
+import { CustomConfirm } from '@/components/ui/custom-confirm';
 import { 
   getProductsByCategory, 
   getSalesByCategory, 
@@ -51,6 +53,7 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
@@ -338,15 +341,22 @@ const EstoqueSection = () => {
   const deleteProduct = (productId: number) => {
     const product = products.find(p => p.id === productId);
     if (product) {
-      const confirmed = window.confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`);
-      if (confirmed) {
-        setProducts(prev => prev.filter(p => p.id !== productId));
-        showAlert({
-          title: "Produto Excluído",
-          description: "O produto foi removido do sistema com sucesso",
-          variant: "success"
-        });
-      }
+      showConfirm(
+        {
+          title: "Confirmar Exclusão",
+          description: `Confirma a exclusão do produto "${product.name}"? Esta ação não pode ser desfeita.`,
+          confirmText: "Excluir",
+          cancelText: "Cancelar"
+        },
+        () => {
+          setProducts(prev => prev.filter(p => p.id !== productId));
+          showAlert({
+            title: "Produto Excluído",
+            description: "O produto foi removido do sistema com sucesso",
+            variant: "success"
+          });
+        }
+      );
     }
   };
 
@@ -1515,7 +1525,11 @@ const EstoqueSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `monthly_report_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('📊 Relatório Mensal exportado!\n\nArquivo CSV baixado com dados do mês.');
+              showAlert({
+                title: "Relatório Mensal Exportado!",
+                description: "Arquivo CSV baixado com dados do mês.",
+                variant: "success"
+              });
             }}
             className="btn btn-outline"
           >
@@ -1971,6 +1985,16 @@ const EstoqueSection = () => {
         title={alertData.title}
         description={alertData.description}
         variant={alertData.variant}
+      />
+      
+      <CustomConfirm
+        isOpen={confirmOpen}
+        onClose={closeConfirm}
+        onConfirm={handleConfirm}
+        title={confirmData.title}
+        description={confirmData.description}
+        confirmText={confirmData.confirmText}
+        cancelText={confirmData.cancelText}
       />
     </div>
   );

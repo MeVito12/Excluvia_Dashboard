@@ -54,7 +54,7 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
   const styles = getVariantStyles();
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 999999 }}>
       <div className={`max-w-md w-full mx-4 rounded-lg border p-6 ${styles.bg} shadow-xl`}>
         <div className="flex items-start gap-3">
           <div className="flex-shrink-0">

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
+import { useCustomConfirm } from '@/hooks/use-custom-confirm';
+import { CustomConfirm } from '@/components/ui/custom-confirm';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { 
@@ -50,6 +52,7 @@ import {
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
@@ -215,23 +218,30 @@ const AtendimentoSection = () => {
     const item: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
     const itemName = item?.name || item?.title || 'Item';
     
-    const confirmed = window.confirm(`Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`);
-    if (confirmed) {
-      // Remove do catálogo/cardápio/portfólio
-      setCategoryItems(prev => ({
-        ...prev,
-        [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
-      }));
+    showConfirm(
+      {
+        title: "Confirmar Exclusão",
+        description: `Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`,
+        confirmText: "Excluir",
+        cancelText: "Cancelar"
+      },
+      () => {
+        // Remove do catálogo/cardápio/portfólio
+        setCategoryItems(prev => ({
+          ...prev,
+          [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.filter((item: any) => item.id !== itemId) || []
+        }));
       
-      // Mensagens específicas por categoria usando o sistema temático
-      if (selectedCategory === 'design' || selectedCategory === 'sites') {
-        showError('PROJETO EXCLUÍDO', `"${itemName}" foi removido do portfólio permanentemente.`);
-      } else if (selectedCategory === 'alimenticio') {
-        showError('PRATO EXCLUÍDO', `"${itemName}" foi removido do cardápio. Estoque atualizado automaticamente.`);
-      } else {
-        showError('PRODUTO EXCLUÍDO', `"${itemName}" foi removido do catálogo. Estoque sincronizado automaticamente.`);
+        // Mensagens específicas por categoria usando o sistema temático
+        if (selectedCategory === 'design' || selectedCategory === 'sites') {
+          showError('PROJETO EXCLUÍDO', `"${itemName}" foi removido do portfólio permanentemente.`);
+        } else if (selectedCategory === 'alimenticio') {
+          showError('PRATO EXCLUÍDO', `"${itemName}" foi removido do cardápio. Estoque atualizado automaticamente.`);
+        } else {
+          showError('PRODUTO EXCLUÍDO', `"${itemName}" foi removido do catálogo. Estoque sincronizado automaticamente.`);
+        }
       }
-    }
+    );
   };
 
   // Função para desativar/ativar item e sincronizar com estoque
@@ -1798,6 +1808,16 @@ const AtendimentoSection = () => {
         title={alertData.title}
         description={alertData.description}
         variant={alertData.variant}
+      />
+      
+      <CustomConfirm
+        isOpen={confirmOpen}
+        onClose={closeConfirm}
+        onConfirm={handleConfirm}
+        title={confirmData.title}
+        description={confirmData.description}
+        confirmText={confirmData.confirmText}
+        cancelText={confirmData.cancelText}
       />
     </div>
   );
