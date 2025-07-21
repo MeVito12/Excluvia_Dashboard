@@ -125,13 +125,6 @@ const JuniorDashboard = () => {
         </div>
       </div>
 
-      {/* Centro de Notificações */}
-      <NotificationCenter
-        notifications={notifications}
-        onDismiss={handleDismissNotification}
-        onClearAll={handleClearAllNotifications}
-      />
-
       {/* Filtros de Período */}
       <div className="main-card p-4 mb-6">
         <h3 className="text-lg font-medium text-gray-800 mb-4">Filtrar por Período</h3>
@@ -170,6 +163,13 @@ const JuniorDashboard = () => {
           </button>
         </div>
       </div>
+
+      {/* Centro de Notificações */}
+      <NotificationCenter
+        notifications={notifications}
+        onDismiss={handleDismissNotification}
+        onClearAll={handleClearAllNotifications}
+      />
 
       {/* Métricas Principais - Seguindo padrão da imagem */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
