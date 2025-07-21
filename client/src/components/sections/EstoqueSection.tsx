@@ -1459,7 +1459,7 @@ const EstoqueSection = () => {
         <div className="main-card p-6">
           <h3 className="text-xl font-semibold text-gray-800 mb-6">Produtos Mais Vendidos</h3>
           <div className="space-y-3">
-            {getProductData().slice(0, 3).map((product, index) => (
+            {products.slice(0, 3).map((product: any, index: number) => (
               <div key={product.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="text-lg font-bold text-gray-400">#{index + 1}</span>
