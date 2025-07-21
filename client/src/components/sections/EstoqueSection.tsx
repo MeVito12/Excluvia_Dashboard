@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
-import { useToast } from '@/hooks/use-toast';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { 
   getProductsByCategory, 
   getSalesByCategory, 
@@ -49,7 +50,7 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
-  const { toast } = useToast();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
@@ -61,7 +62,7 @@ const EstoqueSection = () => {
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => {
-        toast({
+        showAlert({
           variant: "destructive",
           title: "Erro ao carregar produtos",
           description: "Não foi possível carregar os produtos. Tente novamente."
@@ -89,7 +90,7 @@ const EstoqueSection = () => {
       .then(res => res.json())
       .then(data => setSales(data))
       .catch(err => {
-        toast({
+        showAlert({
           variant: "destructive",
           title: "Erro ao carregar vendas",
           description: "Não foi possível carregar as vendas. Tente novamente."
@@ -109,7 +110,7 @@ const EstoqueSection = () => {
   // Função para adicionar novo produto
   const addProduct = () => {
     if (!newProduct.name || !newProduct.currentStock) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Campos obrigatórios",
         description: "Por favor, preencha nome e estoque atual."
@@ -119,7 +120,7 @@ const EstoqueSection = () => {
 
     // Validação para produtos perecíveis
     if (newProduct.isPerishable && (!newProduct.manufacturingDate || !newProduct.expiryDate)) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Dados de produto perecível",
         description: "Para produtos perecíveis, preencha a data de fabricação e validade."
@@ -152,16 +153,17 @@ const EstoqueSection = () => {
       minStock: '10'
     });
     setShowAddProductModal(false);
-    toast({
+    showAlert({
       title: "Produto Adicionado",
-      description: `"${product.name}" foi adicionado ao estoque com ${product.stock} unidades!`
+      description: `"${product.name}" foi adicionado ao estoque com ${product.stock} unidades!`,
+      variant: "success"
     });
   };
 
   // Função para ajustar estoque manualmente
   const adjustStock = () => {
     if (!stockAdjustment.quantity || !stockProduct) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Quantidade obrigatória",
         description: "Por favor, preencha a quantidade para ajustar."
@@ -175,7 +177,7 @@ const EstoqueSection = () => {
       : stockProduct.stock - quantity;
 
     if (newStock < 0) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Estoque insuficiente",
         description: "O estoque não pode ficar negativo."
@@ -190,9 +192,10 @@ const EstoqueSection = () => {
     ));
 
     const operation = stockAdjustment.operation === 'add' ? 'adicionadas' : 'removidas';
-    toast({
+    showAlert({
       title: "Estoque Ajustado",
-      description: `${quantity} unidades ${operation} do estoque de "${stockProduct.name}"`
+      description: `${quantity} unidades ${operation} do estoque de "${stockProduct.name}"`,
+      variant: "success"
     });
     
     setShowStockModal(false);
@@ -205,7 +208,7 @@ const EstoqueSection = () => {
     if (!product) return;
 
     if (product.stock < quantitySold) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Estoque insuficiente",
         description: `Disponível apenas ${product.stock} unidades do produto`
@@ -231,9 +234,10 @@ const EstoqueSection = () => {
     };
 
     setSales(prev => [...prev, sale]);
-    toast({
+    showAlert({
       title: "Venda Processada",
-      description: `${quantitySold} unidades de "${product.name}" vendidas com sucesso`
+      description: `${quantitySold} unidades de "${product.name}" vendidas com sucesso`,
+      variant: "success"
     });
   };
 
@@ -283,9 +287,10 @@ const EstoqueSection = () => {
           : product
       )
     );
-    toast({
+    showAlert({
       title: "Estoque Reposto",
-      description: "+50 unidades adicionadas ao produto com sucesso"
+      description: "+50 unidades adicionadas ao produto com sucesso",
+      variant: "success"
     });
   };
 
@@ -297,7 +302,7 @@ const EstoqueSection = () => {
           : product
       )
     );
-    toast({
+    showAlert({
       variant: "destructive",
       title: "Produto Vencido",
       description: "Produto marcado como vencido e estoque zerado automaticamente"
@@ -322,9 +327,10 @@ const EstoqueSection = () => {
     );
     setShowEditModal(false);
     setEditingProduct(null);
-    toast({
+    showAlert({
       title: "Produto Atualizado",
-      description: "As informações do produto foram salvas com sucesso"
+      description: "As informações do produto foram salvas com sucesso",
+      variant: "success"
     });
   };
 
@@ -333,9 +339,10 @@ const EstoqueSection = () => {
     const product = products.find(p => p.id === productId);
     if (product && confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`)) {
       setProducts(prev => prev.filter(p => p.id !== productId));
-      toast({
+      showAlert({
         title: "Produto Excluído",
-        description: "O produto foi removido do sistema com sucesso"
+        description: "O produto foi removido do sistema com sucesso",
+        variant: "success"
       });
     }
   };
@@ -1942,6 +1949,14 @@ const EstoqueSection = () => {
           </div>
         </div>
       )}
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };

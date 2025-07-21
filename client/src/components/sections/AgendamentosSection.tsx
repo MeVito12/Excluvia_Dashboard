@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { useToast } from '@/hooks/use-toast';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { 
   getAppointmentsByCategory,
   type Appointment
@@ -26,7 +27,7 @@ import {
 
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
-  const { toast } = useToast();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [activeTab, setActiveTab] = useState('agenda');
   const [searchTerm, setSearchTerm] = useState('');
   const [emailReminders, setEmailReminders] = useState(true);
@@ -37,17 +38,18 @@ const AgendamentosSection = () => {
   // Função para alternar configurações de notificação
   const toggleEmailReminders = () => {
     setEmailReminders(!emailReminders);
-    toast({
+    showAlert({
       title: !emailReminders ? "Lembretes por Email Ativados" : "Lembretes por Email Desativados",
       description: !emailReminders 
         ? "Agora você receberá lembretes automáticos por email" 
-        : "Os lembretes por email foram desabilitados"
+        : "Os lembretes por email foram desabilitados",
+      variant: "success"
     });
   };
 
   const toggleAutoConfirmations = () => {
     setAutoConfirmations(!autoConfirmations);
-    toast({
+    showAlert({
       title: !autoConfirmations ? "Confirmações Automáticas Ativadas" : "Confirmações Automáticas Desativadas",
       description: !autoConfirmations 
         ? "Confirmações serão enviadas automaticamente" 
@@ -57,7 +59,7 @@ const AgendamentosSection = () => {
 
   const toggleTelegram = () => {
     setTelegramEnabled(!telegramEnabled);
-    toast({
+    showAlert({
       title: !telegramEnabled ? "Telegram Habilitado" : "Telegram Desabilitado",
       description: !telegramEnabled 
         ? "Notificações via Telegram estão ativas" 
@@ -67,7 +69,7 @@ const AgendamentosSection = () => {
 
   const toggleWhatsApp = () => {
     setWhatsappEnabled(!whatsappEnabled);
-    toast({
+    showAlert({
       title: !whatsappEnabled ? "WhatsApp Business Ativado" : "WhatsApp Business Desativado",
       description: !whatsappEnabled 
         ? "Notificações via WhatsApp estão ativas" 
@@ -100,9 +102,10 @@ const AgendamentosSection = () => {
           : app
       )
     );
-    toast({
+    showAlert({
       title: "Compromisso Concluído",
-      description: "O agendamento foi marcado como concluído com sucesso"
+      description: "O agendamento foi marcado como concluído com sucesso",
+      variant: "success"
     });
   };
 
@@ -110,9 +113,10 @@ const AgendamentosSection = () => {
   const editAppointment = (appointmentId: number) => {
     const appointment = appointments.find(app => app.id === appointmentId);
     if (appointment) {
-      toast({
+      showAlert({
         title: `Editando: ${appointment.title}`,
-        description: "Funcionalidade em desenvolvimento. Em breve você poderá editar compromissos."
+        description: "Funcionalidade em desenvolvimento. Em breve você poderá editar compromissos.",
+        variant: "default"
       });
     }
   };
@@ -133,7 +137,7 @@ const AgendamentosSection = () => {
   // Função para salvar novo compromisso
   const saveNewAppointment = () => {
     if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
-      toast({
+      showAlert({
         variant: "destructive",
         title: "Campos obrigatórios",
         description: "Por favor, preencha título, cliente, data e horário."
@@ -154,9 +158,10 @@ const AgendamentosSection = () => {
     
     setAppointments(prev => [...prev, appointment]);
     setShowAddModal(false);
-    toast({
+    showAlert({
       title: "Compromisso Adicionado",
-      description: "O novo agendamento foi criado com sucesso"
+      description: "O novo agendamento foi criado com sucesso",
+      variant: "success"
     });
   };
 
@@ -550,6 +555,14 @@ const AgendamentosSection = () => {
           </div>
         </div>
       )}
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };

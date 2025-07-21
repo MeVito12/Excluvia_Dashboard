@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCategory } from '@/contexts/CategoryContext';
-import { useToast } from '@/hooks/use-toast';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { 
   getAppointmentsByCategory,
   getActivitiesByCategory,
@@ -16,7 +17,7 @@ import {
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
-  const { toast } = useToast();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();
@@ -171,9 +172,10 @@ const DashboardSection = () => {
             onClick={() => {
               setDateFrom(undefined);
               setDateTo(undefined);
-              toast({
+              showAlert({
                 title: "Filtros Limpos",
-                description: "Todos os filtros de data foram removidos. Mostrando dados completos."
+                description: "Todos os filtros de data foram removidos. Mostrando dados completos.",
+                variant: "success"
               });
             }}
             variant="outline"
@@ -186,11 +188,12 @@ const DashboardSection = () => {
             onClick={() => {
               const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
               const hasFilters = dateFrom || dateTo;
-              toast({
+              showAlert({
                 title: hasFilters ? "Filtros Aplicados" : "Dashboard Atualizado",
                 description: hasFilters 
                   ? `Dashboard filtrado para o período: ${period}` 
-                  : "Dados atualizados com sucesso"
+                  : "Dados atualizados com sucesso",
+                variant: "success"
               });
             }}
             className="bg-purple-600 text-white hover:bg-purple-700"
@@ -429,20 +432,22 @@ const DashboardSection = () => {
                 // Função para lidar com cliques nas notificações
                 const handleNotificationClick = (notification: any) => {
                   if (notification.color === 'red') {
-                    toast({
+                    showAlert({
                       variant: "destructive",
                       title: `🚨 URGENTE: ${notification.title}`,
                       description: notification.desc
                     });
                   } else if (notification.color === 'orange') {
-                    toast({
+                    showAlert({
                       title: `⚠️ ATENÇÃO: ${notification.title}`,
-                      description: notification.desc
+                      description: notification.desc,
+                      variant: "warning"
                     });
                   } else {
-                    toast({
+                    showAlert({
                       title: `✅ NOVO: ${notification.title}`,
-                      description: `${notification.desc} - Notificação visualizada.`
+                      description: `${notification.desc} - Notificação visualizada.`,
+                      variant: "success"
                     });
                   }
                 };
@@ -518,6 +523,14 @@ const DashboardSection = () => {
           </CardContent>
         </Card>
       </div>
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };

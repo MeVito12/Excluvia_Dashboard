@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
-import { useToast } from '@/hooks/use-toast';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import DatabaseChart from '@/components/DatabaseChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +24,7 @@ import {
 
 const GraficosSection = () => {
   const { selectedCategory } = useCategory();
-  const { toast } = useToast();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();
@@ -147,9 +148,10 @@ const GraficosSection = () => {
           <Button 
             onClick={() => {
               const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
-              toast({
+              showAlert({
                 title: "Filtros Aplicados",
-                description: `Gráficos atualizados para o período: ${period}`
+                description: `Gráficos atualizados para o período: ${period}`,
+                variant: "success"
               });
             }}
             className="bg-purple-600 text-white hover:bg-purple-700"
@@ -402,9 +404,10 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `metricas_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              toast({
+              showAlert({
                 title: "Métricas Exportadas",
-                description: "Arquivo CSV baixado com os dados atuais"
+                description: "Arquivo CSV baixado com os dados atuais",
+                variant: "success"
               });
             }}
             className="btn btn-primary"
@@ -421,7 +424,7 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `top_produtos_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              toast({
+              showAlert({
                 title: "Top Produtos Exportados",
                 description: "Arquivo CSV baixado com ranking de produtos"
               });
@@ -440,7 +443,7 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `relatorio_completo_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              toast({
+              showAlert({
                 title: "Relatório Completo Exportado",
                 description: "Arquivo CSV baixado com análise detalhada"
               });
@@ -452,6 +455,14 @@ const GraficosSection = () => {
           </Button>
         </div>
       </div>
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };
