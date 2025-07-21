@@ -109,13 +109,21 @@ const EstoqueSection = () => {
   // Função para adicionar novo produto
   const addProduct = () => {
     if (!newProduct.name || !newProduct.currentStock) {
-      alert('Por favor, preencha nome e estoque atual.');
+      toast({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha nome e estoque atual."
+      });
       return;
     }
 
     // Validação para produtos perecíveis
     if (newProduct.isPerishable && (!newProduct.manufacturingDate || !newProduct.expiryDate)) {
-      alert('Para produtos perecíveis, preencha a data de fabricação e validade.');
+      toast({
+        variant: "destructive",
+        title: "Dados de produto perecível",
+        description: "Para produtos perecíveis, preencha a data de fabricação e validade."
+      });
       return;
     }
 
@@ -144,13 +152,20 @@ const EstoqueSection = () => {
       minStock: '10'
     });
     setShowAddProductModal(false);
-    alert(`✅ Produto "${product.name}" adicionado ao estoque com ${product.stock} unidades!`);
+    toast({
+      title: "Produto Adicionado",
+      description: `"${product.name}" foi adicionado ao estoque com ${product.stock} unidades!`
+    });
   };
 
   // Função para ajustar estoque manualmente
   const adjustStock = () => {
     if (!stockAdjustment.quantity || !stockProduct) {
-      alert('Por favor, preencha a quantidade.');
+      toast({
+        variant: "destructive",
+        title: "Quantidade obrigatória",
+        description: "Por favor, preencha a quantidade para ajustar."
+      });
       return;
     }
 
@@ -160,7 +175,11 @@ const EstoqueSection = () => {
       : stockProduct.stock - quantity;
 
     if (newStock < 0) {
-      alert('Estoque não pode ficar negativo.');
+      toast({
+        variant: "destructive",
+        title: "Estoque insuficiente",
+        description: "O estoque não pode ficar negativo."
+      });
       return;
     }
 
@@ -171,7 +190,10 @@ const EstoqueSection = () => {
     ));
 
     const operation = stockAdjustment.operation === 'add' ? 'adicionadas' : 'removidas';
-    alert(`✅ ${quantity} unidades ${operation} do estoque de "${stockProduct.name}"`);
+    toast({
+      title: "Estoque Ajustado",
+      description: `${quantity} unidades ${operation} do estoque de "${stockProduct.name}"`
+    });
     
     setShowStockModal(false);
     setStockAdjustment({ quantity: '', operation: 'add', reason: '' });
@@ -183,7 +205,11 @@ const EstoqueSection = () => {
     if (!product) return;
 
     if (product.stock < quantitySold) {
-      alert(`Estoque insuficiente! Disponível: ${product.stock} unidades`);
+      toast({
+        variant: "destructive",
+        title: "Estoque insuficiente",
+        description: `Disponível apenas ${product.stock} unidades do produto`
+      });
       return;
     }
 
@@ -205,7 +231,10 @@ const EstoqueSection = () => {
     };
 
     setSales(prev => [...prev, sale]);
-    alert(`✅ Venda processada: ${quantitySold} un. de "${product.name}"`);
+    toast({
+      title: "Venda Processada",
+      description: `${quantitySold} unidades de "${product.name}" vendidas com sucesso`
+    });
   };
 
   // Função para calcular uso de ingredientes no cardápio
@@ -254,7 +283,10 @@ const EstoqueSection = () => {
           : product
       )
     );
-    alert('✅ Estoque reposto com sucesso!\n\n+50 unidades adicionadas ao produto.');
+    toast({
+      title: "Estoque Reposto",
+      description: "+50 unidades adicionadas ao produto com sucesso"
+    });
   };
 
   const markAsExpired = (productId: number) => {
@@ -265,7 +297,11 @@ const EstoqueSection = () => {
           : product
       )
     );
-    alert('⚠️ Produto marcado como vencido!\n\nEstoque zerado automaticamente.');
+    toast({
+      variant: "destructive",
+      title: "Produto Vencido",
+      description: "Produto marcado como vencido e estoque zerado automaticamente"
+    });
   };
 
   // Função para editar produto
@@ -286,7 +322,10 @@ const EstoqueSection = () => {
     );
     setShowEditModal(false);
     setEditingProduct(null);
-    alert('✅ Produto atualizado com sucesso!');
+    toast({
+      title: "Produto Atualizado",
+      description: "As informações do produto foram salvas com sucesso"
+    });
   };
 
   // Função para excluir produto
@@ -294,7 +333,10 @@ const EstoqueSection = () => {
     const product = products.find(p => p.id === productId);
     if (product && confirm(`⚠️ Confirma a exclusão do produto "${product.name}"?\n\nEsta ação não pode ser desfeita.`)) {
       setProducts(prev => prev.filter(p => p.id !== productId));
-      alert('🗑️ Produto excluído com sucesso!');
+      toast({
+        title: "Produto Excluído",
+        description: "O produto foi removido do sistema com sucesso"
+      });
     }
   };
 

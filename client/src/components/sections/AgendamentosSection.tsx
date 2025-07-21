@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import { useToast } from '@/hooks/use-toast';
 import { 
   getAppointmentsByCategory,
   type Appointment
@@ -25,8 +26,54 @@ import {
 
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('agenda');
   const [searchTerm, setSearchTerm] = useState('');
+  const [emailReminders, setEmailReminders] = useState(true);
+  const [autoConfirmations, setAutoConfirmations] = useState(true);
+  const [telegramEnabled, setTelegramEnabled] = useState(false);
+  const [whatsappEnabled, setWhatsappEnabled] = useState(true);
+
+  // Função para alternar configurações de notificação
+  const toggleEmailReminders = () => {
+    setEmailReminders(!emailReminders);
+    toast({
+      title: !emailReminders ? "Lembretes por Email Ativados" : "Lembretes por Email Desativados",
+      description: !emailReminders 
+        ? "Agora você receberá lembretes automáticos por email" 
+        : "Os lembretes por email foram desabilitados"
+    });
+  };
+
+  const toggleAutoConfirmations = () => {
+    setAutoConfirmations(!autoConfirmations);
+    toast({
+      title: !autoConfirmations ? "Confirmações Automáticas Ativadas" : "Confirmações Automáticas Desativadas",
+      description: !autoConfirmations 
+        ? "Confirmações serão enviadas automaticamente" 
+        : "As confirmações automáticas foram desabilitadas"
+    });
+  };
+
+  const toggleTelegram = () => {
+    setTelegramEnabled(!telegramEnabled);
+    toast({
+      title: !telegramEnabled ? "Telegram Habilitado" : "Telegram Desabilitado",
+      description: !telegramEnabled 
+        ? "Notificações via Telegram estão ativas" 
+        : "Notificações via Telegram foram desabilitadas"
+    });
+  };
+
+  const toggleWhatsApp = () => {
+    setWhatsappEnabled(!whatsappEnabled);
+    toast({
+      title: !whatsappEnabled ? "WhatsApp Business Ativado" : "WhatsApp Business Desativado",
+      description: !whatsappEnabled 
+        ? "Notificações via WhatsApp estão ativas" 
+        : "Notificações via WhatsApp foram desabilitadas"
+    });
+  };
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [appointments, setAppointments] = useState(() => getAppointmentsByCategory(selectedCategory));
   const [showAddModal, setShowAddModal] = useState(false);
@@ -53,14 +100,20 @@ const AgendamentosSection = () => {
           : app
       )
     );
-    alert('✅ Compromisso marcado como concluído!');
+    toast({
+      title: "Compromisso Concluído",
+      description: "O agendamento foi marcado como concluído com sucesso"
+    });
   };
 
   // Função para editar compromisso
   const editAppointment = (appointmentId: number) => {
     const appointment = appointments.find(app => app.id === appointmentId);
     if (appointment) {
-      alert(`📝 Editando: ${appointment.title}\n\nFuncionalidade em desenvolvimento.\nEm breve você poderá editar todos os detalhes do compromisso.`);
+      toast({
+        title: `Editando: ${appointment.title}`,
+        description: "Funcionalidade em desenvolvimento. Em breve você poderá editar compromissos."
+      });
     }
   };
 
@@ -80,7 +133,11 @@ const AgendamentosSection = () => {
   // Função para salvar novo compromisso
   const saveNewAppointment = () => {
     if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
-      alert('⚠️ Por favor, preencha todos os campos obrigatórios.');
+      toast({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha título, cliente, data e horário."
+      });
       return;
     }
 
@@ -97,7 +154,10 @@ const AgendamentosSection = () => {
     
     setAppointments(prev => [...prev, appointment]);
     setShowAddModal(false);
-    alert('✅ Compromisso adicionado com sucesso!');
+    toast({
+      title: "Compromisso Adicionado",
+      description: "O novo agendamento foi criado com sucesso"
+    });
   };
 
   const renderAgenda = () => (
@@ -218,15 +278,29 @@ const AgendamentosSection = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Lembretes por Email</span>
-              <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
+              <button 
+                onClick={toggleEmailReminders}
+                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
+                  emailReminders ? 'bg-green-500' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
+                  emailReminders ? 'translate-x-6' : 'translate-x-1'
+                }`}></div>
+              </button>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Confirmações Automáticas</span>
-              <div className="w-12 h-6 bg-blue-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
+              <button 
+                onClick={toggleAutoConfirmations}
+                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
+                  autoConfirmations ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
+                  autoConfirmations ? 'translate-x-6' : 'translate-x-1'
+                }`}></div>
+              </button>
             </div>
           </div>
         </div>
@@ -236,15 +310,29 @@ const AgendamentosSection = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Telegram Habilitado</span>
-              <div className="w-12 h-6 bg-gray-300 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-0.5"></div>
-              </div>
+              <button 
+                onClick={toggleTelegram}
+                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
+                  telegramEnabled ? 'bg-blue-500' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
+                  telegramEnabled ? 'translate-x-6' : 'translate-x-1'
+                }`}></div>
+              </button>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">WhatsApp Business</span>
-              <div className="w-12 h-6 bg-green-500 rounded-full flex items-center">
-                <div className="w-5 h-5 bg-white rounded-full ml-auto mr-0.5"></div>
-              </div>
+              <button 
+                onClick={toggleWhatsApp}
+                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
+                  whatsappEnabled ? 'bg-green-500' : 'bg-gray-300'
+                }`}
+              >
+                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
+                  whatsappEnabled ? 'translate-x-6' : 'translate-x-1'
+                }`}></div>
+              </button>
             </div>
           </div>
         </div>

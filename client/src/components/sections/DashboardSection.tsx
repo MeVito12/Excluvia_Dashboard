@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useToast } from '@/hooks/use-toast';
 import { 
   getAppointmentsByCategory,
   getActivitiesByCategory,
@@ -15,6 +16,7 @@ import {
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
+  const { toast } = useToast();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();
@@ -169,6 +171,10 @@ const DashboardSection = () => {
             onClick={() => {
               setDateFrom(undefined);
               setDateTo(undefined);
+              toast({
+                title: "Filtros Limpos",
+                description: "Todos os filtros de data foram removidos. Mostrando dados completos."
+              });
             }}
             variant="outline"
             className="bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
@@ -179,7 +185,13 @@ const DashboardSection = () => {
           <Button 
             onClick={() => {
               const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
-              alert(`📊 Filtros aplicados!\n\nDados atualizados para o período: ${period}`);
+              const hasFilters = dateFrom || dateTo;
+              toast({
+                title: hasFilters ? "Filtros Aplicados" : "Dashboard Atualizado",
+                description: hasFilters 
+                  ? `Dashboard filtrado para o período: ${period}` 
+                  : "Dados atualizados com sucesso"
+              });
             }}
             className="bg-purple-600 text-white hover:bg-purple-700"
           >
@@ -417,11 +429,21 @@ const DashboardSection = () => {
                 // Função para lidar com cliques nas notificações
                 const handleNotificationClick = (notification: any) => {
                   if (notification.color === 'red') {
-                    alert(`🚨 URGENTE: ${notification.title}\n\n${notification.desc}\n\nClique em OK para resolver imediatamente.`);
+                    toast({
+                      variant: "destructive",
+                      title: `🚨 URGENTE: ${notification.title}`,
+                      description: notification.desc
+                    });
                   } else if (notification.color === 'orange') {
-                    alert(`⚠️ ATENÇÃO: ${notification.title}\n\n${notification.desc}\n\nAção recomendada: Verificar em breve.`);
+                    toast({
+                      title: `⚠️ ATENÇÃO: ${notification.title}`,
+                      description: notification.desc
+                    });
                   } else {
-                    alert(`✅ NOVO: ${notification.title}\n\n${notification.desc}\n\nNotificação marcada como visualizada.`);
+                    toast({
+                      title: `✅ NOVO: ${notification.title}`,
+                      description: `${notification.desc} - Notificação visualizada.`
+                    });
                   }
                 };
 

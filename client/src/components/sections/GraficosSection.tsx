@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useToast } from '@/hooks/use-toast';
 import DatabaseChart from '@/components/DatabaseChart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ import {
 
 const GraficosSection = () => {
   const { selectedCategory } = useCategory();
+  const { toast } = useToast();
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();
@@ -145,7 +147,10 @@ const GraficosSection = () => {
           <Button 
             onClick={() => {
               const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
-              alert(`📊 Filtros aplicados!\n\nGráficos atualizados para o período: ${period}`);
+              toast({
+                title: "Filtros Aplicados",
+                description: `Gráficos atualizados para o período: ${period}`
+              });
             }}
             className="bg-purple-600 text-white hover:bg-purple-700"
           >
@@ -397,7 +402,10 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `metricas_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('📊 Métricas exportadas!\n\nArquivo CSV baixado com os dados atuais.');
+              toast({
+                title: "Métricas Exportadas",
+                description: "Arquivo CSV baixado com os dados atuais"
+              });
             }}
             className="btn btn-primary"
           >
@@ -413,7 +421,10 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `top_produtos_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('🏆 Top produtos exportados!\n\nArquivo CSV baixado com ranking de produtos.');
+              toast({
+                title: "Top Produtos Exportados",
+                description: "Arquivo CSV baixado com ranking de produtos"
+              });
             }}
             className="btn btn-secondary"
           >
@@ -429,7 +440,10 @@ const GraficosSection = () => {
               link.href = URL.createObjectURL(blob);
               link.download = `relatorio_completo_${new Date().toISOString().split('T')[0]}.csv`;
               link.click();
-              alert('📋 Relatório completo exportado!\n\nArquivo CSV baixado com análise detalhada.');
+              toast({
+                title: "Relatório Completo Exportado",
+                description: "Arquivo CSV baixado com análise detalhada"
+              });
             }}
             className="btn btn-outline"
           >
