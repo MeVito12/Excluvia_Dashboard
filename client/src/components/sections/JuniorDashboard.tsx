@@ -161,13 +161,6 @@ const JuniorDashboard = () => {
         </div>
       </div>
 
-      {/* Centro de Notificações */}
-      <NotificationCenter
-        notifications={notifications}
-        onDismiss={handleDismissNotification}
-        onClearAll={handleClearAllNotifications}
-      />
-
       {/* Métricas Principais - Seguindo padrão da imagem */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         {/* Vendas Hoje */}
@@ -285,6 +278,13 @@ const JuniorDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Centro de Notificações */}
+      <NotificationCenter
+        notifications={notifications}
+        onDismiss={handleDismissNotification}
+        onClearAll={handleClearAllNotifications}
+      />
 
       {/* Status das Unidades - Grid estilo da imagem */}
       <div className="main-card p-6 mb-6">
