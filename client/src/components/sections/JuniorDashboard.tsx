@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Package, Truck, Building2, TrendingUp, AlertTriangle, CheckCircle, Clock, DollarSign } from 'lucide-react';
 import { getJuniorData } from '@/lib/juniorMockData';
+import { NotificationCenter } from '@/components/ui/notification-alert';
 
 interface UnitSummary {
   unit: string;
@@ -13,6 +14,43 @@ interface UnitSummary {
 
 const JuniorDashboard = () => {
   const juniorData = getJuniorData();
+  const [notifications, setNotifications] = useState([
+    {
+      id: '1',
+      type: 'warning' as const,
+      title: 'Estoque Crítico - Unidade Norte',
+      message: 'Galaxy S24 com apenas 2 unidades em estoque. Reabastecer urgentemente.',
+      timestamp: '2025-01-21 14:30'
+    },
+    {
+      id: '2',
+      type: 'success' as const,
+      title: 'Transferência Concluída',
+      message: '5 tablets iPad transferidos do Centro para Norte com sucesso.',
+      timestamp: '2025-01-21 13:15'
+    },
+    {
+      id: '3',
+      type: 'error' as const,
+      title: 'Fornecedor Sem Resposta',
+      message: 'Samsung não respondeu solicitação de reposição há 24h. Contatar urgente.',
+      timestamp: '2025-01-21 12:00'
+    },
+    {
+      id: '4',
+      type: 'info' as const,
+      title: 'Relatório Consolidado',
+      message: 'Relatório mensal de todas as unidades foi gerado e está disponível.',
+      timestamp: '2025-01-21 10:45'
+    },
+    {
+      id: '5',
+      type: 'warning' as const,
+      title: 'Meta de Vendas - Unidade Oeste',
+      message: 'Unidade Oeste está 15% abaixo da meta mensal. Revisar estratégia.',
+      timestamp: '2025-01-21 09:20'
+    }
+  ]);
   
   // Calcular métricas por unidade
   const getUnitSummary = (): UnitSummary[] => {
@@ -50,8 +88,23 @@ const JuniorDashboard = () => {
   const recentSales = juniorData.sales.slice(0, 5);
   const totalSalesValue = recentSales.reduce((sum, sale) => sum + (sale as any).total, 0);
 
+  // Funções para gerenciar notificações
+  const handleDismissNotification = (id: string) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  const handleClearAllNotifications = () => {
+    setNotifications([]);
+  };
+
   return (
     <div className="space-y-6">
+      {/* Centro de Notificações */}
+      <NotificationCenter
+        notifications={notifications}
+        onDismiss={handleDismissNotification}
+        onClearAll={handleClearAllNotifications}
+      />
       {/* Header do Dashboard */}
       <div className="main-card p-6">
         <div className="flex items-center gap-4">
