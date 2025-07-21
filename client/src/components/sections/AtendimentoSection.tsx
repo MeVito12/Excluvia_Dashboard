@@ -639,7 +639,7 @@ const AtendimentoSection = () => {
           <h3 className="text-xl font-semibold text-gray-800">Conversas WhatsApp</h3>
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Buscar conversas..."

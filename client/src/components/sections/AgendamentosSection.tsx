@@ -182,7 +182,7 @@ const AgendamentosSection = () => {
         {/* Barra de busca e filtros */}
         <div className="flex items-center gap-4 mb-6">
           <div className="flex-1 relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" />
             <input
               type="text"
               placeholder="Buscar compromissos..."

@@ -138,28 +138,28 @@ const ControleSection = () => {
         <h3 className="text-lg font-semibold mb-4">Filtrar Usuários</h3>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 z-10" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5 z-10" />
             <Input
               placeholder="Pesquisar por usuário, email ou categoria..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-10 h-12"
+              className="pl-10 pr-10 h-11"
             />
             {searchTerm && (
               <Button
                 onClick={clearSearch}
                 variant="ghost"
                 size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100 rounded-full"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0 hover:bg-gray-100 rounded-full"
               >
-                <X className="w-4 h-4 text-gray-400" />
+                <X className="w-4 h-4 text-gray-500" />
               </Button>
             )}
           </div>
           <Button 
             onClick={clearSearch}
             variant="outline" 
-            className="h-12 px-6"
+            className="h-11 px-6"
           >
             Limpar Filtros
           </Button>
