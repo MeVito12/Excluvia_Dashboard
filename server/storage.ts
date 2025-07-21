@@ -54,7 +54,8 @@ export interface Storage {
 // Armazenamento em memória
 export class MemStorage implements Storage {
   private users: User[] = [
-    { id: 1, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", createdAt: new Date() }
+    { id: 1, email: "master@sistema.com", name: "Administrador Master", businessCategory: "salao", userType: "master", createdAt: new Date() },
+    { id: 2, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento"], createdAt: new Date() }
   ];
   
   private products: Product[] = [

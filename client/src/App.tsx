@@ -6,6 +6,7 @@ import { queryClient } from "@/lib/queryClient";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
@@ -33,11 +34,13 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <CategoryProvider>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AppContent />
-        </TooltipProvider>
+        <PermissionsProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppContent />
+          </TooltipProvider>
+        </PermissionsProvider>
       </AuthProvider>
     </CategoryProvider>
   </QueryClientProvider>

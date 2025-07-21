@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import UserAvatar from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategory } from '@/contexts/CategoryContext';
+import { usePermissions } from '@/contexts/PermissionsContext';
 import ModernIcon from '@/components/ui/modern-icon';
 import { 
   BarChart3, 
@@ -12,6 +13,7 @@ import {
   Calendar,
   Package,
   MessageCircle,
+  Settings,
   LogOut
 } from 'lucide-react';
 
@@ -23,8 +25,9 @@ interface SidebarProps {
 const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
   const { user, logout } = useAuth();
   const { selectedCategory } = useCategory();
+  const { canAccessSection, isMasterUser } = usePermissions();
 
-  const menuItems = [
+  const allMenuItems = [
     {
       id: 'dashboard',
       label: 'Dashboard',
@@ -60,8 +63,30 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       label: 'Atendimento',
       icon: MessageCircle,
       description: 'Mensagens e assistente virtual'
+    },
+    {
+      id: 'controle',
+      label: 'Controle',
+      icon: Settings,
+      description: 'Configuração de permissões de usuários'
     }
   ];
+
+  // Filtra itens baseado em permissões e categoria
+  const menuItems = allMenuItems.filter(item => {
+    // Controle só para usuários master
+    if (item.id === 'controle') {
+      return isMasterUser;
+    }
+    
+    // Estoque não aparece para design e sites
+    if (item.id === 'estoque' && (selectedCategory === 'design' || selectedCategory === 'sites')) {
+      return false;
+    }
+    
+    // Verifica permissões do usuário
+    return canAccessSection(item.id);
+  });
 
   const handleMenuClick = (itemId: string) => {
     onSectionChange(itemId);

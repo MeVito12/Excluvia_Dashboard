@@ -7,6 +7,17 @@ export interface User {
   password?: string;
   name: string;
   businessCategory: string;
+  userType: 'master' | 'regular'; // Tipo de usuário
+  allowedSections?: string[]; // Seções permitidas para usuários regulares
+  createdAt: Date;
+}
+
+export interface UserPermission {
+  id: number;
+  userId: number;
+  sectionId: string;
+  canAccess: boolean;
+  createdBy: number; // ID do usuário master que configurou
   createdAt: Date;
 }
 

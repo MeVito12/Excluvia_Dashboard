@@ -26,13 +26,14 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
   // Sistema de usuários por categoria
   const categoryUsers = {
-    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central' },
-    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic' },
-    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde' },
-    'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista' },
-    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech' },
-    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative' },
-    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency' }
+    'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
+    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central', userType: 'regular' },
+    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic', userType: 'regular' },
+    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde', userType: 'regular' },
+    'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista', userType: 'regular' },
+    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech', userType: 'regular' },
+    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative', userType: 'regular' },
+    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency', userType: 'regular' }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,14 +48,20 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     let userFound = false;
     for (const [category, userData] of Object.entries(categoryUsers)) {
       if (email === userData.email && password === userData.password) {
+        // Para usuário master, usar a categoria 'estetica' por padrão
+        const businessCategory = category === 'master' ? 'estetica' : category;
+        
         // Definir categoria no localStorage e contexto
-        localStorage.setItem('userBusinessCategory', category);
-        setSelectedCategory(category);
+        localStorage.setItem('userBusinessCategory', businessCategory);
+        setSelectedCategory(businessCategory);
         
         onLogin({
           name: userData.name,
-          email: userData.email
-        });
+          email: userData.email,
+          userType: userData.userType,
+          businessCategory: businessCategory,
+          id: category === 'master' ? 1 : 2
+        } as any);
         
         userFound = true;
         break;
