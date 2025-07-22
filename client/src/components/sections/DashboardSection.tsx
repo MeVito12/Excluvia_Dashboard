@@ -302,7 +302,7 @@ const DashboardSection = () => {
             <div className="metric-card-content">
               <p className="metric-card-label">Alertas Ativos</p>
               <p className="metric-card-value">
-                {selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
+                {selectedCategory === 'farmacia' ? '3' : selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
               </p>
               <p className="metric-card-description text-red-600">Requer atenção</p>
             </div>
@@ -317,7 +317,7 @@ const DashboardSection = () => {
             <div className="metric-card-content">
               <p className="metric-card-label">Notificações</p>
               <p className="metric-card-value">
-                {selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
+                {selectedCategory === 'farmacia' ? '9' : selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
               </p>
               <p className="metric-card-description text-blue-600">Não lidas</p>
             </div>
@@ -340,6 +340,11 @@ const DashboardSection = () => {
         <div className="space-y-3">
           {(() => {
             const categoryAppointments = {
+              'farmacia': [
+                { title: 'Consulta Farmacêutica', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Maria Santos' },
+                { title: 'Aferição de Pressão', time: 'Hoje às 16:30', status: 'Em 3h', client: 'João Silva' },
+                { title: 'Aplicação de Vacina', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Ana Costa' }
+              ],
               'pet': [
                 { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Cliente A' },
                 { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã', client: 'Cliente B' },
@@ -380,6 +385,16 @@ const DashboardSection = () => {
                 { title: 'Aplicação de Botox', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Juliana Santos' },
                 { title: 'Harmonização Facial', time: 'Amanhã às 10:30', status: 'Amanhã', client: 'Patricia Lima' },
                 { title: 'Peeling Químico', time: 'Amanhã às 15:00', status: 'Amanhã', client: 'Carolina Souza' }
+              ],
+              'design': [
+                { title: 'Apresentação de Logo', time: 'Hoje às 14:00', status: 'Em 1h', client: 'StartupTech' },
+                { title: 'Briefing de Projeto', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Empresa ABC' },
+                { title: 'Aprovação Final', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Cliente Premium' }
+              ],
+              'sites': [
+                { title: 'Deploy do Website', time: 'Hoje às 15:00', status: 'Em 2h', client: 'E-commerce Plus' },
+                { title: 'Treinamento CMS', time: 'Hoje às 17:00', status: 'Em 4h', client: 'Loja Virtual' },
+                { title: 'Reunião de Feedback', time: 'Amanhã às 09:00', status: 'Amanhã', client: 'Portal News' }
               ]
             };
             
@@ -464,6 +479,11 @@ const DashboardSection = () => {
                 };
 
                 const categoryNotifications = {
+                  'farmacia': [
+                    { icon: AlertTriangle, title: 'Medicamentos Vencendo', desc: 'Dipirona expira em 3 dias', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Estoque Baixo', desc: 'Soro fisiológico acabando', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Consulta farmacêutica há 5 minutos', badge: 'Novo', color: 'green' }
+                  ],
                   'pet': [
                     { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação V10', badge: 'Urgente', color: 'red' },
                     { icon: Clock, title: 'Estoque Baixo', desc: 'Ração Premium Golden acabando', badge: 'Atenção', color: 'orange' },
@@ -498,6 +518,16 @@ const DashboardSection = () => {
                     { icon: AlertTriangle, title: 'Produto Vencendo', desc: 'Esmalte Colorama expira em 3 dias', badge: 'Urgente', color: 'red' },
                     { icon: Clock, title: 'Estoque Baixo', desc: 'Perfume Boticário acabando', badge: 'Atenção', color: 'orange' },
                     { icon: TrendingUp, title: 'Novo Agendamento', desc: 'Corte marcado há 7 minutos', badge: 'Novo', color: 'green' }
+                  ],
+                  'design': [
+                    { icon: AlertTriangle, title: 'Projeto Atrasado', desc: 'Logo TechStartup com prazo vencido', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente aguarda aprovação há 2 dias', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 15 minutos', badge: 'Novo', color: 'green' }
+                  ],
+                  'sites': [
+                    { icon: AlertTriangle, title: 'Site Fora do Ar', desc: 'E-commerce com erro 500', badge: 'Urgente', color: 'red' },
+                    { icon: Clock, title: 'Deploy Pendente', desc: 'Atualizações aguardando deploy', badge: 'Atenção', color: 'orange' },
+                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Website solicitado há 20 minutos', badge: 'Novo', color: 'green' }
                   ]
                 };
                 
