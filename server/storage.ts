@@ -7,7 +7,9 @@ import {
   Appointment, NewAppointment,
   LoyaltyCampaign, NewLoyaltyCampaign,
   WhatsAppChat, NewWhatsAppChat,
-  StockMovement, NewStockMovement
+  StockMovement, NewStockMovement,
+  Transfer, NewTransfer,
+  Branch, NewBranch
 } from "@shared/schema";
 
 export interface Storage {
@@ -47,6 +49,15 @@ export interface Storage {
   // Movimentos de estoque
   getStockMovements(productId: number): Promise<StockMovement[]>;
   createStockMovement(movement: NewStockMovement): Promise<StockMovement>;
+  
+  // Transferências
+  getTransfers(userId: number, businessCategory: string): Promise<Transfer[]>;
+  createTransfer(transfer: NewTransfer): Promise<Transfer>;
+  updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null>;
+  
+  // Filiais
+  getBranches(userId: number, businessCategory: string): Promise<Branch[]>;
+  createBranch(branch: NewBranch): Promise<Branch>;
 }
 
 
@@ -136,7 +147,22 @@ export class MemStorage implements Storage {
   
   private stockMovements: StockMovement[] = [];
   
-  private nextId = { user: 4, product: 35, sale: 4, client: 4, appointment: 3, campaign: 2, chat: 2, movement: 1 };
+  private branches: Branch[] = [
+    { id: 1, name: "Filial Centro", address: "Rua Augusta, 123 - Centro", managerId: 1, businessCategory: "alimenticio", isActive: true, createdAt: new Date() },
+    { id: 2, name: "Filial Norte", address: "Av. Paulista, 456 - Bela Vista", managerId: 1, businessCategory: "alimenticio", isActive: true, createdAt: new Date() },
+    { id: 3, name: "Filial Sul", address: "Rua da Consolação, 789 - Consolação", managerId: 3, businessCategory: "alimenticio", isActive: true, createdAt: new Date() },
+    { id: 4, name: "Filial Leste", address: "Av. Ipiranga, 321 - República", managerId: 3, businessCategory: "alimenticio", isActive: true, createdAt: new Date() },
+    { id: 5, name: "Filial Oeste", address: "Rua Barão de Itapetininga, 654 - República", managerId: 3, businessCategory: "alimenticio", isActive: true, createdAt: new Date() }
+  ];
+  
+  private transfers: Transfer[] = [
+    { id: 1, productId: 19, fromBranchId: 1, toBranchId: 2, quantity: 20, status: 'sent', transferDate: new Date(Date.now() - 86400000), businessCategory: "alimenticio", userId: 3, notes: "Transferência de estoque baixo" },
+    { id: 2, productId: 22, fromBranchId: 2, toBranchId: 3, quantity: 15, status: 'received', transferDate: new Date(Date.now() - 172800000), receivedDate: new Date(Date.now() - 86400000), businessCategory: "alimenticio", userId: 3, notes: "Solicitação da filial Sul" },
+    { id: 3, productId: 25, fromBranchId: 1, toBranchId: 4, quantity: 30, status: 'pending', transferDate: new Date(), businessCategory: "alimenticio", userId: 3, notes: "Transferência urgente" },
+    { id: 4, productId: 27, fromBranchId: 3, toBranchId: 1, quantity: 10, status: 'returned', transferDate: new Date(Date.now() - 259200000), returnDate: new Date(Date.now() - 172800000), businessCategory: "alimenticio", userId: 3, notes: "Produto próximo ao vencimento" }
+  ];
+  
+  private nextId = { user: 4, product: 35, sale: 4, client: 4, appointment: 3, campaign: 2, chat: 2, movement: 1, transfer: 5, branch: 6 };
 
   async getUserByEmail(email: string): Promise<User | null> {
     return this.users.find(u => u.email === email) || null;
@@ -252,5 +278,34 @@ export class MemStorage implements Storage {
     const newMovement: StockMovement = { ...movement, id: this.nextId.movement++ };
     this.stockMovements.push(newMovement);
     return newMovement;
+  }
+
+  // Métodos para transferências
+  async getTransfers(userId: number, businessCategory: string): Promise<Transfer[]> {
+    return this.transfers.filter(t => t.userId === userId && t.businessCategory === businessCategory);
+  }
+
+  async createTransfer(transfer: NewTransfer): Promise<Transfer> {
+    const newTransfer: Transfer = { ...transfer, id: this.nextId.transfer++ };
+    this.transfers.push(newTransfer);
+    return newTransfer;
+  }
+
+  async updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null> {
+    const index = this.transfers.findIndex(t => t.id === id);
+    if (index === -1) return null;
+    this.transfers[index] = { ...this.transfers[index], ...transfer };
+    return this.transfers[index];
+  }
+
+  // Métodos para filiais
+  async getBranches(userId: number, businessCategory: string): Promise<Branch[]> {
+    return this.branches.filter(b => b.businessCategory === businessCategory && b.isActive);
+  }
+
+  async createBranch(branch: NewBranch): Promise<Branch> {
+    const newBranch: Branch = { ...branch, id: this.nextId.branch++, createdAt: new Date() };
+    this.branches.push(newBranch);
+    return newBranch;
   }
 }

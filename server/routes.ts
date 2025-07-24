@@ -401,6 +401,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rotas para transferências
+  app.get("/api/transfers", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "alimenticio";
+      const transfers = await storage.getTransfers(userId, businessCategory);
+      res.json(transfers);
+    } catch (error) {
+      console.error("Error fetching transfers:", error);
+      res.status(500).json({ error: "Erro ao buscar transferências" });
+    }
+  });
+
+  app.post("/api/transfers", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferData = req.body;
+      
+      // Validação básica
+      if (!transferData.productId || !transferData.fromBranchId || !transferData.toBranchId || !transferData.quantity) {
+        return res.status(400).json({ error: "Produto, filial origem, filial destino e quantidade são obrigatórios" });
+      }
+
+      const newTransfer = await storage.createTransfer(transferData);
+      res.json(newTransfer);
+    } catch (error) {
+      console.error("Error creating transfer:", error);
+      res.status(500).json({ error: "Erro ao criar transferência" });
+    }
+  });
+
+  app.put("/api/transfers/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferId = parseInt(req.params.id);
+      const transferData = req.body;
+      
+      const updatedTransfer = await storage.updateTransfer(transferId, transferData);
+      if (!updatedTransfer) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      res.json(updatedTransfer);
+    } catch (error) {
+      console.error("Error updating transfer:", error);
+      res.status(500).json({ error: "Erro ao atualizar transferência" });
+    }
+  });
+
+  // Rotas para filiais
+  app.get("/api/branches", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "alimenticio";
+      const branches = await storage.getBranches(userId, businessCategory);
+      res.json(branches);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      res.status(500).json({ error: "Erro ao buscar filiais" });
+    }
+  });
+
+  app.post("/api/branches", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const branchData = req.body;
+      
+      // Validação básica
+      if (!branchData.name || !branchData.address) {
+        return res.status(400).json({ error: "Nome e endereço são obrigatórios" });
+      }
+
+      const newBranch = await storage.createBranch(branchData);
+      res.json(newBranch);
+    } catch (error) {
+      console.error("Error creating branch:", error);
+      res.status(500).json({ error: "Erro ao criar filial" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

@@ -100,6 +100,31 @@ export interface StockMovement {
   notes?: string;
 }
 
+export interface Transfer {
+  id: number;
+  productId: number;
+  fromBranchId: number;
+  toBranchId: number;
+  quantity: number;
+  status: 'pending' | 'sent' | 'received' | 'returned';
+  transferDate: Date;
+  receivedDate?: Date;
+  returnDate?: Date;
+  notes?: string;
+  businessCategory: string;
+  userId: number;
+}
+
+export interface Branch {
+  id: number;
+  name: string;
+  address: string;
+  managerId: number;
+  businessCategory: string;
+  isActive: boolean;
+  createdAt: Date;
+}
+
 // Tipos para criar novos registros
 export type NewUser = Omit<User, 'id' | 'createdAt'>;
 export type NewProduct = Omit<Product, 'id' | 'createdAt'>;
@@ -109,6 +134,8 @@ export type NewAppointment = Omit<Appointment, 'id'>;
 export type NewLoyaltyCampaign = Omit<LoyaltyCampaign, 'id' | 'createdAt'>;
 export type NewWhatsAppChat = Omit<WhatsAppChat, 'id'>;
 export type NewStockMovement = Omit<StockMovement, 'id'>;
+export type NewTransfer = Omit<Transfer, 'id'>;
+export type NewBranch = Omit<Branch, 'id' | 'createdAt'>;
 
 // Validações
 export const userSchema = z.object({

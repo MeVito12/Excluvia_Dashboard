@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
+import { useTransfers } from '@/hooks/useTransfers';
 import { SheetsIntegrationPanel } from '@/components/SheetsIntegrationPanel';
 import { 
   Package, 
@@ -26,7 +27,11 @@ import {
   CheckCircle,
   XCircle,
   Calendar,
-  Sheet
+  Sheet,
+  ArrowRightLeft,
+  Send,
+  Inbox,
+  RotateCcw
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -93,9 +98,31 @@ const EstoqueSection = () => {
     clients,
     isLoading: clientsLoading
   } = useClients(userId, selectedCategory);
+
+  // Hook para transferências
+  const {
+    transfers,
+    branches,
+    isLoadingTransfers,
+    isLoadingBranches,
+    createTransfer,
+    updateTransfer,
+    isCreatingTransfer,
+    isUpdatingTransfer
+  } = useTransfers();
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<any>(null);
   const [stockAdjustment, setStockAdjustment] = useState({ quantity: '', operation: 'add', reason: '' });
+  
+  // Estados para transferências
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferData, setTransferData] = useState({
+    productId: '',
+    fromBranchId: '',
+    toBranchId: '',
+    quantity: '',
+    notes: ''
+  });
 
   // Categorias que não têm sistema de estoque
   const categoriesWithoutStock = ['design', 'sites'];
