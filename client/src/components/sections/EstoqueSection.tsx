@@ -361,9 +361,10 @@ const EstoqueSection = () => {
 
 
 
-  // Apenas aba de produtos
+  // Abas do sistema de estoque
   const tabs = [
-    { id: 'produtos', label: 'Produtos', icon: Package }
+    { id: 'produtos', label: 'Produtos', icon: Package },
+    { id: 'transferencias', label: 'Transferências', icon: ArrowRightLeft }
   ];
 
   // Função para calcular dias até o vencimento
@@ -1578,11 +1579,362 @@ const EstoqueSection = () => {
     </div>
   );
 
+  // Função para criar nova transferência
+  const handleCreateTransfer = () => {
+    if (!transferData.productId || !transferData.fromBranchId || !transferData.toBranchId || !transferData.quantity) {
+      showAlert({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Preencha todos os campos obrigatórios para criar a transferência."
+      });
+      return;
+    }
+
+    const transferPayload = {
+      productId: parseInt(transferData.productId),
+      fromBranchId: parseInt(transferData.fromBranchId),
+      toBranchId: parseInt(transferData.toBranchId),
+      quantity: parseInt(transferData.quantity),
+      status: 'pending' as const,
+      transferDate: new Date(),
+      notes: transferData.notes || '',
+      businessCategory: selectedCategory,
+      userId: userId
+    };
+
+    createTransfer(transferPayload);
+    setShowTransferModal(false);
+    setTransferData({
+      productId: '',
+      fromBranchId: '',
+      toBranchId: '',
+      quantity: '',
+      notes: ''
+    });
+    showAlert({
+      title: "Transferência Criada",
+      description: "A transferência foi iniciada com sucesso!",
+      variant: "success"
+    });
+  };
+
+  // Função para atualizar status da transferência
+  const handleUpdateTransferStatus = (transferId: number, status: 'received' | 'returned') => {
+    const updateData = {
+      id: transferId,
+      status,
+      ...(status === 'received' && { receivedDate: new Date() }),
+      ...(status === 'returned' && { returnDate: new Date() })
+    };
+
+    updateTransfer(updateData);
+    showAlert({
+      title: status === 'received' ? "Produto Recebido" : "Produto Devolvido",
+      description: `A transferência foi ${status === 'received' ? 'recebida' : 'devolvida'} com sucesso!`,
+      variant: "success"
+    });
+  };
+
+  // Função para renderizar transferências
+  const renderTransfers = () => (
+    <div className="animate-fade-in">
+      {/* Seção de Criação de Transferência */}
+      <div className="main-card p-6 mb-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <ArrowRightLeft className="w-6 h-6 text-blue-600" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">Transferências Entre Filiais</h3>
+              <p className="text-sm text-gray-600">Gerencie transferências de produtos entre suas filiais</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => setShowTransferModal(true)}
+            className="btn btn-primary flex items-center gap-2"
+          >
+            <Send className="w-4 h-4" />
+            Nova Transferência
+          </button>
+        </div>
+
+        {/* Métricas de Transferências */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="metric-card-standard">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Pendentes</p>
+                <p className="text-2xl font-bold text-yellow-600">
+                  {transfers.filter(t => t.status === 'pending').length}
+                </p>
+              </div>
+              <Clock className="w-8 h-8 text-yellow-500" />
+            </div>
+          </div>
+          <div className="metric-card-standard">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Enviadas</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {transfers.filter(t => t.status === 'sent').length}
+                </p>
+              </div>
+              <Send className="w-8 h-8 text-blue-500" />
+            </div>
+          </div>
+          <div className="metric-card-standard">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Recebidas</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {transfers.filter(t => t.status === 'received').length}
+                </p>
+              </div>
+              <CheckCircle className="w-8 h-8 text-green-500" />
+            </div>
+          </div>
+          <div className="metric-card-standard">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Devolvidas</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {transfers.filter(t => t.status === 'returned').length}
+                </p>
+              </div>
+              <RotateCcw className="w-8 h-8 text-red-500" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Lista de Transferências */}
+      <div className="main-card p-6">
+        <h4 className="text-lg font-semibold text-gray-800 mb-4">Histórico de Transferências</h4>
+        
+        {isLoadingTransfers ? (
+          <div className="text-center py-8">
+            <ArrowRightLeft className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+            <p className="text-gray-600">Carregando transferências...</p>
+          </div>
+        ) : transfers.length === 0 ? (
+          <div className="text-center py-8">
+            <ArrowRightLeft className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h5 className="text-lg font-medium text-gray-800 mb-2">Nenhuma transferência encontrada</h5>
+            <p className="text-gray-600 mb-4">Crie sua primeira transferência entre filiais</p>
+            <button 
+              onClick={() => setShowTransferModal(true)}
+              className="btn btn-primary"
+            >
+              <Send className="w-4 h-4" />
+              Nova Transferência
+            </button>
+          </div>
+        ) : (
+          <div className="item-list">
+            {transfers.map((transfer) => {
+              const product = products.find(p => p.id === transfer.productId);
+              const fromBranch = branches.find(b => b.id === transfer.fromBranchId);
+              const toBranch = branches.find(b => b.id === transfer.toBranchId);
+              
+              return (
+                <div key={transfer.id} className="list-item">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                      transfer.status === 'pending' ? 'bg-yellow-100' :
+                      transfer.status === 'sent' ? 'bg-blue-100' :
+                      transfer.status === 'received' ? 'bg-green-100' : 'bg-red-100'
+                    }`}>
+                      {transfer.status === 'pending' && <Clock className="w-6 h-6 text-yellow-600" />}
+                      {transfer.status === 'sent' && <Send className="w-6 h-6 text-blue-600" />}
+                      {transfer.status === 'received' && <CheckCircle className="w-6 h-6 text-green-600" />}
+                      {transfer.status === 'returned' && <RotateCcw className="w-6 h-6 text-red-600" />}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-800">
+                        {product?.name || 'Produto não encontrado'}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        De: {fromBranch?.name} → Para: {toBranch?.name}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Quantidade: {transfer.quantity} unidades
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Data: {new Date(transfer.transferDate).toLocaleDateString('pt-BR')}
+                      </p>
+                      {transfer.notes && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Obs: {transfer.notes}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <span className={`badge ${
+                        transfer.status === 'pending' ? 'badge-warning' :
+                        transfer.status === 'sent' ? 'badge-info' :
+                        transfer.status === 'received' ? 'badge-success' : 'badge-error'
+                      }`}>
+                        {transfer.status === 'pending' && 'Pendente'}
+                        {transfer.status === 'sent' && 'Enviado'}
+                        {transfer.status === 'received' && 'Recebido'}
+                        {transfer.status === 'returned' && 'Devolvido'}
+                      </span>
+                      
+                      {/* Botões de ação */}
+                      <div className="flex gap-2 mt-2">
+                        {transfer.status === 'sent' && (
+                          <>
+                            <button
+                              onClick={() => handleUpdateTransferStatus(transfer.id, 'received')}
+                              className="btn btn-sm btn-success"
+                              disabled={isUpdatingTransfer}
+                            >
+                              <Inbox className="w-3 h-3" />
+                              Receber
+                            </button>
+                            <button
+                              onClick={() => handleUpdateTransferStatus(transfer.id, 'returned')}
+                              className="btn btn-sm btn-outline"
+                              disabled={isUpdatingTransfer}
+                            >
+                              <RotateCcw className="w-3 h-3" />
+                              Devolver
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Modal de Nova Transferência */}
+      {showTransferModal && (
+        <div className="modal-overlay z-9999 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="modal-content z-10000 bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Nova Transferência</h3>
+              <button 
+                onClick={() => setShowTransferModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Produto *
+                </label>
+                <select
+                  value={transferData.productId}
+                  onChange={(e) => setTransferData({ ...transferData, productId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Selecione um produto</option>
+                  {products.filter(p => p.stock > 0).map((product) => (
+                    <option key={product.id} value={product.id}>
+                      {product.name} (Estoque: {product.stock})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Filial de Origem *
+                </label>
+                <select
+                  value={transferData.fromBranchId}
+                  onChange={(e) => setTransferData({ ...transferData, fromBranchId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Selecione a filial de origem</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Filial de Destino *
+                </label>
+                <select
+                  value={transferData.toBranchId}
+                  onChange={(e) => setTransferData({ ...transferData, toBranchId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="">Selecione a filial de destino</option>
+                  {branches.filter(b => b.id.toString() !== transferData.fromBranchId).map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Quantidade *
+                </label>
+                <input
+                  type="number"
+                  value={transferData.quantity}
+                  onChange={(e) => setTransferData({ ...transferData, quantity: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Quantidade a transferir"
+                  min="1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Observações
+                </label>
+                <textarea
+                  value={transferData.notes}
+                  onChange={(e) => setTransferData({ ...transferData, notes: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Observações sobre a transferência (opcional)"
+                  rows={3}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowTransferModal(false)}
+                className="btn btn-outline flex-1"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCreateTransfer}
+                className="btn btn-primary flex-1"
+                disabled={isCreatingTransfer}
+              >
+                {isCreatingTransfer ? 'Criando...' : 'Criar Transferência'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'produtos':
         return renderProducts();
-
+      case 'transferencias':
+        return renderTransfers();
       default:
         return renderProducts();
     }
@@ -1710,8 +2062,25 @@ const EstoqueSection = () => {
         </div>
       </div>
 
-      {/* Conteúdo direto dos produtos (sem tabs) */}
-      {renderProducts()}
+      {/* Navegação das abas */}
+      <div className="tab-navigation">
+        {tabs.map((tab) => {
+          const IconComponent = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            >
+              <IconComponent className="w-4 h-4" />
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Conteúdo das abas */}
+      {renderTabContent()}
 
       {/* Modal de Edição */}
       {showEditModal && editingProduct && (
