@@ -34,7 +34,7 @@ const FinanceiroSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
-  const userId = user?.id || 1;
+  const userId = (user as any)?.id || 1;
 
   const { 
     financialEntries, 
@@ -46,13 +46,13 @@ const FinanceiroSection = () => {
     revertFinancialEntry 
   } = useFinancial(userId, selectedCategory);
 
+  const [activeTab, setActiveTab] = useState('entradas');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<FinancialEntry | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
 
   // Estados do formulário
   const [formData, setFormData] = useState({
@@ -78,20 +78,27 @@ const FinanceiroSection = () => {
     nearDueCount: financialEntries.filter(e => e.status === 'near_due').length
   };
 
-  // Filtrar entradas
-  const filteredEntries = financialEntries.filter(entry => {
+  // Filtrar entradas baseado na aba ativa
+  const entriesByTab = financialEntries.filter(entry => {
+    if (activeTab === 'entradas') return entry.type === 'income';
+    if (activeTab === 'saidas') return entry.type === 'expense';
+    return true;
+  });
+
+  // Aplicar filtros adicionais
+  const filteredEntries = entriesByTab.filter(entry => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || entry.status === statusFilter;
-    const matchesType = typeFilter === 'all' || entry.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    return matchesSearch && matchesStatus;
   });
 
   const handleCreateEntry = async () => {
     try {
+      const entryType = activeTab === 'entradas' ? 'income' : 'expense';
       const entryData: NewFinancialEntry = {
         userId,
         businessCategory: selectedCategory,
-        type: formData.type,
+        type: entryType,
         amount: parseFloat(formData.amount),
         description: formData.description,
         dueDate: new Date(formData.dueDate),
@@ -106,7 +113,7 @@ const FinanceiroSection = () => {
       
       showAlert({
         title: "Sucesso",
-        description: "Entrada financeira criada com sucesso",
+        description: `${activeTab === 'entradas' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
         variant: "success"
       });
       
@@ -115,7 +122,7 @@ const FinanceiroSection = () => {
     } catch (error) {
       showAlert({
         title: "Erro",
-        description: "Erro ao criar entrada financeira",
+        description: `Erro ao criar ${activeTab === 'entradas' ? 'entrada' : 'saída'} financeira`,
         variant: "destructive"
       });
     }
@@ -233,10 +240,36 @@ const FinanceiroSection = () => {
           <DialogTrigger asChild>
             <Button className="btn-primary">
               <Plus className="w-4 h-4 mr-2" />
-              Nova Saída
+              {activeTab === 'entradas' ? 'Nova Entrada' : 'Nova Saída'}
             </Button>
           </DialogTrigger>
         </Dialog>
+      </div>
+
+      {/* Navegação por Abas */}
+      <div className="main-card p-1 mb-6">
+        <div className="tab-navigation">
+          <button
+            onClick={() => setActiveTab('entradas')}
+            className={`tab-button ${activeTab === 'entradas' ? 'tab-button-active' : ''}`}
+          >
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Entradas
+            <span className="ml-2 px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+              {financialEntries.filter(e => e.type === 'income').length}
+            </span>
+          </button>
+          <button
+            onClick={() => setActiveTab('saidas')}
+            className={`tab-button ${activeTab === 'saidas' ? 'tab-button-active' : ''}`}
+          >
+            <TrendingDown className="w-4 h-4 mr-2" />
+            Saídas
+            <span className="ml-2 px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs font-medium">
+              {financialEntries.filter(e => e.type === 'expense').length}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Resumo Financeiro */}
@@ -314,7 +347,7 @@ const FinanceiroSection = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex-1">
             <Input
-              placeholder="Buscar por descrição..."
+              placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full"
@@ -331,15 +364,15 @@ const FinanceiroSection = () => {
             <option value="overdue">Vencido</option>
             <option value="paid">Pago</option>
           </select>
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-md"
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearchTerm('');
+              setStatusFilter('all');
+            }}
           >
-            <option value="all">Todos os tipos</option>
-            <option value="income">Entradas</option>
-            <option value="expense">Saídas</option>
-          </select>
+            Limpar Filtros
+          </Button>
         </div>
       </div>
 
@@ -469,7 +502,9 @@ const FinanceiroSection = () => {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Nova Saída Financeira</DialogTitle>
+            <DialogTitle>
+              {activeTab === 'entradas' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -565,7 +600,7 @@ const FinanceiroSection = () => {
                 disabled={!formData.description || !formData.amount || !formData.dueDate}
                 className="flex-1"
               >
-                Criar Saída
+                {activeTab === 'entradas' ? 'Criar Entrada' : 'Criar Saída'}
               </Button>
               <Button 
                 variant="outline" 

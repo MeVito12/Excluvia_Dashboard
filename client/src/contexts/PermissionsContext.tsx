@@ -82,18 +82,12 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   // Carrega permissões do localStorage
   useEffect(() => {
     if (user) {
-      // Limpar localStorage para forçar recarga das permissões
-      localStorage.removeItem(`permissions_${(user as any).id}`);
-      localStorage.removeItem('all_user_permissions');
-      
       const savedPermissions = localStorage.getItem(`permissions_${(user as any).id}`);
       const savedAllPermissions = localStorage.getItem('all_user_permissions');
       
       if (isMasterUser) {
         // Master tem acesso a tudo, incluindo controle
-        const masterPermissions = [...availableSections.map(s => s.id), 'controle'];
-        console.log('Master permissions:', masterPermissions);
-        setUserPermissions(masterPermissions);
+        setUserPermissions([...availableSections.map(s => s.id), 'controle']);
       } else if (savedPermissions) {
         setUserPermissions(JSON.parse(savedPermissions));
       } else {
@@ -101,8 +95,6 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
         const defaultPermissions = (user as any).allowedSections || availableSections
           .filter(s => s.defaultEnabled)
           .map(s => s.id);
-        console.log('User permissions from server:', (user as any).allowedSections);
-        console.log('Default permissions:', defaultPermissions);
         setUserPermissions(defaultPermissions);
       }
 
