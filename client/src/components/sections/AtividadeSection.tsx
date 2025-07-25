@@ -150,7 +150,7 @@ const AtividadeSection = () => {
   const [showExportModal, setShowExportModal] = useState(false);
   
   // Estado para controlar a aba ativa
-  const [activeTab, setActiveTab] = useState('atividades');
+  const [activeTab, setActiveTab] = useState('vendas');
   
   // Função para exportar dados com formatação profissional
   const handleExport = () => {
@@ -197,10 +197,10 @@ const AtividadeSection = () => {
 
   // Tabs da seção com as abas movidas do Estoque
   const tabs = [
-    { id: 'atividades', label: 'Atividades', icon: ActivityIcon },
     { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
     { id: 'clientes', label: 'Clientes', icon: Users },
-    { id: 'relatorios', label: 'Relatórios', icon: BarChart3 }
+    { id: 'relatorios', label: 'Relatórios', icon: BarChart3 },
+    { id: 'atividades', label: 'Logs', icon: ActivityIcon }
   ];
 
   // Métricas específicas da aba ativa
@@ -705,7 +705,7 @@ const AtividadeSection = () => {
       case 'relatorios':
         return renderReports();
       default:
-        return renderActivities();
+        return renderSales();
     }
   };
 
