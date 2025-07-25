@@ -1,23 +1,75 @@
 import { z } from "zod";
 
 // Tipos de dados
+
+// Interface para Empresas
+export interface Company {
+  id: number;
+  name: string;
+  businessCategory: string;
+  description?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  createdBy: number; // ID do master que criou a empresa
+  createdAt: Date;
+}
+
+// Interface para Filiais/Unidades
+export interface Branch {
+  id: number;
+  name: string;
+  companyId: number;
+  address: string;
+  phone?: string;
+  managerId?: number; // ID do gerente responsável pela filial
+  businessCategory: string;
+  createdAt: Date;
+}
+
+// Interface de Usuários com hierarquia
 export interface User {
   id: number;
   email: string;
   password?: string;
   name: string;
+  phone?: string;
+  companyId?: number; // Empresa à qual pertence
+  branchId?: number; // Filial onde trabalha
   businessCategory: string;
-  userType: 'master' | 'regular'; // Tipo de usuário
-  allowedSections?: string[]; // Seções permitidas para usuários regulares
+  userType: 'super_admin' | 'company_admin' | 'branch_manager' | 'employee'; // Hierarquia
+  permissions: string[]; // Seções permitidas
+  managerId?: number; // ID do superior hierárquico
+  isActive: boolean;
+  createdBy: number; // Quem criou este usuário
   createdAt: Date;
 }
 
-export interface UserPermission {
+// Interface para controle de permissões hierárquicas
+export interface UserRole {
   id: number;
   userId: number;
-  sectionId: string;
-  canAccess: boolean;
-  createdBy: number; // ID do usuário master que configurou
+  roleType: 'super_admin' | 'company_admin' | 'branch_manager' | 'employee';
+  companyId?: number;
+  branchId?: number;
+  permissions: string[];
+  canManageUsers: boolean;
+  canManageBranches: boolean;
+  canViewReports: boolean;
+  canManageInventory: boolean;
+  assignedBy: number; // Quem atribuiu esse papel
+  createdAt: Date;
+}
+
+// Interface para hierarquia organizacional
+export interface UserHierarchy {
+  id: number;
+  userId: number;
+  managerId: number;
+  companyId: number;
+  branchId?: number;
+  level: number; // Nível hierárquico (1 = mais alto)
+  canManageLevel: number; // Até que nível pode gerenciar
   createdAt: Date;
 }
 
@@ -115,15 +167,7 @@ export interface Transfer {
   userId: number;
 }
 
-export interface Branch {
-  id: number;
-  name: string;
-  address: string;
-  managerId: number;
-  businessCategory: string;
-  isActive: boolean;
-  createdAt: Date;
-}
+
 
 export interface FinancialEntry {
   id: number;
@@ -148,9 +192,51 @@ export interface FinancialEntry {
 }
 
 // Tipos para criar novos registros
+export type NewCompany = Omit<Company, 'id' | 'createdAt'>;
+export type NewBranch = Omit<Branch, 'id' | 'createdAt'>;
 export type NewUser = Omit<User, 'id' | 'createdAt'>;
+export type NewUserRole = Omit<UserRole, 'id' | 'createdAt'>;
+export type NewUserHierarchy = Omit<UserHierarchy, 'id' | 'createdAt'>;
 export type NewProduct = Omit<Product, 'id' | 'createdAt'>;
 export type NewSale = Omit<Sale, 'id'>;
+
+// Tipos para responses da API com informações hierárquicas
+export interface UserWithHierarchy extends User {
+  company?: Company;
+  branch?: Branch;
+  manager?: User;
+  subordinates?: User[];
+  role?: UserRole;
+}
+
+export interface TransferWithDetails extends Transfer {
+  product?: Product;
+  fromBranch?: Branch;
+  toBranch?: Branch;
+  fromCompany?: Company;
+  toCompany?: Company;
+  requestedBy?: User;
+}
+
+// Enum para tipos de usuário
+export enum UserType {
+  SUPER_ADMIN = 'super_admin',
+  COMPANY_ADMIN = 'company_admin', 
+  BRANCH_MANAGER = 'branch_manager',
+  EMPLOYEE = 'employee'
+}
+
+// Enum para permissões do sistema
+export enum Permission {
+  DASHBOARD = 'dashboard',
+  GRAPHICS = 'graficos',
+  ACTIVITY = 'atividade',
+  APPOINTMENTS = 'agendamentos',
+  INVENTORY = 'estoque',
+  ATTENDANCE = 'atendimento',
+  FINANCIAL = 'financeiro',
+  CONTROL = 'controle'
+}
 export type NewClient = Omit<Client, 'id' | 'createdAt'>;
 export type NewAppointment = Omit<Appointment, 'id'>;
 export type NewLoyaltyCampaign = Omit<LoyaltyCampaign, 'id' | 'createdAt'>;

@@ -10,7 +10,12 @@ import {
   StockMovement, NewStockMovement,
   Transfer, NewTransfer,
   Branch, NewBranch,
-  FinancialEntry, NewFinancialEntry
+  FinancialEntry, NewFinancialEntry,
+  Company, NewCompany,
+  UserRole, NewUserRole,
+  UserHierarchy, NewUserHierarchy,
+  UserWithHierarchy, 
+  TransferWithDetails
 } from "@shared/schema";
 
 export interface Storage {
@@ -67,6 +72,39 @@ export interface Storage {
   deleteFinancialEntry(id: number): Promise<boolean>;
   payFinancialEntry(id: number, paymentProof: string): Promise<FinancialEntry | null>;
   revertFinancialEntry(id: number): Promise<FinancialEntry | null>;
+
+  // Sistema de Hierarquia Empresarial
+  
+  // Empresas
+  getCompanies(createdBy?: number): Promise<Company[]>;
+  getCompanyById(id: number): Promise<Company | null>;
+  createCompany(company: NewCompany): Promise<Company>;
+  updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null>;
+  deleteCompany(id: number): Promise<boolean>;
+  
+  // Usuários com hierarquia
+  getUserWithHierarchy(userId: number): Promise<UserWithHierarchy | null>;
+  getUsersByCompany(companyId: number): Promise<UserWithHierarchy[]>;
+  getUsersByManager(managerId: number): Promise<UserWithHierarchy[]>;
+  getUserSubordinates(userId: number): Promise<UserWithHierarchy[]>;
+  updateUserHierarchy(userId: number, managerId: number, companyId: number, branchId?: number): Promise<boolean>;
+  
+  // Papéis e permissões
+  getUserRole(userId: number): Promise<UserRole | null>;
+  getUserRoles(companyId?: number): Promise<UserRole[]>;
+  createUserRole(role: NewUserRole): Promise<UserRole>;
+  updateUserRole(userId: number, role: Partial<NewUserRole>): Promise<UserRole | null>;
+  deleteUserRole(userId: number): Promise<boolean>;
+  
+  // Filiais com hierarquia
+  getBranchesByCompany(companyId: number): Promise<Branch[]>;
+  getBranchesForUser(userId: number): Promise<Branch[]>;
+  updateBranchManager(branchId: number, managerId: number): Promise<Branch | null>;
+  
+  // Transferências com detalhes
+  getTransfersWithDetails(userId: number, businessCategory: string): Promise<TransferWithDetails[]>;
+  getTransfersByCompany(companyId: number): Promise<TransferWithDetails[]>;
+  getAvailableBranchesForTransfer(userId: number, businessCategory: string): Promise<Branch[]>;
 }
 
 
@@ -419,5 +457,91 @@ export class MemStorage implements Storage {
       paidAt: undefined
     };
     return this.financialEntries[index];
+  }
+
+  // Implementações temporárias para hierarquia empresarial
+  
+  async getCompanies(createdBy?: number): Promise<Company[]> {
+    return [];
+  }
+
+  async getCompanyById(id: number): Promise<Company | null> {
+    return null;
+  }
+
+  async createCompany(company: NewCompany): Promise<Company> {
+    throw new Error("Método não implementado no MemStorage");
+  }
+
+  async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
+    return null;
+  }
+
+  async deleteCompany(id: number): Promise<boolean> {
+    return false;
+  }
+
+  async getUserWithHierarchy(userId: number): Promise<UserWithHierarchy | null> {
+    return null;
+  }
+
+  async getUsersByCompany(companyId: number): Promise<UserWithHierarchy[]> {
+    return [];
+  }
+
+  async getUsersByManager(managerId: number): Promise<UserWithHierarchy[]> {
+    return [];
+  }
+
+  async getUserSubordinates(userId: number): Promise<UserWithHierarchy[]> {
+    return [];
+  }
+
+  async updateUserHierarchy(userId: number, managerId: number, companyId: number, branchId?: number): Promise<boolean> {
+    return false;
+  }
+
+  async getUserRole(userId: number): Promise<UserRole | null> {
+    return null;
+  }
+
+  async getUserRoles(companyId?: number): Promise<UserRole[]> {
+    return [];
+  }
+
+  async createUserRole(role: NewUserRole): Promise<UserRole> {
+    throw new Error("Método não implementado no MemStorage");
+  }
+
+  async updateUserRole(userId: number, role: Partial<NewUserRole>): Promise<UserRole | null> {
+    return null;
+  }
+
+  async deleteUserRole(userId: number): Promise<boolean> {
+    return false;
+  }
+
+  async getBranchesByCompany(companyId: number): Promise<Branch[]> {
+    return [];
+  }
+
+  async getBranchesForUser(userId: number): Promise<Branch[]> {
+    return [];
+  }
+
+  async updateBranchManager(branchId: number, managerId: number): Promise<Branch | null> {
+    return null;
+  }
+
+  async getTransfersWithDetails(userId: number, businessCategory: string): Promise<TransferWithDetails[]> {
+    return [];
+  }
+
+  async getTransfersByCompany(companyId: number): Promise<TransferWithDetails[]> {
+    return [];
+  }
+
+  async getAvailableBranchesForTransfer(userId: number, businessCategory: string): Promise<Branch[]> {
+    return [];
   }
 }

@@ -8,6 +8,7 @@ import EstoqueSection from '@/components/sections/EstoqueSection';
 import AtendimentoSection from '@/components/sections/AtendimentoSection';
 import ControleSection from '@/components/sections/ControleSection';
 import FinanceiroSection from '@/components/sections/FinanceiroSection';
+import HierarchySection from './HierarchySection';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
@@ -31,6 +32,8 @@ const Index = () => {
         return <FinanceiroSection />;
       case 'controle':
         return <ControleSection />;
+      case 'hierarquia':
+        return <HierarchySection />;
       default:
         return <DashboardSection />;
     }

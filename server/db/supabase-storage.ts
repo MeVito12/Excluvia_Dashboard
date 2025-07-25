@@ -3,7 +3,9 @@ import type {
   User, NewUser, Product, NewProduct, Sale, NewSale, Client, NewClient,
   Appointment, NewAppointment, LoyaltyCampaign, NewLoyaltyCampaign,
   WhatsAppChat, NewWhatsAppChat, StockMovement, NewStockMovement,
-  Transfer, NewTransfer, Branch, NewBranch, FinancialEntry, NewFinancialEntry
+  Transfer, NewTransfer, Branch, NewBranch, FinancialEntry, NewFinancialEntry,
+  Company, NewCompany, UserRole, NewUserRole, UserHierarchy, NewUserHierarchy,
+  UserWithHierarchy, TransferWithDetails
 } from '@shared/schema';
 
 export class SupabaseStorage implements Storage {
