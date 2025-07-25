@@ -14,7 +14,8 @@ import {
   Package,
   MessageCircle,
   Settings,
-  LogOut
+  LogOut,
+  CreditCard
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -63,6 +64,12 @@ const Sidebar = ({ activeSection, onSectionChange }: SidebarProps) => {
       label: 'Atendimento',
       icon: MessageCircle,
       description: 'Mensagens e assistente'
+    },
+    {
+      id: 'financeiro',
+      label: 'Financeiro',
+      icon: CreditCard,
+      description: 'Entradas e saídas financeiras'
     },
     {
       id: 'controle',

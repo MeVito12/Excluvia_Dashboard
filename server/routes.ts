@@ -368,6 +368,115 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rotas financeiras
+  app.get("/api/financial", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = parseInt(req.query.userId as string) || 1;
+      const businessCategory = req.query.businessCategory as string || "salao";
+      const entries = await storage.getFinancialEntries(userId, businessCategory);
+      res.json(entries);
+    } catch (error) {
+      console.error("Error fetching financial entries:", error);
+      res.status(500).json({ error: "Erro ao buscar entradas financeiras" });
+    }
+  });
+
+  app.post("/api/financial", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const entryData = req.body;
+      
+      // Validação básica
+      if (!entryData.type || !entryData.amount || !entryData.description || !entryData.dueDate) {
+        return res.status(400).json({ error: "Tipo, valor, descrição e data de vencimento são obrigatórios" });
+      }
+
+      const newEntry = await storage.createFinancialEntry({
+        ...entryData,
+        dueDate: new Date(entryData.dueDate)
+      });
+      res.json(newEntry);
+    } catch (error) {
+      console.error("Error creating financial entry:", error);
+      res.status(500).json({ error: "Erro ao criar entrada financeira" });
+    }
+  });
+
+  app.put("/api/financial/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const entryId = parseInt(req.params.id);
+      const entryData = req.body;
+      
+      const updatedEntry = await storage.updateFinancialEntry(entryId, entryData);
+      if (!updatedEntry) {
+        return res.status(404).json({ error: "Entrada financeira não encontrada" });
+      }
+      
+      res.json(updatedEntry);
+    } catch (error) {
+      console.error("Error updating financial entry:", error);
+      res.status(500).json({ error: "Erro ao atualizar entrada financeira" });
+    }
+  });
+
+  app.delete("/api/financial/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const entryId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteFinancialEntry(entryId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Entrada financeira não encontrada" });
+      }
+      
+      res.json({ message: "Entrada financeira excluída com sucesso" });
+    } catch (error) {
+      console.error("Error deleting financial entry:", error);
+      res.status(500).json({ error: "Erro ao excluir entrada financeira" });
+    }
+  });
+
+  app.post("/api/financial/:id/pay", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const entryId = parseInt(req.params.id);
+      const { paymentProof } = req.body;
+      
+      if (!paymentProof) {
+        return res.status(400).json({ error: "Comprovante de pagamento é obrigatório" });
+      }
+      
+      const updatedEntry = await storage.payFinancialEntry(entryId, paymentProof);
+      if (!updatedEntry) {
+        return res.status(404).json({ error: "Entrada financeira não encontrada" });
+      }
+      
+      res.json(updatedEntry);
+    } catch (error) {
+      console.error("Error paying financial entry:", error);
+      res.status(500).json({ error: "Erro ao marcar como pago" });
+    }
+  });
+
+  app.post("/api/financial/:id/revert", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const entryId = parseInt(req.params.id);
+      
+      const updatedEntry = await storage.revertFinancialEntry(entryId);
+      if (!updatedEntry) {
+        return res.status(404).json({ error: "Entrada financeira não encontrada" });
+      }
+      
+      res.json(updatedEntry);
+    } catch (error) {
+      console.error("Error reverting financial entry:", error);
+      res.status(500).json({ error: "Erro ao reverter pagamento" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
