@@ -62,51 +62,150 @@ export class SupabaseStorage implements Storage {
   }
 
   async createUser(user: NewUser): Promise<User> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.usersTable)
+      .values(user)
+      .returning();
+    
+    return result[0];
   }
 
   async getProducts(userId: number, businessCategory: string): Promise<Product[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq, and } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.productsTable)
+      .where(and(
+        eq(schema.productsTable.userId, userId),
+        eq(schema.productsTable.businessCategory, businessCategory)
+      ));
+    
+    return result;
   }
 
   async createProduct(product: NewProduct): Promise<Product> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.productsTable)
+      .values(product)
+      .returning();
+    
+    return result[0];
   }
 
   async updateProduct(id: number, product: Partial<NewProduct>): Promise<Product | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.update(schema.productsTable)
+      .set(product)
+      .where(eq(schema.productsTable.id, id))
+      .returning();
+    
+    return result[0] || null;
   }
 
   async deleteProduct(id: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.delete(schema.productsTable)
+      .where(eq(schema.productsTable.id, id))
+      .returning();
+    
+    return result.length > 0;
   }
 
   async getSales(userId: number, businessCategory: string): Promise<Sale[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq, and } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.salesTable)
+      .where(and(
+        eq(schema.salesTable.userId, userId),
+        eq(schema.salesTable.businessCategory, businessCategory)
+      ));
+    
+    return result;
   }
 
   async createSale(sale: NewSale): Promise<Sale> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.salesTable)
+      .values(sale)
+      .returning();
+    
+    return result[0];
   }
 
   async getClients(userId: number, businessCategory: string): Promise<Client[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq, and } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.clientsTable)
+      .where(and(
+        eq(schema.clientsTable.userId, userId),
+        eq(schema.clientsTable.businessCategory, businessCategory)
+      ));
+    
+    return result;
   }
 
   async createClient(client: NewClient): Promise<Client> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.clientsTable)
+      .values(client)
+      .returning();
+    
+    return result[0];
   }
 
   async updateClient(id: number, client: Partial<NewClient>): Promise<Client | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.update(schema.clientsTable)
+      .set(client)
+      .where(eq(schema.clientsTable.id, id))
+      .returning();
+    
+    return result[0] || null;
   }
 
   async deleteClient(id: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.delete(schema.clientsTable)
+      .where(eq(schema.clientsTable.id, id))
+      .returning();
+    
+    return result.length > 0;
   }
 
   async getAppointments(userId: number): Promise<Appointment[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.appointmentsTable)
+      .where(eq(schema.appointmentsTable.userId, userId));
+    
+    return result;
   }
 
   async createAppointment(appointment: NewAppointment): Promise<Appointment> {
@@ -142,7 +241,14 @@ export class SupabaseStorage implements Storage {
   }
 
   async getTransfers(userId: number, businessCategory: string): Promise<Transfer[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.transfersTable)
+      .where(eq(schema.transfersTable.userId, userId));
+    
+    return result;
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {
@@ -154,7 +260,14 @@ export class SupabaseStorage implements Storage {
   }
 
   async getBranches(userId: number, businessCategory: string): Promise<Branch[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.branchesTable)
+      .where(eq(schema.branchesTable.userId, userId));
+    
+    return result;
   }
 
   async createBranch(branch: NewBranch): Promise<Branch> {
@@ -162,7 +275,17 @@ export class SupabaseStorage implements Storage {
   }
 
   async getFinancialEntries(userId: number, businessCategory: string): Promise<FinancialEntry[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { eq, and } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.financialEntriesTable)
+      .where(and(
+        eq(schema.financialEntriesTable.userId, userId),
+        eq(schema.financialEntriesTable.businessCategory, businessCategory)
+      ));
+    
+    return result;
   }
 
   async createFinancialEntry(entry: NewFinancialEntry): Promise<FinancialEntry> {
