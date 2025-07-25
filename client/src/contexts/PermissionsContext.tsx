@@ -51,6 +51,13 @@ export const availableSections: SectionPermission[] = [
     description: 'Chat e assistente',
     icon: 'MessageCircle',
     defaultEnabled: true
+  },
+  {
+    id: 'financeiro',
+    label: 'Financeiro',
+    description: 'Entradas e saídas financeiras',
+    icon: 'CreditCard',
+    defaultEnabled: true
   }
 ];
 
