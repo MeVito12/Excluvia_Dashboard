@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { databaseManager } from "./database-manager";
+import { databaseManager } from "./db/database-manager";
 import { 
   appointmentSchema
 } from "@shared/schema";
