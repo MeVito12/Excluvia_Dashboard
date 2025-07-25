@@ -44,6 +44,8 @@ export function useSales(userId: number, businessCategory: string) {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
+      // Invalidar cache financeiro também já que vendas geram entradas automáticas
+      queryClient.invalidateQueries({ queryKey: ['financial'] });
     }
   });
 

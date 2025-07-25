@@ -328,17 +328,26 @@ const FinanceiroSection = () => {
       <div className="animate-fade-in">
         <div className="main-card p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-800">
-              Gestão de {activeTab === 'entradas' ? 'Entradas' : 'Saídas'}
-            </h3>
-            <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-              <DialogTrigger asChild>
-                <button className="btn btn-primary">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {activeTab === 'entradas' ? 'Nova Entrada' : 'Nova Saída'}
-                </button>
-              </DialogTrigger>
-            </Dialog>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">
+                Gestão de {activeTab === 'entradas' ? 'Entradas' : 'Saídas'}
+              </h3>
+              {activeTab === 'entradas' && (
+                <p className="text-sm text-blue-600 mt-1">
+                  💡 Entradas são criadas automaticamente quando vendas são registradas no Estoque
+                </p>
+              )}
+            </div>
+            {activeTab === 'saidas' && (
+              <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+                <DialogTrigger asChild>
+                  <button className="btn btn-primary">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nova Saída
+                  </button>
+                </DialogTrigger>
+              </Dialog>
+            )}
           </div>
           
           {/* Filtros */}
