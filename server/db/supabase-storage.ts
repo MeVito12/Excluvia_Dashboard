@@ -38,11 +38,10 @@ export class SupabaseStorage implements Storage {
     try {
       const db = await this.getConnection();
       if (!db) {
-        console.log('🔄 Banco Supabase não disponível, usando fallback');
         throw new Error('Supabase não conectado');
       }
 
-      // Teste de conexão básico
+      // Teste básico de existência da tabela users
       const { eq } = await import('drizzle-orm');
       const { schema } = await import('./database');
       
@@ -50,9 +49,14 @@ export class SupabaseStorage implements Storage {
         .where(eq(schema.usersTable.email, email))
         .limit(1);
       
+      console.log(`✅ Supabase: Consultando usuário ${email}`);
       return result[0] || null;
     } catch (error) {
-      console.log('⚠️ Fallback para mock data:', error.message);
+      if (error.message.includes('relation "users" does not exist')) {
+        console.log('📋 Tabela "users" não existe no Supabase - execute o SQL schema');
+      } else {
+        console.log('⚠️ Erro Supabase:', error.message);
+      }
       throw error; // Forçar fallback para MemStorage
     }
   }

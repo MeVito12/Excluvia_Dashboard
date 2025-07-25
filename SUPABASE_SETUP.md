@@ -15,12 +15,18 @@
 Após criar o projeto:
 
 1. Vá para **Settings > Database**
-2. Copie a **Connection String** no formato PostgreSQL
+2. Na seção **Connection String**, selecione **URI**
+3. Copie a string completa (ela já inclui a senha)
 
-A string será algo como:
+**IMPORTANTE:** A string deve estar no formato:
 ```
-postgresql://postgres.[PROJECT_ID]:[PASSWORD]@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+postgresql://postgres.[PROJECT_ID]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres
 ```
+
+**Verificações importantes:**
+- Substitua `[PASSWORD]` pela senha real do seu projeto
+- Certifique-se de que não há espaços no início ou fim
+- A string deve começar com `postgresql://`
 
 ## 3. Configurar Variáveis de Ambiente
 
@@ -66,10 +72,16 @@ O sistema criará automaticamente usuários de teste para cada categoria de neg�
 
 ## Troubleshooting
 
-### Erro de Conexão
-- Verifique se a `DATABASE_URL` está correta
-- Confirme que o IP está liberado (Supabase libera por padrão)
-- Teste a conexão no SQL Editor do Supabase
+### Erro "getaddrinfo ENOTFOUND"
+Isso indica problema na string de conexão:
+1. **Verifique a senha:** Certifique-se de usar a senha correta do projeto
+2. **Confira o formato:** A string deve estar exatamente como no Supabase
+3. **Teste no Supabase:** Use o SQL Editor para confirmar que o projeto está ativo
+
+### String de Conexão Exemplo
+```
+postgresql://postgres.abcdefgh:SuaPassword@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+```
 
 ### Tabelas Não Encontradas
 - Execute o schema SQL no Supabase Dashboard
