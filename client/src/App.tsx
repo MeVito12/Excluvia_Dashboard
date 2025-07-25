@@ -9,22 +9,14 @@ import { NotificationProvider } from "@/contexts/NotificationContext";
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
 import Index from "./pages/Index";
-import AuthForm from "@/components/AuthForm";
+import LoginForm from "@/components/LoginForm";
 
 const AppContent = () => {
-  const { user, loading } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const { notifications, removeNotification, showSuccess, showError, showWarning, showInfo } = useNotifications();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dashboard-darker))] to-[hsl(var(--dashboard-dark))] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <AuthForm onLogin={() => {}} />;
+  if (!isAuthenticated) {
+    return <LoginForm onLogin={login} />;
   }
 
   return (

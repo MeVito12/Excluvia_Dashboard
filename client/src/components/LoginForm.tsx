@@ -5,11 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginFormProps {
   onLogin: (user: { name: string; email: string }) => void;
@@ -17,70 +15,65 @@ interface LoginFormProps {
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
   const { setSelectedCategory } = useCategory();
-  const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [businessCategory, setBusinessCategory] = useState('');
-  const [isRegister, setIsRegister] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [success, setSuccess] = useState('');
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSuccess, setResetSuccess] = useState(false);
 
-  const businessCategories = [
-    { value: 'farmacia', label: 'Farmácia' },
-    { value: 'pet', label: 'Pet Shop/Veterinária' },
-    { value: 'medico', label: 'Clínica Médica' },
-    { value: 'alimenticio', label: 'Restaurante/Alimentício' },
-    { value: 'vendas', label: 'Vendas/Comércio' },
-    { value: 'design', label: 'Design Gráfico' },
-    { value: 'sites', label: 'Desenvolvimento Web' }
-  ];
+  // Sistema de usuários por categoria
+  const categoryUsers = {
+    'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
+
+    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central', userType: 'regular' },
+    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic', userType: 'regular' },
+    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde', userType: 'regular' },
+    'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista', userType: 'regular' },
+    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech', userType: 'regular' },
+    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative', userType: 'regular' },
+    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency', userType: 'regular' }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     setIsLoading(true);
 
-    try {
-      if (isRegister) {
-        // Validações para registro
-        if (!name.trim()) {
-          setError('Nome é obrigatório');
-          return;
-        }
-        if (!businessCategory) {
-          setError('Categoria de negócio é obrigatória');
-          return;
-        }
+    // Simular delay de autenticação
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-        await signUp(email, password, { name: name.trim(), businessCategory });
-        setSuccess('Conta criada! Verifique seu email para confirmar.');
-        setIsRegister(false);
-      } else {
-        // Login
-        await signIn(email, password);
+    // Verificar credenciais e definir categoria automaticamente
+    let userFound = false;
+    for (const [category, userData] of Object.entries(categoryUsers)) {
+      if (email === userData.email && password === userData.password) {
+        // Para usuário master, usar a categoria 'estetica' por padrão
+        const businessCategory = category === 'master' ? 'estetica' : category;
         
-        // Buscar dados do usuário da tabela users
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setSelectedCategory(data.user.businessCategory);
-          localStorage.setItem('userBusinessCategory', data.user.businessCategory);
-          onLogin(data.user);
-        }
+        // Definir categoria no localStorage e contexto
+        localStorage.setItem('userBusinessCategory', businessCategory);
+        setSelectedCategory(businessCategory);
+        
+        onLogin({
+          name: userData.name,
+          email: userData.email,
+          userType: userData.userType,
+          businessCategory: businessCategory,
+          id: category === 'master' ? 1 : 2
+        } as any);
+        
+        userFound = true;
+        break;
       }
-    } catch (error: any) {
-      setError(error.message || 'Erro na autenticação');
-    } finally {
-      setIsLoading(false);
     }
+
+    if (!userFound) {
+      setError('Email ou senha incorretos.');
+    }
+
+    setIsLoading(false);
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
@@ -176,23 +169,11 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   required
                   className="w-full"
                 />
-                <div className="flex items-center space-x-2 mt-2">
-                  <input
-                    type="checkbox"
-                    id="showPassword"
-                    checked={showPassword}
-                    onChange={(e) => setShowPassword(e.target.checked)}
-                    className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary focus:ring-2"
-                  />
-                  <Label htmlFor="showPassword" className="text-sm text-gray-600 cursor-pointer">
-                    Mostrar senha
-                  </Label>
-                </div>
               </div>
 
               {error && (
-                <Alert variant="destructive">
-                  <AlertDescription className="text-sm">
+                <Alert className="border-red-200 bg-red-50">
+                  <AlertDescription className="text-red-800">
                     {error}
                   </AlertDescription>
                 </Alert>
@@ -200,52 +181,83 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-primary hover:bg-primary/90" 
+                className="w-full bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200"
                 disabled={isLoading}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Entrando...
+                  </div>
+                ) : (
+                  'Entrar'
+                )}
               </Button>
 
               <div className="text-center">
-                <Button
+                <button
                   type="button"
-                  variant="link"
-                  className="text-sm text-primary hover:text-primary/80 p-0 h-auto"
                   onClick={openForgotPassword}
+                  className="text-sm text-purple-600 hover:text-purple-800"
                 >
                   Esqueceu sua senha?
-                </Button>
+                </button>
               </div>
             </form>
 
-
+            {/* Credenciais disponíveis */}
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <p className="text-xs text-gray-600 font-medium mb-2">Credenciais disponíveis:</p>
+              <div className="grid grid-cols-1 gap-1 text-xs text-gray-500">
+                <p><strong>Master:</strong> master@sistema.com / master2025</p>
+                <p><strong>Farmácia:</strong> farmaceutico@farmaciacentral.com / farm2025</p>
+                <p><strong>Pet:</strong> veterinario@petclinic.com / vet2025</p>
+                <p><strong>Médico:</strong> medico@clinicasaude.com / med2025</p>
+                <p><strong>Alimentício:</strong> chef@restaurante.com / chef2025</p>
+                <p><strong>Vendas:</strong> vendedor@comercial.com / venda2025</p>
+                <p><strong>Design:</strong> designer@agencia.com / design2025</p>
+                <p><strong>Sites:</strong> dev@webagency.com / web2025</p>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Modal de Esqueceu a Senha */}
+        {/* Modal de Recuperação de Senha */}
         <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="bg-white">
             <DialogHeader>
-              <DialogTitle className="text-center">
-                <Mail className="h-6 w-6 mx-auto mb-2 text-primary" />
-                Recuperar Senha
-              </DialogTitle>
-              <DialogDescription className="text-center">
+              <DialogTitle className="text-gray-900">Recuperar Senha</DialogTitle>
+              <DialogDescription className="text-gray-600">
                 {resetSuccess 
-                  ? "Email de recuperação enviado com sucesso!"
-                  : "Digite seu email para receber as instruções de recuperação"
+                  ? 'Instruções enviadas com sucesso!'
+                  : 'Digite seu email para receber instruções de recuperação.'
                 }
               </DialogDescription>
             </DialogHeader>
             
-            {!resetSuccess ? (
+            {resetSuccess ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-center p-4">
+                  <div className="flex items-center space-x-2 text-green-600">
+                    <Mail className="h-6 w-6" />
+                    <span className="font-medium">Email enviado!</span>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 text-center">
+                  Verifique sua caixa de entrada e siga as instruções para redefinir sua senha.
+                </p>
+                <Button onClick={closeForgotPassword} className="w-full">
+                  Fechar
+                </Button>
+              </div>
+            ) : (
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="resetEmail" className="text-sm font-medium">
+                  <Label htmlFor="reset-email" className="text-sm font-medium text-gray-700">
                     Email
                   </Label>
                   <Input
-                    id="resetEmail"
+                    id="reset-email"
                     type="email"
                     placeholder="Digite seu email"
                     value={resetEmail}
@@ -254,51 +266,24 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     className="w-full"
                   />
                 </div>
-                
+
                 {error && (
-                  <Alert variant="destructive">
-                    <AlertDescription className="text-sm">
+                  <Alert className="border-red-200 bg-red-50">
+                    <AlertDescription className="text-red-800">
                       {error}
                     </AlertDescription>
                   </Alert>
                 )}
-                
+
                 <div className="flex space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1"
-                    onClick={closeForgotPassword}
-                  >
+                  <Button type="button" variant="outline" onClick={closeForgotPassword} className="flex-1">
                     Cancelar
                   </Button>
-                  <Button 
-                    type="submit" 
-                    className="flex-1 bg-primary hover:bg-primary/90"
-                  >
-                    Enviar
+                  <Button type="submit" className="flex-1" disabled={isLoading}>
+                    {isLoading ? 'Enviando...' : 'Enviar'}
                   </Button>
                 </div>
               </form>
-            ) : (
-              <div className="space-y-4">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <p className="text-green-800 text-sm">
-                    Enviamos um email com as instruções para recuperação de senha para:{" "}
-                    <strong>{resetEmail}</strong>
-                  </p>
-                  <p className="text-green-600 text-xs mt-2">
-                    Verifique sua caixa de entrada e spam.
-                  </p>
-                </div>
-                
-                <Button 
-                  onClick={closeForgotPassword}
-                  className="w-full bg-primary hover:bg-primary/90"
-                >
-                  Fechar
-                </Button>
-              </div>
             )}
           </DialogContent>
         </Dialog>
