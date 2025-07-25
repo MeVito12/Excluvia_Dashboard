@@ -139,48 +139,57 @@ const GraficosSection = () => {
         </div>
       </div>
 
-      {/* Card Único de Vendas Unificado */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <TrendingUp className="h-5 w-5 text-purple-600" />
-          Vendas no Período ({calculateMetrics.period})
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="text-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mx-auto mb-3">
-              <DollarSign className="h-6 w-6 text-green-600" />
+      {/* Cards de Métricas Principais */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Receita Total</p>
+              <p className="metric-card-value">R$ {calculateMetrics.totalSales}</p>
+              <p className="metric-card-description text-green-600">{calculateMetrics.growth} vs período anterior</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">R$ {calculateMetrics.totalSales}</p>
-            <p className="text-sm text-gray-600">Receita Total</p>
-            <p className="text-xs text-green-600 mt-1">{calculateMetrics.growth} vs período anterior</p>
+            <div className="metric-card-icon bg-green-100">
+              <DollarSign className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
+            </div>
           </div>
+        </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mx-auto mb-3">
-              <BarChart3 className="h-6 w-6 text-blue-600" />
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Total de Vendas</p>
+              <p className="metric-card-value">{calculateMetrics.totalOrders}</p>
+              <p className="metric-card-description text-blue-600">Transações realizadas</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{calculateMetrics.totalOrders}</p>
-            <p className="text-sm text-gray-600">Total de Vendas</p>
-            <p className="text-xs text-blue-600 mt-1">Transações realizadas</p>
+            <div className="metric-card-icon bg-blue-100">
+              <BarChart3 className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
+            </div>
           </div>
+        </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mx-auto mb-3">
-              <Target className="h-6 w-6 text-purple-600" />
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Ticket Médio</p>
+              <p className="metric-card-value">R$ {calculateMetrics.avgTicket}</p>
+              <p className="metric-card-description text-purple-600">Por transação</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">R$ {calculateMetrics.avgTicket}</p>
-            <p className="text-sm text-gray-600">Ticket Médio</p>
-            <p className="text-xs text-purple-600 mt-1">Por transação</p>
+            <div className="metric-card-icon bg-purple-100">
+              <Target className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
+            </div>
           </div>
+        </div>
 
-          <div className="text-center">
-            <div className="flex items-center justify-center w-12 h-12 bg-orange-100 rounded-full mx-auto mb-3">
-              <Users className="h-6 w-6 text-orange-600" />
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div className="metric-card-content">
+              <p className="metric-card-label">Clientes Ativos</p>
+              <p className="metric-card-value">{calculateMetrics.totalClients}</p>
+              <p className="metric-card-description text-orange-600">Base total</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{calculateMetrics.totalClients}</p>
-            <p className="text-sm text-gray-600">Clientes Ativos</p>
-            <p className="text-xs text-orange-600 mt-1">Base total</p>
+            <div className="metric-card-icon bg-orange-100">
+              <Users className="h-4 w-4 md:h-6 md:w-6 text-orange-600" />
+            </div>
           </div>
         </div>
       </div>
