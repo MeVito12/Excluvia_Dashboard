@@ -1,565 +1,467 @@
-import { useState } from 'react';
-import { Database, Users, TrendingUp, Calendar, Clock, Bell, AlertTriangle, ShoppingCart } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useState, useMemo } from 'react';
+import { 
+  Database, 
+  Users, 
+  TrendingUp, 
+  Calendar, 
+  Clock, 
+  Bell, 
+  AlertTriangle, 
+  ShoppingCart,
+  Activity,
+  Package,
+  ExternalLink,
+  MessageSquare,
+  ArrowRight,
+  CalendarDays,
+  BarChart3
+} from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
+import { useProducts } from '@/hooks/useProducts';
+import { useSales } from '@/hooks/useSales';
+import { useClients } from '@/hooks/useClients';
+import { useTransfers } from '@/hooks/useTransfers';
 import { 
   getAppointmentsByCategory,
   getActivitiesByCategory,
-  getSalesByCategory,
-  getProductsByCategory,
-  type Appointment,
-  type Activity
+  getWhatsAppConversationsByCategory
 } from '@/lib/mockData';
-
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   
+  const [dateFrom, setDateFrom] = useState<string>('');
+  const [dateTo, setDateTo] = useState<string>('');
+  const userId = user?.id || 1;
 
-  const [selectedCompany, setSelectedCompany] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [dateFrom, setDateFrom] = useState<string | undefined>();
-  const [dateTo, setDateTo] = useState<string | undefined>();
+  // Hooks para dados reais da API
+  const { products, isLoading: productsLoading } = useProducts(userId, selectedCategory);
+  const { sales, isLoading: salesLoading } = useSales(userId, selectedCategory);
+  const { clients, isLoading: clientsLoading } = useClients(userId, selectedCategory);
+  const { transfers, isLoading: transfersLoading } = useTransfers(userId, selectedCategory);
 
-  // Dados de métricas específicos por categoria
-  const getCategoryMetrics = () => {
-    const categoryData = {
-      'farmacia': {
-        totalRecords: '1.234 Pacientes',
-        activeUsers: '4 Farmacêuticos',
-        transactions: '68 Vendas',
-        appointments: '15 Consultas Hoje',
-        revenue: 'R$ 3.240',
-        growth: '+22%',
-        satisfaction: '4.8'
-      },
-      'pet': {
-        totalRecords: '445 Pets',
-        activeUsers: '12 Veterinários',
-        transactions: '23 Atendimentos',
-        appointments: '8 Agendamentos Hoje',
-        revenue: 'R$ 1.820',
-        growth: '+20%',
-        satisfaction: '4.9'
-      },
-      'medico': {
-        totalRecords: '672 Pacientes',
-        activeUsers: '18 Profissionais',
-        transactions: '34 Consultas',
-        appointments: '12 Agendamentos Hoje',
-        revenue: 'R$ 3.680',
-        growth: '+12%',
-        satisfaction: '4.7'
-      },
-      'alimenticio': {
-        totalRecords: '856 Clientes',
-        activeUsers: '15 Funcionários',
-        transactions: '47 Pedidos',
-        appointments: '6 Reservas Hoje',
-        revenue: 'R$ 2.450',
-        growth: '+18%',
-        satisfaction: '4.8'
-      },
-      'vendas': {
-        totalRecords: '324 Clientes',
-        activeUsers: '8 Vendedores',
-        transactions: '12 Vendas',
-        appointments: '5 Reuniões Hoje',
-        revenue: 'R$ 8.950',
-        growth: '+15%',
-        satisfaction: '4.6'
-      },
-      'design': {
-        totalRecords: '89 Projetos',
-        activeUsers: '4 Designers',
-        transactions: '12 Entregas',
-        appointments: '4 Briefings Hoje',
-        revenue: 'R$ 18.500',
-        growth: '+28%',
-        satisfaction: '4.9'
-      },
-      'sites': {
-        totalRecords: '47 Sites',
-        activeUsers: '4 Desenvolvedores',
-        transactions: '6 Lançamentos',
-        appointments: '3 Demos Hoje',
-        revenue: 'R$ 25.800',
-        growth: '+35%',
-        satisfaction: '4.8'
-      }
-    };
+  // Dados mock para agendamentos, atividades e atendimentos
+  const appointments = getAppointmentsByCategory(selectedCategory);
+  const activities = getActivitiesByCategory(selectedCategory);
+  const whatsappChats = getWhatsAppConversationsByCategory(selectedCategory);
+
+  // Função para filtrar dados por data
+  const filterByDateRange = (data: any[], dateField: string) => {
+    if (!dateFrom && !dateTo) return data;
     
-    return categoryData[selectedCategory as keyof typeof categoryData] || categoryData.pet;
-  };
-
-  const currentMetrics = getCategoryMetrics();
-
-  // Função para filtrar dados baseada nos filtros selecionados
-  const getFilteredMetrics = () => {
-    let metrics = { ...currentMetrics };
-    
-    // Aplicar filtro de data se selecionado
-    if (dateFrom || dateTo) {
-      const now = new Date();
-      const fromDate = dateFrom ? new Date(dateFrom) : now;
-      const daysDiff = Math.floor((now.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24));
+    return data.filter(item => {
+      const itemDate = new Date(item[dateField]);
+      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
+      const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
       
-      // Simular ajuste de métricas baseado no período
-      if (daysDiff > 7) {
-        metrics = {
-          ...metrics,
-          transactions: metrics.transactions.replace(/\d+/, (num) => String(Math.floor(parseInt(num) * 0.7))),
-          revenue: metrics.revenue.replace(/[\d.]+/, (num) => String(Math.floor(parseFloat(num.replace('.', '')) * 0.8))),
-        };
-      }
-    }
-    
-    // Aplicar filtro de busca
-    if (searchTerm) {
-      // Ajustar métricas baseado na busca
-      const searchMultiplier = searchTerm.length > 3 ? 0.3 : 0.8;
-      metrics = {
-        ...metrics,
-        totalRecords: metrics.totalRecords.replace(/\d+/, (num) => String(Math.floor(parseInt(num) * searchMultiplier))),
-      };
-    }
-    
-    return metrics;
+      return itemDate >= fromDate && itemDate <= toDate;
+    });
   };
 
-  const filteredMetrics = getFilteredMetrics();
+  // Dados filtrados por período
+  const filteredSales = useMemo(() => filterByDateRange(sales, 'saleDate'), [sales, dateFrom, dateTo]);
+  const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
+  const filteredAppointments = useMemo(() => filterByDateRange(appointments, 'startTime'), [appointments, dateFrom, dateTo]);
+  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'transferDate'), [transfers, dateFrom, dateTo]);
+
+  // Análise de produtos críticos
+  const criticalProducts = useMemo(() => {
+    const today = new Date();
+    return products.filter(product => {
+      // Produtos vencidos
+      if (product.expiryDate && new Date(product.expiryDate) < today) return true;
+      
+      // Produtos próximos ao vencimento (3 dias)
+      if (product.expiryDate) {
+        const diffTime = new Date(product.expiryDate).getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays <= 3 && diffDays >= 0) return true;
+      }
+      
+      // Produtos sem estoque
+      if (product.stock === 0) return true;
+      
+      // Produtos com estoque baixo
+      if (product.stock <= (product.minStock || 10)) return true;
+      
+      return false;
+    });
+  }, [products]);
+
+  // Função de navegação para seções
+  const navigateToSection = (sectionName: string) => {
+    // Esta função será implementada com roteamento
+    showAlert({
+      title: `Navegando para ${sectionName}`,
+      description: `Redirecionando para a seção ${sectionName}...`,
+      variant: "success"
+    });
+  };
+
+  // Limpar filtros
+  const clearFilters = () => {
+    setDateFrom('');
+    setDateTo('');
+  };
 
   return (
     <div className="app-section">
-      {/* Header */}
       <div className="section-header">
         <h1 className="section-title">Dashboard</h1>
-        <p className="section-subtitle">Visão geral das métricas do sistema</p>
+        <p className="section-subtitle">
+          Visão geral completa do seu negócio em tempo real
+        </p>
       </div>
 
-      {/* Filtros de Data */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 mb-6">
-        <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
-        
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-start sm:items-center">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Data inicial:</span>
-            </div>
-            <input
-              type="date"
-              className="w-full sm:w-auto px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-              value={dateFrom || ''}
-              onChange={(e) => setDateFrom(e.target.value || undefined)}
-            />
-          </div>
-
+      {/* Filtros por Data */}
+      <div className="main-card p-4 mb-6">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Data final:</span>
+            <CalendarDays className="w-5 h-5 text-gray-600" />
+            <span className="text-sm font-medium text-gray-700">Período:</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">De:</label>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={dateTo || ''}
-              onChange={(e) => setDateTo(e.target.value || undefined)}
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-3 py-1 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             />
           </div>
-
-          <Button 
-            onClick={() => {
-              setDateFrom(undefined);
-              setDateTo(undefined);
-              showAlert({
-                title: "Filtros Limpos",
-                description: "Todos os filtros de data foram removidos. Mostrando dados completos.",
-                variant: "success"
-              });
-            }}
-            variant="outline"
-            className="bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
-          >
-            Limpar Filtros
-          </Button>
-
-          <Button 
-            onClick={() => {
-              const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
-              const hasFilters = dateFrom || dateTo;
-              showAlert({
-                title: hasFilters ? "Filtros Aplicados" : "Dashboard Atualizado",
-                description: hasFilters 
-                  ? `Dashboard filtrado para o período: ${period}` 
-                  : "Dados atualizados com sucesso",
-                variant: "success"
-              });
-            }}
-            className="bg-purple-600 text-white hover:bg-purple-700"
-          >
-            Aplicar Filtros
-          </Button>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-gray-600">Até:</label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-3 py-1 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+          </div>
+          {(dateFrom || dateTo) && (
+            <button
+              onClick={clearFilters}
+              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-md hover:bg-gray-50"
+            >
+              Limpar filtros
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Primary Metrics Grid */}
-      <div className="metrics-grid mb-6">
+      {/* Cards de Métricas Principais */}
+      <div className="metrics-grid mb-8">
         <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Total de Registros</p>
-              <p className="metric-card-value">{filteredMetrics.totalRecords}</p>
-              <p className="metric-card-description text-green-600">{filteredMetrics.growth} este mês</p>
-            </div>
-            <div className="metric-card-icon bg-gray-100">
-              <Database className="h-4 w-4 md:h-6 md:w-6 text-gray-600" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Equipe Ativa</p>
-              <p className="metric-card-value">{filteredMetrics.activeUsers}</p>
-              <p className="metric-card-description text-blue-600">Profissionais ativos</p>
-            </div>
-            <div className="metric-card-icon bg-blue-100">
-              <Users className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Receita Hoje</p>
-              <p className="metric-card-value">{filteredMetrics.revenue}</p>
-              <p className="metric-card-description text-green-600">{filteredMetrics.growth} vs ontem</p>
-            </div>
-            <div className="metric-card-icon bg-green-100">
-              <TrendingUp className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-        
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Agendamentos Hoje</p>
-              <p className="metric-card-value">{currentMetrics.appointments}</p>
-              <p className="metric-card-description text-purple-600">Próximos</p>
-            </div>
-            <div className="metric-card-icon bg-purple-100">
-              <Calendar className="h-4 w-4 md:h-6 md:w-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Secondary Metrics Grid */}
-      <div className="metrics-grid mb-6">
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Transações Hoje</p>
-              <p className="metric-card-value">{currentMetrics.transactions}</p>
-              <p className="metric-card-description text-green-600">Volume do dia</p>
-            </div>
-            <div className="metric-card-icon bg-blue-100">
-              <ShoppingCart className="h-4 w-4 md:h-6 md:w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Satisfação</p>
-              <p className="metric-card-value">{currentMetrics.satisfaction}</p>
-              <p className="metric-card-description text-yellow-600">⭐ Avaliação média</p>
-            </div>
-            <div className="metric-card-icon bg-yellow-100">
-              <Clock className="h-4 w-4 md:h-6 md:w-6 text-yellow-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Alertas Ativos</p>
-              <p className="metric-card-value">
-                {selectedCategory === 'farmacia' ? '3' : selectedCategory === 'alimenticio' ? '4' : selectedCategory === 'pet' ? '3' : selectedCategory === 'medico' ? '6' : '2'}
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total de Vendas</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                R$ {filteredSales.reduce((sum, sale) => sum + sale.totalPrice, 0).toFixed(2)}
               </p>
-              <p className="metric-card-description text-red-600">Requer atenção</p>
+              <p className="text-xs text-green-600 mt-1">{filteredSales.length} transações</p>
             </div>
-            <div className="metric-card-icon bg-red-100">
-              <AlertTriangle className="h-4 w-4 md:h-6 md:w-6 text-red-600" />
+            <div className="p-3 rounded-full bg-green-100">
+              <TrendingUp className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
 
         <div className="metric-card-standard">
           <div className="flex items-center justify-between">
-            <div className="metric-card-content">
-              <p className="metric-card-label">Notificações</p>
-              <p className="metric-card-value">
-                {selectedCategory === 'farmacia' ? '9' : selectedCategory === 'alimenticio' ? '12' : selectedCategory === 'pet' ? '8' : selectedCategory === 'medico' ? '15' : '7'}
-              </p>
-              <p className="metric-card-description text-blue-600">Não lidas</p>
+            <div>
+              <p className="text-sm font-medium text-gray-600">Produtos Críticos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{criticalProducts.length}</p>
+              <p className="text-xs text-red-600 mt-1">Necessitam atenção</p>
             </div>
-            <div className="metric-card-icon bg-indigo-100">
-              <Bell className="h-4 w-4 md:h-6 md:w-6 text-indigo-600" />
+            <div className="p-3 rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Agendamentos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{filteredAppointments.length}</p>
+              <p className="text-xs text-blue-600 mt-1">No período</p>
+            </div>
+            <div className="p-3 rounded-full bg-blue-100">
+              <Calendar className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Atividades</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{filteredActivities.length}</p>
+              <p className="text-xs text-purple-600 mt-1">Registros de atividade</p>
+            </div>
+            <div className="p-3 rounded-full bg-purple-100">
+              <Activity className="h-6 w-6 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Seção de Compromissos */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 md:p-6 mb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 md:mb-6 gap-3 sm:gap-0">
-          <h3 className="text-base md:text-lg font-semibold text-black flex items-center gap-2">
-            <Calendar className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
-            Compromissos
-          </h3>
-        </div>
+      {/* Grid de Seções Integradas */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        <div className="space-y-3">
-          {(() => {
-            const categoryAppointments = {
-              'farmacia': [
-                { title: 'Consulta Farmacêutica', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Maria Santos' },
-                { title: 'Aferição de Pressão', time: 'Hoje às 16:30', status: 'Em 3h', client: 'João Silva' },
-                { title: 'Aplicação de Vacina', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Ana Costa' }
-              ],
-              'pet': [
-                { title: 'Consulta Veterinária - Rex', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Cliente A' },
-                { title: 'Vacinação V10 - Thor', time: 'Amanhã às 09:30', status: 'Amanhã', client: 'Cliente B' },
-                { title: 'Emergência - Luna', time: '05/07 às 20:00', status: 'Agendado', client: 'Cliente C' }
-              ],
-              'medico': [
-                { title: 'Consulta Cardiologia', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Paciente A' },
-                { title: 'Fisioterapia - Reabilitação', time: 'Hoje às 16:30', status: 'Em 3h', client: 'Paciente B' },
-                { title: 'Consulta Oftalmológica', time: 'Amanhã às 10:30', status: 'Amanhã', client: 'Paciente C' }
-              ],
-              'alimenticio': [
-                { title: 'Reserva Mesa VIP', time: 'Hoje às 20:00', status: 'Em 7h', client: 'Cliente VIP' },
-                { title: 'Evento Corporativo', time: 'Amanhã às 19:00', status: 'Amanhã', client: 'Empresa ABC' },
-                { title: 'Degustação de Vinhos', time: '07/07 às 18:30', status: 'Agendado', client: 'Grupo Gourmet' }
-              ],
-              'vendas': [
-                { title: 'Reunião MacBook Air M3', time: 'Hoje às 14:00', status: 'Em 1h', client: 'TechCorp' },
-                { title: 'Demo Samsung Galaxy S24', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Mobile Solutions' },
-                { title: 'Entrega iPads - Escola', time: 'Amanhã às 14:00', status: 'Amanhã', client: 'Colégio Futuro' }
-              ],
-              'tecnologia': [
-                { title: 'Instalação Servidor', time: 'Hoje às 14:00', status: 'Em 1h', client: 'DataCenter Pro' },
-                { title: 'Manutenção Rede', time: 'Hoje às 18:00', status: 'Em 5h', client: 'Office Tower' },
-                { title: 'Setup Workstation', time: 'Amanhã às 09:00', status: 'Amanhã', client: 'Design Studio' }
-              ],
-              'educacao': [
-                { title: 'Aula Matemática Avançada', time: 'Hoje às 14:00', status: 'Em 1h', client: 'Turma A' },
-                { title: 'Reunião Pais', time: 'Hoje às 17:00', status: 'Em 4h', client: 'Responsáveis' },
-                { title: 'Prova de Física', time: 'Amanhã às 08:00', status: 'Amanhã', client: 'Turma B' }
-              ],
-              'beleza': [
-                { title: 'Corte e Escova - Maria', time: 'Hoje às 15:00', status: 'Em 2h', client: 'Maria Silva' },
-                { title: 'Manicure - Ana', time: 'Hoje às 16:30', status: 'Em 3h', client: 'Ana Costa' },
-                { title: 'Design de Sobrancelhas', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Carla Santos' }
-              ],
-              'estetica': [
-                { title: 'Preenchimento Ácido Hialurônico', time: 'Hoje às 14:30', status: 'Em 1h', client: 'Fernanda Reis' },
-                { title: 'Aplicação de Botox', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Juliana Santos' },
-                { title: 'Harmonização Facial', time: 'Amanhã às 10:30', status: 'Amanhã', client: 'Patricia Lima' },
-                { title: 'Peeling Químico', time: 'Amanhã às 15:00', status: 'Amanhã', client: 'Carolina Souza' }
-              ],
-              'design': [
-                { title: 'Apresentação de Logo', time: 'Hoje às 14:00', status: 'Em 1h', client: 'StartupTech' },
-                { title: 'Briefing de Projeto', time: 'Hoje às 16:00', status: 'Em 3h', client: 'Empresa ABC' },
-                { title: 'Aprovação Final', time: 'Amanhã às 10:00', status: 'Amanhã', client: 'Cliente Premium' }
-              ],
-              'sites': [
-                { title: 'Deploy do Website', time: 'Hoje às 15:00', status: 'Em 2h', client: 'E-commerce Plus' },
-                { title: 'Treinamento CMS', time: 'Hoje às 17:00', status: 'Em 4h', client: 'Loja Virtual' },
-                { title: 'Reunião de Feedback', time: 'Amanhã às 09:00', status: 'Amanhã', client: 'Portal News' }
-              ]
-            };
-            
-            const appointments = categoryAppointments[selectedCategory as keyof typeof categoryAppointments] || categoryAppointments.pet;
-            
-            return appointments.map((apt, index) => (
-              <div key={index} className="list-card">
-                <div className="list-card-header">
-                  <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="metric-card-icon bg-purple-100 !p-2">
-                      <Calendar className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h4 className="list-card-title">{apt.title}</h4>
-                      <p className="text-xs md:text-sm text-gray-600">{apt.client}</p>
-                      <p className="list-card-meta">{apt.time}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <Badge 
-                      className={`text-xs ${
-                        apt.status.includes('Em') ? 'bg-green-100 text-green-800' :
-                        apt.status === 'Amanhã' ? 'bg-blue-100 text-blue-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {apt.status}
-                    </Badge>
-                  </div>
+        {/* Vendas do Gráficos */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-5 h-5 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Vendas Recentes</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Gráficos')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredSales.slice(0, 3).map((sale) => (
+              <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">R$ {sale.totalPrice.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">Qtd: {sale.quantity}</p>
                 </div>
-                <div className="list-card-footer">
-                  <button className="p-1 text-gray-400 hover:text-purple-600 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button className="p-1 text-gray-400 hover:text-green-600 transition-colors">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </button>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                    {sale.paymentMethod || 'Dinheiro'}
+                  </span>
                 </div>
               </div>
-            ));
-          })()}
+            ))}
+            {filteredSales.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma venda no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Atividades */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Activity className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Atividades Recentes</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Atividade')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredActivities.slice(0, 3).map((activity) => (
+              <div key={activity.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <Activity className="w-4 h-4 text-purple-500 mt-1" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">{activity.action}</p>
+                  <p className="text-xs text-gray-500">{new Date(activity.timestamp).toLocaleString()}</p>
+                </div>
+              </div>
+            ))}
+            {filteredActivities.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma atividade no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Agendamentos */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Próximos Compromissos</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Agendamentos')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredAppointments.slice(0, 3).map((appointment) => (
+              <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">{appointment.title}</p>
+                  <p className="text-sm text-gray-600">{appointment.clientName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">
+                    {new Date(appointment.startTime).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(appointment.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {filteredAppointments.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum agendamento no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Alertas de Estoque */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Package className="w-5 h-5 text-orange-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Alertas de Estoque</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Estoque')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {criticalProducts.slice(0, 3).map((product) => {
+              const getStatus = () => {
+                if (product.expiryDate && new Date(product.expiryDate) < new Date()) return { text: 'Vencido', color: 'red' };
+                if (product.expiryDate) {
+                  const diffTime = new Date(product.expiryDate).getTime() - new Date().getTime();
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                  if (diffDays <= 3 && diffDays >= 0) return { text: 'Vence em breve', color: 'yellow' };
+                }
+                if (product.stock === 0) return { text: 'Sem estoque', color: 'red' };
+                if (product.stock <= (product.minStock || 10)) return { text: 'Estoque baixo', color: 'orange' };
+                return { text: 'Normal', color: 'green' };
+              };
+              
+              const status = getStatus();
+              
+              return (
+                <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">{product.name}</p>
+                    <p className="text-sm text-gray-600">Estoque: {product.stock}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${{
+                      red: 'bg-red-100 text-red-800',
+                      yellow: 'bg-yellow-100 text-yellow-800',
+                      orange: 'bg-orange-100 text-orange-800',
+                      green: 'bg-green-100 text-green-800'
+                    }[status.color]}`}>
+                      {status.text}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+            {criticalProducts.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum produto crítico no momento</p>
+            )}
+          </div>
+        </div>
+
+        {/* Transferências */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <ArrowRight className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Transferências</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Estoque')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredTransfers.slice(0, 3).map((transfer) => (
+              <div key={transfer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">Qtd: {transfer.quantity}</p>
+                  <p className="text-sm text-gray-600">{transfer.notes}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">
+                    {new Date(transfer.transferDate).toLocaleDateString()}
+                  </p>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    transfer.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    transfer.status === 'sent' ? 'bg-blue-100 text-blue-800' :
+                    transfer.status === 'received' ? 'bg-green-100 text-green-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {transfer.status === 'pending' ? 'Pendente' :
+                     transfer.status === 'sent' ? 'Enviado' :
+                     transfer.status === 'received' ? 'Recebido' : 'Devolvido'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {filteredTransfers.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma transferência no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Atendimentos WhatsApp */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Atendimentos Recentes</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Atendimento')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {whatsappChats.slice(0, 3).map((chat) => (
+              <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">{chat.name}</p>
+                  <p className="text-sm text-gray-600 truncate max-w-xs">{chat.lastMessage}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">{chat.time}</p>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    chat.status === 'online' ? 'bg-green-100 text-green-800' : 
+                    chat.status === 'away' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {chat.status === 'online' ? 'Online' : 
+                     chat.status === 'away' ? 'Ausente' : 'Offline'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {whatsappChats.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum atendimento recente</p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Cards com informações detalhadas */}
-      <div className="grid grid-cols-1 gap-6">
-        <Card className="main-card">
-          <CardHeader>
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Bell className="h-5 w-5 text-orange-600" />
-              Notificações Importantes
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {(() => {
-                // Função para lidar com cliques nas notificações
-                const handleNotificationClick = (notification: any) => {
-                  if (notification.color === 'red') {
-                    showAlert({
-                      variant: "destructive",
-                      title: `🚨 URGENTE: ${notification.title}`,
-                      description: notification.desc
-                    });
-                  } else if (notification.color === 'orange') {
-                    showAlert({
-                      title: `⚠️ ATENÇÃO: ${notification.title}`,
-                      description: notification.desc,
-                      variant: "warning"
-                    });
-                  } else {
-                    showAlert({
-                      title: `✅ NOVO: ${notification.title}`,
-                      description: `${notification.desc} - Notificação visualizada.`,
-                      variant: "success"
-                    });
-                  }
-                };
-
-                const categoryNotifications = {
-                  'farmacia': [
-                    { icon: AlertTriangle, title: 'Medicamentos Vencendo', desc: 'Dipirona expira em 3 dias', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Estoque Baixo', desc: 'Soro fisiológico acabando', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Consulta farmacêutica há 5 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'pet': [
-                    { icon: AlertTriangle, title: 'Vacinas Pendentes', desc: '2 animais precisam de vacinação V10', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Estoque Baixo', desc: 'Ração Premium Golden acabando', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Agendamento feito há 10 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'medico': [
-                    { icon: AlertTriangle, title: 'Medicamentos Vencidos', desc: 'Antibiótico expira em 2 dias', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Estoque Crítico', desc: 'Seringas 10ml em falta', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Consulta', desc: 'Emergência agendada há 5 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'alimenticio': [
-                    { icon: AlertTriangle, title: 'Ingredientes Vencendo', desc: '4 ingredientes vencem hoje', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Estoque Baixo', desc: 'Massa para pizza acabando', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Pedido', desc: 'Pizza Margherita há 3 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'vendas': [
-                    { icon: AlertTriangle, title: 'Produto Esgotado', desc: 'Monitor 144Hz fora de estoque', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Pagamento Pendente', desc: 'Fatura corporativa vence hoje', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Venda', desc: 'Processador i7 vendido há 8 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'tecnologia': [
-                    { icon: AlertTriangle, title: 'Hardware Crítico', desc: 'Placa RTX 4060 esgotada', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Instalação Pendente', desc: 'Servidor aguarda configuração', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Venda', desc: 'SSD Samsung vendido há 12 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'educacao': [
-                    { icon: AlertTriangle, title: 'Material Esgotado', desc: 'Papel A4 fora de estoque', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Entrega Atrasada', desc: 'Kit laboratório chegou ontem', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Nova Matrícula', desc: 'Aluno inscrito há 15 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'beleza': [
-                    { icon: AlertTriangle, title: 'Produto Vencendo', desc: 'Esmalte Colorama expira em 3 dias', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Estoque Baixo', desc: 'Perfume Boticário acabando', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Agendamento', desc: 'Corte marcado há 7 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'design': [
-                    { icon: AlertTriangle, title: 'Projeto Atrasado', desc: 'Logo TechStartup com prazo vencido', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Aprovação Pendente', desc: 'Cliente aguarda aprovação há 2 dias', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Briefing recebido há 15 minutos', badge: 'Novo', color: 'green' }
-                  ],
-                  'sites': [
-                    { icon: AlertTriangle, title: 'Site Fora do Ar', desc: 'E-commerce com erro 500', badge: 'Urgente', color: 'red' },
-                    { icon: Clock, title: 'Deploy Pendente', desc: 'Atualizações aguardando deploy', badge: 'Atenção', color: 'orange' },
-                    { icon: TrendingUp, title: 'Novo Projeto', desc: 'Website solicitado há 20 minutos', badge: 'Novo', color: 'green' }
-                  ]
-                };
-                
-                const notifications = categoryNotifications[selectedCategory as keyof typeof categoryNotifications] || categoryNotifications.pet;
-                
-                return notifications.map((notif, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
-                    onClick={() => handleNotificationClick(notif)}
-                  >
-                    <notif.icon className="h-4 w-4 text-gray-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="font-medium text-gray-900">{notif.title}</p>
-                        <Badge className={`${
-                          notif.color === 'red' ? 'bg-red-500' :
-                          notif.color === 'orange' ? 'bg-orange-500' :
-                          'bg-green-500'
-                        } text-white`}>
-                          {notif.badge}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-gray-600 mt-1">{notif.desc}</p>
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
-            
-            <Button className="btn-secondary w-full mt-4">
-              Ver Todas as Notificações
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-      
-      <CustomAlert
+      <CustomAlert 
         isOpen={isOpen}
         onClose={closeAlert}
         title={alertData.title}
