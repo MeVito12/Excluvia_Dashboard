@@ -213,44 +213,14 @@ const ControleSection = () => {
         </div>
       </div>
 
-      {/* Company Info */}
-      {company && (
-        <Card className="mb-6">
-          <CardHeader className="pb-3">
-            <div className="flex items-center gap-3">
-              <Building2 className="w-5 h-5 text-purple-600" />
-              <CardTitle className="text-lg">{company.name}</CardTitle>
-              <Badge variant="outline" className="capitalize">
-                {company.businessCategory.replace('_', ' ')}
-              </Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-              <div>
-                <span className="font-medium">Descrição:</span> {company.description || 'Não informado'}
-              </div>
-              <div>
-                <span className="font-medium">Endereço:</span> {company.address || 'Não informado'}
-              </div>
-              <div>
-                <span className="font-medium">Telefone:</span> {company.phone || 'Não informado'}
-              </div>
-              <div>
-                <span className="font-medium">Email:</span> {company.email || 'Não informado'}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Filters */}
-      <div className="filter-section">
-        <div className="flex items-center gap-4">
-          <div className="relative flex-1 max-w-md">
+      {/* Main Card with Search and Users */}
+      <div className="main-card">
+        {/* Search Bar */}
+        <div className="flex items-center gap-4 mb-6 pb-4 border-b border-gray-200">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <Input
-              placeholder="Buscar por nome, email ou categoria..."
+              placeholder="Buscar usuários..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-10"
@@ -265,10 +235,8 @@ const ControleSection = () => {
             )}
           </div>
         </div>
-      </div>
 
-      {/* Users List */}
-      <div className="main-card">
+        {/* Users List */}
         {filteredUsers.length === 0 ? (
           <div className="text-center py-8">
             <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
