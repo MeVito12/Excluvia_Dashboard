@@ -205,14 +205,11 @@ const ControleSection = () => {
     <div className="app-section">
       {/* Header */}
       <div className="section-header">
-        <div className="flex items-center gap-3">
-          <ModernIcon 
-            icon={Settings} 
-            className="w-8 h-8" 
-            bgColor="bg-purple-100" 
-            iconColor="text-purple-600"
-          />
-          <h1 className="text-2xl font-bold text-gray-800">Controle de Permissões</h1>
+        <div>
+          <h1 className="section-title">Controle</h1>
+          <p className="section-subtitle">
+            Gerenciamento de usuários e permissões
+          </p>
         </div>
       </div>
 
