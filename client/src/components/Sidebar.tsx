@@ -18,8 +18,7 @@ import {
   LogOut,
   CreditCard,
   ChevronLeft,
-  ChevronRight,
-  Building2
+  ChevronRight
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -94,19 +93,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       label: 'Controle',
       icon: Settings,
       description: 'Configuração de permissões'
-    },
-    {
-      id: 'hierarquia',
-      label: 'Hierarquia',
-      icon: Building2,
-      description: 'Gestão empresarial'
     }
   ];
 
   // Filtra itens baseado em permissões e categoria
   const menuItems = allMenuItems.filter(item => {
-    // Controle e Hierarquia só para usuários master
-    if (item.id === 'controle' || item.id === 'hierarquia') {
+    // Controle só para usuários master
+    if (item.id === 'controle') {
       return isMasterUser;
     }
     
