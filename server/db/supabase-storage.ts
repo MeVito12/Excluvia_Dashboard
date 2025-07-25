@@ -244,11 +244,14 @@ export class SupabaseStorage implements Storage {
 
   async getTransfers(userId: number, businessCategory: string): Promise<Transfer[]> {
     const db = await this.getConnection();
-    const { eq } = await import('drizzle-orm');
+    const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
     const result = await db.select().from(schema.transfersTable)
-      .where(eq(schema.transfersTable.userId, userId));
+      .where(and(
+        eq(schema.transfersTable.requestedBy, userId),
+        eq(schema.transfersTable.businessCategory, businessCategory)
+      ));
     
     return result;
   }
@@ -263,11 +266,14 @@ export class SupabaseStorage implements Storage {
 
   async getBranches(userId: number, businessCategory: string): Promise<Branch[]> {
     const db = await this.getConnection();
-    const { eq } = await import('drizzle-orm');
+    const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
     const result = await db.select().from(schema.branchesTable)
-      .where(eq(schema.branchesTable.userId, userId));
+      .where(and(
+        eq(schema.branchesTable.userId, userId),
+        eq(schema.branchesTable.businessCategory, businessCategory)
+      ));
     
     return result;
   }
@@ -307,6 +313,124 @@ export class SupabaseStorage implements Storage {
   }
 
   async revertFinancialEntry(id: number): Promise<FinancialEntry | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  // === MÉTODOS DE HIERARQUIA EMPRESARIAL ===
+
+  async getCompanies(createdBy?: number): Promise<Company[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    let query = db.select().from(schema.companiesTable);
+    
+    if (createdBy) {
+      query = query.where(eq(schema.companiesTable.createdBy, createdBy));
+    }
+    
+    const result = await query;
+    return result;
+  }
+
+  async getCompanyById(id: number): Promise<Company | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.companiesTable)
+      .where(eq(schema.companiesTable.id, id));
+    
+    return result[0] || null;
+  }
+
+  async createCompany(company: NewCompany): Promise<Company> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async deleteCompany(id: number): Promise<boolean> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getUserWithHierarchy(userId: number): Promise<UserWithHierarchy | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getUsersByCompany(companyId: number): Promise<UserWithHierarchy[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.usersTable)
+      .where(eq(schema.usersTable.companyId, companyId));
+    
+    return result as UserWithHierarchy[];
+  }
+
+  async getUsersByManager(managerId: number): Promise<UserWithHierarchy[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getUserSubordinates(userId: number): Promise<UserWithHierarchy[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async updateUserHierarchy(userId: number, managerId: number, companyId: number, branchId?: number): Promise<boolean> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getUserRole(userId: number): Promise<UserRole | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getUserRoles(companyId?: number): Promise<UserRole[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async createUserRole(role: NewUserRole): Promise<UserRole> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async updateUserRole(userId: number, role: Partial<NewUserRole>): Promise<UserRole | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async deleteUserRole(userId: number): Promise<boolean> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getBranchesByCompany(companyId: number): Promise<Branch[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.branchesTable)
+      .where(eq(schema.branchesTable.companyId, companyId));
+    
+    return result;
+  }
+
+  async getBranchesForUser(userId: number): Promise<Branch[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async updateBranchManager(branchId: number, managerId: number): Promise<Branch | null> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getTransfersWithDetails(userId: number, businessCategory: string): Promise<TransferWithDetails[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getTransfersByCompany(companyId: number): Promise<TransferWithDetails[]> {
+    throw new Error('Implementação Supabase em desenvolvimento');
+  }
+
+  async getAvailableBranchesForTransfer(userId: number, businessCategory: string): Promise<Branch[]> {
     throw new Error('Implementação Supabase em desenvolvimento');
   }
 }

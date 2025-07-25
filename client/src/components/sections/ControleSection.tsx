@@ -3,9 +3,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions, availableSections } from '@/contexts/PermissionsContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Settings, 
   Users, 
@@ -16,51 +18,119 @@ import {
   Eye,
   EyeOff,
   Search,
-  X
+  X,
+  Building2,
+  UserCheck,
+  Loader2
 } from 'lucide-react';
+import ModernIcon from '@/components/ui/modern-icon';
 
 interface UserData {
   id: number;
   name: string;
   email: string;
   businessCategory: string;
-  userType: 'master' | 'regular';
+  userType: string;
+  allowedSections?: string[];
+  companyId?: number;
+  isActive?: boolean;
+}
+
+interface Company {
+  id: number;
+  name: string;
+  businessCategory: string;
+  description?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
 }
 
 const ControleSection = () => {
   const { user } = useAuth();
   const { updateUserPermissions, getAllUserPermissions, isMasterUser } = usePermissions();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  const queryClient = useQueryClient();
   
-  // Mock users para demonstração
-  const [users] = useState<UserData[]>([
-    { id: 2, name: "Usuário Demo", email: "demo@example.com", businessCategory: "salao", userType: "regular" },
-    { id: 3, name: "Maria Silva", email: "maria@salao.com", businessCategory: "salao", userType: "regular" },
-    { id: 4, name: "João Santos", email: "joao@salao.com", businessCategory: "salao", userType: "regular" }
-  ]);
-
   const [userPermissions, setUserPermissions] = useState<Record<number, string[]>>({});
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Buscar empresa do usuário master
+  const { data: company, isLoading: companyLoading } = useQuery({
+    queryKey: [`/api/user-company/${user?.id}`],
+    queryFn: async (): Promise<Company | null> => {
+      if (!user?.id) return null;
+      const response = await fetch(`/api/user-company/${user.id}`);
+      if (!response.ok) {
+        if (response.status === 404) return null;
+        throw new Error('Erro ao buscar empresa');
+      }
+      return response.json();
+    },
+    enabled: !!user?.id && isMasterUser
+  });
+
+  // Buscar usuários da empresa
+  const { data: companyUsers = [], isLoading: usersLoading } = useQuery({
+    queryKey: [`/api/company-users/${company?.id}`],
+    queryFn: async (): Promise<UserData[]> => {
+      if (!company?.id) return [];
+      const response = await fetch(`/api/company-users/${company.id}`);
+      if (!response.ok) throw new Error('Erro ao buscar usuários');
+      return response.json();
+    },
+    enabled: !!company?.id
+  });
+
+  // Mutation para atualizar permissões
+  const updatePermissionsMutation = useMutation({
+    mutationFn: async ({ userId, allowedSections }: { userId: number; allowedSections: string[] }) => {
+      const response = await fetch(`/api/users/${userId}/permissions`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ allowedSections })
+      });
+      if (!response.ok) throw new Error('Erro ao atualizar permissões');
+      return response.json();
+    },
+    onSuccess: (data, variables) => {
+      const targetUser = companyUsers.find(u => u.id === variables.userId);
+      showAlert({
+        title: "Permissões Salvas",
+        description: `Permissões do usuário ${targetUser?.name} foram atualizadas com sucesso.`,
+        variant: "success"
+      });
+      queryClient.invalidateQueries({ queryKey: [`/api/company-users/${company?.id}`] });
+    },
+    onError: () => {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao atualizar permissões do usuário.",
+        variant: "error"
+      });
+    }
+  });
   
   // Filtra usuários baseado na pesquisa
-  const filteredUsers = users.filter(user =>
+  const filteredUsers = companyUsers.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.businessCategory.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
-    // Carrega permissões existentes
-    const savedPermissions = getAllUserPermissions();
-    const initialPermissions: Record<number, string[]> = {};
-    
-    users.forEach(u => {
-      initialPermissions[u.id] = savedPermissions[u.id] || ['dashboard', 'graficos'];
-    });
-    
-    setUserPermissions(initialPermissions);
-  }, []);
+    // Carrega permissões existentes dos usuários da empresa
+    if (companyUsers.length > 0) {
+      const initialPermissions: Record<number, string[]> = {};
+      
+      companyUsers.forEach(u => {
+        initialPermissions[u.id] = u.allowedSections || ['dashboard', 'graficos'];
+      });
+      
+      setUserPermissions(initialPermissions);
+    }
+  }, [companyUsers]);
 
   // Verifica se o usuário atual tem acesso
   if (!isMasterUser) {
@@ -101,14 +171,7 @@ const ControleSection = () => {
 
   const saveUserPermissions = (userId: number) => {
     const permissions = userPermissions[userId] || [];
-    updateUserPermissions(userId, permissions);
-    
-    const user = users.find(u => u.id === userId);
-    showAlert({
-      title: "Permissões Salvas",
-      description: `Permissões do usuário ${user?.name} foram atualizadas com sucesso.`,
-      variant: "success"
-    });
+    updatePermissionsMutation.mutate({ userId, allowedSections: permissions });
   };
 
   const hasPermission = (userId: number, sectionId: string): boolean => {
@@ -125,248 +188,193 @@ const ControleSection = () => {
     setSearchTerm('');
   };
 
+  if (companyLoading || usersLoading) {
+    return (
+      <div className="app-section">
+        <div className="main-card">
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+            <span className="ml-3 text-gray-600">Carregando dados da empresa...</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-section">
-      {/* Cabeçalho da seção - igual ao padrão das imagens */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Controle</h1>
-        <p className="text-white/80">Configuração de permissões e acesso dos usuários</p>
+      {/* Header */}
+      <div className="section-header">
+        <div className="flex items-center gap-3">
+          <ModernIcon 
+            icon={Settings} 
+            className="w-8 h-8" 
+            bgColor="bg-purple-100" 
+            iconColor="text-purple-600"
+          />
+          <h1 className="text-2xl font-bold text-gray-800">Controle de Permissões</h1>
+        </div>
       </div>
 
-      {/* Seção de filtros - seguindo padrão das outras páginas */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 z-10" />
-            <input
-              type="text"
-              placeholder="Pesquisar por usuário, email ou categoria..."
+      {/* Company Info */}
+      {company && (
+        <Card className="mb-6">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-3">
+              <Building2 className="w-5 h-5 text-purple-600" />
+              <CardTitle className="text-lg">{company.name}</CardTitle>
+              <Badge variant="outline" className="capitalize">
+                {company.businessCategory.replace('_', ' ')}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+              <div>
+                <span className="font-medium">Descrição:</span> {company.description || 'Não informado'}
+              </div>
+              <div>
+                <span className="font-medium">Endereço:</span> {company.address || 'Não informado'}
+              </div>
+              <div>
+                <span className="font-medium">Telefone:</span> {company.phone || 'Não informado'}
+              </div>
+              <div>
+                <span className="font-medium">Email:</span> {company.email || 'Não informado'}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Filters */}
+      <div className="filter-section">
+        <div className="flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Buscar por nome, email ou categoria..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="pl-10 pr-10"
             />
             {searchTerm && (
               <button
                 onClick={clearSearch}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100 rounded-full flex items-center justify-center"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
-          <button 
-            onClick={clearSearch}
-            className="px-4 py-2 border border-gray-200 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          >
-            Limpar Filtros
-          </button>
         </div>
       </div>
 
-      {/* Card de Status Master - seguindo o padrão visual das outras páginas */}
-      <div className="main-card mb-6">
-        <div className="list-card bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200">
-          <div className="flex items-center gap-4">
-            <div className="flex-shrink-0">
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-purple-900">{user?.name}</h3>
-              <p className="text-purple-700 text-sm mt-1">
-                Administrador com acesso total ao sistema
-              </p>
-            </div>
-            <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-              Master
-            </Badge>
-          </div>
-        </div>
-      </div>
-
-      {/* Conteúdo principal - Lista de usuários */}
+      {/* Users List */}
       <div className="main-card">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Gerenciar Usuários</h2>
-          <Badge variant="outline">
-            {filteredUsers.length} usuários encontrados
-          </Badge>
-        </div>
-
-        {filteredUsers.length === 0 && searchTerm && (
-          <div className="list-card text-center py-12">
-            <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-600 mb-2">
-              Nenhum usuário encontrado
+        {filteredUsers.length === 0 ? (
+          <div className="text-center py-8">
+            <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-700 mb-2">
+              {companyUsers.length === 0 ? 'Nenhum usuário encontrado' : 'Nenhum resultado encontrado'}
             </h3>
-            <p className="text-gray-500 mb-4">
-              Não encontramos usuários que correspondam à pesquisa "{searchTerm}"
+            <p className="text-gray-500">
+              {companyUsers.length === 0 
+                ? 'Ainda não há usuários cadastrados nesta empresa.' 
+                : 'Tente ajustar os filtros de busca.'}
             </p>
-            <Button onClick={clearSearch} variant="outline">
-              Limpar pesquisa
-            </Button>
           </div>
-        )}
-
-        <div className="space-y-4">
-
-          {filteredUsers.map(userData => {
-            const permissions = userPermissions[userData.id] || [];
-            const isExpanded = selectedUser === userData.id;
-
-            return (
-              <div key={userData.id} className="list-card hover:shadow-lg transition-all duration-200">
-                <div 
-                  className="flex items-center justify-between cursor-pointer"
-                  onClick={() => setSelectedUser(isExpanded ? null : userData.id)}
-                >
+        ) : (
+          <div className="space-y-4">
+            {filteredUsers.map(userData => (
+              <div key={userData.id} className="list-card">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="flex-shrink-0">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Users className="w-5 h-5 text-gray-600" />
+                      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                        <User className="w-6 h-6 text-purple-600" />
                       </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-gray-900">{userData.name}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{userData.email}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Badge variant="outline" className="text-xs">
-                          {userData.businessCategory}
+                    <div>
+                      <h3 className="font-medium text-gray-900">{userData.name}</h3>
+                      <p className="text-sm text-gray-600">{userData.email}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {userData.businessCategory.replace('_', ' ')}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {permissions.length} permissões
+                        <Badge variant={userData.userType === 'master' ? 'default' : 'secondary'} className="text-xs">
+                          {userData.userType === 'master' ? 'Master' : 'Regular'}
                         </Badge>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right hidden sm:block">
-                      <p className="text-sm font-medium text-gray-700">
-                        {permissions.length} seções
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {isExpanded ? 'Clique para ocultar' : 'Clique para configurar'}
-                      </p>
-                    </div>
+                  
+                  <div className="flex items-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="flex-shrink-0"
+                      onClick={() => setSelectedUser(selectedUser === userData.id ? null : userData.id)}
                     >
-                      {isExpanded ? (
-                        <>
-                          <EyeOff className="w-4 h-4 mr-2" />
-                          Ocultar
-                        </>
-                      ) : (
-                        <>
-                          <Eye className="w-4 h-4 mr-2" />
-                          Configurar
-                        </>
-                      )}
+                      {selectedUser === userData.id ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {selectedUser === userData.id ? 'Ocultar' : 'Gerenciar'}
                     </Button>
                   </div>
                 </div>
 
-                {isExpanded && (
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Settings className="w-5 h-5 text-purple-600" />
-                      <h4 className="font-semibold text-gray-800">Configurar Permissões</h4>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {availableSections.map(section => {
-                        const hasAccess = hasPermission(userData.id, section.id);
-                        return (
-                          <div
-                            key={section.id}
-                            className={`border rounded-lg p-4 cursor-pointer transition-all duration-200 ${
-                              hasAccess
-                                ? 'border-green-300 bg-green-50 hover:bg-green-100'
-                                : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-                            }`}
-                            onClick={() => togglePermission(userData.id, section.id)}
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="flex-shrink-0">
-                                {getPermissionIcon(userData.id, section.id)}
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="font-medium text-sm text-gray-800">
-                                  {section.label}
-                                </div>
-                                <div className="text-xs text-gray-600 mt-1">
-                                  {section.description}
-                                </div>
-                              </div>
-                              <Badge 
-                                variant={hasAccess ? "default" : "outline"}
-                                className={hasAccess ? "bg-green-100 text-green-800" : ""}
-                              >
-                                {hasAccess ? "Ativo" : "Inativo"}
-                              </Badge>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    <div className="flex justify-between items-center pt-6 mt-6 border-t border-gray-200">
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                        <span>{permissions.length} de {availableSections.length} seções ativas</span>
-                      </div>
+                {/* Permissions Panel */}
+                {selectedUser === userData.id && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="font-medium text-gray-800 flex items-center gap-2">
+                        <UserCheck className="w-4 h-4" />
+                        Permissões do Sistema
+                      </h4>
                       <Button
                         onClick={() => saveUserPermissions(userData.id)}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        disabled={updatePermissionsMutation.isPending}
+                        size="sm"
+                        className="bg-green-600 hover:bg-green-700"
                       >
-                        <Save className="w-4 h-4 mr-2" />
-                        Salvar Permissões
+                        {updatePermissionsMutation.isPending ? (
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                        ) : (
+                          <Save className="w-4 h-4 mr-2" />
+                        )}
+                        Salvar Alterações
                       </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {availableSections.map(section => (
+                        <div key={section.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {getPermissionIcon(userData.id, section.id)}
+                            <div>
+                              <span className="font-medium text-sm text-gray-800">{section.name}</span>
+                              <p className="text-xs text-gray-600">{section.description}</p>
+                            </div>
+                          </div>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={hasPermission(userData.id, section.id)}
+                              onChange={() => togglePermission(userData.id, section.id)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                          </label>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
               </div>
-            );
-          })}
-        </div>
-
-        {/* Informações sobre o sistema */}
-        <div className="list-card bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 mt-8">
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-blue-600" />
-              </div>
-            </div>
-            <div>
-              <h3 className="font-semibold text-blue-900 mb-3">Como funciona o sistema de permissões</h3>
-              <div className="space-y-2 text-sm text-blue-800">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-blue-600" />
-                  <span>Usuários master têm acesso total a todas as seções</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-blue-600" />
-                  <span>Usuários regulares só veem seções permitidas no menu</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-blue-600" />
-                  <span>Permissões são aplicadas imediatamente após salvar</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-blue-600" />
-                  <span>Cada seção pode ser habilitada/desabilitada individualmente</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
-        </div>
+        )}
       </div>
 
-      <CustomAlert
+      <CustomAlert 
         isOpen={isOpen}
         onClose={closeAlert}
         title={alertData.title}

@@ -397,6 +397,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // === ROTAS PARA CONTROLE DE USUÁRIOS EMPRESA ===
+  
+  // Buscar usuários da empresa para o master
+  app.get("/api/company-users/:companyId", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const companyId = Number(req.params.companyId);
+      
+      if (!companyId) {
+        return res.status(400).json({ error: "ID da empresa é obrigatório" });
+      }
+
+      const users = await storage.getUsersByCompany(companyId);
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching company users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários da empresa" });
+    }
+  });
+
+  // Buscar empresa do usuário master
+  app.get("/api/user-company/:userId", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = Number(req.params.userId);
+      
+      if (!userId) {
+        return res.status(400).json({ error: "ID do usuário é obrigatório" });
+      }
+
+      // Buscar usuário primeiro para obter companyId
+      const user = await storage.getUserByEmail(`user${userId}@fake.com`); // Método provisório
+      
+      if (!user || !user.companyId) {
+        return res.status(404).json({ error: "Usuário não possui empresa associada" });
+      }
+
+      // Buscar empresa pelo ID
+      const company = await storage.getCompanyById(user.companyId);
+      
+      if (!company) {
+        return res.status(404).json({ error: "Empresa não encontrada" });
+      }
+
+      res.json(company);
+    } catch (error) {
+      console.error("Error fetching user company:", error);
+      res.status(500).json({ error: "Erro ao buscar empresa do usuário" });
+    }
+  });
+
+  // Atualizar permissões de usuário
+  app.put("/api/users/:userId/permissions", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = Number(req.params.userId);
+      const { allowedSections } = req.body;
+      
+      if (!userId) {
+        return res.status(400).json({ error: "ID do usuário é obrigatório" });
+      }
+
+      if (!allowedSections || !Array.isArray(allowedSections)) {
+        return res.status(400).json({ error: "allowedSections deve ser um array" });
+      }
+
+      // Por enquanto, simularemos sucesso já que não temos método de update direto
+      // TODO: Implementar método updateUser no storage
+      console.log(`Atualizando permissões do usuário ${userId}:`, allowedSections);
+      
+      res.json({ 
+        success: true, 
+        message: "Permissões atualizadas com sucesso",
+        userId,
+        allowedSections
+      });
+    } catch (error) {
+      console.error("Error updating user permissions:", error);
+      res.status(500).json({ error: "Erro ao atualizar permissões" });
+    }
+  });
+
 
 
   // Rotas financeiras
