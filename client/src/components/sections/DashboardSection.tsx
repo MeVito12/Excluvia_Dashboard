@@ -13,7 +13,7 @@ import {
   ExternalLink,
   MessageSquare,
   ArrowRight,
-  CalendarDays,
+
   BarChart3
 } from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
@@ -119,38 +119,54 @@ const DashboardSection = () => {
       </div>
 
       {/* Filtros por Data */}
-      <div className="main-card p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
+        
+        <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">Período:</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600">De:</label>
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data inicial:</span>
             <input
               type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="px-3 py-1 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
+
           <div className="flex items-center gap-2">
-            <label className="text-sm text-gray-600">Até:</label>
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data final:</span>
             <input
               type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="px-3 py-1 border border-gray-200 rounded-md text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
-          {(dateFrom || dateTo) && (
-            <button
-              onClick={clearFilters}
-              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 border border-gray-200 rounded-md hover:bg-gray-50"
-            >
-              Limpar filtros
-            </button>
-          )}
+
+          <button 
+            onClick={clearFilters}
+            className="px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Limpar Filtros
+          </button>
+
+          <button 
+            onClick={() => {
+              const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
+              showAlert({
+                title: "Filtros Aplicados",
+                description: `Dashboard atualizado para o período: ${period}`,
+                variant: "success"
+              });
+            }}
+            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+          >
+            Aplicar Filtros
+          </button>
         </div>
       </div>
 
