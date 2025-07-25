@@ -11,6 +11,7 @@ import FinanceiroSection from '@/components/sections/FinanceiroSection';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const renderActiveSection = () => {
     switch (activeSection) {
@@ -47,11 +48,13 @@ const Index = () => {
       {/* Sidebar */}
       <Sidebar 
         activeSection={activeSection} 
-        onSectionChange={setActiveSection} 
+        onSectionChange={setActiveSection}
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={setSidebarCollapsed}
       />
 
       {/* Main Content */}
-      <main className="ml-0 md:ml-64 p-4 md:p-6 pt-16 md:pt-6">
+      <main className={`p-4 md:p-6 pt-16 md:pt-6 transition-all duration-300 ${sidebarCollapsed ? 'ml-0 md:ml-16' : 'ml-0 md:ml-64'}`}>
         <div className="max-w-7xl mx-auto">
           {renderActiveSection()}
         </div>
