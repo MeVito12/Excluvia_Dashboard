@@ -120,13 +120,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
     <>
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-all duration-300 shadow-xl",
+        "fixed left-0 top-0 z-40 h-full bg-[hsl(220_100%_12%)] border-r border-[hsl(220_100%_8%)] transition-all duration-300 shadow-xl",
         "w-64",
         isCollapsed ? "-translate-x-full" : "translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-4 md:p-6 border-b border-[hsl(var(--dashboard-darker))]">
+          <div className="p-4 md:p-6 border-b border-[hsl(220_100%_8%)]">
             <div className="mb-4">
               <UserAvatar username={user?.name || 'Usuário'} size="medium" />
             </div>
@@ -187,7 +187,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           </nav>
 
           {/* Footer - Logout */}
-          <div className="p-3 md:p-4 border-t border-[hsl(var(--dashboard-darker))]">
+          <div className="p-3 md:p-4 border-t border-[hsl(220_100%_8%)]">
             <Button
               variant="ghost"
               onClick={logout}
@@ -215,7 +215,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           variant="ghost"
           size="sm"
           onClick={handleToggle}
-          className="h-12 w-6 p-0 bg-[hsl(var(--dashboard-dark))] border border-[hsl(var(--dashboard-darker))] hover:bg-[hsl(var(--dashboard-darker))] text-white shadow-lg rounded-r-md rounded-l-none"
+          className="h-12 w-6 p-0 bg-[hsl(220_100%_12%)] border border-[hsl(220_100%_8%)] hover:bg-[hsl(220_100%_8%)] text-white shadow-lg rounded-r-md rounded-l-none"
         >
           <ModernIcon 
             icon={isCollapsed ? ChevronRight : ChevronLeft}
