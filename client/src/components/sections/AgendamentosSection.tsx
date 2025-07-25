@@ -10,16 +10,11 @@ import {
   Calendar, 
   Clock, 
   Settings, 
-  Mail,
   Plus,
   Search,
   Edit,
   CheckCircle,
   Bell,
-  Users,
-  MessageSquare,
-  MessageCircle,
-  Send,
   AlertTriangle
 } from 'lucide-react';
 
@@ -28,54 +23,8 @@ import {
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
-  const [activeTab, setActiveTab] = useState('agenda');
+
   const [searchTerm, setSearchTerm] = useState('');
-  const [emailReminders, setEmailReminders] = useState(true);
-  const [autoConfirmations, setAutoConfirmations] = useState(true);
-  const [telegramEnabled, setTelegramEnabled] = useState(false);
-  const [whatsappEnabled, setWhatsappEnabled] = useState(true);
-
-  // Função para alternar configurações de notificação
-  const toggleEmailReminders = () => {
-    setEmailReminders(!emailReminders);
-    showAlert({
-      title: !emailReminders ? "Lembretes por Email Ativados" : "Lembretes por Email Desativados",
-      description: !emailReminders 
-        ? "Agora você receberá lembretes automáticos por email" 
-        : "Os lembretes por email foram desabilitados",
-      variant: "success"
-    });
-  };
-
-  const toggleAutoConfirmations = () => {
-    setAutoConfirmations(!autoConfirmations);
-    showAlert({
-      title: !autoConfirmations ? "Confirmações Automáticas Ativadas" : "Confirmações Automáticas Desativadas",
-      description: !autoConfirmations 
-        ? "Confirmações serão enviadas automaticamente" 
-        : "As confirmações automáticas foram desabilitadas"
-    });
-  };
-
-  const toggleTelegram = () => {
-    setTelegramEnabled(!telegramEnabled);
-    showAlert({
-      title: !telegramEnabled ? "Telegram Habilitado" : "Telegram Desabilitado",
-      description: !telegramEnabled 
-        ? "Notificações via Telegram estão ativas" 
-        : "Notificações via Telegram foram desabilitadas"
-    });
-  };
-
-  const toggleWhatsApp = () => {
-    setWhatsappEnabled(!whatsappEnabled);
-    showAlert({
-      title: !whatsappEnabled ? "WhatsApp Business Ativado" : "WhatsApp Business Desativado",
-      description: !whatsappEnabled 
-        ? "Notificações via WhatsApp estão ativas" 
-        : "Notificações via WhatsApp foram desabilitadas"
-    });
-  };
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [appointments, setAppointments] = useState(() => getAppointmentsByCategory(selectedCategory));
   const [showAddModal, setShowAddModal] = useState(false);
@@ -88,10 +37,7 @@ const AgendamentosSection = () => {
     notes: ''
   });
 
-  const tabs = [
-    { id: 'agenda', label: 'Agenda', icon: Calendar },
-    { id: 'notificacoes', label: 'Notificações', icon: Mail }
-  ];
+
 
   // Função para marcar compromisso como concluído
   const markAsCompleted = (appointmentId: number) => {
@@ -281,83 +227,7 @@ const AgendamentosSection = () => {
 
 
 
-  const renderNotificacoes = () => (
-    <div className="animate-fade-in">
-      <div className="content-grid">
-        <div className="main-card p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-6">Configurações de Email</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Lembretes por Email</span>
-              <button 
-                onClick={toggleEmailReminders}
-                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
-                  emailReminders ? 'bg-green-500' : 'bg-gray-300'
-                }`}
-              >
-                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                  emailReminders ? 'translate-x-6' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Confirmações Automáticas</span>
-              <button 
-                onClick={toggleAutoConfirmations}
-                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
-                  autoConfirmations ? 'bg-blue-500' : 'bg-gray-300'
-                }`}
-              >
-                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                  autoConfirmations ? 'translate-x-6' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-          </div>
-        </div>
 
-        <div className="main-card p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-6">Telegram e WhatsApp</h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">Telegram Habilitado</span>
-              <button 
-                onClick={toggleTelegram}
-                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
-                  telegramEnabled ? 'bg-blue-500' : 'bg-gray-300'
-                }`}
-              >
-                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                  telegramEnabled ? 'translate-x-6' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-600">WhatsApp Business</span>
-              <button 
-                onClick={toggleWhatsApp}
-                className={`w-12 h-6 rounded-full flex items-center transition-colors cursor-pointer ${
-                  whatsappEnabled ? 'bg-green-500' : 'bg-gray-300'
-                }`}
-              >
-                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                  whatsappEnabled ? 'translate-x-6' : 'translate-x-1'
-                }`}></div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'agenda': return renderAgenda();
-      case 'notificacoes': return renderNotificacoes();
-      default: return renderAgenda();
-    }
-  };
 
   return (
     <div className="app-section">
@@ -430,20 +300,7 @@ const AgendamentosSection = () => {
         </div>
       </div>
 
-      <div className="tab-navigation">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-          >
-            <tab.icon className="w-5 h-5" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {renderTabContent()}
+      {renderAgenda()}
 
       {/* Modal de Adicionar Compromisso */}
       {showAddModal && (
