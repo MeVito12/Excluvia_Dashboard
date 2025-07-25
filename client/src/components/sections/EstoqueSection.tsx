@@ -1209,21 +1209,7 @@ const EstoqueSection = () => {
             )}
             </select>
             
-            {/* Filtro por unidade específico do perfil Junior */}
-            {isJuniorProfile && (
-              <select 
-                value={filterUnit}
-                onChange={(e) => setFilterUnit(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent w-48"
-              >
-                <option value="all">Todas as unidades</option>
-                <option value="Centro">Centro (Hub)</option>
-                <option value="Norte">Norte</option>
-                <option value="Sul">Sul</option>
-                <option value="Leste">Leste</option>
-                <option value="Oeste">Oeste</option>
-              </select>
-            )}
+
           </div>
         </div>
 
@@ -1241,10 +1227,8 @@ const EstoqueSection = () => {
               const categoryMatch = filterCategory === 'all' || 
                 product.name?.toLowerCase().includes(filterCategory.toLowerCase());
               
-              // Filtro por unidade (específico do Junior)
-              const unitMatch = filterUnit === 'all' || 
-                !isJuniorProfile || 
-                (product as any).unit === filterUnit;
+              // Filtro simples (sem Junior)
+              const unitMatch = true;
               
               return searchMatch && categoryMatch && unitMatch;
             })
@@ -1272,13 +1256,7 @@ const EstoqueSection = () => {
                     )}
                   </div>
                   <p className="text-sm text-gray-600">Categoria: {product.category}</p>
-                  {/* Informações específicas do perfil Junior */}
-                  {isJuniorProfile && (product as any).unit && (
-                    <p className="text-sm text-blue-600 font-medium">
-                      📍 Unidade: {(product as any).unit} | 
-                      🏢 Fornecedor: {(product as any).supplier || 'N/A'}
-                    </p>
-                  )}
+
                   <div className="flex items-center gap-4 mt-1">
                     <p className="text-sm text-gray-600">
                       Estoque: <span className={`font-medium ${
