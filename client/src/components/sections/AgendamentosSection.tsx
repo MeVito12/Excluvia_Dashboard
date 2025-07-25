@@ -239,7 +239,7 @@ const AgendamentosSection = () => {
         </p>
       </div>
 
-      <div className="metrics-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
@@ -256,45 +256,12 @@ const AgendamentosSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Taxa de Comparecimento</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">94%</p>
-              <p className="text-xs text-green-600 mt-1">↑ 5% vs mês anterior</p>
-            </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <CheckCircle className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
               <p className="text-sm font-medium text-gray-600">Lembretes Enviados</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">48</p>
               <p className="text-xs text-purple-600 mt-1">Últimas 24h</p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
               <Bell className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Integrações Ativas</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {(selectedCategory === 'medico' || selectedCategory === 'pet') ? '3' : '2'}
-              </p>
-              <p className="text-xs text-purple-600 mt-1">
-                {(selectedCategory === 'medico' || selectedCategory === 'pet') 
-                  ? 'Google, Outlook, Doctoralia' 
-                  : 'Google, Outlook'
-                }
-              </p>
-            </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <Settings className="h-6 w-6 text-purple-600" />
             </div>
           </div>
         </div>
