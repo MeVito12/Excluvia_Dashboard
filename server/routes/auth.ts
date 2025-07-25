@@ -30,4 +30,29 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Buscar usuário por email (para Supabase Auth)
+router.post('/user-by-email', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ error: 'Email é obrigatório' });
+    }
+
+    const user = await storage.getUserByEmail(email);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Remove senha antes de retornar
+    const { password: _, ...userWithoutPassword } = user;
+    
+    res.json(userWithoutPassword);
+  } catch (error) {
+    console.error('Erro ao buscar usuário:', error);
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 export default router;

@@ -5,9 +5,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface LoginFormProps {
   onLogin: (user: { name: string; email: string }) => void;
@@ -15,65 +17,70 @@ interface LoginFormProps {
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
   const { setSelectedCategory } = useCategory();
+  const { signIn, signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState('');
+  const [businessCategory, setBusinessCategory] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetSuccess, setResetSuccess] = useState(false);
+  const [success, setSuccess] = useState('');
 
-  // Sistema de usuários por categoria
-  const categoryUsers = {
-    'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
-
-    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central', userType: 'regular' },
-    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic', userType: 'regular' },
-    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde', userType: 'regular' },
-    'alimenticio': { email: 'chef@restaurante.com', password: 'chef2025', name: 'Chef Roberto', business: 'Restaurante Bella Vista', userType: 'regular' },
-    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech', userType: 'regular' },
-    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative', userType: 'regular' },
-    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency', userType: 'regular' }
-  };
+  const businessCategories = [
+    { value: 'farmacia', label: 'Farmácia' },
+    { value: 'pet', label: 'Pet Shop/Veterinária' },
+    { value: 'medico', label: 'Clínica Médica' },
+    { value: 'alimenticio', label: 'Restaurante/Alimentício' },
+    { value: 'vendas', label: 'Vendas/Comércio' },
+    { value: 'design', label: 'Design Gráfico' },
+    { value: 'sites', label: 'Desenvolvimento Web' }
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setIsLoading(true);
 
-    // Simular delay de autenticação
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      if (isRegister) {
+        // Validações para registro
+        if (!name.trim()) {
+          setError('Nome é obrigatório');
+          return;
+        }
+        if (!businessCategory) {
+          setError('Categoria de negócio é obrigatória');
+          return;
+        }
 
-    // Verificar credenciais e definir categoria automaticamente
-    let userFound = false;
-    for (const [category, userData] of Object.entries(categoryUsers)) {
-      if (email === userData.email && password === userData.password) {
-        // Para usuário master, usar a categoria 'estetica' por padrão
-        const businessCategory = category === 'master' ? 'estetica' : category;
+        await signUp(email, password, { name: name.trim(), businessCategory });
+        setSuccess('Conta criada! Verifique seu email para confirmar.');
+        setIsRegister(false);
+      } else {
+        // Login
+        await signIn(email, password);
         
-        // Definir categoria no localStorage e contexto
-        localStorage.setItem('userBusinessCategory', businessCategory);
-        setSelectedCategory(businessCategory);
-        
-        onLogin({
-          name: userData.name,
-          email: userData.email,
-          userType: userData.userType,
-          businessCategory: businessCategory,
-          id: category === 'master' ? 1 : 2
-        } as any);
-        
-        userFound = true;
-        break;
+        // Buscar dados do usuário da tabela users
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setSelectedCategory(data.user.businessCategory);
+          localStorage.setItem('userBusinessCategory', data.user.businessCategory);
+          onLogin(data.user);
+        }
       }
+    } catch (error: any) {
+      setError(error.message || 'Erro na autenticação');
+    } finally {
+      setIsLoading(false);
     }
-
-    if (!userFound) {
-      setError('Email ou senha incorretos.');
-    }
-
-    setIsLoading(false);
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
