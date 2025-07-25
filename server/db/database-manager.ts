@@ -18,9 +18,9 @@ class DatabaseManager {
         const supabaseStorage = new SupabaseStorage();
         
         try {
-          // Teste básico de conexão
+          // Teste com usuário real que existe no schema
           await Promise.race([
-            supabaseStorage.getUserByEmail('test@test.com'),
+            supabaseStorage.getUserByEmail('farmaceutico@farmaciacentral.com'),
             new Promise((_, reject) => 
               setTimeout(() => reject(new Error('Timeout')), 3000)
             )

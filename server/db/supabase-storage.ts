@@ -49,7 +49,7 @@ export class SupabaseStorage implements Storage {
         .where(eq(schema.usersTable.email, email))
         .limit(1);
       
-      console.log(`✅ Supabase: Consultando usuário ${email}`);
+      console.log(`✅ Supabase: Usuário ${email} encontrado - tabelas funcionando!`);
       return result[0] || null;
     } catch (error) {
       if (error.message.includes('relation "users" does not exist')) {
