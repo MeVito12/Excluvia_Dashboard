@@ -121,36 +121,21 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       {/* Sidebar */}
       <div className={cn(
         "fixed left-0 top-0 z-40 h-full bg-[hsl(var(--dashboard-dark))] border-r border-[hsl(var(--dashboard-darker))] transition-all duration-300 shadow-xl",
-        isCollapsed ? "w-16" : "w-64",
-        "translate-x-0"
+        "w-64",
+        isCollapsed ? "-translate-x-full" : "translate-x-0"
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className={cn(
-            "p-4 md:p-6 border-b border-[hsl(var(--dashboard-darker))]",
-            isCollapsed && "p-2 md:p-3"
-          )}>
-            {!isCollapsed && (
-              <>
-                <div className="mb-4">
-                  <UserAvatar username={user?.name || 'Usuário'} size="medium" />
-                </div>
-                <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
-                <p className="text-xs text-blue-200 mt-1">Sistema de Gerenciamento</p>
-              </>
-            )}
-            {isCollapsed && (
-              <div className="flex justify-center">
-                <UserAvatar username={user?.name || 'Usuário'} size="small" />
-              </div>
-            )}
+          <div className="p-4 md:p-6 border-b border-[hsl(var(--dashboard-darker))]">
+            <div className="mb-4">
+              <UserAvatar username={user?.name || 'Usuário'} size="medium" />
+            </div>
+            <h2 className="text-lg font-bold text-white">Controle de Dados</h2>
+            <p className="text-xs text-blue-200 mt-1">Sistema de Gerenciamento</p>
           </div>
 
           {/* Navigation */}
-          <nav className={cn(
-            "flex-1 p-3 md:p-4 overflow-y-auto custom-scroll",
-            isCollapsed && "p-1 md:p-2"
-          )}>
+          <nav className="flex-1 p-3 md:p-4 overflow-y-auto custom-scroll">
             <ul className="space-y-2">
               {menuItems
                 .filter(item => {
@@ -169,37 +154,31 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full text-white transition-all duration-300 modern-card-hover hover:text-white modern-shine",
-                        isCollapsed ? "justify-center p-2 h-12" : "justify-start text-left h-auto p-3 min-h-[50px] md:min-h-[60px]",
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px] modern-card-hover",
+                        "hover:text-white modern-shine",
                         isActive && "bg-primary text-primary-foreground modern-glow"
                       )}
                       style={{
                         '--hover-bg': 'hsl(158 89% 53%)'
                       } as React.CSSProperties}
                       onClick={() => handleMenuClick(item.id)}
-                      title={isCollapsed ? item.label : undefined}
                     >
                       <ModernIcon 
                         icon={Icon}
                         variant="default"
                         size="md"
                         animated={true}
-                        className={cn(
-                          "flex-shrink-0 !text-white",
-                          isCollapsed ? "" : "mr-3"
-                        )}
+                        className="mr-3 flex-shrink-0 !text-white"
                       />
-                      {!isCollapsed && (
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm leading-tight">{item.label}</div>
-                          <div className={cn(
-                            "text-xs mt-1 leading-tight break-words hidden md:block",
-                            isActive ? "text-blue-100" : "text-blue-200"
-                          )}>
-                            {item.description}
-                          </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm leading-tight">{item.label}</div>
+                        <div className={cn(
+                          "text-xs mt-1 leading-tight break-words hidden md:block",
+                          isActive ? "text-blue-100" : "text-blue-200"
+                        )}>
+                          {item.description}
                         </div>
-                      )}
+                      </div>
                     </Button>
                   </li>
                 );
@@ -208,32 +187,20 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           </nav>
 
           {/* Footer - Logout */}
-          <div className={cn(
-            "p-3 md:p-4 border-t border-[hsl(var(--dashboard-darker))]",
-            isCollapsed && "p-1 md:p-2"
-          )}>
+          <div className="p-3 md:p-4 border-t border-[hsl(var(--dashboard-darker))]">
             <Button
               variant="ghost"
               onClick={logout}
-              className={cn(
-                "w-full text-white hover:text-white hover:bg-red-600/20 transition-all duration-300",
-                isCollapsed ? "justify-center p-2 h-12" : "justify-start p-3"
-              )}
-              title={isCollapsed ? "Sair do Sistema" : undefined}
+              className="w-full justify-start text-white hover:text-white hover:bg-red-600/20 transition-all duration-300 p-3"
             >
               <ModernIcon 
                 icon={LogOut}
                 variant="danger"
                 size="md"
                 animated={true}
-                className={cn(
-                  "flex-shrink-0 !text-red-400",
-                  isCollapsed ? "" : "mr-3"
-                )}
+                className="mr-3 flex-shrink-0 !text-red-400"
               />
-              {!isCollapsed && (
-                <span className="font-medium text-sm">Sair do Sistema</span>
-              )}
+              <span className="font-medium text-sm">Sair do Sistema</span>
             </Button>
           </div>
         </div>
@@ -242,7 +209,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       {/* Toggle Button */}
       <div className={cn(
         "fixed top-1/2 -translate-y-1/2 z-50 transition-all duration-300",
-        isCollapsed ? "left-16" : "left-64"
+        isCollapsed ? "left-0" : "left-64"
       )}>
         <Button
           variant="ghost"

@@ -54,7 +54,7 @@ const Index = () => {
       />
 
       {/* Main Content */}
-      <main className={`p-4 md:p-6 pt-16 md:pt-6 transition-all duration-300 ${sidebarCollapsed ? 'ml-0 md:ml-16' : 'ml-0 md:ml-64'}`}>
+      <main className={`p-4 md:p-6 pt-16 md:pt-6 transition-all duration-300 ${sidebarCollapsed ? 'ml-0' : 'ml-0 md:ml-64'}`}>
         <div className="max-w-7xl mx-auto">
           {renderActiveSection()}
         </div>
