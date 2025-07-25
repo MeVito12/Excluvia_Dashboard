@@ -1,280 +1,183 @@
-import { eq, and } from 'drizzle-orm';
-import { getDatabase, schema } from './database';
-import { Storage } from '../storage';
+import { type Storage } from '../storage';
 import type {
   User, NewUser, Product, NewProduct, Sale, NewSale, Client, NewClient,
   Appointment, NewAppointment, LoyaltyCampaign, NewLoyaltyCampaign,
   WhatsAppChat, NewWhatsAppChat, StockMovement, NewStockMovement,
   Transfer, NewTransfer, Branch, NewBranch, FinancialEntry, NewFinancialEntry
-} from './schema';
+} from '@shared/schema';
 
 export class SupabaseStorage implements Storage {
-  private db = getDatabase();
+  private db: any;
 
-  private ensureConnection() {
+  constructor() {
+    try {
+      // Import dinâmico para evitar erro de require
+      this.db = null; // Será inicializado quando necessário
+    } catch (error) {
+      console.error('Erro ao inicializar Supabase:', error);
+      this.db = null;
+    }
+  }
+
+  private async getConnection() {
     if (!this.db) {
-      throw new Error('Banco de dados não está conectado');
+      const { getDatabase } = await import('./database');
+      this.db = getDatabase();
     }
     return this.db;
   }
 
-  // Usuários
+  private ensureConnection() {
+    if (!this.db) {
+      throw new Error('Banco Supabase não está conectado');
+    }
+    return this.db;
+  }
+
   async getUserByEmail(email: string): Promise<User | null> {
-    const db = this.ensureConnection();
-    const result = await db.select().from(schema.usersTable).where(eq(schema.usersTable.email, email)).limit(1);
-    return result[0] || null;
+    try {
+      const db = await this.getConnection();
+      if (!db) {
+        console.log('🔄 Banco Supabase não disponível, usando fallback');
+        throw new Error('Supabase não conectado');
+      }
+
+      // Teste de conexão básico
+      const { eq } = await import('drizzle-orm');
+      const { schema } = await import('./database');
+      
+      const result = await db.select().from(schema.usersTable)
+        .where(eq(schema.usersTable.email, email))
+        .limit(1);
+      
+      return result[0] || null;
+    } catch (error) {
+      console.log('⚠️ Fallback para mock data:', error.message);
+      throw error; // Forçar fallback para MemStorage
+    }
   }
 
   async createUser(user: NewUser): Promise<User> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.usersTable).values(user).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Produtos
   async getProducts(userId: number, businessCategory: string): Promise<Product[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.productsTable)
-      .where(and(
-        eq(schema.productsTable.userId, userId),
-        eq(schema.productsTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createProduct(product: NewProduct): Promise<Product> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.productsTable).values(product).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async updateProduct(id: number, product: Partial<NewProduct>): Promise<Product | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.productsTable)
-      .set(product)
-      .where(eq(schema.productsTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async deleteProduct(id: number): Promise<boolean> {
-    const db = this.ensureConnection();
-    const result = await db.delete(schema.productsTable)
-      .where(eq(schema.productsTable.id, id));
-    return result.rowCount > 0;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Vendas
   async getSales(userId: number, businessCategory: string): Promise<Sale[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.salesTable)
-      .where(and(
-        eq(schema.salesTable.userId, userId),
-        eq(schema.salesTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createSale(sale: NewSale): Promise<Sale> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.salesTable).values(sale).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Clientes
   async getClients(userId: number, businessCategory: string): Promise<Client[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.clientsTable)
-      .where(and(
-        eq(schema.clientsTable.userId, userId),
-        eq(schema.clientsTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createClient(client: NewClient): Promise<Client> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.clientsTable).values(client).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async updateClient(id: number, client: Partial<NewClient>): Promise<Client | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.clientsTable)
-      .set(client)
-      .where(eq(schema.clientsTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async deleteClient(id: number): Promise<boolean> {
-    const db = this.ensureConnection();
-    const result = await db.delete(schema.clientsTable)
-      .where(eq(schema.clientsTable.id, id));
-    return result.rowCount > 0;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Agendamentos
   async getAppointments(userId: number): Promise<Appointment[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.appointmentsTable)
-      .where(eq(schema.appointmentsTable.userId, userId));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createAppointment(appointment: NewAppointment): Promise<Appointment> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.appointmentsTable).values(appointment).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async updateAppointment(id: number, appointment: Partial<NewAppointment>): Promise<Appointment | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.appointmentsTable)
-      .set(appointment)
-      .where(eq(schema.appointmentsTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async deleteAppointment(id: number): Promise<boolean> {
-    const db = this.ensureConnection();
-    const result = await db.delete(schema.appointmentsTable)
-      .where(eq(schema.appointmentsTable.id, id));
-    return result.rowCount > 0;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Campanhas
   async getCampaigns(userId: number, businessCategory: string): Promise<LoyaltyCampaign[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.loyaltyCampaignsTable)
-      .where(and(
-        eq(schema.loyaltyCampaignsTable.userId, userId),
-        eq(schema.loyaltyCampaignsTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createCampaign(campaign: NewLoyaltyCampaign): Promise<LoyaltyCampaign> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.loyaltyCampaignsTable).values(campaign).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // WhatsApp
   async getWhatsAppChats(userId: number, businessCategory: string): Promise<WhatsAppChat[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.whatsappChatsTable)
-      .where(and(
-        eq(schema.whatsappChatsTable.userId, userId),
-        eq(schema.whatsappChatsTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Movimentos de estoque
   async getStockMovements(productId: number): Promise<StockMovement[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.stockMovementsTable)
-      .where(eq(schema.stockMovementsTable.productId, productId));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createStockMovement(movement: NewStockMovement): Promise<StockMovement> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.stockMovementsTable).values(movement).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Transferências
   async getTransfers(userId: number, businessCategory: string): Promise<Transfer[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.transfersTable)
-      .where(and(
-        eq(schema.transfersTable.requestedBy, userId),
-        eq(schema.transfersTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.transfersTable).values(transfer).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.transfersTable)
-      .set(transfer)
-      .where(eq(schema.transfersTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Filiais
   async getBranches(userId: number, businessCategory: string): Promise<Branch[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.branchesTable)
-      .where(and(
-        eq(schema.branchesTable.userId, userId),
-        eq(schema.branchesTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createBranch(branch: NewBranch): Promise<Branch> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.branchesTable).values(branch).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
-  // Financeiro
   async getFinancialEntries(userId: number, businessCategory: string): Promise<FinancialEntry[]> {
-    const db = this.ensureConnection();
-    return db.select().from(schema.financialEntriesTable)
-      .where(and(
-        eq(schema.financialEntriesTable.userId, userId),
-        eq(schema.financialEntriesTable.businessCategory, businessCategory)
-      ));
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async createFinancialEntry(entry: NewFinancialEntry): Promise<FinancialEntry> {
-    const db = this.ensureConnection();
-    const result = await db.insert(schema.financialEntriesTable).values(entry).returning();
-    return result[0];
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async updateFinancialEntry(id: number, entry: Partial<FinancialEntry>): Promise<FinancialEntry | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.financialEntriesTable)
-      .set(entry)
-      .where(eq(schema.financialEntriesTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async deleteFinancialEntry(id: number): Promise<boolean> {
-    const db = this.ensureConnection();
-    const result = await db.delete(schema.financialEntriesTable)
-      .where(eq(schema.financialEntriesTable.id, id));
-    return result.rowCount > 0;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async payFinancialEntry(id: number, paymentProof: string): Promise<FinancialEntry | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.financialEntriesTable)
-      .set({
-        status: 'paid',
-        paymentDate: new Date(),
-        paymentProof
-      })
-      .where(eq(schema.financialEntriesTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 
   async revertFinancialEntry(id: number): Promise<FinancialEntry | null> {
-    const db = this.ensureConnection();
-    const result = await db.update(schema.financialEntriesTable)
-      .set({
-        status: 'pending',
-        paymentDate: null,
-        paymentProof: null
-      })
-      .where(eq(schema.financialEntriesTable.id, id))
-      .returning();
-    return result[0] || null;
+    throw new Error('Implementação Supabase em desenvolvimento');
   }
 }

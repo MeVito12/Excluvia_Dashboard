@@ -1,7 +1,6 @@
 import { initializeDatabase } from './database';
 import { SupabaseStorage } from './supabase-storage';
-import { MemStorage } from '../storage';
-import type { Storage } from '../storage';
+import { MemStorage, type Storage } from '../storage';
 
 class DatabaseManager {
   private storage: Storage | null = null;
@@ -15,16 +14,35 @@ class DatabaseManager {
       const db = initializeDatabase();
       
       if (db) {
-        this.storage = new SupabaseStorage();
-        this.isSupabaseConnected = true;
-        console.log('✅ Usando banco de dados Supabase');
+        // Teste de conectividade com timeout
+        const supabaseStorage = new SupabaseStorage();
+        
+        try {
+          // Teste básico de conexão
+          await Promise.race([
+            supabaseStorage.getUserByEmail('test@test.com'),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Timeout')), 3000)
+            )
+          ]);
+          
+          this.storage = supabaseStorage;
+          this.isSupabaseConnected = true;
+          console.log('✅ Usando banco de dados Supabase');
+        } catch (testError) {
+          console.log('⚠️  Supabase conectado mas tabelas não encontradas');
+          console.log('📋 Execute o SQL do arquivo migrations/schema.sql no Supabase Dashboard');
+          this.storage = new MemStorage();
+          this.isSupabaseConnected = false;
+          console.log('🔄 Usando armazenamento em memória temporariamente');
+        }
       } else {
         this.storage = new MemStorage();
         this.isSupabaseConnected = false;
-        console.log('⚠️  Usando armazenamento em memória (mock data)');
+        console.log('⚠️  DATABASE_URL não configurada - usando dados mock');
       }
     } catch (error) {
-      console.error('❌ Erro na inicialização do banco:', error);
+      console.error('❌ Erro na inicialização do banco:', error.message);
       this.storage = new MemStorage();
       this.isSupabaseConnected = false;
       console.log('🔄 Fallback para armazenamento em memória');
