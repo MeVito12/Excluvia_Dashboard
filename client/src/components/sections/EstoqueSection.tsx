@@ -9,7 +9,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
-import { SheetsIntegrationPanel } from '@/components/SheetsIntegrationPanel';
+
 import { 
   Package, 
   ShoppingCart, 
@@ -27,7 +27,7 @@ import {
   CheckCircle,
   XCircle,
   Calendar,
-  Sheet,
+
   ArrowRightLeft,
   Send,
   Inbox,
@@ -59,9 +59,7 @@ const EstoqueSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterUnit, setFilterUnit] = useState('all');
-  const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
-  const [showSheetsPanel, setShowSheetsPanel] = useState(false);
-  const userId = isJuniorProfile ? 3 : 1;
+  const userId = 1;
   
   // Usar hooks para dados reais da API
   const {
@@ -1981,16 +1979,7 @@ const EstoqueSection = () => {
           </p>
         </div>
         
-        {/* Botão Google Sheets - exclusivo para perfil Junior */}
-        {isJuniorProfile && (
-          <button 
-            onClick={() => setShowSheetsPanel(true)}
-            className="btn btn-outline flex items-center gap-2 bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
-          >
-            <Sheet className="w-4 h-4" />
-            Integração Google Sheets
-          </button>
-        )}
+
       </div>
 
       {/* Métricas de Estoque */}
@@ -2422,13 +2411,7 @@ const EstoqueSection = () => {
         cancelText={confirmData.cancelText}
       />
 
-      {/* Painel de Integração Google Sheets - exclusivo para perfil Junior */}
-      {isJuniorProfile && (
-        <SheetsIntegrationPanel 
-          isVisible={showSheetsPanel}
-          onClose={() => setShowSheetsPanel(false)}
-        />
-      )}
+
     </div>
   );
 };

@@ -27,7 +27,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   // Sistema de usuários por categoria
   const categoryUsers = {
     'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
-    'junior': { email: 'junior@distribuidora.com', password: 'junior2025', name: 'Junior Silva - Coordenador', business: 'Distribuidora Multi-Unidades', userType: 'master' },
+
     'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central', userType: 'regular' },
     'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic', userType: 'regular' },
     'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde', userType: 'regular' },
@@ -49,8 +49,8 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     let userFound = false;
     for (const [category, userData] of Object.entries(categoryUsers)) {
       if (email === userData.email && password === userData.password) {
-        // Para usuário master, usar a categoria 'estetica' por padrão, junior usa 'vendas'
-        const businessCategory = category === 'master' ? 'estetica' : category === 'junior' ? 'vendas' : category;
+        // Para usuário master, usar a categoria 'estetica' por padrão
+        const businessCategory = category === 'master' ? 'estetica' : category;
         
         // Definir categoria no localStorage e contexto
         localStorage.setItem('userBusinessCategory', businessCategory);
@@ -61,7 +61,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
           email: userData.email,
           userType: userData.userType,
           businessCategory: businessCategory,
-          id: category === 'master' ? 1 : category === 'junior' ? 3 : 2
+          id: category === 'master' ? 1 : 2
         } as any);
         
         userFound = true;

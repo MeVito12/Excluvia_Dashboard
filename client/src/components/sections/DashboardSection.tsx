@@ -15,20 +15,14 @@ import {
   type Appointment,
   type Activity
 } from '@/lib/mockData';
-import JuniorDashboard from './JuniorDashboard';
+
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   
-  // Verificar se é o perfil Junior
-  const isJuniorProfile = user?.name === 'Junior Silva - Coordenador';
-  
-  // Se for Junior, mostrar dashboard específico
-  if (isJuniorProfile) {
-    return <JuniorDashboard />;
-  }
+
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFrom, setDateFrom] = useState<string | undefined>();

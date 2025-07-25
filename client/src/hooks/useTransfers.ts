@@ -18,7 +18,7 @@ export const useTransfers = () => {
   } = useQuery({
     queryKey: ["/api/transfers", user?.name, selectedCategory],
     queryFn: async () => {
-      const userId = user?.name === 'Junior Silva - Coordenador' ? 3 : 1;
+      const userId = 1;
       const response = await fetch(
         `${API_BASE}/transfers?userId=${userId}&businessCategory=${selectedCategory}`
       );
@@ -38,7 +38,7 @@ export const useTransfers = () => {
   } = useQuery({
     queryKey: ["/api/branches", user?.name, selectedCategory],
     queryFn: async () => {
-      const userId = user?.name === 'Junior Silva - Coordenador' ? 3 : 1;
+      const userId = 1;
       const response = await fetch(
         `${API_BASE}/branches?userId=${userId}&businessCategory=${selectedCategory}`
       );
