@@ -1982,14 +1982,23 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Valor Total</p>
+              <p className="text-sm font-medium text-gray-600">Próximos do Vencimento</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {productsLoading ? '...' : `R$ ${products.reduce((total, product) => total + (product.price * (product.stock || 0)), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {productsLoading ? '...' : (() => {
+                  const today = new Date();
+                  return products.filter(p => {
+                    if (!p.expiryDate) return false;
+                    const expiryDate = new Date(p.expiryDate);
+                    const diffTime = expiryDate.getTime() - today.getTime();
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    return diffDays <= 7 && diffDays > 0;
+                  }).length;
+                })()}
               </p>
-              <p className="text-xs text-green-600 mt-1">Valor em estoque</p>
+              <p className="text-xs text-yellow-600 mt-1">Próximos 7 dias</p>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <DollarSign className="h-6 w-6 text-green-600" />
+            <div className="p-3 rounded-full bg-yellow-100">
+              <Clock className="h-6 w-6 text-yellow-600" />
             </div>
           </div>
         </div>
@@ -1997,16 +2006,31 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Produtos Ativos</p>
+              <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {productsLoading ? '...' : products.filter(p => (p.stock || 0) > 0).length}
+                {productsLoading ? '...' : (() => {
+                  const today = new Date();
+                  return products.filter(p => {
+                    if (!p.expiryDate) return false;
+                    const expiryDate = new Date(p.expiryDate);
+                    return expiryDate < today;
+                  }).length;
+                })()}
               </p>
-              <p className="text-xs text-blue-600 mt-1">
-                {products.length > 0 ? `${Math.round((products.filter(p => (p.stock || 0) > 0).length / products.length) * 100)}% disponível` : 'Carregando...'}
+              <p className="text-xs text-red-600 mt-1">
+                {(() => {
+                  const today = new Date();
+                  const expired = products.filter(p => {
+                    if (!p.expiryDate) return false;
+                    const expiryDate = new Date(p.expiryDate);
+                    return expiryDate < today;
+                  }).length;
+                  return expired > 0 ? 'Requer ação imediata' : 'Nenhum vencido';
+                })()}
               </p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <CheckCircle className="h-6 w-6 text-purple-600" />
+            <div className="p-3 rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
             </div>
           </div>
         </div>
