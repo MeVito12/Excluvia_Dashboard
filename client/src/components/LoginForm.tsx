@@ -63,7 +63,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
           id: user.id,
           name: user.name,
           email: user.email,
-          userType: user.userType,
+          role: user.role,
           businessCategory: user.businessCategory,
           permissions: user.permissions
         });

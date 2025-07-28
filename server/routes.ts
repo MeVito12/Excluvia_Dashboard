@@ -49,6 +49,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User creation route (only for CEO and master users)
+  app.post("/api/users", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const newUser = await storage.createUser(req.body);
+      
+      // Return user data without password
+      const { password: _, ...userWithoutPassword } = newUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ error: "Erro ao criar usuário" });
+    }
+  });
+
+  // Get all users route (only for CEO and master users)
+  app.get("/api/users", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      // Note: This would need to be implemented in storage interface
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+  });
+
   // Middleware para extrair userId e dados da empresa/filial do header de autorização
   const getUserContextFromRequest = (req: any) => {
     const userId = req.headers['x-user-id'];

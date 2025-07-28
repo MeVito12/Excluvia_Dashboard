@@ -83,8 +83,8 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [allUserPermissions, setAllUserPermissions] = useState<Record<number, string[]>>({});
 
-  // Verifica se é usuário master
-  const isMasterUser = (user as any)?.userType === 'master';
+  // Verifica se é usuário master ou CEO
+  const isMasterUser = (user as any)?.role === 'master' || (user as any)?.role === 'ceo';
 
   // Carrega permissões do localStorage
   useEffect(() => {

@@ -4,7 +4,7 @@ interface User {
   id: number;
   name: string;
   email: string;
-  userType: string;
+  role: string;
   businessCategory: string;
   permissions?: string[];
 }
