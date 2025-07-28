@@ -343,6 +343,34 @@ const CadastroSection = () => {
     setCommonUsers(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Handler para envio de filial
+  const handleBranchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newBranch.name.trim()) {
+      showAlert({
+        title: "Erro",
+        description: "Nome da filial é obrigatório.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const branchToCreate = {
+      ...newBranch,
+      companyId: companyCreated?.id || 0
+    };
+
+    setBranches(prev => [...prev, branchToCreate]);
+    setNewBranch({ name: '', address: '', phone: '', email: '' });
+    
+    showAlert({
+      title: "Sucesso",
+      description: "Filial adicionada com sucesso!",
+      variant: "default"
+    });
+  };
+
   // Estados para gerenciamento
   const [existingCompanies, setExistingCompanies] = useState<any[]>([]);
   const [existingUsers, setExistingUsers] = useState<any[]>([]);
