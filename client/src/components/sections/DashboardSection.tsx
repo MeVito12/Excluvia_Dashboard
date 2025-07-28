@@ -173,7 +173,7 @@ const DashboardSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Vendas</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                R$ {filteredSales.reduce((sum, sale) => sum + sale.totalPrice, 0).toFixed(2)}
+                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toFixed(2)}
               </p>
               <p className="text-xs text-green-600 mt-1">{filteredSales.length} transações</p>
             </div>
@@ -245,7 +245,7 @@ const DashboardSection = () => {
             {filteredSales.slice(0, 3).map((sale) => (
               <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-800">R$ {sale.totalPrice.toFixed(2)}</p>
+                  <p className="font-medium text-gray-800">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
                   <p className="text-sm text-gray-600">Qtd: {sale.quantity}</p>
                 </div>
                 <div className="text-right">

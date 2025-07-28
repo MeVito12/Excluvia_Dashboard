@@ -436,26 +436,13 @@ export class SupabaseStorage implements Storage {
   // PRODUCT METHODS
   // ====================================
 
-  async getProducts(branchId?: number, companyId?: number): Promise<Product[]> {
+  async getProducts(userId: number, businessCategory?: string): Promise<Product[]> {
     const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
+    const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    let query = db.select().from(schema.productsTable);
-    
-    const conditions = [];
-    if (branchId && schema.productsTable.branchId) {
-      conditions.push(eq(schema.productsTable.branchId, branchId));
-    }
-    if (companyId && schema.productsTable.companyId) {
-      conditions.push(eq(schema.productsTable.companyId, companyId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
-    }
-    
-    return query;
+    return db.select().from(schema.productsTable)
+      .where(eq(schema.productsTable.createdBy, userId));
   }
 
   async createProduct(product: NewProduct): Promise<Product> {
@@ -497,26 +484,13 @@ export class SupabaseStorage implements Storage {
   // SALE METHODS
   // ====================================
 
-  async getSales(branchId?: number, companyId?: number): Promise<Sale[]> {
+  async getSales(userId: number, businessCategory?: string): Promise<Sale[]> {
     const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
+    const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    let query = db.select().from(schema.salesTable);
-    
-    const conditions = [];
-    if (branchId && schema.salesTable.branchId) {
-      conditions.push(eq(schema.salesTable.branchId, branchId));
-    }
-    if (companyId && schema.salesTable.companyId) {
-      conditions.push(eq(schema.salesTable.companyId, companyId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
-    }
-    
-    return query;
+    return db.select().from(schema.salesTable)
+      .where(eq(schema.salesTable.createdBy, userId));
   }
 
   async createSale(sale: NewSale): Promise<Sale> {
@@ -534,26 +508,13 @@ export class SupabaseStorage implements Storage {
   // CLIENT METHODS
   // ====================================
 
-  async getClients(branchId?: number, companyId?: number): Promise<Client[]> {
+  async getClients(userId: number, businessCategory?: string): Promise<Client[]> {
     const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
+    const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    let query = db.select().from(schema.clientsTable);
-    
-    const conditions = [];
-    if (branchId && schema.clientsTable.branchId) {
-      conditions.push(eq(schema.clientsTable.branchId, branchId));
-    }
-    if (companyId && schema.clientsTable.companyId) {
-      conditions.push(eq(schema.clientsTable.companyId, companyId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
-    }
-    
-    return query;
+    return db.select().from(schema.clientsTable)
+      .where(eq(schema.clientsTable.createdBy, userId));
   }
 
   async createClient(client: NewClient): Promise<Client> {
@@ -595,30 +556,17 @@ export class SupabaseStorage implements Storage {
   // APPOINTMENT METHODS
   // ====================================
 
-  async getAppointments(branchId?: number, companyId?: number): Promise<Appointment[]> {
+  async getAppointments(userId: number, businessCategory?: string): Promise<Appointment[]> {
     const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
+    const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
     if (!schema.appointmentsTable) {
       return [];
     }
     
-    let query = db.select().from(schema.appointmentsTable);
-    
-    const conditions = [];
-    if (branchId && schema.appointmentsTable.branchId) {
-      conditions.push(eq(schema.appointmentsTable.branchId, branchId));
-    }
-    if (companyId && schema.appointmentsTable.companyId) {
-      conditions.push(eq(schema.appointmentsTable.companyId, companyId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
-    }
-    
-    return query;
+    return db.select().from(schema.appointmentsTable)
+      .where(eq(schema.appointmentsTable.createdBy, userId));
   }
 
   async createAppointment(appointment: NewAppointment): Promise<Appointment> {
@@ -672,30 +620,17 @@ export class SupabaseStorage implements Storage {
   // FINANCIAL ENTRY METHODS
   // ====================================
 
-  async getFinancialEntries(branchId?: number, companyId?: number): Promise<FinancialEntry[]> {
+  async getFinancialEntries(userId: number, businessCategory?: string): Promise<FinancialEntry[]> {
     const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
+    const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
     if (!schema.financialEntriesTable) {
       return [];
     }
     
-    let query = db.select().from(schema.financialEntriesTable);
-    
-    const conditions = [];
-    if (branchId && schema.financialEntriesTable.branchId) {
-      conditions.push(eq(schema.financialEntriesTable.branchId, branchId));
-    }
-    if (companyId && schema.financialEntriesTable.companyId) {
-      conditions.push(eq(schema.financialEntriesTable.companyId, companyId));
-    }
-    
-    if (conditions.length > 0) {
-      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
-    }
-    
-    return query;
+    return db.select().from(schema.financialEntriesTable)
+      .where(eq(schema.financialEntriesTable.createdBy, userId));
   }
 
   async createFinancialEntry(entry: NewFinancialEntry): Promise<FinancialEntry> {
