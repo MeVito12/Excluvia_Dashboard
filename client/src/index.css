@@ -1056,3 +1056,35 @@ a[class*="text-"]:hover,
 button.link-button:hover {
   text-decoration: none !important;
 }
+
+/* Força remoção completa de bordas para links específicos */
+button[type="button"][class*="text-purple"] {
+  all: unset !important;
+  color: hsl(var(--brand-primary)) !important;
+  cursor: pointer !important;
+  font-size: 0.875rem !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+button[type="button"][class*="text-purple"]:hover {
+  color: hsl(var(--brand-secondary)) !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  text-decoration: none !important;
+}
+
+/* Remove qualquer estilo residual de botões */
+.text-center button {
+  all: unset !important;
+  color: hsl(var(--brand-primary)) !important;
+  cursor: pointer !important;
+  font-size: 0.875rem !important;
+}

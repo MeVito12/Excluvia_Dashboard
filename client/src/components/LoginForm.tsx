@@ -222,7 +222,11 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     boxShadow: 'none !important',
                     padding: '0 !important',
                     margin: '0 !important',
-                    color: 'hsl(var(--brand-primary)) !important'
+                    color: 'hsl(var(--brand-primary)) !important',
+                    textDecoration: 'none !important',
+                    borderRadius: '0 !important',
+                    borderWidth: '0 !important',
+                    borderStyle: 'none !important'
                   }}
                 >
                   Esqueceu sua senha?
