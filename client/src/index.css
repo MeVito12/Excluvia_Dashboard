@@ -325,7 +325,9 @@ All colors MUST be HSL.
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Força cor branca dos ícones em hover com mesma transição */
+  /* Força cor branca do texto e ícones em hover */
+  .tab-button:hover:not(.active),
+  .tab-button:hover:not(.active) span,
   .tab-button:hover:not(.active) svg {
     color: white !important;
     transition: all 0.3s ease;
@@ -338,6 +340,11 @@ All colors MUST be HSL.
   /* Hover para sidebar com mesma cor das abas */
   .modern-card-hover:hover {
     background: hsl(var(--brand-secondary)) !important;
+  }
+  
+  .modern-card-hover:hover span,
+  .modern-card-hover:hover svg {
+    color: white !important;
   }
 
   .tab-button.active {
@@ -758,7 +765,17 @@ All colors MUST be HSL.
 }
 
 .tab-inactive {
-  @apply text-gray-600 hover:text-gray-800 hover:bg-gray-50;
+  @apply text-gray-600 hover:text-white hover:bg-gray-50;
+}
+
+.tab-inactive:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+}
+
+.tab-inactive:hover span,
+.tab-inactive:hover svg {
+  color: white !important;
 }
 
 .tab-content {
@@ -777,4 +794,18 @@ All colors MUST be HSL.
 .tab-content .text-gray-700,
 .tab-content .text-sm {
   color: #666666 !important;
+}
+
+/* Força hover branco completo para abas */
+.tab-button:hover:not(.active) * {
+  color: white !important;
+}
+
+.tab-inactive:hover * {
+  color: white !important;
+}
+
+/* Força hover da sidebar também */
+.modern-card-hover:hover * {
+  color: white !important;
 }
