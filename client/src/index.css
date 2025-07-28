@@ -787,10 +787,22 @@ All colors MUST be HSL.
   color: white !important;
 }
 
+.system-btn-primary *,
+.system-btn-primary span,
+.system-btn-primary svg {
+  color: white !important;
+}
+
 .system-btn-primary:hover {
   background: hsl(var(--brand-secondary)) !important;
   color: white !important;
   transform: translateY(-1px);
+}
+
+.system-btn-primary:hover *,
+.system-btn-primary:hover span,
+.system-btn-primary:hover svg {
+  color: white !important;
 }
 
 .system-btn-outline {
@@ -805,4 +817,10 @@ All colors MUST be HSL.
   border-color: hsl(var(--brand-secondary)) !important;
   color: white !important;
   transform: translateY(-1px);
+}
+
+.system-btn-outline:hover *,
+.system-btn-outline:hover span,
+.system-btn-outline:hover svg {
+  color: white !important;
 }
