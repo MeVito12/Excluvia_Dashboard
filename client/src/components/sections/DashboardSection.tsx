@@ -171,11 +171,11 @@ const DashboardSection = () => {
         <div className="metric-card-standard">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total de Vendas</p>
+              <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toFixed(2)}
+                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-green-600 mt-1">{filteredSales.length} transações</p>
+              <p className="text-xs text-green-600 mt-1">{filteredSales.length} vendas realizadas</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />

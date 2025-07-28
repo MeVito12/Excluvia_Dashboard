@@ -145,7 +145,7 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Receita Total</p>
-              <p className="metric-card-value">R$ {calculateMetrics.totalSales}</p>
+              <p className="metric-card-value">R$ {Number(calculateMetrics.totalSales).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p className="metric-card-description text-green-600">{calculateMetrics.growth} vs período anterior</p>
             </div>
             <div className="metric-card-icon bg-green-100">
@@ -171,7 +171,7 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Ticket Médio</p>
-              <p className="metric-card-value">R$ {calculateMetrics.avgTicket}</p>
+              <p className="metric-card-value">R$ {Number(calculateMetrics.avgTicket).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p className="metric-card-description text-purple-600">Por transação</p>
             </div>
             <div className="metric-card-icon bg-purple-100">
@@ -235,7 +235,7 @@ const GraficosSection = () => {
           </CardHeader>
           <CardContent>
             <div className="text-center py-8">
-              <p className="text-2xl font-bold text-gray-900">R$ {calculateMetrics.totalSales}</p>
+              <p className="text-2xl font-bold text-gray-900">R$ {Number(calculateMetrics.totalSales).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p className="text-gray-500">Receita total do período</p>
             </div>
           </CardContent>
