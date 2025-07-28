@@ -433,23 +433,28 @@ const GraficosSection = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredSales.slice(0, 5).map((sale, index) => (
-              <div key={sale.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                    <span className="text-sm font-bold text-purple-600">#{index + 1}</span>
+            {filteredSales.slice(0, 5).map((sale: any, index: any) => {
+              const product = products.find((p: any) => p.id === sale.productId);
+              const productName = product ? product.name : `Produto ID: ${sale.productId}`;
+              
+              return (
+                <div key={sale.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                      <span className="text-sm font-bold text-purple-600">#{index + 1}</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{productName}</p>
+                      <p className="text-sm text-gray-500">{sale.quantity} vendas</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-gray-900">Produto ID: {sale.productId}</p>
-                    <p className="text-sm text-gray-500">{sale.quantity} vendas</p>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
+                    <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
-                  <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {filteredSales.length === 0 && (
               <p className="text-gray-500 text-center py-8">Nenhuma venda encontrada no período selecionado</p>
             )}
@@ -468,10 +473,12 @@ const GraficosSection = () => {
           <Button 
             onClick={() => {
               // Criar CSV com dados do período filtrado
-              const csvHeader = '"Data","Produto ID","Quantidade","Valor Total","Método Pagamento"\n';
-              const csvData = filteredSales.map(sale => 
-                `"${new Date(sale.saleDate).toLocaleDateString()}","${sale.productId}","${sale.quantity}","R$ ${Number(sale.totalPrice || 0).toFixed(2)}","${sale.paymentMethod || 'N/A'}"`
-              ).join('\n');
+              const csvHeader = '"Data","Produto","Quantidade","Valor Total","Método Pagamento"\n';
+              const csvData = filteredSales.map((sale: any) => {
+                const product = products.find((p: any) => p.id === sale.productId);
+                const productName = product ? product.name : `Produto ID: ${sale.productId}`;
+                return `"${new Date(sale.saleDate).toLocaleDateString()}","${productName}","${sale.quantity}","R$ ${Number(sale.totalPrice || 0).toFixed(2)}","${sale.paymentMethod || 'N/A'}"`;
+              }).join('\n');
               
               const csvContent = csvHeader + csvData;
               const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
