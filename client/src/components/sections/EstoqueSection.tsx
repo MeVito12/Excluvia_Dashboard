@@ -2298,7 +2298,7 @@ const EstoqueSection = () => {
               </button>
               <button
                 onClick={addProduct}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="flex-1 px-4 py-2 system-btn-primary"
               >
                 Adicionar Produto
               </button>
@@ -2384,7 +2384,7 @@ const EstoqueSection = () => {
               </button>
               <button
                 onClick={adjustStock}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="flex-1 px-4 py-2 system-btn-primary"
               >
                 {stockAdjustment.operation === 'add' ? 'Adicionar' : 'Remover'}
               </button>

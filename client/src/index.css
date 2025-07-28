@@ -397,7 +397,8 @@ All colors MUST be HSL.
 
   .btn-primary:hover {
     @apply transform -translate-y-0.5;
-    background: hsl(var(--brand-primary) / 0.9);
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
   }
 
   .btn-secondary {
@@ -777,4 +778,31 @@ All colors MUST be HSL.
 .tab-content .text-gray-700,
 .tab-content .text-sm {
   color: #666666 !important;
+}
+
+/* Padronização de botões principais do sistema - Roxo com hover verde */
+.system-btn-primary {
+  @apply font-medium px-4 py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg active:scale-95;
+  background: hsl(var(--brand-primary)) !important;
+  color: white !important;
+}
+
+.system-btn-primary:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+  transform: translateY(-1px);
+}
+
+.system-btn-outline {
+  @apply font-medium px-4 py-2 rounded-md transition-all duration-200 border-2;
+  border-color: hsl(var(--brand-primary)) !important;
+  color: hsl(var(--brand-primary)) !important;
+  background: transparent !important;
+}
+
+.system-btn-outline:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  border-color: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+  transform: translateY(-1px);
 }

@@ -97,7 +97,7 @@ const AgendamentosSection = () => {
           <h3 className="text-lg font-semibold text-black">Compromissos</h3>
           <button 
             onClick={openAddModal}
-            className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2"
+            className="system-btn-primary transition-colors flex items-center gap-2"
           >
             + Adicionar Compromisso
           </button>
@@ -355,7 +355,7 @@ const AgendamentosSection = () => {
               </button>
               <button
                 onClick={saveNewAppointment}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                className="flex-1 px-4 py-2 system-btn-primary"
               >
                 Adicionar
               </button>

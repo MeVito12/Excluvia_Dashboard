@@ -197,7 +197,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200"
+                className="w-full system-btn-primary"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -225,7 +225,8 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <p className="text-xs text-gray-600 font-medium mb-2">Credenciais disponíveis:</p>
               <div className="grid grid-cols-1 gap-1 text-xs text-gray-500">
-                <p><strong>Master:</strong> master@sistema.com / master2025</p>
+                <p><strong>Gestão:</strong> gestao@excluv.ia / gestao2025</p>
+                <p><strong>Master:</strong> master@[empresa].com / master2025</p>
                 <p><strong>Farmácia:</strong> farmaceutico@farmaciacentral.com / farm2025</p>
                 <p><strong>Pet:</strong> veterinario@petclinic.com / vet2025</p>
                 <p><strong>Médico:</strong> medico@clinicasaude.com / med2025</p>
@@ -284,7 +285,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   </Button>
                   <Button 
                     type="submit" 
-                    className="flex-1 bg-primary hover:bg-primary/90"
+                    className="flex-1 system-btn-primary"
                   >
                     Enviar
                   </Button>
@@ -304,7 +305,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 
                 <Button 
                   onClick={closeForgotPassword}
-                  className="w-full bg-primary hover:bg-primary/90"
+                  className="w-full system-btn-primary"
                 >
                   Fechar
                 </Button>

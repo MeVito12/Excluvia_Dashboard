@@ -810,7 +810,7 @@ const CadastroSection = () => {
               <Button 
                 type="submit" 
                 disabled={createCompanyMutation.isPending}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+                className="system-btn-primary px-6 py-2"
               >
                 {createCompanyMutation.isPending ? 'Cadastrando...' : 'Cadastrar Empresa'}
               </Button>
@@ -941,7 +941,7 @@ const CadastroSection = () => {
               <Button 
                 type="submit" 
                 disabled={createMasterUserMutation.isPending}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+                className="system-btn-primary px-6 py-2"
               >
                 {createMasterUserMutation.isPending ? 'Criando...' : 'Criar Usuário Master'}
               </Button>
@@ -972,7 +972,7 @@ const CadastroSection = () => {
             <div className="flex justify-center space-x-4">
               <Button 
                 onClick={() => setHasBranches(true)}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+                className="system-btn-primary px-8 py-3"
               >
                 Sim, cadastrar filiais
               </Button>
@@ -1052,7 +1052,7 @@ const CadastroSection = () => {
                 <Button 
                   type="submit" 
                   disabled={createBranchMutation.isPending}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                  className="system-btn-primary px-6"
                 >
                   {createBranchMutation.isPending ? 'Adicionando...' : 'Adicionar Filial'}
                 </Button>
@@ -1157,14 +1157,14 @@ const CadastroSection = () => {
                 <Button 
                   type="submit" 
                   disabled={createCommonUserMutation.isPending}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                  className="system-btn-primary px-6"
                 >
                   {createCommonUserMutation.isPending ? 'Adicionando...' : 'Adicionar Usuário'}
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleFinishRegistration}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6"
+                  className="system-btn-primary px-6"
                 >
                   Finalizar Cadastro
                 </Button>

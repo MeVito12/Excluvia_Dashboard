@@ -306,7 +306,7 @@ const ControleSection = () => {
                         onClick={() => saveUserPermissions(userData.id)}
                         disabled={updatePermissionsMutation.isPending}
                         size="sm"
-                        className="bg-green-600 hover:bg-green-700"
+                        className="system-btn-primary"
                       >
                         {updatePermissionsMutation.isPending ? (
                           <Loader2 className="w-4 h-4 animate-spin mr-2" />

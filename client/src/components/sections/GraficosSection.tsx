@@ -132,7 +132,7 @@ const GraficosSection = () => {
                 variant: "success"
               });
             }}
-            className="bg-purple-600 text-white hover:bg-purple-700"
+            className="system-btn-primary"
           >
             Aplicar Filtros
           </Button>
@@ -320,7 +320,7 @@ const GraficosSection = () => {
                 variant: "success"
               });
             }}
-            className="bg-purple-600 text-white hover:bg-purple-700 flex items-center gap-2"
+            className="system-btn-primary flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
             Relatório Semanal
