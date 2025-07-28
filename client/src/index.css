@@ -1252,3 +1252,35 @@ button[className*="rounded-r-md"]:hover {
   border: none !important;
   box-shadow: none !important;
 }
+
+/* Força transparência absoluta nos itens da sidebar */
+nav button[variant="ghost"],
+nav .modern-card-hover,
+nav button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Remove qualquer classe que adicione fundo branco */
+.modern-card-hover,
+.modern-shine,
+.modern-glow {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Força transparência em botões ghost */
+button[data-variant="ghost"],
+.button-ghost {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Estados específicos para sidebar */
+nav li button {
+  background: transparent !important;
+}

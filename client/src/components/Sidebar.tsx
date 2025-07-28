@@ -167,13 +167,26 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px] modern-card-hover",
-                        "hover:text-white modern-shine",
-                        isActive && "bg-primary text-primary-foreground modern-glow"
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px]",
+                        "hover:text-white",
+                        isActive && "bg-primary text-primary-foreground"
                       )}
                       style={{
-                        '--hover-bg': 'hsl(158 89% 53%)'
-                      } as React.CSSProperties}
+                        background: isActive ? 'hsl(var(--brand-primary))' : 'transparent',
+                        border: 'none',
+                        boxShadow: 'none',
+                        outline: 'none'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.background = 'hsl(var(--brand-secondary))';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isActive) {
+                          e.currentTarget.style.background = 'transparent';
+                        }
+                      }}
                       onClick={() => handleMenuClick(item.id)}
                     >
                       <ModernIcon 
