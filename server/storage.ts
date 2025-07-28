@@ -22,6 +22,7 @@ export interface Storage {
   createUser(user: NewUser): Promise<User>;
   getMasterUsers(): Promise<User[]>;
   getAllUsers(): Promise<User[]>;
+  getUsersByCompany(companyId: number): Promise<User[]>;
   updateUserRole(userId: number, role: string): Promise<User | null>;
   updateUser(id: number, user: Partial<NewUser>): Promise<User | null>;
   deleteUser(id: number): Promise<boolean>;
@@ -142,6 +143,10 @@ export class SupabaseStorage implements Storage {
   async deleteUser(id: number): Promise<boolean> {
     await this.request(`users?id=eq.${id}`, { method: 'DELETE' });
     return true;
+  }
+
+  async getUsersByCompany(companyId: number): Promise<User[]> {
+    return this.request(`users?company_id=eq.${companyId}&select=*`);
   }
 
   // ====================================

@@ -225,6 +225,15 @@ export class SupabaseStorage implements Storage {
     return db.select().from(usersTable);
   }
 
+  async getUsersByCompany(companyId: number): Promise<User[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { usersTable } = await import('./schema');
+    
+    return db.select().from(usersTable)
+      .where(eq(usersTable.companyId, companyId));
+  }
+
   async updateUserRole(userId: number, role: string): Promise<User | null> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');

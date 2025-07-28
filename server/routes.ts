@@ -715,15 +715,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "ID do usuário é obrigatório" });
       }
 
-      // Buscar usuário primeiro para obter companyId
-      const user = await storage.getUserByEmail(`user${userId}@fake.com`); // Método provisório
+      // Buscar usuário pelo ID (usando storage ou consulta direta)
+      const users = await storage.getAllUsers();
+      const user = users.find(u => u.id === userId);
       
       if (!user || !user.companyId) {
         return res.status(404).json({ error: "Usuário não possui empresa associada" });
       }
 
       // Buscar empresa pelo ID
-      const company = await storage.getCompanyById(user.companyId);
+      const companies = await storage.getCompaniesByCreator(user.createdBy || userId);
+      const company = companies.find(c => c.id === user.companyId);
       
       if (!company) {
         return res.status(404).json({ error: "Empresa não encontrada" });
