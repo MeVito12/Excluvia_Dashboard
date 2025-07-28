@@ -27,8 +27,8 @@ export class SupabaseStorage implements Storage {
 
   async getCompanies(): Promise<Company[]> {
     const db = await this.getConnection();
-    const { schema } = await import('./database');
-    return db.select().from(schema.companiesTable);
+    const { companiesTable } = await import('./schema');
+    return db.select().from(companiesTable);
   }
 
   async getCompaniesByCreator(creatorId: number): Promise<Company[]> {
@@ -99,9 +99,9 @@ export class SupabaseStorage implements Storage {
 
   async createBranch(branch: NewBranch): Promise<Branch> {
     const db = await this.getConnection();
-    const { schema } = await import('./database');
+    const { branchesTable } = await import('./schema');
     
-    const result = await db.insert(schema.branchesTable)
+    const result = await db.insert(branchesTable)
       .values(branch)
       .returning();
     
@@ -180,10 +180,10 @@ export class SupabaseStorage implements Storage {
       }
 
       const { eq } = await import('drizzle-orm');
-      const { schema } = await import('./database');
+      const { usersTable } = await import('./schema');
       
-      const result = await db.select().from(schema.usersTable)
-        .where(eq(schema.usersTable.email, email))
+      const result = await db.select().from(usersTable)
+        .where(eq(usersTable.email, email))
         .limit(1);
       
       console.log(`✅ Supabase: User ${email} found - tables working!`);
@@ -200,9 +200,9 @@ export class SupabaseStorage implements Storage {
 
   async createUser(user: NewUser): Promise<User> {
     const db = await this.getConnection();
-    const { schema } = await import('./database');
+    const { usersTable } = await import('./schema');
     
-    const result = await db.insert(schema.usersTable)
+    const result = await db.insert(usersTable)
       .values(user)
       .returning();
     
@@ -212,10 +212,10 @@ export class SupabaseStorage implements Storage {
   async getMasterUsers(): Promise<User[]> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
-    const { schema } = await import('./database');
+    const { usersTable } = await import('./schema');
     
-    return db.select().from(schema.usersTable)
-      .where(eq(schema.usersTable.role, 'master'));
+    return db.select().from(usersTable)
+      .where(eq(usersTable.role, 'master'));
   }
 
   async updateUser(id: number, user: Partial<NewUser>): Promise<User | null> {
@@ -246,29 +246,48 @@ export class SupabaseStorage implements Storage {
   // COMPANY METHODS
   // ====================================
 
-  async getCompanies(): Promise<Company[]> {
-    const db = await this.getConnection();
-    const { schema } = await import('./database');
-    
-    // For now, return empty array since we don't have companies table in the old schema
-    return [];
-  }
-
   async getCompaniesByCreator(creatorId: number): Promise<Company[]> {
-    // For now, return empty array since we don't have companies table in the old schema
-    return [];
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { companiesTable } = await import('./schema');
+    
+    return db.select().from(companiesTable)
+      .where(eq(companiesTable.createdBy, creatorId));
   }
 
   async createCompany(company: NewCompany): Promise<Company> {
-    throw new Error('Company operations not implemented in current schema');
+    const db = await this.getConnection();
+    const { companiesTable } = await import('./schema');
+    
+    const result = await db.insert(companiesTable)
+      .values(company)
+      .returning();
+    
+    return result[0];
   }
 
   async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
-    throw new Error('Company operations not implemented in current schema');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { companiesTable } = await import('./schema');
+    
+    const result = await db.update(companiesTable)
+      .set(company)
+      .where(eq(companiesTable.id, id))
+      .returning();
+    
+    return result[0] || null;
   }
 
   async deleteCompany(id: number): Promise<boolean> {
-    throw new Error('Company operations not implemented in current schema');
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { companiesTable } = await import('./schema');
+    
+    await db.delete(companiesTable)
+      .where(eq(companiesTable.id, id));
+    
+    return true;
   }
 
   // ====================================
@@ -277,18 +296,16 @@ export class SupabaseStorage implements Storage {
 
   async getBranches(companyId?: number): Promise<Branch[]> {
     const db = await this.getConnection();
-    const { schema } = await import('./database');
+    const { eq } = await import('drizzle-orm');
+    const { branchesTable } = await import('./schema');
     
-    if (schema.branchesTable) {
-      const { eq } = await import('drizzle-orm');
-      if (companyId) {
-        return db.select().from(schema.branchesTable)
-          .where(eq(schema.branchesTable.companyId, companyId));
-      }
-      return db.select().from(schema.branchesTable);
+    let query = db.select().from(branchesTable);
+    
+    if (companyId) {
+      query = query.where(eq(branchesTable.companyId, companyId));
     }
     
-    return [];
+    return query;
   }
 
   async getBranchesByCompany(companyId: number): Promise<Branch[]> {
