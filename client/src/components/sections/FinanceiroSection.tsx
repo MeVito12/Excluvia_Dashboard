@@ -692,72 +692,104 @@ const FinanceiroSection = () => {
         </div>
       )}
 
-      {/* Modal de Pagamento */}
-      <Dialog open={isPayModalOpen} onOpenChange={setIsPayModalOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Registrar Pagamento</DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="paymentDate">Data do Pagamento *</Label>
-              <Input
-                id="paymentDate"
-                type="date"
-                value={paymentData.paymentDate}
-                onChange={(e) => setPaymentData({ ...paymentData, paymentDate: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="paymentMethod">Método de Pagamento *</Label>
-              <select
-                id="paymentMethod"
-                value={paymentData.paymentMethod}
-                onChange={(e) => setPaymentData({ ...paymentData, paymentMethod: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-200 rounded-md"
-              >
-                <option value="cash">Dinheiro</option>
-                <option value="card">Cartão</option>
-                <option value="pix">PIX</option>
-                <option value="transfer">Transferência</option>
-                <option value="boleto">Boleto</option>
-              </select>
-            </div>
-
-            <div>
-              <Label htmlFor="paymentProof">Comprovante (URL)</Label>
-              <Input
-                id="paymentProof"
-                type="url"
-                value={paymentData.paymentProof}
-                onChange={(e) => setPaymentData({ ...paymentData, paymentProof: e.target.value })}
-                placeholder="https://exemplo.com/comprovante.pdf"
-              />
-            </div>
-
-            <div className="flex gap-2 pt-4">
-              <Button 
-                onClick={handlePayEntry}
-                className="flex-1"
-              >
-                Confirmar Pagamento
-              </Button>
-              <Button 
-                variant="outline" 
+      {/* Modal de Pagamento - Personalizado */}
+      {isPayModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsPayModalOpen(false);
+              setSelectedEntry(null);
+            }
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Registrar Pagamento
+              </h3>
+              <button
                 onClick={() => {
                   setIsPayModalOpen(false);
                   setSelectedEntry(null);
                 }}
-                className="flex-1"
+                className="text-gray-400 hover:text-gray-600"
               >
-                Cancelar
-              </Button>
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Data do Pagamento *
+                </label>
+                <input
+                  id="paymentDate"
+                  type="date"
+                  value={paymentData.paymentDate}
+                  onChange={(e) => setPaymentData({ ...paymentData, paymentDate: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-1">
+                  Método de Pagamento *
+                </label>
+                <select
+                  id="paymentMethod"
+                  value={paymentData.paymentMethod}
+                  onChange={(e) => setPaymentData({ ...paymentData, paymentMethod: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="dinheiro">Dinheiro</option>
+                  <option value="cartao">Cartão</option>
+                  <option value="pix">PIX</option>
+                  <option value="transferencia">Transferência</option>
+                  <option value="boleto">Boleto</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="paymentProof" className="block text-sm font-medium text-gray-700 mb-1">
+                  Comprovante (URL)
+                </label>
+                <input
+                  id="paymentProof"
+                  type="url"
+                  value={paymentData.paymentProof}
+                  onChange={(e) => setPaymentData({ ...paymentData, paymentProof: e.target.value })}
+                  placeholder="https://exemplo.com/comprovante.pdf"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={handlePayEntry}
+                  disabled={!paymentData.paymentDate || !paymentData.paymentMethod}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Confirmar Pagamento
+                </button>
+                <button
+                  onClick={() => {
+                    setIsPayModalOpen(false);
+                    setSelectedEntry(null);
+                  }}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* Alerta customizado */}
       <CustomAlert
