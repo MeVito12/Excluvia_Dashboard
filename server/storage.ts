@@ -20,6 +20,7 @@ export interface Storage {
   // Usuários
   getUserByEmail(email: string): Promise<User | null>;
   createUser(user: NewUser): Promise<User>;
+  getMasterUsers(): Promise<User[]>;
   updateUser(id: number, user: Partial<NewUser>): Promise<User | null>;
   deleteUser(id: number): Promise<boolean>;
   

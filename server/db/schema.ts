@@ -5,15 +5,15 @@ import { z } from 'zod';
 // Tabela de empresas
 export const companiesTable = pgTable('companies', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-  name: text('name').notNull(),
+  fantasyName: text('fantasy_name').notNull(),
+  corporateName: text('corporate_name').notNull(),
+  cnpj: text('cnpj').unique(),
   businessCategory: text('business_category').notNull(),
-  cnpj: text('cnpj'),
-  description: text('description'),
   address: text('address'),
   phone: text('phone'),
   email: text('email'),
   isActive: boolean('is_active').default(true),
-  createdBy: integer('created_by'),
+  createdBy: integer('created_by').default(1),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
@@ -23,15 +23,21 @@ export const branchesTable = pgTable('branches', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   companyId: integer('company_id').notNull().references(() => companiesTable.id),
   name: text('name').notNull(),
-  code: text('code').notNull().unique(),
   address: text('address'),
   phone: text('phone'),
   email: text('email'),
   isMain: boolean('is_main').default(false),
   isActive: boolean('is_active').default(true),
-  managerId: integer('manager_id'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Tabela de permissões de usuário
+export const userPermissionsTable = pgTable('user_permissions', {
+  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
+  userId: integer('user_id').notNull(),
+  permission: text('permission').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 // Tabela de usuários
@@ -188,17 +194,15 @@ export const financialEntriesTable = pgTable('financial_entries', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Tabela de permissões de usuário
-export const userPermissionsTable = pgTable('user_permissions', {
-  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-  userId: integer('user_id').notNull().references(() => usersTable.id),
-  sectionId: text('section_id').notNull(),
-  canAccess: boolean('can_access').notNull().default(false),
-  createdBy: integer('created_by').notNull().references(() => usersTable.id),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+
 
 // Schemas de validação
+export const insertCompanySchema = createInsertSchema(companiesTable);
+export const selectCompanySchema = createSelectSchema(companiesTable);
+export const insertBranchSchema = createInsertSchema(branchesTable);
+export const selectBranchSchema = createSelectSchema(branchesTable);
+export const insertUserPermissionSchema = createInsertSchema(userPermissionsTable);
+export const selectUserPermissionSchema = createSelectSchema(userPermissionsTable);
 export const insertUserSchema = createInsertSchema(usersTable);
 export const selectUserSchema = createSelectSchema(usersTable);
 export const insertProductSchema = createInsertSchema(productsTable);
@@ -213,6 +217,12 @@ export const insertFinancialEntrySchema = createInsertSchema(financialEntriesTab
 export const selectFinancialEntrySchema = createSelectSchema(financialEntriesTable);
 
 // Tipos TypeScript
+export type Company = typeof companiesTable.$inferSelect;
+export type NewCompany = typeof companiesTable.$inferInsert;
+export type Branch = typeof branchesTable.$inferSelect;
+export type NewBranch = typeof branchesTable.$inferInsert;
+export type UserPermission = typeof userPermissionsTable.$inferSelect;
+export type NewUserPermission = typeof userPermissionsTable.$inferInsert;
 export type User = typeof usersTable.$inferSelect;
 export type NewUser = typeof usersTable.$inferInsert;
 export type Product = typeof productsTable.$inferSelect;

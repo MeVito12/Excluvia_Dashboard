@@ -2,13 +2,15 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./db/database-manager";
 import { 
-  AppointmentSchema,
-  ProductSchema,
-  SaleSchema,
-  ClientSchema,
-  FinancialEntrySchema,
-  TransferSchema
-} from "@shared/schema";
+  insertCompanySchema,
+  insertBranchSchema,
+  insertUserSchema,
+  insertProductSchema,
+  insertSaleSchema,
+  insertClientSchema,
+  insertAppointmentSchema,
+  insertFinancialEntrySchema
+} from "./db/schema";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -49,30 +51,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User creation route (only for CEO and master users)
-  app.post("/api/users", async (req, res) => {
+  // Routes para cadastro de empresas
+  app.post("/api/companies", async (req, res) => {
     try {
+      const userId = req.headers['x-user-id'];
+      if (!userId) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
+
       const storage = await databaseManager.getStorage();
-      const newUser = await storage.createUser(req.body);
+      const companyData = insertCompanySchema.parse({
+        ...req.body,
+        createdBy: parseInt(userId as string)
+      });
       
-      // Return user data without password
-      const { password: _, ...userWithoutPassword } = newUser;
-      res.json(userWithoutPassword);
+      const newCompany = await storage.createCompany(companyData);
+      res.json(newCompany);
     } catch (error) {
-      console.error("Error creating user:", error);
-      res.status(500).json({ error: "Erro ao criar usuário" });
+      console.error("Error creating company:", error);
+      res.status(500).json({ error: "Erro ao criar empresa" });
     }
   });
 
-  // Get all users route (only for CEO and master users)
-  app.get("/api/users", async (req, res) => {
+  app.get("/api/companies", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      // Note: This would need to be implemented in storage interface
-      res.json([]);
+      const companies = await storage.getCompanies();
+      res.json(companies);
     } catch (error) {
-      console.error("Error fetching users:", error);
-      res.status(500).json({ error: "Erro ao buscar usuários" });
+      console.error("Error fetching companies:", error);
+      res.status(500).json({ error: "Erro ao buscar empresas" });
+    }
+  });
+
+  // Routes para cadastro de filiais
+  app.post("/api/branches", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const branchData = insertBranchSchema.parse(req.body);
+      
+      const newBranch = await storage.createBranch(branchData);
+      res.json(newBranch);
+    } catch (error) {
+      console.error("Error creating branch:", error);
+      res.status(500).json({ error: "Erro ao criar filial" });
+    }
+  });
+
+  app.get("/api/branches/:companyId", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const branches = await storage.getBranchesByCompany(parseInt(req.params.companyId));
+      res.json(branches);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+      res.status(500).json({ error: "Erro ao buscar filiais" });
+    }
+  });
+
+  // Routes para cadastro de usuários master
+  app.post("/api/master-users", async (req, res) => {
+    try {
+      const userId = req.headers['x-user-id'];
+      if (!userId) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const userData = insertUserSchema.parse({
+        ...req.body,
+        role: 'master',
+        createdBy: parseInt(userId as string)
+      });
+      
+      const newUser = await storage.createUser(userData);
+      
+      // Retornar dados do usuário sem senha
+      const { password: _, ...userWithoutPassword } = newUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error creating master user:", error);
+      res.status(500).json({ error: "Erro ao criar usuário master" });
+    }
+  });
+
+  app.get("/api/master-users", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const users = await storage.getMasterUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching master users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários master" });
     }
   });
 

@@ -141,7 +141,10 @@ const CadastroSection = () => {
     mutationFn: async (data: CompanyData) => {
       const response = await fetch('/api/companies', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': (user as any)?.id?.toString() || '1'
+        },
         body: JSON.stringify(data)
       });
       if (!response.ok) throw new Error('Erro ao criar empresa');
@@ -167,13 +170,18 @@ const CadastroSection = () => {
 
   const createMasterUserMutation = useMutation({
     mutationFn: async (data: UserData & { companyId: number }) => {
-      const response = await fetch('/api/users', {
+      const response = await fetch('/api/master-users', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': (user as any)?.id?.toString() || '1'
+        },
         body: JSON.stringify({
-          ...data,
-          role: 'master',
-          businessCategory: companyData.businessCategory
+          name: data.name,
+          email: data.email,
+          password: data.password,
+          companyId: data.companyId,
+          businessCategory: companyCreated?.businessCategory || 'geral'
         })
       });
       if (!response.ok) throw new Error('Erro ao criar usuário master');

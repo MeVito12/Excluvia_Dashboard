@@ -2,8 +2,9 @@ import { type Storage } from '../storage';
 import type {
   User, NewUser, Product, NewProduct, Sale, NewSale, Client, NewClient,
   Appointment, NewAppointment, Transfer, NewTransfer, Branch, NewBranch, 
-  FinancialEntry, NewFinancialEntry, Company, NewCompany, UserPermission
-} from '@shared/schema';
+  FinancialEntry, NewFinancialEntry, Company, NewCompany, UserPermission,
+  NewUserPermission
+} from './schema';
 
 export class SupabaseStorage implements Storage {
   private db: any;
@@ -206,6 +207,15 @@ export class SupabaseStorage implements Storage {
       .returning();
     
     return result[0];
+  }
+
+  async getMasterUsers(): Promise<User[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    return db.select().from(schema.usersTable)
+      .where(eq(schema.usersTable.role, 'master'));
   }
 
   async updateUser(id: number, user: Partial<NewUser>): Promise<User | null> {
