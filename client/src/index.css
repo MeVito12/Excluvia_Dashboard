@@ -1236,19 +1236,20 @@ div[className*="border-t"] button:hover {
   box-shadow: none !important;
 }
 
-/* Botão de colapsar específico */
+/* Botão de colapsar específico - tom azul do sistema */
 div[className*="fixed"] button,
 button[className*="rounded-r-md"] {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
+  color: #93C5FD !important;
 }
 
 div[className*="fixed"] button:hover,
 button[className*="rounded-r-md"]:hover {
   background: transparent !important;
-  color: #22C55E !important;
+  color: #60A5FA !important;
   border: none !important;
   box-shadow: none !important;
 }

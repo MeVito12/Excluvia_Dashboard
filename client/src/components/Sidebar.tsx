@@ -247,7 +247,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           variant="ghost"
           size="sm"
           onClick={handleToggle}
-          className="h-12 w-6 p-0 text-white hover:text-green-400 rounded-r-md rounded-l-none transition-all duration-300"
+          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300"
           style={{
             background: 'transparent !important',
             border: 'none !important',
