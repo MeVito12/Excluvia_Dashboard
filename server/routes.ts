@@ -799,10 +799,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Tipo, valor, descrição e data de vencimento são obrigatórios" });
       }
 
-      const newEntry = await storage.createFinancialEntry({
-        ...entryData,
-        dueDate: new Date(entryData.dueDate)
-      });
+      // Preparar dados com todos os campos obrigatórios
+      const financialEntryData = {
+        type: entryData.type,
+        amount: parseFloat(entryData.amount),
+        description: entryData.description,
+        category: entryData.businessCategory || "operacional",
+        paymentMethod: entryData.paymentMethod || "dinheiro",
+        status: entryData.type === 'income' ? 'paid' : 'pending',
+        dueDate: new Date(entryData.dueDate),
+        paidDate: entryData.type === 'income' ? new Date() : null,
+        referenceType: 'expense',
+        createdBy: userId,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      console.log('Dados sendo enviados para createFinancialEntry:', financialEntryData);
+      
+      const newEntry = await storage.createFinancialEntry(financialEntryData);
       res.json(newEntry);
     } catch (error) {
       console.error("Error creating financial entry:", error);
