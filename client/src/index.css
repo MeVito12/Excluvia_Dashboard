@@ -747,11 +747,14 @@ All colors MUST be HSL.
 }
 
 .tab-active {
-  @apply bg-purple-600 text-white shadow-md;
+  @apply bg-purple-600 shadow-md;
+  color: white !important;
 }
 
-.tab-active, .tab-active * {
-  @apply text-white !important;
+.tab-active svg,
+.tab-active span,
+.tab-active * {
+  color: white !important;
 }
 
 .tab-inactive {
