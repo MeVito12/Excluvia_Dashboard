@@ -518,7 +518,7 @@ const CadastroSection = () => {
           <form onSubmit={handleCompanySubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="fantasyName" className="text-sm font-medium text-black">Nome Fantasia *</Label>
+                <Label htmlFor="fantasyName" className="text-sm font-medium" style={{ color: "#000000" }}>Nome Fantasia *</Label>
                 <Input
                   id="fantasyName"
                   value={companyData.fantasyName}
@@ -530,7 +530,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="corporateName" className="text-sm font-medium text-black">Razão Social *</Label>
+                <Label htmlFor="corporateName" className="text-sm font-medium" style={{ color: "#000000" }}>Razão Social *</Label>
                 <Input
                   id="corporateName"
                   value={companyData.corporateName}
@@ -542,7 +542,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cnpj" className="text-sm font-medium text-black">CNPJ *</Label>
+                <Label htmlFor="cnpj" className="text-sm font-medium" style={{ color: "#000000" }}>CNPJ *</Label>
                 <div className="relative">
                   <Input
                     id="cnpj"
@@ -566,7 +566,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="businessCategory" className="text-sm font-medium text-black">Categoria do Negócio *</Label>
+                <Label htmlFor="businessCategory" className="text-sm font-medium" style={{ color: "#000000" }}>Categoria do Negócio *</Label>
                 <Select
                   value={companyData.businessCategory}
                   onValueChange={(value) => setCompanyData(prev => ({ ...prev, businessCategory: value }))}
@@ -611,7 +611,7 @@ const CadastroSection = () => {
           <form onSubmit={handleMasterUserSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="masterName" className="text-sm font-medium text-black">Nome Completo *</Label>
+                <Label htmlFor="masterName" className="text-sm font-medium" style={{ color: "#000000" }}>Nome Completo *</Label>
                 <Input
                   id="masterName"
                   value={masterUserData.name}
@@ -623,7 +623,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="masterEmail" className="text-sm font-medium text-black">E-mail *</Label>
+                <Label htmlFor="masterEmail" className="text-sm font-medium" style={{ color: "#000000" }}>E-mail *</Label>
                 <div className="relative">
                   <Input
                     id="masterEmail"
@@ -648,7 +648,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="masterPassword" className="text-sm font-medium text-black">Senha *</Label>
+                <Label htmlFor="masterPassword" className="text-sm font-medium" style={{ color: "#000000" }}>Senha *</Label>
                 <div className="relative">
                   <Input
                     id="masterPassword"
@@ -676,7 +676,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium text-black">Confirmar Senha *</Label>
+                <Label htmlFor="confirmPassword" className="text-sm font-medium" style={{ color: "#000000" }}>Confirmar Senha *</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -780,7 +780,7 @@ const CadastroSection = () => {
           <form onSubmit={handleBranchSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="branchName" className="text-sm font-medium text-black">Nome da Filial *</Label>
+                <Label htmlFor="branchName" className="text-sm font-medium" style={{ color: "#000000" }}>Nome da Filial *</Label>
                 <Input
                   id="branchName"
                   value={newBranch.name}
@@ -792,7 +792,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="branchAddress" className="text-sm font-medium text-black">Endereço</Label>
+                <Label htmlFor="branchAddress" className="text-sm font-medium" style={{ color: "#000000" }}>Endereço</Label>
                 <Input
                   id="branchAddress"
                   value={newBranch.address}
@@ -803,7 +803,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="branchPhone" className="text-sm font-medium text-black">Telefone</Label>
+                <Label htmlFor="branchPhone" className="text-sm font-medium" style={{ color: "#000000" }}>Telefone</Label>
                 <Input
                   id="branchPhone"
                   value={newBranch.phone}
@@ -814,7 +814,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="branchEmail" className="text-sm font-medium text-black">E-mail</Label>
+                <Label htmlFor="branchEmail" className="text-sm font-medium" style={{ color: "#000000" }}>E-mail</Label>
                 <Input
                   id="branchEmail"
                   type="email"
@@ -895,7 +895,7 @@ const CadastroSection = () => {
           <form onSubmit={handleCommonUserSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="userName" className="text-sm font-medium text-black">Nome Completo *</Label>
+                <Label htmlFor="userName" className="text-sm font-medium" style={{ color: "#000000" }}>Nome Completo *</Label>
                 <Input
                   id="userName"
                   value={newCommonUser.name}
@@ -906,7 +906,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="userEmail" className="text-sm font-medium text-black">E-mail *</Label>
+                <Label htmlFor="userEmail" className="text-sm font-medium" style={{ color: "#000000" }}>E-mail *</Label>
                 <Input
                   id="userEmail"
                   type="email"
@@ -918,7 +918,7 @@ const CadastroSection = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="userPassword" className="text-sm font-medium text-black">Senha *</Label>
+                <Label htmlFor="userPassword" className="text-sm font-medium" style={{ color: "#000000" }}>Senha *</Label>
                 <Input
                   id="userPassword"
                   type="password"
@@ -1074,7 +1074,7 @@ const CadastroSection = () => {
                           <p className="font-medium">{selectedUser.email}</p>
                         </div>
                         <div className="space-y-2">
-                          <Label className="text-sm font-medium text-black">Nova Role</Label>
+                          <Label className="text-sm font-medium" style={{ color: "#000000" }}>Nova Role</Label>
                           <Select value={newRole} onValueChange={setNewRole}>
                             <SelectTrigger>
                               <SelectValue placeholder="Selecione a role" />
