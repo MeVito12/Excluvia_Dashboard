@@ -50,8 +50,8 @@ const GraficosSection = () => {
 
   // Calcular métricas baseadas no período filtrado
   const calculateMetrics = useMemo(() => {
-    const totalSales = filteredSales.reduce((sum, sale) => sum + sale.totalPrice, 0);
-    const totalQuantity = filteredSales.reduce((sum, sale) => sum + sale.quantity, 0);
+    const totalSales = filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0);
+    const totalQuantity = filteredSales.reduce((sum, sale) => sum + (Number(sale.quantity) || 0), 0);
     const avgTicket = totalSales > 0 ? totalSales / filteredSales.length : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
@@ -279,7 +279,7 @@ const GraficosSection = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {sale.totalPrice.toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
                   <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
                 </div>
               </div>
@@ -304,7 +304,7 @@ const GraficosSection = () => {
               // Criar CSV com dados do período filtrado
               const csvHeader = '"Data","Produto ID","Quantidade","Valor Total","Método Pagamento"\n';
               const csvData = filteredSales.map(sale => 
-                `"${new Date(sale.saleDate).toLocaleDateString()}","${sale.productId}","${sale.quantity}","R$ ${sale.totalPrice.toFixed(2)}","${sale.paymentMethod || 'N/A'}"`
+                `"${new Date(sale.saleDate).toLocaleDateString()}","${sale.productId}","${sale.quantity}","R$ ${Number(sale.totalPrice || 0).toFixed(2)}","${sale.paymentMethod || 'N/A'}"`
               ).join('\n');
               
               const csvContent = csvHeader + csvData;

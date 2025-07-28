@@ -684,7 +684,7 @@ export class SupabaseStorage implements Storage {
   // TRANSFER METHODS
   // ====================================
 
-  async getTransfers(companyId?: number): Promise<Transfer[]> {
+  async getTransfers(userId?: number): Promise<Transfer[]> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
@@ -695,8 +695,8 @@ export class SupabaseStorage implements Storage {
     
     let query = db.select().from(schema.transfersTable);
     
-    if (companyId && schema.transfersTable.companyId) {
-      query = query.where(eq(schema.transfersTable.companyId, companyId));
+    if (userId && schema.transfersTable.createdBy) {
+      query = query.where(eq(schema.transfersTable.createdBy, userId));
     }
     
     return query;

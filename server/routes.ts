@@ -318,15 +318,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/appointments", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const { branchId, companyId } = getUserContextFromRequest(req);
-      const appointments = await storage.getAppointments(branchId, companyId);
+      const userId = getUserIdFromRequest(req);
+      const businessCategory = req.query.businessCategory as string || "alimenticio";
+      const appointments = await storage.getAppointments(userId, businessCategory);
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
-      res.status(503).json({ 
-        error: "Database not available",
-        message: "Please execute SQL schema in Supabase Dashboard first"
-      });
+      res.status(500).json({ error: "Erro ao buscar agendamentos" });
     }
   });
 
@@ -602,8 +600,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "alimenticio";
-      const transfers = await storage.getTransfers(userId, businessCategory);
+      const transfers = await storage.getTransfers(userId);
       res.json(transfers);
     } catch (error) {
       console.error("Error fetching transfers:", error);
