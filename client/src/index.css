@@ -759,7 +759,18 @@ All colors MUST be HSL.
 }
 
 .tab-inactive {
-  @apply text-gray-600 hover:text-gray-800 hover:bg-gray-50;
+  @apply text-gray-600;
+}
+
+.tab-inactive:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+}
+
+.tab-inactive:hover svg,
+.tab-inactive:hover span,
+.tab-inactive:hover * {
+  color: white !important;
 }
 
 .tab-content {

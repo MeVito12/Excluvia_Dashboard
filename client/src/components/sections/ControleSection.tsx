@@ -115,7 +115,7 @@ const ControleSection = () => {
       showAlert({
         title: "Erro",
         description: "Erro ao atualizar permissões do usuário.",
-        variant: "error"
+        variant: "destructive"
       });
     }
   });
@@ -265,7 +265,7 @@ const ControleSection = () => {
                   <div className="flex items-center gap-4">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                        <User className="w-6 h-6 text-purple-600" />
+                        <Users className="w-6 h-6 text-purple-600" />
                       </div>
                     </div>
                     <div>
@@ -323,7 +323,7 @@ const ControleSection = () => {
                           <div className="flex items-center gap-3">
                             {getPermissionIcon(userData.id, section.id)}
                             <div>
-                              <span className="font-medium text-sm text-gray-800">{section.name}</span>
+                              <span className="font-medium text-sm text-gray-800">{section.label}</span>
                               <p className="text-xs text-gray-600">{section.description}</p>
                             </div>
                           </div>
