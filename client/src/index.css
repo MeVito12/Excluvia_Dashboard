@@ -1215,3 +1215,40 @@ aside [class*="ring"] {
   box-shadow: none !important;
   outline: none !important;
 }
+
+/* Botões específicos da sidebar com seletores exatos */
+.sidebar-item [data-testid="logout-button"],
+button[onClick*="logout"],
+div[className*="border-t"] button {
+  background: transparent !important;
+  color: #F87171 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.sidebar-item [data-testid="logout-button"]:hover,
+button[onClick*="logout"]:hover,
+div[className*="border-t"] button:hover {
+  background: transparent !important;
+  color: #EF4444 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Botão de colapsar específico */
+div[className*="fixed"] button,
+button[className*="rounded-r-md"] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+div[className*="fixed"] button:hover,
+button[className*="rounded-r-md"]:hover {
+  background: transparent !important;
+  color: #22C55E !important;
+  border: none !important;
+  box-shadow: none !important;
+}

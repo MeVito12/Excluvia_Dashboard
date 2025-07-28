@@ -204,7 +204,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
             <Button
               variant="ghost"
               onClick={logout}
-              className="w-full justify-start text-white hover:text-white hover:bg-red-600/20 transition-all duration-300 p-3"
+              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3"
+              style={{
+                background: 'transparent !important',
+                border: 'none !important',
+                boxShadow: 'none !important',
+                outline: 'none !important'
+              }}
             >
               <ModernIcon 
                 icon={LogOut}
@@ -228,7 +234,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           variant="ghost"
           size="sm"
           onClick={handleToggle}
-          className="h-12 w-6 p-0 bg-[hsl(220_100%_12%)] border border-[hsl(220_100%_8%)] hover:bg-[hsl(220_100%_8%)] text-white shadow-lg rounded-r-md rounded-l-none"
+          className="h-12 w-6 p-0 text-white hover:text-green-400 rounded-r-md rounded-l-none transition-all duration-300"
+          style={{
+            background: 'transparent !important',
+            border: 'none !important',
+            boxShadow: 'none !important',
+            outline: 'none !important'
+          }}
         >
           <ModernIcon 
             icon={isCollapsed ? ChevronRight : ChevronLeft}
