@@ -348,14 +348,13 @@ const FinanceiroSection = () => {
               )}
             </div>
             {activeTab === 'saidas' && (
-              <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                <DialogTrigger asChild>
-                  <button className="btn btn-primary">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Nova Saída
-                  </button>
-                </DialogTrigger>
-              </Dialog>
+              <button 
+                className="btn btn-primary"
+                onClick={() => setIsCreateModalOpen(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nova Saída
+              </button>
             )}
           </div>
           
