@@ -964,7 +964,9 @@ button[type="button"]:contains("Esqueceu") {
 /* Barra lateral - transparente por padrão, colorido apenas em hover */
 .sidebar-item,
 nav button,
-aside button {
+aside button,
+nav a,
+aside a {
   background: transparent !important;
   color: inherit !important;
   border: none !important;
@@ -973,9 +975,26 @@ aside button {
 
 .sidebar-item:hover,
 nav button:hover,
-aside button:hover {
+aside button:hover,
+nav a:hover,
+aside a:hover {
   background: hsl(var(--brand-secondary)) !important;
   color: white !important;
+}
+
+/* Força transparência em elementos específicos da sidebar */
+nav .flex,
+aside .flex,
+nav .modern-card-hover,
+aside .modern-card-hover {
+  background: transparent !important;
+}
+
+nav .flex:hover,
+aside .flex:hover,
+nav .modern-card-hover:hover,
+aside .modern-card-hover:hover {
+  background: hsl(var(--brand-secondary)) !important;
 }
 
 /* Links "ver mais" e similares - aparência de link roxo sem bordas */
@@ -1087,4 +1106,29 @@ button[type="button"][class*="text-purple"]:hover {
   color: hsl(var(--brand-primary)) !important;
   cursor: pointer !important;
   font-size: 0.875rem !important;
+}
+
+/* Remove fundo branco da sidebar completamente */
+.modern-card-hover {
+  background: transparent !important;
+}
+
+.modern-card-hover:hover {
+  background: hsl(var(--brand-secondary)) !important;
+}
+
+/* Força transparência em qualquer card da sidebar */
+nav [class*="card"],
+aside [class*="card"],
+nav [class*="bg-"],
+aside [class*="bg-"] {
+  background: transparent !important;
+}
+
+nav [class*="card"]:hover,
+aside [class*="card"]:hover,
+nav [class*="bg-"]:hover,
+aside [class*="bg-"]:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
 }
