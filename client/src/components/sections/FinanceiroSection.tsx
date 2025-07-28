@@ -426,7 +426,7 @@ const FinanceiroSection = () => {
                       <div className="flex-1">
                         <h4 className="font-semibold text-gray-900">{entry.description}</h4>
                         <p className="text-sm text-gray-600">
-                          Vencimento: {new Date(entry.dueDate).toLocaleDateString('pt-BR')}
+                          Vencimento: {entry.dueDate ? new Date(entry.dueDate).toLocaleDateString('pt-BR') : 'Data não informada'}
                         </p>
                         
                         <div className="flex items-center gap-2 mt-2">
