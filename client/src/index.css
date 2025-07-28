@@ -877,3 +877,43 @@ button * {
 button:hover * {
   color: white !important;
 }
+
+/* Exceções para elementos que não devem seguir padrão de botão */
+.text-blue-600,
+.text-purple-600,
+a[class*="text-"],
+button.text-blue-600,
+button.text-purple-600 {
+  background: transparent !important;
+  color: #3B82F6 !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.text-blue-600:hover,
+.text-purple-600:hover,
+a[class*="text-"]:hover,
+button.text-blue-600:hover,
+button.text-purple-600:hover {
+  background: transparent !important;
+  color: #1D4ED8 !important;
+  transform: none !important;
+}
+
+/* Específico para link "Esqueceu sua senha" */
+button.text-sm.text-blue-600 {
+  background: transparent !important;
+  color: #3B82F6 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  font-weight: normal !important;
+}
+
+button.text-sm.text-blue-600:hover {
+  background: transparent !important;
+  color: #1D4ED8 !important;
+  text-decoration: underline !important;
+  transform: none !important;
+}
