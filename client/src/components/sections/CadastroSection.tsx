@@ -809,8 +809,11 @@ const CadastroSection = () => {
                 type="submit" 
                 disabled={createCompanyMutation.isPending}
                 className="system-btn-primary px-6 py-2"
+                style={{ color: 'white' }}
               >
-                {createCompanyMutation.isPending ? 'Cadastrando...' : 'Cadastrar Empresa'}
+                <span style={{ color: 'white' }}>
+                  {createCompanyMutation.isPending ? 'Cadastrando...' : 'Cadastrar Empresa'}
+                </span>
               </Button>
             </div>
           </form>
@@ -940,8 +943,11 @@ const CadastroSection = () => {
                 type="submit" 
                 disabled={createMasterUserMutation.isPending}
                 className="system-btn-primary px-6 py-2"
+                style={{ color: 'white' }}
               >
-                {createMasterUserMutation.isPending ? 'Criando...' : 'Criar Usuário Master'}
+                <span style={{ color: 'white' }}>
+                  {createMasterUserMutation.isPending ? 'Criando...' : 'Criar Usuário Master'}
+                </span>
               </Button>
             </div>
           </form>
@@ -971,8 +977,9 @@ const CadastroSection = () => {
               <Button 
                 onClick={() => setHasBranches(true)}
                 className="system-btn-primary px-8 py-3"
+                style={{ color: 'white' }}
               >
-                Sim, cadastrar filiais
+                <span style={{ color: 'white' }}>Sim, cadastrar filiais</span>
               </Button>
               <Button 
                 variant="outline"
@@ -1051,8 +1058,11 @@ const CadastroSection = () => {
                   type="submit" 
                   disabled={createBranchMutation.isPending}
                   className="system-btn-primary px-6"
+                  style={{ color: 'white' }}
                 >
-                  {createBranchMutation.isPending ? 'Adicionando...' : 'Adicionar Filial'}
+                  <span style={{ color: 'white' }}>
+                    {createBranchMutation.isPending ? 'Adicionando...' : 'Adicionar Filial'}
+                  </span>
                 </Button>
                 <Button 
                   type="button"
@@ -1156,15 +1166,19 @@ const CadastroSection = () => {
                   type="submit" 
                   disabled={createCommonUserMutation.isPending}
                   className="system-btn-primary px-6"
+                  style={{ color: 'white' }}
                 >
-                  {createCommonUserMutation.isPending ? 'Adicionando...' : 'Adicionar Usuário'}
+                  <span style={{ color: 'white' }}>
+                    {createCommonUserMutation.isPending ? 'Adicionando...' : 'Adicionar Usuário'}
+                  </span>
                 </Button>
                 <Button 
                   type="button"
                   onClick={handleFinishRegistration}
                   className="system-btn-primary px-6"
+                  style={{ color: 'white' }}
                 >
-                  Finalizar Cadastro
+                  <span style={{ color: 'white' }}>Finalizar Cadastro</span>
                 </Button>
               </div>
             </div>
