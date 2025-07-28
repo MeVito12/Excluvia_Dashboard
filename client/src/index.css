@@ -764,3 +764,17 @@ All colors MUST be HSL.
 .tab-content {
   @apply space-y-6;
 }
+/* Forçar visibilidade em todas as seções de gestão */
+.bg-gray-50 p,
+.bg-gray-50 span,
+.bg-gray-50 div,
+.tab-content p,
+.tab-content span,
+.tab-content .font-medium {
+  color: #000000 !important;
+}
+
+.tab-content .text-gray-700,
+.tab-content .text-sm {
+  color: #666666 !important;
+}

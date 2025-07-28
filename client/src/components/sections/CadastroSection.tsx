@@ -1337,7 +1337,7 @@ const CadastroSection = () => {
                   ) : (
                     <div className="bg-gray-50 p-8 rounded-lg text-center">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-700">Selecione um usuário para editar</p>
+                      <p style={{ color: '#000000' }}>Selecione um usuário para editar</p>
                     </div>
                   )}
                 </div>
@@ -1390,7 +1390,7 @@ const CadastroSection = () => {
                       <div className="space-y-4">
                         <div>
                           <p className="text-sm text-gray-700">Empresa:</p>
-                          <p className="font-medium">{selectedCompany.fantasyName}</p>
+                          <p className="font-medium" style={{ color: '#000000' }}>{selectedCompany.fantasyName}</p>
                         </div>
                         <div className="space-y-2">
                           <Button
@@ -1422,7 +1422,7 @@ const CadastroSection = () => {
                   ) : (
                     <div className="bg-gray-50 p-8 rounded-lg text-center">
                       <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-700">Selecione uma empresa para gerenciar</p>
+                      <p style={{ color: '#000000' }}>Selecione uma empresa para gerenciar</p>
                     </div>
                   )}
                 </div>
