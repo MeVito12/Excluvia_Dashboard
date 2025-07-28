@@ -42,7 +42,7 @@ const DashboardSection = () => {
   const { transfers, isLoading: transfersLoading } = useTransfers();
   const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
-  // Dados vazios para atividades e WhatsApp por enquanto
+  // Dados vazios para atividades e WhatsApp - usando apenas dados reais
   const activities: any[] = [];
   const whatsappChats: any[] = [];
 

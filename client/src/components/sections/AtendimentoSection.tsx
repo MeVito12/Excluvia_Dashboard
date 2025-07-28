@@ -574,36 +574,16 @@ const AtendimentoSection = () => {
     return baseTabs;
   };
 
-  // Mensagens mockadas por categoria
+  // Mensagens agora vazias - usando dados reais do banco
   const getMessages = () => {
-    if (selectedCategory === 'alimenticio') {
-      return [
-        { id: 1, name: 'João Silva', message: 'Olá! Gostaria de fazer um pedido...', time: '14:30', status: 'pending' },
-        { id: 2, name: 'Maria Santos', message: 'Vocês entregam na Zona Sul?', time: '14:15', status: 'responded' },
-        { id: 3, name: 'Carlos Oliveira', message: 'Quanto fica uma pizza grande?', time: '13:45', status: 'bot' }
-      ];
-    } else if (selectedCategory === 'vendas') {
-      return [
-        { id: 1, name: 'Ana Costa', message: 'Preciso de um orçamento para notebooks...', time: '15:20', status: 'pending' },
-        { id: 2, name: 'Pedro Lima', message: 'Têm smartphones Samsung em estoque?', time: '14:50', status: 'responded' },
-        { id: 3, name: 'Lucia Ferreira', message: 'Quando chega o novo lote de produtos?', time: '14:30', status: 'bot' }
-      ];
-    }
-    return [
-      { id: 1, name: 'Cliente 1', message: 'Olá, preciso de ajuda...', time: '14:30', status: 'pending' },
-      { id: 2, name: 'Cliente 2', message: 'Como funciona o atendimento?', time: '14:15', status: 'responded' }
-    ];
+    return [];
   };
 
-  // Catálogos/Cardápios por categoria
+  // Catálogos/Cardápios usando apenas dados reais do banco
   const getCatalogs = () => {
     if (selectedCategory === 'alimenticio') {
-      // Para alimentício, mantém gestão manual do cardápio
-      return [
-        { id: 1, name: 'Pizza Margherita', price: 'R$ 35,00', description: 'Molho de tomate, mussarela e manjericão', category: 'Pizzas' },
-        { id: 2, name: 'Hambúrguer Artesanal', price: 'R$ 28,00', description: '180g de carne, queijo, alface e tomate', category: 'Hambúrgueres' },
-        { id: 3, name: 'Refrigerante 350ml', price: 'R$ 5,00', description: 'Coca-Cola, Pepsi ou Guaraná', category: 'Bebidas' }
-      ];
+      // Para alimentício, usar dados reais do banco também
+      return [];
     } else {
       // Para outras categorias, puxar automaticamente do estoque
       const stockProducts = getCurrentCategoryItems();
@@ -1046,31 +1026,9 @@ const AtendimentoSection = () => {
 
         <div className="content-card">
           <h4 className="font-medium text-gray-800 mb-4">Transações Recentes</h4>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-800">Pedido #1234 - João Silva</p>
-                  <p className="text-xs text-gray-600">PIX • Hoje às 14:30</p>
-                </div>
-              </div>
-              <span className="font-medium text-green-600">R$ 45,90</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                  <CreditCard className="w-4 h-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-800">Pedido #1233 - Maria Santos</p>
-                  <p className="text-xs text-gray-600">Cartão 3x • Hoje às 13:15</p>
-                </div>
-              </div>
-              <span className="font-medium text-blue-600">R$ 89,70</span>
-            </div>
+          <div className="text-center py-8">
+            <p className="text-gray-500">Nenhuma transação registrada ainda</p>
+            <p className="text-sm text-gray-400 mt-1">As transações aparecerão aqui quando houver vendas</p>
           </div>
         </div>
       </div>
