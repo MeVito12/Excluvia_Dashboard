@@ -590,7 +590,7 @@ const AtendimentoSection = () => {
       return stockProducts.map((product: any) => ({
         id: product.id,
         name: product.name || product.title,
-        price: product.price ? `R$ ${product.price.toFixed(2).replace('.', ',')}` : 'Sob consulta',
+        price: product.price ? `R$ ${Number(product.price).toFixed(2).replace('.', ',')}` : 'Sob consulta',
         description: product.description,
         category: product.category,
         stock: product.stock,
