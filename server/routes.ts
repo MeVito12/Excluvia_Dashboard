@@ -2,7 +2,12 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./db/database-manager";
 import { 
-  appointmentSchema
+  AppointmentSchema,
+  ProductSchema,
+  SaleSchema,
+  ClientSchema,
+  FinancialEntrySchema,
+  TransferSchema
 } from "@shared/schema";
 
 
@@ -44,18 +49,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Middleware para extrair userId do header de autorização
-  const getUserIdFromRequest = (req: any): number => {
+  // Middleware para extrair userId e dados da empresa/filial do header de autorização
+  const getUserContextFromRequest = (req: any) => {
     const userId = req.headers['x-user-id'];
-    return userId ? parseInt(userId) : 1; // Fallback para 1 se não encontrado
+    const companyId = req.headers['x-company-id'];
+    const branchId = req.headers['x-branch-id'];
+    
+    return {
+      userId: userId ? parseInt(userId) : undefined,
+      companyId: companyId ? parseInt(companyId) : undefined,
+      branchId: branchId ? parseInt(branchId) : undefined
+    };
   };
 
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const appointments = await storage.getAppointments(userId);
+      const { branchId, companyId } = getUserContextFromRequest(req);
+      const appointments = await storage.getAppointments(branchId, companyId);
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -72,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const validatedData = appointmentSchema.parse({
+      const validatedData = AppointmentSchema.parse({
         ...req.body,
         userId,
         startTime: new Date(req.body.startTime),

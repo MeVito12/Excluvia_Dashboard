@@ -1,6 +1,6 @@
 import { initializeDatabase } from './database';
 import { SupabaseStorage } from './supabase-storage';
-import { MemStorage, type Storage } from '../storage';
+import { type Storage, SupabaseStorage as MainSupabaseStorage } from '../storage';
 
 class DatabaseManager {
   private storage: Storage | null = null;
@@ -31,21 +31,15 @@ class DatabaseManager {
           console.log('✅ Usando banco de dados Supabase');
         } catch (testError) {
           console.log('⚠️  Supabase conectado mas tabelas não encontradas');
-          console.log('📋 Execute o SQL do arquivo migrations/schema.sql no Supabase Dashboard');
-          this.storage = new MemStorage();
-          this.isSupabaseConnected = false;
-          console.log('🔄 Usando armazenamento em memória temporariamente');
+          console.log('📋 Execute o SQL do arquivo migrations/new-schema.sql no Supabase Dashboard');
+          throw new Error('Database não configurado - execute o schema SQL');
         }
       } else {
-        this.storage = new MemStorage();
-        this.isSupabaseConnected = false;
-        console.log('⚠️  DATABASE_URL não configurada - usando dados mock');
+        throw new Error('DATABASE_URL não configurada');
       }
     } catch (error) {
       console.error('❌ Erro na inicialização do banco:', error.message);
-      this.storage = new MemStorage();
-      this.isSupabaseConnected = false;
-      console.log('🔄 Fallback para armazenamento em memória');
+      throw new Error('Database não configurado - consulte a documentação');
     }
   }
 
@@ -62,8 +56,8 @@ class DatabaseManager {
 
   getStatus() {
     return {
-      type: this.isSupabaseConnected ? 'supabase' : 'memory',
-      connected: !!this.storage,
+      type: 'supabase',
+      connected: !!this.storage && this.isSupabaseConnected,
       hasEnvironmentVars: !!process.env.DATABASE_URL
     };
   }

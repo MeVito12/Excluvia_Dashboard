@@ -1,155 +1,158 @@
 import { z } from "zod";
 
-// Tipos de dados
+// ====================================
+// HIERARQUIA EMPRESARIAL COMPLETA
+// CEO → Empresa → Filial → Usuário
+// ====================================
 
-// Interface para Empresas
 export interface Company {
   id: number;
   name: string;
   businessCategory: string;
+  cnpj?: string;
   description?: string;
   address?: string;
   phone?: string;
   email?: string;
-  createdBy: number; // ID do master que criou a empresa
-  createdAt: Date;
+  isActive: boolean;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Interface para Filiais/Unidades
 export interface Branch {
   id: number;
-  name: string;
   companyId: number;
-  address: string;
+  name: string;
+  code: string;
+  address?: string;
   phone?: string;
-  managerId?: number; // ID do gerente responsável pela filial
-  businessCategory: string;
-  createdAt: Date;
+  email?: string;
+  isMain: boolean;
+  isActive: boolean;
+  managerId?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Interface de Usuários com hierarquia
 export interface User {
   id: number;
   email: string;
   password?: string;
   name: string;
   phone?: string;
-  companyId?: number; // Empresa à qual pertence
-  branchId?: number; // Filial onde trabalha
-  businessCategory: string;
-  userType: 'super_admin' | 'company_admin' | 'branch_manager' | 'employee'; // Hierarquia
-  permissions: string[]; // Seções permitidas
-  managerId?: number; // ID do superior hierárquico
-  isActive: boolean;
-  createdBy: number; // Quem criou este usuário
-  createdAt: Date;
-}
-
-// Interface para controle de permissões hierárquicas
-export interface UserRole {
-  id: number;
-  userId: number;
-  roleType: 'super_admin' | 'company_admin' | 'branch_manager' | 'employee';
   companyId?: number;
   branchId?: number;
-  permissions: string[];
-  canManageUsers: boolean;
-  canManageBranches: boolean;
-  canViewReports: boolean;
-  canManageInventory: boolean;
-  assignedBy: number; // Quem atribuiu esse papel
-  createdAt: Date;
+  role: 'ceo' | 'master' | 'user';
+  businessCategory?: string;
+  isActive: boolean;
+  createdBy?: number;
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Interface para hierarquia organizacional
-export interface UserHierarchy {
+export interface UserPermission {
   id: number;
   userId: number;
-  managerId: number;
-  companyId: number;
-  branchId?: number;
-  level: number; // Nível hierárquico (1 = mais alto)
-  canManageLevel: number; // Até que nível pode gerenciar
-  createdAt: Date;
+  section: string;
+  canView: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
+  canExport: boolean;
+  createdAt: string;
 }
+
+// ====================================
+// ENTIDADES DE NEGÓCIO
+// ====================================
 
 export interface Product {
   id: number;
   name: string;
   description?: string;
+  category: string;
   price: number;
   stock: number;
-  minStock?: number;
-  isPerishable?: boolean;
-  manufacturingDate?: Date;
-  expiryDate?: Date;
-  businessCategory: string;
-  userId: number;
-  createdAt: Date;
+  minStock: number;
+  barcode?: string;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  isPerishable: boolean;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Sale {
   id: number;
   productId: number;
-  clientId: number;
+  clientId?: number;
   quantity: number;
+  unitPrice: number;
   totalPrice: number;
-  paymentMethod?: string;
-  businessCategory: string;
-  userId: number;
-  saleDate: Date;
+  paymentMethod: string;
+  saleDate: string;
+  notes?: string;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
 }
 
 export interface Client {
   id: number;
   name: string;
-  email: string;
-  phone: string;
-  businessCategory: string;
-  userId: number;
-  createdAt: Date;
+  email?: string;
+  phone?: string;
+  document?: string;
+  address?: string;
+  clientType: 'individual' | 'company';
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Appointment {
   id: number;
-  userId: number;
-  clientId: number;
-  serviceId: number;
-  startTime: Date;
-  endTime: Date;
-  status: string;
+  title: string;
+  description?: string;
+  clientId?: number;
+  clientName?: string;
+  appointmentDate: string;
+  startTime: string;
+  endTime?: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  type: string;
   notes?: string;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface LoyaltyCampaign {
+export interface FinancialEntry {
   id: number;
-  userId: number;
-  businessCategory: string;
-  name: string;
+  type: 'income' | 'expense';
+  amount: number;
   description: string;
-  discountPercentage: number;
-  isActive: boolean;
-  createdAt: Date;
-}
-
-export interface WhatsAppChat {
-  id: number;
-  userId: number;
-  businessCategory: string;
-  contactName: string;
-  contactPhone: string;
-  lastMessage: string;
-  lastActivity: Date;
-  isActive: boolean;
-}
-
-export interface StockMovement {
-  id: number;
-  productId: number;
-  movementType: string;
-  quantity: number;
-  movementDate: Date;
-  notes?: string;
+  category: string;
+  paymentMethod?: string;
+  status: 'paid' | 'pending' | 'overdue';
+  dueDate?: string;
+  paidDate?: string;
+  referenceId?: number;
+  referenceType?: string;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Transfer {
@@ -158,139 +161,144 @@ export interface Transfer {
   fromBranchId: number;
   toBranchId: number;
   quantity: number;
-  status: 'pending' | 'sent' | 'received' | 'returned';
-  transferDate: Date;
-  receivedDate?: Date;
-  returnDate?: Date;
+  status: 'pending' | 'in_transit' | 'completed' | 'cancelled';
+  transferDate: string;
+  receivedDate?: string;
   notes?: string;
-  businessCategory: string;
-  userId: number;
+  companyId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
+// ====================================
+// SCHEMAS DE VALIDAÇÃO ZOD
+// ====================================
 
-
-export interface FinancialEntry {
-  id: number;
-  userId: number;
-  businessCategory: string;
-  type: 'income' | 'expense'; // entrada ou saída
-  amount: number;
-  description: string;
-  dueDate: Date;
-  status: 'pending' | 'near_due' | 'overdue' | 'paid'; // pendente, próximo do vencimento, vencido, pago
-  isBoleto: boolean;
-  boletoCode?: string; // código do boleto se aplicável
-  isInstallment: boolean;
-  installmentCount?: number; // quantidade de parcelas
-  currentInstallment?: number; // parcela atual
-  paymentProof?: string; // caminho do arquivo de comprovante
-  paidAt?: Date;
-  createdAt: Date;
-  // Campos automáticos para entradas vindas de vendas
-  saleId?: number; // ID da venda que gerou a entrada
-  isAutoGenerated?: boolean; // se foi gerada automaticamente
-}
-
-// Tipos para criar novos registros
-export type NewCompany = Omit<Company, 'id' | 'createdAt'>;
-export type NewUser = Omit<User, 'id' | 'createdAt'>;
-export type NewUserRole = Omit<UserRole, 'id' | 'createdAt'>;
-export type NewUserHierarchy = Omit<UserHierarchy, 'id' | 'createdAt'>;
-export type NewProduct = Omit<Product, 'id' | 'createdAt'>;
-export type NewSale = Omit<Sale, 'id'>;
-
-// Tipos para responses da API com informações hierárquicas
-export interface UserWithHierarchy extends User {
-  company?: Company;
-  branch?: Branch;
-  manager?: User;
-  subordinates?: User[];
-  role?: UserRole;
-}
-
-export interface TransferWithDetails extends Transfer {
-  product?: Product;
-  fromBranch?: Branch;
-  toBranch?: Branch;
-  fromCompany?: Company;
-  toCompany?: Company;
-  requestedBy?: User;
-}
-
-// Enum para tipos de usuário
-export enum UserType {
-  SUPER_ADMIN = 'super_admin',
-  COMPANY_ADMIN = 'company_admin', 
-  BRANCH_MANAGER = 'branch_manager',
-  EMPLOYEE = 'employee'
-}
-
-// Enum para permissões do sistema
-export enum Permission {
-  DASHBOARD = 'dashboard',
-  GRAPHICS = 'graficos',
-  ACTIVITY = 'atividade',
-  APPOINTMENTS = 'agendamentos',
-  INVENTORY = 'estoque',
-  ATTENDANCE = 'atendimento',
-  FINANCIAL = 'financeiro',
-  CONTROL = 'controle'
-}
-export type NewClient = Omit<Client, 'id' | 'createdAt'>;
-export type NewAppointment = Omit<Appointment, 'id'>;
-export type NewLoyaltyCampaign = Omit<LoyaltyCampaign, 'id' | 'createdAt'>;
-export type NewWhatsAppChat = Omit<WhatsAppChat, 'id'>;
-export type NewStockMovement = Omit<StockMovement, 'id'>;
-export type NewTransfer = Omit<Transfer, 'id'>;
-export type NewBranch = Omit<Branch, 'id' | 'createdAt'>;
-export type NewFinancialEntry = Omit<FinancialEntry, 'id' | 'createdAt' | 'status'>;
-
-// Validações
-export const userSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(2),
-  businessCategory: z.string().min(2)
-});
-
-export const productSchema = z.object({
-  name: z.string().min(2),
+export const CompanySchema = z.object({
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  businessCategory: z.string().min(1, "Categoria é obrigatória"),
+  cnpj: z.string().optional(),
   description: z.string().optional(),
-  price: z.number().positive(),
-  stock: z.number().min(0),
-  minStock: z.number().min(0).optional(),
-  isPerishable: z.boolean().optional(),
-  manufacturingDate: z.date().optional(),
-  expiryDate: z.date().optional(),
-  businessCategory: z.string().min(2),
-  userId: z.number().positive()
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().email("Email inválido").optional(),
 });
 
-export const saleSchema = z.object({
+export const BranchSchema = z.object({
+  companyId: z.number().positive(),
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  code: z.string().min(2, "Código deve ter pelo menos 2 caracteres"),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().email("Email inválido").optional(),
+  isMain: z.boolean().default(false),
+});
+
+export const UserSchema = z.object({
+  email: z.string().email("Email inválido"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  phone: z.string().optional(),
+  companyId: z.number().positive().optional(),
+  branchId: z.number().positive().optional(),
+  role: z.enum(['ceo', 'master', 'user']),
+});
+
+export const ProductSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
+  description: z.string().optional(),
+  category: z.string().min(1, "Categoria é obrigatória"),
+  price: z.number().positive("Preço deve ser positivo"),
+  stock: z.number().min(0, "Estoque não pode ser negativo"),
+  minStock: z.number().min(0, "Estoque mínimo não pode ser negativo"),
+  barcode: z.string().optional(),
+  manufacturingDate: z.string().optional(),
+  expiryDate: z.string().optional(),
+  isPerishable: z.boolean().default(false),
+});
+
+export const SaleSchema = z.object({
   productId: z.number().positive(),
-  clientId: z.number().positive(),
-  quantity: z.number().positive(),
-  totalPrice: z.number().positive(),
+  clientId: z.number().positive().optional(),
+  quantity: z.number().positive("Quantidade deve ser positiva"),
+  unitPrice: z.number().positive("Preço unitário deve ser positivo"),
+  paymentMethod: z.string().min(1, "Método de pagamento é obrigatório"),
+  notes: z.string().optional(),
+});
+
+export const ClientSchema = z.object({
+  name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("Email inválido").optional(),
+  phone: z.string().optional(),
+  document: z.string().optional(),
+  address: z.string().optional(),
+  clientType: z.enum(['individual', 'company']).default('individual'),
+});
+
+export const AppointmentSchema = z.object({
+  title: z.string().min(1, "Título é obrigatório"),
+  description: z.string().optional(),
+  clientId: z.number().positive().optional(),
+  clientName: z.string().optional(),
+  appointmentDate: z.string().min(1, "Data é obrigatória"),
+  startTime: z.string().min(1, "Horário de início é obrigatório"),
+  endTime: z.string().optional(),
+  type: z.string().min(1, "Tipo é obrigatório"),
+  notes: z.string().optional(),
+});
+
+export const FinancialEntrySchema = z.object({
+  type: z.enum(['income', 'expense']),
+  amount: z.number().positive("Valor deve ser positivo"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+  category: z.string().min(1, "Categoria é obrigatória"),
   paymentMethod: z.string().optional(),
-  businessCategory: z.string().min(2),
-  userId: z.number().positive(),
-  saleDate: z.date()
+  status: z.enum(['paid', 'pending', 'overdue']).default('pending'),
+  dueDate: z.string().optional(),
+  paidDate: z.string().optional(),
+  referenceId: z.number().optional(),
+  referenceType: z.string().optional(),
 });
 
-export const clientSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  phone: z.string().min(10),
-  businessCategory: z.string().min(2),
-  userId: z.number().positive()
+export const TransferSchema = z.object({
+  productId: z.number().positive(),
+  fromBranchId: z.number().positive(),
+  toBranchId: z.number().positive(),
+  quantity: z.number().positive("Quantidade deve ser positiva"),
+  notes: z.string().optional(),
 });
 
-export const appointmentSchema = z.object({
-  userId: z.number().positive(),
-  clientId: z.number().positive(),
-  serviceId: z.number().positive(),
-  startTime: z.date(),
-  endTime: z.date(),
-  status: z.string(),
-  notes: z.string().optional()
-});
+// ====================================
+// TIPOS DERIVADOS
+// ====================================
+
+export type NewCompany = z.infer<typeof CompanySchema>;
+export type NewBranch = z.infer<typeof BranchSchema>;
+export type NewUser = z.infer<typeof UserSchema>;
+export type NewProduct = z.infer<typeof ProductSchema>;
+export type NewSale = z.infer<typeof SaleSchema>;
+export type NewClient = z.infer<typeof ClientSchema>;
+export type NewAppointment = z.infer<typeof AppointmentSchema>;
+export type NewFinancialEntry = z.infer<typeof FinancialEntrySchema>;
+export type NewTransfer = z.infer<typeof TransferSchema>;
+
+// ====================================
+// CONSTANTES
+// ====================================
+
+export const BUSINESS_CATEGORIES = [
+  'farmacia',
+  'pet', 
+  'medico',
+  'alimenticio',
+  'vendas',
+  'design',
+  'sites'
+] as const;
+
+export const USER_ROLES = ['ceo', 'master', 'user'] as const;
+export const PAYMENT_METHODS = ['dinheiro', 'pix', 'cartao_credito', 'cartao_debito', 'boleto'] as const;
+export const APPOINTMENT_STATUSES = ['scheduled', 'completed', 'cancelled'] as const;
+export const FINANCIAL_STATUSES = ['paid', 'pending', 'overdue'] as const;
+export const TRANSFER_STATUSES = ['pending', 'in_transit', 'completed', 'cancelled'] as const;
