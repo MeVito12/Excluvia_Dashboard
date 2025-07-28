@@ -27,7 +27,11 @@ interface CompanyData {
   fantasyName: string;
   corporateName: string;
   cnpj: string;
+  address: string;
+  phone: string;
+  email: string;
   businessCategory: string;
+  isMainOffice: boolean;
 }
 
 interface UserData {
@@ -74,7 +78,11 @@ const CadastroSection = () => {
     fantasyName: '',
     corporateName: '',
     cnpj: '',
-    businessCategory: ''
+    address: '',
+    phone: '',
+    email: '',
+    businessCategory: '',
+    isMainOffice: true
   });
 
   // Dados do usuário master
@@ -162,12 +170,41 @@ const CadastroSection = () => {
       if (!response.ok) throw new Error('Erro ao criar empresa');
       return response.json();
     },
-    onSuccess: (company) => {
+    onSuccess: async (company) => {
       setCompanyCreated(company);
+      
+      // Se for matriz, adicionar automaticamente como filial
+      if (companyData.isMainOffice) {
+        try {
+          const branchResponse = await fetch('/api/branches', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'x-user-id': (user as any)?.id?.toString() || '1'
+            },
+            body: JSON.stringify({
+              name: `${company.fantasyName} - Matriz`,
+              address: company.address,
+              phone: company.phone,
+              email: company.email,
+              companyId: company.id,
+              isMain: true
+            })
+          });
+          
+          if (branchResponse.ok) {
+            const branch = await branchResponse.json();
+            setBranches([branch]);
+          }
+        } catch (error) {
+          console.error('Erro ao criar filial matriz:', error);
+        }
+      }
+      
       setCurrentStep('master');
       showAlert({
         title: "Empresa Cadastrada",
-        description: `${company.fantasyName} foi cadastrada com sucesso!`,
+        description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
         variant: "success"
       });
     },
@@ -300,10 +337,10 @@ const CadastroSection = () => {
   // Handlers
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory) {
+    if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory || !companyData.address.trim()) {
       showAlert({
         title: "Campos Obrigatórios",
-        description: "Preencha todos os campos obrigatórios com dados válidos.",
+        description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
         variant: "destructive"
       });
       return;
@@ -451,7 +488,8 @@ const CadastroSection = () => {
       address: '',
       phone: '',
       email: '',
-      businessCategory: ''
+      businessCategory: '',
+      isMainOffice: true
     });
     setMasterUserData({
       name: '',
@@ -710,6 +748,59 @@ const CadastroSection = () => {
                         {category.label}
                       </SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="address" className="text-sm font-medium" style={{ color: "#000000" }}>Endereço Completo *</Label>
+                <Input
+                  id="address"
+                  value={companyData.address}
+                  onChange={(e) => setCompanyData(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder="Ex: Rua das Flores, 123, Centro, São Paulo - SP"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="phone" className="text-sm font-medium" style={{ color: "#000000" }}>Telefone</Label>
+                <Input
+                  id="phone"
+                  value={companyData.phone}
+                  onChange={(e) => setCompanyData(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="(11) 99999-9999"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium" style={{ color: "#000000" }}>E-mail</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={companyData.email}
+                  onChange={(e) => setCompanyData(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="contato@empresa.com"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium" style={{ color: "#000000" }}>Tipo de Estabelecimento *</Label>
+                <Select 
+                  value={companyData.isMainOffice ? 'matriz' : 'gestao'} 
+                  onValueChange={(value) => setCompanyData(prev => ({ ...prev, isMainOffice: value === 'matriz' }))}
+                >
+                  <SelectTrigger className="focus:ring-purple-500 focus:border-purple-500">
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="matriz">Matriz (Local de atendimento)</SelectItem>
+                    <SelectItem value="gestao">Unidade de Gestão (Apenas administrativo)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
