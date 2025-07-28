@@ -2,16 +2,54 @@ import { pgTable, text, integer, boolean, timestamp, decimal } from 'drizzle-orm
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
 
+// Tabela de empresas
+export const companiesTable = pgTable('companies', {
+  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
+  name: text('name').notNull(),
+  businessCategory: text('business_category').notNull(),
+  cnpj: text('cnpj'),
+  description: text('description'),
+  address: text('address'),
+  phone: text('phone'),
+  email: text('email'),
+  isActive: boolean('is_active').default(true),
+  createdBy: integer('created_by'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// Tabela de filiais
+export const branchesTable = pgTable('branches', {
+  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
+  companyId: integer('company_id').notNull().references(() => companiesTable.id),
+  name: text('name').notNull(),
+  code: text('code').notNull().unique(),
+  address: text('address'),
+  phone: text('phone'),
+  email: text('email'),
+  isMain: boolean('is_main').default(false),
+  isActive: boolean('is_active').default(true),
+  managerId: integer('manager_id'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Tabela de usuários
 export const usersTable = pgTable('users', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   email: text('email').notNull().unique(),
   password: text('password').notNull(),
   name: text('name').notNull(),
-  businessCategory: text('business_category').notNull(),
-  userType: text('user_type').notNull().default('regular'),
-  allowedSections: text('allowed_sections').array(),
+  phone: text('phone'),
+  companyId: integer('company_id').references(() => companiesTable.id),
+  branchId: integer('branch_id').references(() => branchesTable.id),
+  role: text('role').notNull(),
+  businessCategory: text('business_category'),
+  isActive: boolean('is_active').default(true),
+  createdBy: integer('created_by').references(() => usersTable.id),
+  lastLogin: timestamp('last_login'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Tabela de produtos
@@ -19,39 +57,52 @@ export const productsTable = pgTable('products', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   name: text('name').notNull(),
   description: text('description'),
-  price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+  category: text('category').notNull(),
+  price: decimal('price', { precision: 10, scale: 2 }).notNull().default('0'),
   stock: integer('stock').notNull().default(0),
   minStock: integer('min_stock').default(0),
-  isPerishable: boolean('is_perishable').default(false),
+  barcode: text('barcode'),
   manufacturingDate: timestamp('manufacturing_date'),
   expiryDate: timestamp('expiry_date'),
-  businessCategory: text('business_category').notNull(),
-  userId: integer('user_id').notNull().references(() => usersTable.id),
+  isPerishable: boolean('is_perishable').default(false),
+  companyId: integer('company_id').notNull().references(() => companiesTable.id),
+  branchId: integer('branch_id').notNull().references(() => branchesTable.id),
+  createdBy: integer('created_by').notNull().references(() => usersTable.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Tabela de clientes (deve vir antes de vendas)
 export const clientsTable = pgTable('clients', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   name: text('name').notNull(),
-  email: text('email').notNull(),
-  phone: text('phone').notNull(),
-  businessCategory: text('business_category').notNull(),
-  userId: integer('user_id').notNull().references(() => usersTable.id),
+  email: text('email'),
+  phone: text('phone'),
+  document: text('document'),
+  address: text('address'),
+  clientType: text('client_type').default('individual'),
+  companyId: integer('company_id').notNull().references(() => companiesTable.id),
+  branchId: integer('branch_id').notNull().references(() => branchesTable.id),
+  createdBy: integer('created_by').notNull().references(() => usersTable.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 // Tabela de vendas
 export const salesTable = pgTable('sales', {
   id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
   productId: integer('product_id').notNull().references(() => productsTable.id),
-  clientId: integer('client_id').notNull().references(() => clientsTable.id),
+  clientId: integer('client_id').references(() => clientsTable.id),
   quantity: integer('quantity').notNull(),
+  unitPrice: decimal('unit_price', { precision: 10, scale: 2 }).notNull(),
   totalPrice: decimal('total_price', { precision: 10, scale: 2 }).notNull(),
-  paymentMethod: text('payment_method'),
-  businessCategory: text('business_category').notNull(),
-  userId: integer('user_id').notNull().references(() => usersTable.id),
+  paymentMethod: text('payment_method').notNull(),
   saleDate: timestamp('sale_date').defaultNow().notNull(),
+  notes: text('notes'),
+  companyId: integer('company_id').notNull().references(() => companiesTable.id),
+  branchId: integer('branch_id').notNull().references(() => branchesTable.id),
+  createdBy: integer('created_by').notNull().references(() => usersTable.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 
@@ -103,16 +154,7 @@ export const stockMovementsTable = pgTable('stock_movements', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// Tabela de filiais (deve vir antes de transferências)
-export const branchesTable = pgTable('branches', {
-  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-  name: text('name').notNull(),
-  address: text('address').notNull(),
-  phone: text('phone'),
-  businessCategory: text('business_category').notNull(),
-  userId: integer('user_id').notNull().references(() => usersTable.id),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+
 
 // Tabela de transferências
 export const transfersTable = pgTable('transfers', {

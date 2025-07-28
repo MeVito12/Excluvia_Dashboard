@@ -1,24 +1,15 @@
 import { type Storage } from '../storage';
 import type {
   User, NewUser, Product, NewProduct, Sale, NewSale, Client, NewClient,
-  Appointment, NewAppointment, LoyaltyCampaign, NewLoyaltyCampaign,
-  WhatsAppChat, NewWhatsAppChat, StockMovement, NewStockMovement,
-  Transfer, NewTransfer, Branch, NewBranch, FinancialEntry, NewFinancialEntry,
-  Company, NewCompany, UserRole, NewUserRole, UserHierarchy, NewUserHierarchy,
-  UserWithHierarchy, TransferWithDetails
+  Appointment, NewAppointment, Transfer, NewTransfer, Branch, NewBranch, 
+  FinancialEntry, NewFinancialEntry, Company, NewCompany, UserPermission
 } from '@shared/schema';
 
 export class SupabaseStorage implements Storage {
   private db: any;
 
   constructor() {
-    try {
-      // Import dinâmico para evitar erro de require
-      this.db = null; // Será inicializado quando necessário
-    } catch (error) {
-      console.error('Erro ao inicializar Supabase:', error);
-      this.db = null;
-    }
+    this.db = null; // Will be initialized when needed
   }
 
   private async getConnection() {
@@ -29,21 +20,17 @@ export class SupabaseStorage implements Storage {
     return this.db;
   }
 
-  private ensureConnection() {
-    if (!this.db) {
-      throw new Error('Banco Supabase não está conectado');
-    }
-    return this.db;
-  }
+  // ====================================
+  // USER METHODS
+  // ====================================
 
   async getUserByEmail(email: string): Promise<User | null> {
     try {
       const db = await this.getConnection();
       if (!db) {
-        throw new Error('Supabase não conectado');
+        throw new Error('Supabase not connected');
       }
 
-      // Teste básico de existência da tabela users
       const { eq } = await import('drizzle-orm');
       const { schema } = await import('./database');
       
@@ -51,15 +38,15 @@ export class SupabaseStorage implements Storage {
         .where(eq(schema.usersTable.email, email))
         .limit(1);
       
-      console.log(`✅ Supabase: Usuário ${email} encontrado - tabelas funcionando!`);
+      console.log(`✅ Supabase: User ${email} found - tables working!`);
       return result[0] || null;
-    } catch (error) {
+    } catch (error: any) {
       if (error.message.includes('relation "users" does not exist')) {
-        console.log('📋 Tabela "users" não existe no Supabase - execute o SQL schema');
+        console.log('📋 Table "users" does not exist in Supabase - execute SQL schema');
       } else {
-        console.log('⚠️ Erro Supabase:', error.message);
+        console.log('⚠️ Supabase error:', error.message);
       }
-      throw error; // Forçar fallback para MemStorage
+      throw error;
     }
   }
 
@@ -74,18 +61,200 @@ export class SupabaseStorage implements Storage {
     return result[0];
   }
 
-  async getProducts(userId: number, businessCategory: string): Promise<Product[]> {
+  async updateUser(id: number, user: Partial<NewUser>): Promise<User | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.update(schema.usersTable)
+      .set(user)
+      .where(eq(schema.usersTable.id, id))
+      .returning();
+    
+    return result[0] || null;
+  }
+
+  async deleteUser(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    await db.delete(schema.usersTable)
+      .where(eq(schema.usersTable.id, id));
+    
+    return true;
+  }
+
+  // ====================================
+  // COMPANY METHODS
+  // ====================================
+
+  async getCompanies(): Promise<Company[]> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    // For now, return empty array since we don't have companies table in the old schema
+    return [];
+  }
+
+  async getCompaniesByCreator(creatorId: number): Promise<Company[]> {
+    // For now, return empty array since we don't have companies table in the old schema
+    return [];
+  }
+
+  async createCompany(company: NewCompany): Promise<Company> {
+    throw new Error('Company operations not implemented in current schema');
+  }
+
+  async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
+    throw new Error('Company operations not implemented in current schema');
+  }
+
+  async deleteCompany(id: number): Promise<boolean> {
+    throw new Error('Company operations not implemented in current schema');
+  }
+
+  // ====================================
+  // BRANCH METHODS
+  // ====================================
+
+  async getBranches(companyId?: number): Promise<Branch[]> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    if (schema.branchesTable) {
+      const { eq } = await import('drizzle-orm');
+      if (companyId) {
+        return db.select().from(schema.branchesTable)
+          .where(eq(schema.branchesTable.companyId, companyId));
+      }
+      return db.select().from(schema.branchesTable);
+    }
+    
+    return [];
+  }
+
+  async getBranchesByCompany(companyId: number): Promise<Branch[]> {
+    return this.getBranches(companyId);
+  }
+
+  async createBranch(branch: NewBranch): Promise<Branch> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    if (!schema.branchesTable) {
+      throw new Error('Branches table not available in current schema');
+    }
+    
+    const result = await db.insert(schema.branchesTable)
+      .values(branch)
+      .returning();
+    
+    return result[0];
+  }
+
+  async updateBranch(id: number, branch: Partial<NewBranch>): Promise<Branch | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.branchesTable) {
+      return null;
+    }
+    
+    const result = await db.update(schema.branchesTable)
+      .set(branch)
+      .where(eq(schema.branchesTable.id, id))
+      .returning();
+    
+    return result[0] || null;
+  }
+
+  async deleteBranch(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.branchesTable) {
+      return false;
+    }
+    
+    await db.delete(schema.branchesTable)
+      .where(eq(schema.branchesTable.id, id));
+    
+    return true;
+  }
+
+  // ====================================
+  // USER PERMISSIONS
+  // ====================================
+
+  async getUserPermissions(userId: number): Promise<UserPermission[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.userPermissionsTable) {
+      return [];
+    }
+    
+    return db.select().from(schema.userPermissionsTable)
+      .where(eq(schema.userPermissionsTable.userId, userId));
+  }
+
+  async updateUserPermissions(userId: number, permissions: string[]): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.userPermissionsTable) {
+      return false;
+    }
+    
+    // Delete existing permissions
+    await db.delete(schema.userPermissionsTable)
+      .where(eq(schema.userPermissionsTable.userId, userId));
+    
+    // Insert new permissions
+    const newPermissions = permissions.map(section => ({
+      userId,
+      section,
+      canView: true,
+      canEdit: true,
+      canDelete: false,
+      canExport: true
+    }));
+
+    await db.insert(schema.userPermissionsTable)
+      .values(newPermissions);
+
+    return true;
+  }
+
+  // ====================================
+  // PRODUCT METHODS
+  // ====================================
+
+  async getProducts(branchId?: number, companyId?: number): Promise<Product[]> {
     const db = await this.getConnection();
     const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.productsTable)
-      .where(and(
-        eq(schema.productsTable.userId, userId),
-        eq(schema.productsTable.businessCategory, businessCategory)
-      ));
+    let query = db.select().from(schema.productsTable);
     
-    return result;
+    const conditions = [];
+    if (branchId && schema.productsTable.branchId) {
+      conditions.push(eq(schema.productsTable.branchId, branchId));
+    }
+    if (companyId && schema.productsTable.companyId) {
+      conditions.push(eq(schema.productsTable.companyId, companyId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
+    }
+    
+    return query;
   }
 
   async createProduct(product: NewProduct): Promise<Product> {
@@ -117,25 +286,36 @@ export class SupabaseStorage implements Storage {
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.delete(schema.productsTable)
-      .where(eq(schema.productsTable.id, id))
-      .returning();
+    await db.delete(schema.productsTable)
+      .where(eq(schema.productsTable.id, id));
     
-    return result.length > 0;
+    return true;
   }
 
-  async getSales(userId: number, businessCategory: string): Promise<Sale[]> {
+  // ====================================
+  // SALE METHODS
+  // ====================================
+
+  async getSales(branchId?: number, companyId?: number): Promise<Sale[]> {
     const db = await this.getConnection();
     const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.salesTable)
-      .where(and(
-        eq(schema.salesTable.userId, userId),
-        eq(schema.salesTable.businessCategory, businessCategory)
-      ));
+    let query = db.select().from(schema.salesTable);
     
-    return result;
+    const conditions = [];
+    if (branchId && schema.salesTable.branchId) {
+      conditions.push(eq(schema.salesTable.branchId, branchId));
+    }
+    if (companyId && schema.salesTable.companyId) {
+      conditions.push(eq(schema.salesTable.companyId, companyId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
+    }
+    
+    return query;
   }
 
   async createSale(sale: NewSale): Promise<Sale> {
@@ -149,18 +329,30 @@ export class SupabaseStorage implements Storage {
     return result[0];
   }
 
-  async getClients(userId: number, businessCategory: string): Promise<Client[]> {
+  // ====================================
+  // CLIENT METHODS
+  // ====================================
+
+  async getClients(branchId?: number, companyId?: number): Promise<Client[]> {
     const db = await this.getConnection();
     const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.clientsTable)
-      .where(and(
-        eq(schema.clientsTable.userId, userId),
-        eq(schema.clientsTable.businessCategory, businessCategory)
-      ));
+    let query = db.select().from(schema.clientsTable);
     
-    return result;
+    const conditions = [];
+    if (branchId && schema.clientsTable.branchId) {
+      conditions.push(eq(schema.clientsTable.branchId, branchId));
+    }
+    if (companyId && schema.clientsTable.companyId) {
+      conditions.push(eq(schema.clientsTable.companyId, companyId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
+    }
+    
+    return query;
   }
 
   async createClient(client: NewClient): Promise<Client> {
@@ -192,245 +384,232 @@ export class SupabaseStorage implements Storage {
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.delete(schema.clientsTable)
-      .where(eq(schema.clientsTable.id, id))
-      .returning();
+    await db.delete(schema.clientsTable)
+      .where(eq(schema.clientsTable.id, id));
     
-    return result.length > 0;
+    return true;
   }
 
-  async getAppointments(userId: number): Promise<Appointment[]> {
+  // ====================================
+  // APPOINTMENT METHODS
+  // ====================================
+
+  async getAppointments(branchId?: number, companyId?: number): Promise<Appointment[]> {
     const db = await this.getConnection();
-    const { eq } = await import('drizzle-orm');
+    const { eq, and } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.appointmentsTable)
-      .where(eq(schema.appointmentsTable.userId, userId));
+    if (!schema.appointmentsTable) {
+      return [];
+    }
     
-    return result;
+    let query = db.select().from(schema.appointmentsTable);
+    
+    const conditions = [];
+    if (branchId && schema.appointmentsTable.branchId) {
+      conditions.push(eq(schema.appointmentsTable.branchId, branchId));
+    }
+    if (companyId && schema.appointmentsTable.companyId) {
+      conditions.push(eq(schema.appointmentsTable.companyId, companyId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
+    }
+    
+    return query;
   }
 
   async createAppointment(appointment: NewAppointment): Promise<Appointment> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    if (!schema.appointmentsTable) {
+      throw new Error('Appointments table not available in current schema');
+    }
+    
+    const result = await db.insert(schema.appointmentsTable)
+      .values(appointment)
+      .returning();
+    
+    return result[0];
   }
 
   async updateAppointment(id: number, appointment: Partial<NewAppointment>): Promise<Appointment | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async deleteAppointment(id: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getCampaigns(userId: number, businessCategory: string): Promise<LoyaltyCampaign[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async createCampaign(campaign: NewLoyaltyCampaign): Promise<LoyaltyCampaign> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getWhatsAppChats(userId: number, businessCategory: string): Promise<WhatsAppChat[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getStockMovements(productId: number): Promise<StockMovement[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async createStockMovement(movement: NewStockMovement): Promise<StockMovement> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getTransfers(userId: number, businessCategory: string): Promise<Transfer[]> {
-    const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
-    const { schema } = await import('./database');
-    
-    const result = await db.select().from(schema.transfersTable)
-      .where(and(
-        eq(schema.transfersTable.requestedBy, userId),
-        eq(schema.transfersTable.businessCategory, businessCategory)
-      ));
-    
-    return result;
-  }
-
-  async createTransfer(transfer: NewTransfer): Promise<Transfer> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getBranches(userId: number, businessCategory: string): Promise<Branch[]> {
-    const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
-    const { schema } = await import('./database');
-    
-    const result = await db.select().from(schema.branchesTable)
-      .where(and(
-        eq(schema.branchesTable.userId, userId),
-        eq(schema.branchesTable.businessCategory, businessCategory)
-      ));
-    
-    return result;
-  }
-
-  async createBranch(branch: NewBranch): Promise<Branch> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getFinancialEntries(userId: number, businessCategory: string): Promise<FinancialEntry[]> {
-    const db = await this.getConnection();
-    const { eq, and } = await import('drizzle-orm');
-    const { schema } = await import('./database');
-    
-    const result = await db.select().from(schema.financialEntriesTable)
-      .where(and(
-        eq(schema.financialEntriesTable.userId, userId),
-        eq(schema.financialEntriesTable.businessCategory, businessCategory)
-      ));
-    
-    return result;
-  }
-
-  async createFinancialEntry(entry: NewFinancialEntry): Promise<FinancialEntry> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async updateFinancialEntry(id: number, entry: Partial<FinancialEntry>): Promise<FinancialEntry | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async deleteFinancialEntry(id: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async payFinancialEntry(id: number, paymentProof: string): Promise<FinancialEntry | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async revertFinancialEntry(id: number): Promise<FinancialEntry | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  // === MÉTODOS DE HIERARQUIA EMPRESARIAL ===
-
-  async getCompanies(createdBy?: number): Promise<Company[]> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    let query = db.select().from(schema.companiesTable);
-    
-    if (createdBy) {
-      query = query.where(eq(schema.companiesTable.createdBy, createdBy));
+    if (!schema.appointmentsTable) {
+      return null;
     }
     
-    const result = await query;
-    return result;
-  }
-
-  async getCompanyById(id: number): Promise<Company | null> {
-    const db = await this.getConnection();
-    const { eq } = await import('drizzle-orm');
-    const { schema } = await import('./database');
-    
-    const result = await db.select().from(schema.companiesTable)
-      .where(eq(schema.companiesTable.id, id));
+    const result = await db.update(schema.appointmentsTable)
+      .set(appointment)
+      .where(eq(schema.appointmentsTable.id, id))
+      .returning();
     
     return result[0] || null;
   }
 
-  async createCompany(company: NewCompany): Promise<Company> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async deleteCompany(id: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getUserWithHierarchy(userId: number): Promise<UserWithHierarchy | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getUsersByCompany(companyId: number): Promise<UserWithHierarchy[]> {
+  async deleteAppointment(id: number): Promise<boolean> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.usersTable)
-      .where(eq(schema.usersTable.companyId, companyId));
+    if (!schema.appointmentsTable) {
+      return false;
+    }
     
-    return result as UserWithHierarchy[];
+    await db.delete(schema.appointmentsTable)
+      .where(eq(schema.appointmentsTable.id, id));
+    
+    return true;
   }
 
-  async getUsersByManager(managerId: number): Promise<UserWithHierarchy[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  // ====================================
+  // FINANCIAL ENTRY METHODS
+  // ====================================
+
+  async getFinancialEntries(branchId?: number, companyId?: number): Promise<FinancialEntry[]> {
+    const db = await this.getConnection();
+    const { eq, and } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.financialEntriesTable) {
+      return [];
+    }
+    
+    let query = db.select().from(schema.financialEntriesTable);
+    
+    const conditions = [];
+    if (branchId && schema.financialEntriesTable.branchId) {
+      conditions.push(eq(schema.financialEntriesTable.branchId, branchId));
+    }
+    if (companyId && schema.financialEntriesTable.companyId) {
+      conditions.push(eq(schema.financialEntriesTable.companyId, companyId));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(conditions.length === 1 ? conditions[0] : and(...conditions));
+    }
+    
+    return query;
   }
 
-  async getUserSubordinates(userId: number): Promise<UserWithHierarchy[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  async createFinancialEntry(entry: NewFinancialEntry): Promise<FinancialEntry> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    if (!schema.financialEntriesTable) {
+      throw new Error('Financial entries table not available in current schema');
+    }
+    
+    const result = await db.insert(schema.financialEntriesTable)
+      .values(entry)
+      .returning();
+    
+    return result[0];
   }
 
-  async updateUserHierarchy(userId: number, managerId: number, companyId: number, branchId?: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getUserRole(userId: number): Promise<UserRole | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getUserRoles(companyId?: number): Promise<UserRole[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async createUserRole(role: NewUserRole): Promise<UserRole> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async updateUserRole(userId: number, role: Partial<NewUserRole>): Promise<UserRole | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async deleteUserRole(userId: number): Promise<boolean> {
-    throw new Error('Implementação Supabase em desenvolvimento');
-  }
-
-  async getBranchesByCompany(companyId: number): Promise<Branch[]> {
+  async updateFinancialEntry(id: number, entry: Partial<FinancialEntry>): Promise<FinancialEntry | null> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
     const { schema } = await import('./database');
     
-    const result = await db.select().from(schema.branchesTable)
-      .where(eq(schema.branchesTable.companyId, companyId));
+    if (!schema.financialEntriesTable) {
+      return null;
+    }
     
-    return result;
+    const result = await db.update(schema.financialEntriesTable)
+      .set(entry)
+      .where(eq(schema.financialEntriesTable.id, id))
+      .returning();
+    
+    return result[0] || null;
   }
 
-  async getBranchesForUser(userId: number): Promise<Branch[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  async deleteFinancialEntry(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.financialEntriesTable) {
+      return false;
+    }
+    
+    await db.delete(schema.financialEntriesTable)
+      .where(eq(schema.financialEntriesTable.id, id));
+    
+    return true;
   }
 
-  async updateBranchManager(branchId: number, managerId: number): Promise<Branch | null> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  // ====================================
+  // TRANSFER METHODS
+  // ====================================
+
+  async getTransfers(companyId?: number): Promise<Transfer[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.transfersTable) {
+      return [];
+    }
+    
+    let query = db.select().from(schema.transfersTable);
+    
+    if (companyId && schema.transfersTable.companyId) {
+      query = query.where(eq(schema.transfersTable.companyId, companyId));
+    }
+    
+    return query;
   }
 
-  async getTransfersWithDetails(userId: number, businessCategory: string): Promise<TransferWithDetails[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  async createTransfer(transfer: NewTransfer): Promise<Transfer> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    if (!schema.transfersTable) {
+      throw new Error('Transfers table not available in current schema');
+    }
+    
+    const result = await db.insert(schema.transfersTable)
+      .values(transfer)
+      .returning();
+    
+    return result[0];
   }
 
-  async getTransfersByCompany(companyId: number): Promise<TransferWithDetails[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  async updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.transfersTable) {
+      return null;
+    }
+    
+    const result = await db.update(schema.transfersTable)
+      .set(transfer)
+      .where(eq(schema.transfersTable.id, id))
+      .returning();
+    
+    return result[0] || null;
   }
 
-  async getAvailableBranchesForTransfer(userId: number, businessCategory: string): Promise<Branch[]> {
-    throw new Error('Implementação Supabase em desenvolvimento');
+  async deleteTransfer(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    if (!schema.transfersTable) {
+      return false;
+    }
+    
+    await db.delete(schema.transfersTable)
+      .where(eq(schema.transfersTable.id, id));
+    
+    return true;
   }
 }

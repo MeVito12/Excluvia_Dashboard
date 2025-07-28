@@ -1,6 +1,6 @@
 import { initializeDatabase } from './database';
 import { SupabaseStorage } from './supabase-storage';
-import { type Storage, SupabaseStorage as MainSupabaseStorage } from '../storage';
+import { type Storage } from '../storage';
 
 class DatabaseManager {
   private storage: Storage | null = null;
@@ -37,7 +37,7 @@ class DatabaseManager {
       } else {
         throw new Error('DATABASE_URL não configurada');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Erro na inicialização do banco:', error.message);
       throw new Error('Database não configurado - consulte a documentação');
     }

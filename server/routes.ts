@@ -62,6 +62,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     };
   };
 
+  // Helper function to get user ID from request
+  const getUserIdFromRequest = (req: any): number => {
+    const userId = req.headers['x-user-id'];
+    if (!userId) {
+      throw new Error('User ID not found in request headers');
+    }
+    return parseInt(userId);
+  };
+
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
@@ -72,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching appointments:", error);
       res.status(503).json({ 
-        error: "Database not available", 
+        error: "Database not available",
         message: "Please execute SQL schema in Supabase Dashboard first"
       });
     }
