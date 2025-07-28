@@ -1066,11 +1066,11 @@ const CadastroSection = () => {
                 </Button>
                 <Button 
                   type="button"
-                  variant="outline"
                   onClick={() => setCurrentStep('users')}
-                  className="px-6"
+                  className="system-btn-primary px-6"
+                  style={{ color: 'white' }}
                 >
-                  Continuar para Usuários
+                  <span style={{ color: 'white' }}>Continuar para Usuários</span>
                 </Button>
               </div>
             </div>
@@ -1412,10 +1412,11 @@ const CadastroSection = () => {
                               setCurrentStep('branches');
                               setActiveTab('cadastro');
                             }}
-                            className="w-full bg-green-600 hover:bg-green-700 text-white"
+                            className="w-full bg-green-600 hover:bg-green-700"
+                            style={{ color: 'white' }}
                           >
-                            <Building2 className="w-4 h-4 mr-2" />
-                            Adicionar Filiais
+                            <Building2 className="w-4 h-4 mr-2" style={{ color: 'white' }} />
+                            <span style={{ color: 'white' }}>Adicionar Filiais</span>
                           </Button>
                           <Button
                             onClick={() => {
@@ -1423,10 +1424,11 @@ const CadastroSection = () => {
                               setCurrentStep('users');
                               setActiveTab('cadastro');
                             }}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                            className="w-full bg-blue-600 hover:bg-blue-700"
+                            style={{ color: 'white' }}
                           >
-                            <Users className="w-4 h-4 mr-2" />
-                            Adicionar Usuários
+                            <Users className="w-4 h-4 mr-2" style={{ color: 'white' }} />
+                            <span style={{ color: 'white' }}>Adicionar Usuários</span>
                           </Button>
                         </div>
                       </div>
