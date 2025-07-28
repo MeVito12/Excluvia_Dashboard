@@ -269,12 +269,8 @@ const CadastroSection = () => {
     return (
       <div className="app-section">
         <div className="section-header">
-          <div className="header-content">
-            <div className="header-title">
-              <Shield className="w-6 h-6 text-red-600" />
-              <h1>Acesso Negado</h1>
-            </div>
-          </div>
+          <h1 className="section-title">Acesso Negado</h1>
+          <p className="section-subtitle">Área restrita para CEOs</p>
         </div>
         <div className="main-card">
           <div className="text-center py-12">
@@ -294,12 +290,8 @@ const CadastroSection = () => {
   return (
     <div className="app-section">
       <div className="section-header">
-        <div className="header-content">
-          <div className="header-title">
-            <ModernIcon icon={Building2} className="w-6 h-6" />
-            <h1>Cadastro</h1>
-          </div>
-        </div>
+        <h1 className="section-title">Cadastro</h1>
+        <p className="section-subtitle">Cadastro de empresas e usuários master</p>
       </div>
 
       {/* Indicador de Passos */}
