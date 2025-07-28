@@ -978,14 +978,14 @@ aside button:hover {
   color: white !important;
 }
 
-/* Links "ver mais" e similares - aparência de link normal */
+/* Links "ver mais" e similares - aparência de link roxo */
 button[class*="text-blue"],
 button[class*="text-purple"],
 a[class*="text-"],
 .link-style,
 button.link-button {
   background: transparent !important;
-  color: #3B82F6 !important;
+  color: hsl(var(--brand-primary)) !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0 !important;
@@ -998,7 +998,7 @@ button[class*="text-purple"]:hover,
 a[class*="text-"]:hover,
 .link-style:hover,
 button.link-button:hover {
-  color: #1D4ED8 !important;
+  color: hsl(var(--brand-secondary)) !important;
   background: transparent !important;
   transform: none !important;
 }
@@ -1035,4 +1035,15 @@ button:not([class*="btn"]):not([type="submit"]):not(.tab-button):not([class*="bg
   border: none !important;
   box-shadow: none !important;
   color: inherit !important;
+}
+
+/* Força links roxos em todos os contextos */
+button[class*="text-blue-600"],
+button[class*="text-purple-600"] {
+  color: hsl(var(--brand-primary)) !important;
+}
+
+button[class*="text-blue-600"]:hover,
+button[class*="text-purple-600"]:hover {
+  color: hsl(var(--brand-secondary)) !important;
 }
