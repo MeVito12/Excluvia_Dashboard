@@ -168,14 +168,15 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                       variant="ghost"
                       className={cn(
                         "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px]",
-                        "hover:text-white",
-                        isActive && "bg-primary text-primary-foreground"
+                        "hover:text-white sidebar-item",
+                        isActive && "active"
                       )}
                       style={{
-                        background: isActive ? 'hsl(var(--brand-primary))' : 'transparent',
-                        border: 'none',
-                        boxShadow: 'none',
-                        outline: 'none'
+                        background: isActive ? 'hsl(var(--brand-primary)) !important' : 'transparent !important',
+                        backgroundColor: isActive ? 'hsl(var(--brand-primary)) !important' : 'transparent !important',
+                        border: 'none !important',
+                        boxShadow: 'none !important',
+                        outline: 'none !important'
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
