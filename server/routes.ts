@@ -724,8 +724,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Buscar empresa pelo ID
-      const companies = await storage.getCompaniesByCreator(user.createdBy || userId);
-      const company = companies.find(c => c.id === user.companyId);
+      const company = await storage.getCompanyById(user.companyId);
       
       if (!company) {
         return res.status(404).json({ error: "Empresa não encontrada" });

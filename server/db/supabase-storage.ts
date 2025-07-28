@@ -40,6 +40,17 @@ export class SupabaseStorage implements Storage {
       .where(eq(schema.companiesTable.createdBy, creatorId));
   }
 
+  async getCompanyById(id: number): Promise<Company | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.select().from(schema.companiesTable)
+      .where(eq(schema.companiesTable.id, id));
+    
+    return result[0] || null;
+  }
+
   async createCompany(company: NewCompany): Promise<Company> {
     const db = await this.getConnection();
     const { schema } = await import('./database');

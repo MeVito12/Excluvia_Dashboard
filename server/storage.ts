@@ -30,6 +30,7 @@ export interface Storage {
   // Empresas
   getCompanies(): Promise<Company[]>;
   getCompaniesByCreator(creatorId: number): Promise<Company[]>;
+  getCompanyById(id: number): Promise<Company | null>;
   createCompany(company: NewCompany): Promise<Company>;
   updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null>;
   deleteCompany(id: number): Promise<boolean>;
