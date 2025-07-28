@@ -1264,7 +1264,7 @@ const EstoqueSection = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {product.price.toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">R$ {Number(product.price || 0).toFixed(2)}</p>
                   <span className={`badge ${
                     product.status === 'Em Estoque' ? 'badge-success' : 
                     product.status === 'Estoque Baixo' ? 'badge-warning' : 
@@ -1372,7 +1372,7 @@ const EstoqueSection = () => {
                   <p className="text-sm text-gray-600">Items: {sale.items.join(', ')}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {sale.total.toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
                   <span className={`badge ${
                     sale.status === 'Concluída' ? 'badge-success' : 
                     sale.status === 'Pendente' ? 'badge-warning' : 'badge-error'
@@ -1416,7 +1416,7 @@ const EstoqueSection = () => {
                   <p className="text-sm text-gray-600">Último pedido: {client.lastOrder}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {client.totalSpent.toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">R$ {Number(client.totalSpent || 0).toFixed(2)}</p>
                   <p className="text-xs text-gray-500 mb-1">Total gasto</p>
                   <span className={`badge ${client.status === 'Ativo' ? 'badge-success' : 'badge-warning'}`}>
                     {client.status}
