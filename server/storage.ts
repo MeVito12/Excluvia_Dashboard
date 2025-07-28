@@ -21,6 +21,8 @@ export interface Storage {
   getUserByEmail(email: string): Promise<User | null>;
   createUser(user: NewUser): Promise<User>;
   getMasterUsers(): Promise<User[]>;
+  getAllUsers(): Promise<User[]>;
+  updateUserRole(userId: number, role: string): Promise<User | null>;
   updateUser(id: number, user: Partial<NewUser>): Promise<User | null>;
   deleteUser(id: number): Promise<boolean>;
   

@@ -61,8 +61,9 @@ const CadastroSection = () => {
   const queryClient = useQueryClient();
 
   // Estados principais
-  const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'branches' | 'users' | 'success'>('company');
+  const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'branches' | 'users' | 'success' | 'manage'>('company');
   const [hasBranches, setHasBranches] = useState<boolean | null>(null);
+  const [showManagement, setShowManagement] = useState(false);
   const [showPostRegistrationDialog, setShowPostRegistrationDialog] = useState(false);
   const [showCommonUsersDialog, setShowCommonUsersDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -342,6 +343,76 @@ const CadastroSection = () => {
     setCommonUsers(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Estados para gerenciamento
+  const [existingCompanies, setExistingCompanies] = useState<any[]>([]);
+  const [existingUsers, setExistingUsers] = useState<any[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<any>(null);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [newRole, setNewRole] = useState<string>('');
+
+  // Buscar empresas existentes
+  const fetchExistingCompanies = async () => {
+    try {
+      const response = await fetch('/api/companies', {
+        headers: { 'x-user-id': (user as any)?.id?.toString() || '1' }
+      });
+      if (response.ok) {
+        const companies = await response.json();
+        setExistingCompanies(companies);
+      }
+    } catch (error) {
+      console.error('Error fetching companies:', error);
+    }
+  };
+
+  // Buscar usuários existentes
+  const fetchExistingUsers = async () => {
+    try {
+      const response = await fetch('/api/all-users', {
+        headers: { 'x-user-id': (user as any)?.id?.toString() || '1' }
+      });
+      if (response.ok) {
+        const users = await response.json();
+        setExistingUsers(users);
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  // Mutation para atualizar role do usuário
+  const updateUserRoleMutation = useMutation({
+    mutationFn: async ({ userId, newRole }: { userId: number, newRole: string }) => {
+      const response = await fetch(`/api/users/${userId}/role`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': (user as any)?.id?.toString() || '1'
+        },
+        body: JSON.stringify({ role: newRole })
+      });
+      if (!response.ok) throw new Error('Erro ao atualizar role');
+      return response.json();
+    },
+    onSuccess: () => {
+      showAlert({
+        title: "Role Atualizada",
+        description: "Role do usuário foi atualizada com sucesso!",
+        variant: "success"
+      });
+      fetchExistingUsers();
+      setSelectedUser(null);
+      setNewRole('');
+    },
+    onError: () => {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao atualizar role do usuário.",
+        variant: "destructive"
+      });
+    }
+  });
+
   // Verificar se é CEO
   if ((user as any)?.role !== 'ceo') {
     return (
@@ -370,6 +441,22 @@ const CadastroSection = () => {
       <div className="section-header">
         <h1 className="section-title">Cadastro</h1>
         <p className="section-subtitle">Cadastro de empresas e usuários master</p>
+        <div className="section-actions">
+          <Button
+            onClick={() => {
+              setShowManagement(!showManagement);
+              if (!showManagement) {
+                fetchExistingCompanies();
+                fetchExistingUsers();
+              }
+            }}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Users className="w-4 h-4" />
+            {showManagement ? 'Novo Cadastro' : 'Gerenciar Existentes'}
+          </Button>
+        </div>
       </div>
 
       {/* Indicador de Passos */}
@@ -897,6 +984,211 @@ const CadastroSection = () => {
                   <strong>Filiais:</strong> {branches.length}<br />
                   <strong>Usuários:</strong> {commonUsers.length + 1} (incluindo master)
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Seção de Gerenciamento */}
+      {showManagement && (
+        <div className="space-y-6">
+          {/* Gerenciar Usuários */}
+          <div className="main-card">
+            <div className="card-header">
+              <div className="card-title">
+                <ModernIcon icon={Users} className="w-5 h-5" />
+                <span>Gerenciar Usuários Existentes</span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Lista de Usuários */}
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-4">Usuários Cadastrados</h4>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {existingUsers.map((user) => (
+                      <div 
+                        key={user.id} 
+                        className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                          selectedUser?.id === user.id 
+                            ? 'border-purple-500 bg-purple-50' 
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setNewRole(user.role);
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium text-gray-800">{user.name}</p>
+                            <p className="text-sm text-gray-600">{user.email}</p>
+                          </div>
+                          <div className="text-right">
+                            <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                              user.role === 'ceo' ? 'bg-red-100 text-red-800' :
+                              user.role === 'master' ? 'bg-purple-100 text-purple-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {user.role === 'ceo' ? 'CEO' : 
+                               user.role === 'master' ? 'Master' : 
+                               'Usuário'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Painel de Edição */}
+                <div>
+                  {selectedUser ? (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-gray-800 mb-4">Editar Usuário</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm text-gray-600">Nome:</p>
+                          <p className="font-medium">{selectedUser.name}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">E-mail:</p>
+                          <p className="font-medium">{selectedUser.email}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-sm font-medium text-gray-700">Nova Role</Label>
+                          <Select value={newRole} onValueChange={setNewRole}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="user">Usuário Comum</SelectItem>
+                              <SelectItem value="master">Master</SelectItem>
+                              {selectedUser.role === 'ceo' && <SelectItem value="ceo">CEO</SelectItem>}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex space-x-2">
+                          <Button
+                            onClick={() => {
+                              if (newRole && newRole !== selectedUser.role) {
+                                updateUserRoleMutation.mutate({
+                                  userId: selectedUser.id,
+                                  newRole
+                                });
+                              }
+                            }}
+                            disabled={!newRole || newRole === selectedUser.role || updateUserRoleMutation.isPending}
+                            className="bg-purple-600 hover:bg-purple-700 text-white"
+                          >
+                            {updateUserRoleMutation.isPending ? 'Atualizando...' : 'Atualizar Role'}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setSelectedUser(null);
+                              setNewRole('');
+                            }}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 p-8 rounded-lg text-center">
+                      <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">Selecione um usuário para editar</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Gerenciar Empresas */}
+          <div className="main-card">
+            <div className="card-header">
+              <div className="card-title">
+                <ModernIcon icon={Building2} className="w-5 h-5" />
+                <span>Gerenciar Empresas Existentes</span>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Lista de Empresas */}
+                <div>
+                  <h4 className="font-medium text-gray-800 mb-4">Empresas Cadastradas</h4>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {existingCompanies.map((company) => (
+                      <div 
+                        key={company.id} 
+                        className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                          selectedCompany?.id === company.id 
+                            ? 'border-purple-500 bg-purple-50' 
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => setSelectedCompany(company)}
+                      >
+                        <div>
+                          <p className="font-medium text-gray-800">{company.fantasyName}</p>
+                          <p className="text-sm text-gray-600">{company.cnpj}</p>
+                          <p className="text-xs text-gray-500">
+                            {businessCategories.find(cat => cat.value === company.businessCategory)?.label}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Painel de Ações */}
+                <div>
+                  {selectedCompany ? (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-gray-800 mb-4">Ações da Empresa</h4>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm text-gray-600">Empresa:</p>
+                          <p className="font-medium">{selectedCompany.fantasyName}</p>
+                        </div>
+                        <div className="space-y-2">
+                          <Button
+                            onClick={() => {
+                              setCompanyCreated(selectedCompany);
+                              setHasBranches(true);
+                              setCurrentStep('branches');
+                              setShowManagement(false);
+                            }}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            <Building2 className="w-4 h-4 mr-2" />
+                            Adicionar Filiais
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setCompanyCreated(selectedCompany);
+                              setCurrentStep('users');
+                              setShowManagement(false);
+                            }}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                          >
+                            <Users className="w-4 h-4 mr-2" />
+                            Adicionar Usuários
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-gray-50 p-8 rounded-lg text-center">
+                      <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">Selecione uma empresa para gerenciar</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

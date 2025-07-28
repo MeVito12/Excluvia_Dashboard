@@ -218,6 +218,27 @@ export class SupabaseStorage implements Storage {
       .where(eq(usersTable.role, 'master'));
   }
 
+  async getAllUsers(): Promise<User[]> {
+    const db = await this.getConnection();
+    const { usersTable } = await import('./schema');
+    
+    return db.select().from(usersTable)
+      .order(usersTable.id);
+  }
+
+  async updateUserRole(userId: number, role: string): Promise<User | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { usersTable } = await import('./schema');
+    
+    const result = await db.update(usersTable)
+      .set({ role })
+      .where(eq(usersTable.id, userId))
+      .returning();
+    
+    return result[0] || null;
+  }
+
   async updateUser(id: number, user: Partial<NewUser>): Promise<User | null> {
     const db = await this.getConnection();
     const { eq } = await import('drizzle-orm');
@@ -288,6 +309,14 @@ export class SupabaseStorage implements Storage {
       .where(eq(companiesTable.id, id));
     
     return true;
+  }
+
+  async getCompanies(): Promise<Company[]> {
+    const db = await this.getConnection();
+    const { companiesTable } = await import('./schema');
+    
+    return db.select().from(companiesTable)
+      .order(companiesTable.id);
   }
 
   // ====================================

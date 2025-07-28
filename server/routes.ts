@@ -172,6 +172,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Route para buscar todos os usuários (para gerenciamento)
+  app.get("/api/all-users", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const users = await storage.getAllUsers();
+      
+      // Remover senhas dos usuários retornados
+      const usersWithoutPasswords = users.map(({ password: _, ...user }) => user);
+      res.json(usersWithoutPasswords);
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+  });
+
+  // Route para atualizar role de usuário
+  app.patch("/api/users/:userId/role", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { role } = req.body;
+      
+      if (!role) {
+        return res.status(400).json({ error: "Role é obrigatória" });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const updatedUser = await storage.updateUserRole(userId, role);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+
+      // Retornar dados do usuário sem senha
+      const { password: _, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error updating user role:", error);
+      res.status(500).json({ error: "Erro ao atualizar role do usuário" });
+    }
+  });
+
   // ====================================
   // COMPANIES
   // ====================================
