@@ -451,9 +451,10 @@ const CadastroSection = () => {
             setCurrentStep('company');
           }}
           className={`tab-button ${activeTab === 'cadastro' ? 'tab-active' : 'tab-inactive'}`}
+          style={activeTab === 'cadastro' ? { color: 'white' } : {}}
         >
-          <Building2 className="w-4 h-4" />
-          Cadastro
+          <Building2 className="w-4 h-4" style={activeTab === 'cadastro' ? { color: 'white' } : {}} />
+          <span style={activeTab === 'cadastro' ? { color: 'white' } : {}}>Cadastro</span>
         </button>
         <button
           onClick={() => {
@@ -462,9 +463,10 @@ const CadastroSection = () => {
             fetchExistingUsers();
           }}
           className={`tab-button ${activeTab === 'gestao' ? 'tab-active' : 'tab-inactive'}`}
+          style={activeTab === 'gestao' ? { color: 'white' } : {}}
         >
-          <Users className="w-4 h-4" />
-          Gestão
+          <Users className="w-4 h-4" style={activeTab === 'gestao' ? { color: 'white' } : {}} />
+          <span style={activeTab === 'gestao' ? { color: 'white' } : {}}>Gestão</span>
         </button>
       </div>
 
