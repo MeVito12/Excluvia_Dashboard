@@ -21,6 +21,153 @@ export class SupabaseStorage implements Storage {
   }
 
   // ====================================
+  // COMPANY METHODS
+  // ====================================
+
+  async getCompanies(): Promise<Company[]> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    return db.select().from(schema.companiesTable);
+  }
+
+  async getCompaniesByCreator(creatorId: number): Promise<Company[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    return db.select().from(schema.companiesTable)
+      .where(eq(schema.companiesTable.createdBy, creatorId));
+  }
+
+  async createCompany(company: NewCompany): Promise<Company> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.companiesTable)
+      .values(company)
+      .returning();
+    
+    return result[0];
+  }
+
+  async updateCompany(id: number, company: Partial<NewCompany>): Promise<Company | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.update(schema.companiesTable)
+      .set(company)
+      .where(eq(schema.companiesTable.id, id))
+      .returning();
+    
+    return result[0] || null;
+  }
+
+  async deleteCompany(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    await db.delete(schema.companiesTable)
+      .where(eq(schema.companiesTable.id, id));
+    
+    return true;
+  }
+
+  // ====================================
+  // BRANCH METHODS
+  // ====================================
+
+  async getBranches(companyId?: number): Promise<Branch[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    let query = db.select().from(schema.branchesTable);
+    
+    if (companyId) {
+      query = query.where(eq(schema.branchesTable.companyId, companyId));
+    }
+    
+    return query;
+  }
+
+  async getBranchesByCompany(companyId: number): Promise<Branch[]> {
+    return this.getBranches(companyId);
+  }
+
+  async createBranch(branch: NewBranch): Promise<Branch> {
+    const db = await this.getConnection();
+    const { schema } = await import('./database');
+    
+    const result = await db.insert(schema.branchesTable)
+      .values(branch)
+      .returning();
+    
+    return result[0];
+  }
+
+  async updateBranch(id: number, branch: Partial<NewBranch>): Promise<Branch | null> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    const result = await db.update(schema.branchesTable)
+      .set(branch)
+      .where(eq(schema.branchesTable.id, id))
+      .returning();
+    
+    return result[0] || null;
+  }
+
+  async deleteBranch(id: number): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    await db.delete(schema.branchesTable)
+      .where(eq(schema.branchesTable.id, id));
+    
+    return true;
+  }
+
+  // ====================================
+  // USER PERMISSION METHODS
+  // ====================================
+
+  async getUserPermissions(userId: number): Promise<UserPermission[]> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    return db.select().from(schema.userPermissionsTable)
+      .where(eq(schema.userPermissionsTable.userId, userId));
+  }
+
+  async updateUserPermissions(userId: number, permissions: string[]): Promise<boolean> {
+    const db = await this.getConnection();
+    const { eq } = await import('drizzle-orm');
+    const { schema } = await import('./database');
+    
+    // Delete existing permissions
+    await db.delete(schema.userPermissionsTable)
+      .where(eq(schema.userPermissionsTable.userId, userId));
+    
+    // Insert new permissions
+    if (permissions.length > 0) {
+      const permissionRecords = permissions.map(permission => ({
+        userId,
+        permission,
+        createdAt: new Date()
+      }));
+      
+      await db.insert(schema.userPermissionsTable).values(permissionRecords);
+    }
+    
+    return true;
+  }
+
+  // ====================================
   // USER METHODS
   // ====================================
 

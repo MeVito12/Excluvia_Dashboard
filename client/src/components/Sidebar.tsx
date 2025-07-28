@@ -18,7 +18,9 @@ import {
   LogOut,
   CreditCard,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Building2,
+  UserPlus
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -93,6 +95,12 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       label: 'Controle',
       icon: Settings,
       description: 'Configuração de permissões'
+    },
+    {
+      id: 'cadastro',
+      label: 'Cadastro',
+      icon: UserPlus,
+      description: 'Cadastro de empresas e usuários'
     }
   ];
 
@@ -101,6 +109,11 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
     // Controle só para usuários master
     if (item.id === 'controle') {
       return isMasterUser;
+    }
+
+    // Cadastro só para CEO
+    if (item.id === 'cadastro') {
+      return (user as any)?.role === 'ceo';
     }
     
     // Estoque não aparece para design e sites

@@ -76,6 +76,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Company creation route (only for CEO)
+  app.post("/api/companies", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const newCompany = await storage.createCompany(req.body);
+      res.json(newCompany);
+    } catch (error) {
+      console.error("Error creating company:", error);
+      res.status(500).json({ error: "Erro ao criar empresa" });
+    }
+  });
+
+  // Get companies route
+  app.get("/api/companies", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const companies = await storage.getCompanies();
+      res.json(companies);
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+      res.status(500).json({ error: "Erro ao buscar empresas" });
+    }
+  });
+
   // Middleware para extrair userId e dados da empresa/filial do header de autorização
   const getUserContextFromRequest = (req: any) => {
     const userId = req.headers['x-user-id'];

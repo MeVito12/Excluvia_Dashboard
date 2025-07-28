@@ -10,7 +10,7 @@ import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
 
 interface LoginFormProps {
-  onLogin: (user: { name: string; email: string }) => void;
+  onLogin: (user: any) => void;
 }
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
