@@ -202,10 +202,10 @@ const AtividadeSection = () => {
       };
     } else if (activeTab === 'vendas') {
       return {
-        metric1: { label: 'Vendas Hoje', value: 'R$ 6.499', change: '+18% vs ontem', icon: DollarSign, color: 'green' },
+        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
         metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
-        metric3: { label: 'Ticket Médio', value: 'R$ 89,50', change: '+12% vs semana passada', icon: TrendingUp, color: 'purple' },
-        metric4: { label: 'Meta Mensal', value: '87%', change: 'R$ 15.200 de R$ 17.500', icon: BarChart3, color: 'orange' }
+        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
+        metric4: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
       return {
@@ -612,7 +612,7 @@ const AtividadeSection = () => {
               <div className="text-right">
                 <Button 
                   onClick={() => {
-                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ 6.499,97"\n"Transações","45 vendas"`;
+                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}"\n"Transações","${sales.length} vendas"`;
                     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);

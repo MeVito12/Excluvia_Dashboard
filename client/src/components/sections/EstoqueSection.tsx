@@ -1441,7 +1441,7 @@ const EstoqueSection = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Vendas Hoje</span>
-              <span className="font-medium text-gray-900">R$ 6.499,97</span>
+              <span className="font-medium text-gray-900">R$ {sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Vendas Esta Semana</span>
@@ -1485,7 +1485,7 @@ const EstoqueSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <button 
             onClick={() => {
-              const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ 6.499,97"\n"Transações","45 vendas"`;
+              const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}"\n"Transações","${sales.length} vendas"`;
               const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
               const link = document.createElement('a');
               link.href = URL.createObjectURL(blob);
