@@ -217,7 +217,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
             <Button
               variant="ghost"
               onClick={logout}
-              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3"
+              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 sidebar-logout-button"
               style={{
                 background: 'transparent !important',
                 border: 'none !important',
@@ -247,7 +247,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           variant="ghost"
           size="sm"
           onClick={handleToggle}
-          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300"
+          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 sidebar-collapse-button"
           style={{
             background: 'transparent !important',
             border: 'none !important',

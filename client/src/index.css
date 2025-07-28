@@ -1285,3 +1285,40 @@ button[data-variant="ghost"],
 nav li button {
   background: transparent !important;
 }
+/* Força transparência específica para botões da sidebar */
+.sidebar-logout-button,
+.sidebar-collapse-button {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Botão de sair específico */
+button[variant="ghost"]:has(span:contains("Sair")),
+div[class*="border-t"] button[variant="ghost"] {
+  background: transparent !important;
+  color: #F87171 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+div[class*="border-t"] button[variant="ghost"]:hover {
+  background: transparent !important;
+  color: #EF4444 !important;
+}
+
+/* Botão de colapsar específico */
+div[class*="fixed"][class*="top-1/2"] button {
+  background: transparent !important;
+  color: #93C5FD !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+div[class*="fixed"][class*="top-1/2"] button:hover {
+  background: transparent !important;
+  color: #60A5FA !important;
+}
