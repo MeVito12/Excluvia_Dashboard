@@ -25,7 +25,8 @@ import {
   RotateCcw,
   Edit,
   Trash2,
-  Calendar
+  Calendar,
+  X
 } from 'lucide-react';
 import { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 
@@ -526,125 +527,159 @@ const FinanceiroSection = () => {
         </div>
       </div>
 
-      {/* Modal de Criação */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>
-              {activeTab === 'entradas' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
-            </DialogTitle>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="description">Descrição *</Label>
-              <Input
-                id="description"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Digite a descrição"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="amount">Valor (R$) *</Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                placeholder="0,00"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="dueDate">Data de Vencimento *</Label>
-              <Input
-                id="dueDate"
-                type="date"
-                value={formData.dueDate}
-                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-              />
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isBoleto"
-                checked={formData.isBoleto}
-                onCheckedChange={(checked) => setFormData({ ...formData, isBoleto: !!checked })}
-              />
-              <Label htmlFor="isBoleto">É um boleto</Label>
-            </div>
-
-            {formData.isBoleto && (
-              <div>
-                <Label htmlFor="boletoCode">Código do Boleto</Label>
-                <Input
-                  id="boletoCode"
-                  value={formData.boletoCode}
-                  onChange={(e) => setFormData({ ...formData, boletoCode: e.target.value })}
-                  placeholder="Código de barras do boleto"
-                />
-              </div>
-            )}
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="isInstallment"
-                checked={formData.isInstallment}
-                onCheckedChange={(checked) => setFormData({ ...formData, isInstallment: !!checked })}
-              />
-              <Label htmlFor="isInstallment">É parcelado</Label>
-            </div>
-
-            {formData.isInstallment && (
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="currentInstallment">Parcela Atual</Label>
-                  <Input
-                    id="currentInstallment"
-                    type="number"
-                    value={formData.currentInstallment}
-                    onChange={(e) => setFormData({ ...formData, currentInstallment: e.target.value })}
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="installmentCount">Total de Parcelas</Label>
-                  <Input
-                    id="installmentCount"
-                    type="number"
-                    value={formData.installmentCount}
-                    onChange={(e) => setFormData({ ...formData, installmentCount: e.target.value })}
-                    placeholder="12"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="flex gap-2 pt-4">
-              <Button 
-                onClick={handleCreateEntry}
-                disabled={!formData.description || !formData.amount || !formData.dueDate}
-                className="flex-1"
-              >
-                {activeTab === 'entradas' ? 'Criar Entrada' : 'Criar Saída'}
-              </Button>
-              <Button 
-                variant="outline" 
+      {/* Modal de Criação - Personalizado */}
+      {isCreateModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {activeTab === 'entradas' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
+              </h3>
+              <button
                 onClick={() => {
                   setIsCreateModalOpen(false);
                   resetForm();
                 }}
-                className="flex-1"
+                className="text-gray-400 hover:text-gray-600"
               >
-                Cancelar
-              </Button>
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição *
+                </label>
+                <input
+                  id="description"
+                  type="text"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Digite a descrição"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
+                  Valor (R$) *
+                </label>
+                <input
+                  id="amount"
+                  type="number"
+                  step="0.01"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                  placeholder="0,00"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Data de Vencimento *
+                </label>
+                <input
+                  id="dueDate"
+                  type="date"
+                  value={formData.dueDate}
+                  onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  id="isBoleto"
+                  type="checkbox"
+                  checked={formData.isBoleto}
+                  onChange={(e) => setFormData({ ...formData, isBoleto: e.target.checked })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="isBoleto" className="text-sm text-gray-700">É um boleto</label>
+              </div>
+
+              {formData.isBoleto && (
+                <div>
+                  <label htmlFor="boletoCode" className="block text-sm font-medium text-gray-700 mb-1">
+                    Código do Boleto
+                  </label>
+                  <input
+                    id="boletoCode"
+                    type="text"
+                    value={formData.boletoCode}
+                    onChange={(e) => setFormData({ ...formData, boletoCode: e.target.value })}
+                    placeholder="Código de barras do boleto"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center space-x-2">
+                <input
+                  id="isInstallment"
+                  type="checkbox"
+                  checked={formData.isInstallment}
+                  onChange={(e) => setFormData({ ...formData, isInstallment: e.target.checked })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="isInstallment" className="text-sm text-gray-700">É parcelado</label>
+              </div>
+
+              {formData.isInstallment && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="currentInstallment" className="block text-sm font-medium text-gray-700 mb-1">
+                      Parcela Atual
+                    </label>
+                    <input
+                      id="currentInstallment"
+                      type="number"
+                      value={formData.currentInstallment}
+                      onChange={(e) => setFormData({ ...formData, currentInstallment: e.target.value })}
+                      placeholder="1"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="installmentCount" className="block text-sm font-medium text-gray-700 mb-1">
+                      Total de Parcelas
+                    </label>
+                    <input
+                      id="installmentCount"
+                      type="number"
+                      value={formData.installmentCount}
+                      onChange={(e) => setFormData({ ...formData, installmentCount: e.target.value })}
+                      placeholder="12"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={handleCreateEntry}
+                  disabled={!formData.description || !formData.amount || !formData.dueDate}
+                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {activeTab === 'entradas' ? 'Criar Entrada' : 'Criar Saída'}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsCreateModalOpen(false);
+                    resetForm();
+                  }}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* Modal de Pagamento */}
       <Dialog open={isPayModalOpen} onOpenChange={setIsPayModalOpen}>
