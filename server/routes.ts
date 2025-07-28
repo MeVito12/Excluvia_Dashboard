@@ -146,6 +146,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Routes para cadastro de usuários comuns
+  app.post("/api/users", async (req, res) => {
+    try {
+      const userId = req.headers['x-user-id'];
+      if (!userId) {
+        return res.status(401).json({ error: "Usuário não autenticado" });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const userData = insertUserSchema.parse({
+        ...req.body,
+        role: req.body.role || 'user',
+        createdBy: parseInt(userId as string)
+      });
+      
+      const newUser = await storage.createUser(userData);
+      
+      // Retornar dados do usuário sem senha
+      const { password: _, ...userWithoutPassword } = newUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ error: "Erro ao criar usuário" });
+    }
+  });
+
   // ====================================
   // COMPANIES
   // ====================================

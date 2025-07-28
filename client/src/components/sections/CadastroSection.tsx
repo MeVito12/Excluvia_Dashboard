@@ -61,7 +61,8 @@ const CadastroSection = () => {
   const queryClient = useQueryClient();
 
   // Estados principais
-  const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'success'>('company');
+  const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'branches' | 'users' | 'success'>('company');
+  const [hasBranches, setHasBranches] = useState<boolean | null>(null);
   const [showPostRegistrationDialog, setShowPostRegistrationDialog] = useState(false);
   const [showCommonUsersDialog, setShowCommonUsersDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -81,6 +82,16 @@ const CadastroSection = () => {
     email: '',
     password: '',
     confirmPassword: ''
+  });
+
+  // Filiais
+  const [branches, setBranches] = useState<any[]>([]);
+  const [newBranch, setNewBranch] = useState({
+    name: '',
+    address: '',
+    phone: '',
+    email: '',
+    isMain: false
   });
 
   // Usuários comuns
@@ -188,8 +199,8 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-      setCurrentStep('success');
-      setShowPostRegistrationDialog(true);
+      // Ir para etapa de pergunta sobre filiais
+      setCurrentStep('branches');
       showAlert({
         title: "Usuário Master Criado",
         description: `${masterUserData.name} foi cadastrado com sucesso!`,
@@ -200,6 +211,85 @@ const CadastroSection = () => {
       showAlert({
         title: "Erro",
         description: "Erro ao criar usuário master. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const createBranchMutation = useMutation({
+    mutationFn: async (branchData: any) => {
+      const response = await fetch('/api/branches', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': (user as any)?.id?.toString() || '1'
+        },
+        body: JSON.stringify({
+          ...branchData,
+          companyId: companyCreated?.id
+        })
+      });
+      if (!response.ok) throw new Error('Erro ao criar filial');
+      return response.json();
+    },
+    onSuccess: (branch) => {
+      setBranches(prev => [...prev, branch]);
+      setNewBranch({
+        name: '',
+        address: '',
+        phone: '',
+        email: '',
+        isMain: false
+      });
+      showAlert({
+        title: "Filial Criada",
+        description: `${branch.name} foi cadastrada com sucesso!`,
+        variant: "success"
+      });
+    },
+    onError: () => {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao criar filial. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const createCommonUserMutation = useMutation({
+    mutationFn: async (userData: CommonUser & { companyId: number }) => {
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-user-id': (user as any)?.id?.toString() || '1'
+        },
+        body: JSON.stringify({
+          ...userData,
+          businessCategory: companyCreated?.businessCategory || 'geral'
+        })
+      });
+      if (!response.ok) throw new Error('Erro ao criar usuário');
+      return response.json();
+    },
+    onSuccess: (newUser) => {
+      setCommonUsers(prev => [...prev, newUser]);
+      setNewCommonUser({
+        name: '',
+        email: '',
+        password: '',
+        role: 'user'
+      });
+      showAlert({
+        title: "Usuário Criado",
+        description: `${newUser.name} foi cadastrado com sucesso!`,
+        variant: "success"
+      });
+    },
+    onError: () => {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao criar usuário. Tente novamente.",
         variant: "destructive"
       });
     }
@@ -219,24 +309,7 @@ const CadastroSection = () => {
     createCompanyMutation.mutate(companyData);
   };
 
-  const handleMasterUserSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!emailValid || !passwordMatch || !masterUserData.name) {
-      showAlert({
-        title: "Dados Inválidos",
-        description: "Verifique se todos os campos estão preenchidos corretamente.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (companyCreated) {
-      createMasterUserMutation.mutate({
-        ...masterUserData,
-        companyId: companyCreated.id
-      });
-    }
-  };
+
 
   const handleCNPJChange = (value: string) => {
     const formatted = formatCNPJ(value);
@@ -261,11 +334,8 @@ const CadastroSection = () => {
     }
   };
 
-  const addCommonUser = () => {
-    if (newCommonUser.name && newCommonUser.email && newCommonUser.password) {
-      setCommonUsers(prev => [...prev, { ...newCommonUser }]);
-      setNewCommonUser({ name: '', email: '', password: '', role: 'user' });
-    }
+  const removeBranch = (index: number) => {
+    setBranches(prev => prev.filter((_, i) => i !== index));
   };
 
   const removeCommonUser = (index: number) => {
@@ -306,20 +376,29 @@ const CadastroSection = () => {
       <div className="main-card mb-6">
         <div className="flex justify-center py-4">
           <div className="flex items-center space-x-12">
-            <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : currentStep === 'master' || currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'master' || currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {currentStep === 'master' || currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '1'}
+            <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {(currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '1'}
               </div>
               <span className="ml-4 font-medium text-lg">Empresa</span>
             </div>
             
             <div className={`w-24 h-1 rounded-full ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
             
-            <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '2'}
+            <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '2'}
               </div>
               <span className="ml-4 font-medium text-lg">Usuário Master</span>
+            </div>
+            
+            <div className={`w-24 h-1 rounded-full ${(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+            
+            <div className={`flex items-center ${(currentStep === 'branches' || currentStep === 'users') ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${(currentStep === 'branches' || currentStep === 'users') ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '3'}
+              </div>
+              <span className="ml-4 font-medium text-lg">Filiais & Usuários</span>
             </div>
           </div>
         </div>
@@ -549,139 +628,280 @@ const CadastroSection = () => {
         </div>
       )}
 
-      {/* Diálogo Pós-Cadastro */}
-      <Dialog open={showPostRegistrationDialog} onOpenChange={setShowPostRegistrationDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              Cadastro Concluído!
-            </DialogTitle>
-            <DialogDescription>
-              Empresa e usuário master foram cadastrados com sucesso. O que deseja fazer agora?
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4">
-            <Button
-              onClick={() => {
-                setShowPostRegistrationDialog(false);
-                setShowCommonUsersDialog(true);
-              }}
-              className="w-full justify-start"
-              variant="outline"
-            >
-              <Users className="w-4 h-4 mr-2" />
-              Adicionar Usuários Comuns
-            </Button>
+      {/* Etapa: Pergunta sobre Filiais */}
+      {currentStep === 'branches' && hasBranches === null && (
+        <div className="main-card">
+          <div className="card-header">
+            <div className="card-title">
+              <ModernIcon icon={Building2} className="w-5 h-5" />
+              <span>Configuração de Filiais - {companyCreated?.fantasyName}</span>
+            </div>
           </div>
           
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setShowPostRegistrationDialog(false);
-                // Reset form
-                setCurrentStep('company');
-                setCompanyData({ fantasyName: '', corporateName: '', cnpj: '', businessCategory: '' });
-                setMasterUserData({ name: '', email: '', password: '', confirmPassword: '' });
-                setCompanyCreated(null);
-              }}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              Finalizar Cadastro
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          <div className="text-center py-8">
+            <Building2 className="w-16 h-16 text-purple-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+              Sua empresa possui filiais?
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Você pode cadastrar as filiais da sua empresa agora ou pular esta etapa.
+            </p>
+            
+            <div className="flex justify-center space-x-4">
+              <Button 
+                onClick={() => setHasBranches(true)}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+              >
+                Sim, cadastrar filiais
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setCurrentStep('users')}
+                className="px-8 py-3"
+              >
+                Pular esta etapa
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      {/* Diálogo para Cadastro de Usuários Comuns */}
-      <Dialog open={showCommonUsersDialog} onOpenChange={setShowCommonUsersDialog}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>Adicionar Usuários Comuns</DialogTitle>
-            <DialogDescription>
-              Cadastre usuários que irão trabalhar na empresa {companyCreated?.fantasyName}
-            </DialogDescription>
-          </DialogHeader>
+      {/* Formulário de Filiais */}
+      {currentStep === 'branches' && hasBranches === true && (
+        <div className="main-card">
+          <div className="card-header">
+            <div className="card-title">
+              <ModernIcon icon={Building2} className="w-5 h-5" />
+              <span>Cadastrar Filiais - {companyCreated?.fantasyName}</span>
+            </div>
+          </div>
           
-          <div className="space-y-4">
-            {/* Formulário para novo usuário */}
-            <div className="main-card">
-              <h4 className="font-medium mb-4">Novo Usuário</h4>
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Nome completo"
-                    value={newCommonUser.name}
-                    onChange={(e) => setNewCommonUser(prev => ({ ...prev, name: e.target.value }))}
-                  />
-                  <Input
-                    placeholder="E-mail"
-                    type="email"
-                    value={newCommonUser.email}
-                    onChange={(e) => setNewCommonUser(prev => ({ ...prev, email: e.target.value }))}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Senha"
-                    type="password"
-                    value={newCommonUser.password}
-                    onChange={(e) => setNewCommonUser(prev => ({ ...prev, password: e.target.value }))}
-                  />
-                  <Button onClick={addCommonUser} className="w-full">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Adicionar
-                  </Button>
-                </div>
+          <form onSubmit={handleBranchSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="branchName" className="text-sm font-medium text-gray-700">Nome da Filial *</Label>
+                <Input
+                  id="branchName"
+                  value={newBranch.name}
+                  onChange={(e) => setNewBranch(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ex: Filial Centro"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="branchAddress" className="text-sm font-medium text-gray-700">Endereço</Label>
+                <Input
+                  id="branchAddress"
+                  value={newBranch.address}
+                  onChange={(e) => setNewBranch(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder="Ex: Rua Principal, 123"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="branchPhone" className="text-sm font-medium text-gray-700">Telefone</Label>
+                <Input
+                  id="branchPhone"
+                  value={newBranch.phone}
+                  onChange={(e) => setNewBranch(prev => ({ ...prev, phone: e.target.value }))}
+                  placeholder="(11) 99999-9999"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="branchEmail" className="text-sm font-medium text-gray-700">E-mail</Label>
+                <Input
+                  id="branchEmail"
+                  type="email"
+                  value={newBranch.email}
+                  onChange={(e) => setNewBranch(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="filial@empresa.com"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
               </div>
             </div>
 
-            {/* Lista de usuários adicionados */}
-            {commonUsers.length > 0 && (
-              <div className="space-y-2">
-                <h4 className="font-medium">Usuários Adicionados ({commonUsers.length})</h4>
-                {commonUsers.map((user, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex justify-between items-center pt-4">
+              <div className="flex space-x-2">
+                <Button 
+                  type="submit" 
+                  disabled={createBranchMutation.isPending}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                >
+                  {createBranchMutation.isPending ? 'Adicionando...' : 'Adicionar Filial'}
+                </Button>
+                <Button 
+                  type="button"
+                  variant="outline"
+                  onClick={() => setCurrentStep('users')}
+                  className="px-6"
+                >
+                  Continuar para Usuários
+                </Button>
+              </div>
+            </div>
+          </form>
+
+          {/* Lista de Filiais Cadastradas */}
+          {branches.length > 0 && (
+            <div className="mt-8 pt-6 border-t">
+              <h4 className="font-medium text-gray-800 mb-4">Filiais Cadastradas</h4>
+              <div className="space-y-3">
+                {branches.map((branch, index) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                     <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="font-medium text-gray-800">{branch.name}</p>
+                      <p className="text-sm text-gray-600">{branch.address}</p>
                     </div>
                     <Button
-                      size="sm"
                       variant="ghost"
-                      onClick={() => removeCommonUser(index)}
+                      size="sm"
+                      onClick={() => removeBranch(index)}
+                      className="text-red-600 hover:text-red-700"
                     >
                       <X className="w-4 h-4" />
                     </Button>
                   </div>
                 ))}
               </div>
-            )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Etapa: Usuários Comuns */}
+      {currentStep === 'users' && (
+        <div className="main-card">
+          <div className="card-header">
+            <div className="card-title">
+              <ModernIcon icon={Users} className="w-5 h-5" />
+              <span>Cadastrar Usuários Comuns - {companyCreated?.fantasyName}</span>
+            </div>
           </div>
           
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCommonUsersDialog(false)}>
-              Cancelar
-            </Button>
-            <Button
-              onClick={() => {
-                setShowCommonUsersDialog(false);
-                showAlert({
-                  title: "Usuários Salvos",
-                  description: `${commonUsers.length} usuários foram cadastrados com sucesso!`,
-                  variant: "success"
-                });
-                setCommonUsers([]);
-              }}
-              disabled={commonUsers.length === 0}
-              className="bg-purple-600 hover:bg-purple-700"
-            >
-              Salvar Usuários
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          <div className="mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-blue-800 text-sm">
+                <strong>Opcional:</strong> Cadastre usuários comuns da sua empresa ou pule esta etapa para finalizar.
+              </p>
+            </div>
+          </div>
+
+          <form onSubmit={handleCommonUserSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="userName" className="text-sm font-medium text-gray-700">Nome Completo *</Label>
+                <Input
+                  id="userName"
+                  value={newCommonUser.name}
+                  onChange={(e) => setNewCommonUser(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ex: Maria Silva"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="userEmail" className="text-sm font-medium text-gray-700">E-mail *</Label>
+                <Input
+                  id="userEmail"
+                  type="email"
+                  value={newCommonUser.email}
+                  onChange={(e) => setNewCommonUser(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="maria@empresa.com"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="userPassword" className="text-sm font-medium text-gray-700">Senha *</Label>
+                <Input
+                  id="userPassword"
+                  type="password"
+                  value={newCommonUser.password}
+                  onChange={(e) => setNewCommonUser(prev => ({ ...prev, password: e.target.value }))}
+                  placeholder="Mínimo 8 caracteres"
+                  minLength={8}
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <div className="flex space-x-2">
+                <Button 
+                  type="submit" 
+                  disabled={createCommonUserMutation.isPending}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6"
+                >
+                  {createCommonUserMutation.isPending ? 'Adicionando...' : 'Adicionar Usuário'}
+                </Button>
+                <Button 
+                  type="button"
+                  onClick={handleFinishRegistration}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6"
+                >
+                  Finalizar Cadastro
+                </Button>
+              </div>
+            </div>
+          </form>
+
+          {/* Lista de Usuários Cadastrados */}
+          {commonUsers.length > 0 && (
+            <div className="mt-8 pt-6 border-t">
+              <h4 className="font-medium text-gray-800 mb-4">Usuários Cadastrados</h4>
+              <div className="space-y-3">
+                {commonUsers.map((user, index) => (
+                  <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-800">{user.name}</p>
+                      <p className="text-sm text-gray-600">{user.email}</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeCommonUser(index)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Seção de Sucesso */}
+      {currentStep === 'success' && (
+        <div className="main-card">
+          <div className="text-center py-12">
+            <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-6" />
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Cadastro Realizado com Sucesso!
+            </h2>
+            <p className="text-gray-600 mb-8">
+              A empresa {companyCreated?.fantasyName} foi cadastrada com sucesso.
+            </p>
+            <div className="space-y-4">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h3 className="font-medium text-green-800 mb-2">Resumo do Cadastro</h3>
+                <p className="text-green-700">
+                  <strong>Empresa:</strong> {companyCreated?.fantasyName}<br />
+                  <strong>CNPJ:</strong> {companyCreated?.cnpj}<br />
+                  <strong>Filiais:</strong> {branches.length}<br />
+                  <strong>Usuários:</strong> {commonUsers.length + 1} (incluindo master)
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CustomAlert
         isOpen={isOpen}
