@@ -796,6 +796,7 @@ All colors MUST be HSL.
   @apply font-medium px-4 py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg active:scale-95;
   background: hsl(var(--brand-primary)) !important;
   color: white !important;
+  --tw-text-opacity: 1 !important;
 }
 
 .system-btn-primary *,
@@ -842,11 +843,26 @@ All colors MUST be HSL.
 
 /* Força texto branco em botões do sistema - override específico */
 button.system-btn-primary,
-button.system-btn-primary * {
+button.system-btn-primary *,
+.system-btn-primary,
+.system-btn-primary * {
   color: white !important;
+  text-decoration-color: white !important;
 }
 
 button.system-btn-primary:hover,
-button.system-btn-primary:hover * {
+button.system-btn-primary:hover *,
+.system-btn-primary:hover,  
+.system-btn-primary:hover * {
+  color: white !important;
+  text-decoration-color: white !important;
+}
+
+/* Override específico para elementos com classes conflitantes */
+.system-btn-primary.bg-purple-600,
+.system-btn-primary.bg-purple-600 *,
+button.system-btn-primary.bg-purple-600,
+button.system-btn-primary.bg-purple-600 * {
   color: white !important;
 }
+.system-btn-primary, .system-btn-primary * { color: #ffffff !important; }
