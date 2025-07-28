@@ -111,22 +111,22 @@ const GraficosSection = () => {
     }
 
     // Dados para gráfico de produtos mais vendidos
-    const productSales = {};
-    filteredSales.forEach(sale => {
-      const product = products.find(p => p.id === sale.productId);
+    const productSales: Record<string, number> = {};
+    filteredSales.forEach((sale: any) => {
+      const product = products.find((p: any) => p.id === sale.productId);
       if (product) {
-        const productName = product.name.length > 15 ? product.name.substring(0, 15) + '...' : product.name;
+        const productName = product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name;
         productSales[productName] = (productSales[productName] || 0) + sale.quantity;
       }
     });
     
     const topProductsData = Object.entries(productSales)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([,a], [,b]) => (b as number) - (a as number))
       .slice(0, 5)
-      .map(([name, quantity]) => ({ produto: name, vendas: quantity }));
+      .map(([name, quantity]) => ({ produto: name, vendas: quantity as number }));
 
     // Dados para gráfico de clientes (distribuição por tipo)
-    const clientTypes = clients.reduce((acc, client) => {
+    const clientTypes: Record<string, number> = clients.reduce((acc: Record<string, number>, client: any) => {
       const type = client.clientType === 'company' ? 'Empresas' : 'Pessoas Físicas';
       acc[type] = (acc[type] || 0) + 1;
       return acc;
@@ -135,7 +135,7 @@ const GraficosSection = () => {
     const COLORS = ['#8B5CF6', '#06D6A0', '#FFD166', '#EF476F'];
     const clientsChartData = Object.entries(clientTypes).map(([type, count], index) => ({ 
       type, 
-      count, 
+      count: count as number, 
       color: COLORS[index % COLORS.length] 
     }));
 
@@ -292,8 +292,8 @@ const GraficosSection = () => {
                 <XAxis dataKey="day" />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value, name) => [
-                    name === 'vendas' ? `${value} vendas` : `R$ ${value.toFixed(2)}`,
+                  formatter={(value: any, name: any) => [
+                    name === 'vendas' ? `${value} vendas` : `R$ ${Number(value).toFixed(2)}`,
                     name === 'vendas' ? 'Vendas' : 'Receita'
                   ]}
                 />
@@ -338,7 +338,7 @@ const GraficosSection = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="periodo" />
                 <YAxis />
-                <Tooltip formatter={(value) => [`R$ ${value.toFixed(2)}`, 'Receita']} />
+                <Tooltip formatter={(value: any) => [`R$ ${Number(value).toFixed(2)}`, 'Receita']} />
                 <Area 
                   type="monotone" 
                   dataKey="receita" 
@@ -375,7 +375,7 @@ const GraficosSection = () => {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value) => [`${value} clientes`, 'Quantidade']} />
+                <Tooltip formatter={(value: any) => [`${value} clientes`, 'Quantidade']} />
               </RechartsPieChart>
             </ResponsiveContainer>
             <div className="mt-4 flex flex-wrap gap-4 justify-center">
