@@ -917,3 +917,40 @@ button.text-sm.text-blue-600:hover {
   text-decoration: underline !important;
   transform: none !important;
 }
+
+/* Força remoção completa de estilo de botão para "Esqueceu sua senha" */
+button[class*="text-blue-600"],
+button[class*="text-purple-600"] {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+  font-weight: normal !important;
+  color: #3B82F6 !important;
+  cursor: pointer !important;
+}
+
+button[class*="text-blue-600"]:hover,
+button[class*="text-purple-600"]:hover {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #1D4ED8 !important;
+  text-decoration: underline !important;
+  transform: none !important;
+}
+
+/* Força estilo específico para qualquer botão com texto "Esqueceu sua senha" */
+button:has-text("Esqueceu sua senha"),
+button[onclick*="forgotPassword"],
+button[type="button"]:contains("Esqueceu") {
+  all: unset !important;
+  color: #3B82F6 !important;
+  cursor: pointer !important;
+  font-size: 0.875rem !important;
+}

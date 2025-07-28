@@ -214,7 +214,16 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <button
                   type="button"
                   onClick={openForgotPassword}
-                  className="text-sm text-purple-600 hover:text-purple-800"
+                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline bg-transparent border-none outline-none shadow-none p-0 m-0"
+                  style={{
+                    background: 'transparent !important',
+                    border: 'none !important',
+                    outline: 'none !important',
+                    boxShadow: 'none !important',
+                    padding: '0 !important',
+                    margin: '0 !important',
+                    color: '#3B82F6 !important'
+                  }}
                 >
                   Esqueceu sua senha?
                 </button>
