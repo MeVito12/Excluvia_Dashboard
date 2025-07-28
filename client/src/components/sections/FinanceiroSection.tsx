@@ -300,10 +300,10 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Pendências</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : financialEntries.filter(e => e.status === 'pending' || e.status === 'near_due' || e.status === 'overdue').length}
+                {isLoading ? '...' : financialEntries.filter(e => e.type === 'expense' && (e.status === 'pending' || e.status === 'near_due' || e.status === 'overdue')).length}
               </p>
               <p className="text-xs text-yellow-600 mt-1">
-                {financialEntries.filter(e => e.status === 'overdue').length > 0 ? 'Tem vencidas' : 'Em dia'}
+                {financialEntries.filter(e => e.type === 'expense' && e.status === 'overdue').length > 0 ? 'Tem vencidas' : 'Em dia'}
               </p>
             </div>
             <div className="p-3 rounded-full bg-yellow-100">
@@ -341,7 +341,7 @@ const FinanceiroSection = () => {
               </h3>
               {activeTab === 'entradas' && (
                 <p className="text-sm text-blue-600 mt-1">
-                  💡 Entradas são criadas automaticamente quando vendas são registradas no Estoque
+                  💡 Entradas são criadas automaticamente quando vendas são registradas (sempre pagas)
                 </p>
               )}
             </div>

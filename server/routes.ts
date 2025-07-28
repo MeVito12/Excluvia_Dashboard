@@ -505,9 +505,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           description: `Venda - ${product.name} para ${client.name}`,
           category: 'vendas',
           paymentMethod: saleData.paymentMethod || 'dinheiro',
-          status: ['dinheiro', 'pix'].includes(saleData.paymentMethod) ? 'paid' : 'pending' as const,
+          status: 'paid' as const, // Vendas sempre são consideradas pagas
           dueDate: new Date(),
-          paidDate: ['dinheiro', 'pix'].includes(saleData.paymentMethod) ? new Date() : undefined,
+          paidDate: new Date(), // Vendas sempre têm data de pagamento
           referenceId: newSale.id,
           referenceType: 'sale',
           companyId: saleData.companyId || 1,
