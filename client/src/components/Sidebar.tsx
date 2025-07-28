@@ -167,26 +167,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                     <Button
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px]",
-                        "hover:text-white",
-                        isActive && "bg-primary text-primary-foreground"
+                        "w-full justify-start text-left h-auto p-3 text-white transition-all duration-300 min-h-[50px] md:min-h-[60px] modern-card-hover",
+                        "hover:text-white modern-shine",
+                        isActive && "bg-primary text-primary-foreground modern-glow"
                       )}
                       style={{
-                        background: isActive ? 'hsl(var(--brand-primary))' : 'transparent',
-                        border: 'none',
-                        boxShadow: 'none',
-                        outline: 'none'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = 'hsl(var(--brand-secondary))';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = 'transparent';
-                        }
-                      }}
+                        '--hover-bg': 'hsl(158 89% 53%)'
+                      } as React.CSSProperties}
                       onClick={() => handleMenuClick(item.id)}
                     >
                       <ModernIcon 
@@ -214,15 +201,10 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
 
           {/* Footer - Logout */}
           <div className="p-3 md:p-4 border-t border-[hsl(220_100%_8%)]">
-            <button
+            <Button
+              variant="ghost"
               onClick={logout}
-              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 flex items-center border border-white/20 rounded-md hover:border-white/30"
-              style={{
-                background: 'transparent',
-                boxShadow: 'none',
-                outline: 'none',
-                cursor: 'pointer'
-              }}
+              className="w-full justify-start text-white hover:text-white hover:bg-red-600/20 transition-all duration-300 p-3"
             >
               <ModernIcon 
                 icon={LogOut}
@@ -232,7 +214,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                 className="mr-3 flex-shrink-0 !text-red-400"
               />
               <span className="font-medium text-sm">Sair do Sistema</span>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -242,25 +224,20 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
         "fixed top-1/2 -translate-y-1/2 z-50 transition-all duration-300",
         isCollapsed ? "left-0" : "left-64"
       )}>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={handleToggle}
-          className="h-24 w-10 p-0 text-white hover:text-blue-200 rounded-r-xl rounded-l-none transition-all duration-300 flex items-center justify-center"
-          style={{
-            background: 'hsl(220, 100%, 15%)',
-            border: '1px solid hsl(220, 100%, 20%)',
-            boxShadow: '4px 0 15px rgba(0, 0, 0, 0.4)',
-            outline: 'none',
-            cursor: 'pointer'
-          }}
+          className="h-12 w-6 p-0 bg-[hsl(220_100%_12%)] border border-[hsl(220_100%_8%)] hover:bg-[hsl(220_100%_8%)] text-white shadow-lg rounded-r-md rounded-l-none"
         >
           <ModernIcon 
             icon={isCollapsed ? ChevronRight : ChevronLeft}
             variant="default"
-            size="lg"
+            size="sm"
             animated={true}
-            className="!text-white opacity-80 hover:opacity-100"
+            className="!text-white"
           />
-        </button>
+        </Button>
       </div>
     </>
   );

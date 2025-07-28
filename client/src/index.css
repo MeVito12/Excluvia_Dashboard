@@ -325,9 +325,7 @@ All colors MUST be HSL.
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Força cor branca do texto e ícones em hover */
-  .tab-button:hover:not(.active),
-  .tab-button:hover:not(.active) span,
+  /* Força cor branca dos ícones em hover com mesma transição */
   .tab-button:hover:not(.active) svg {
     color: white !important;
     transition: all 0.3s ease;
@@ -340,11 +338,6 @@ All colors MUST be HSL.
   /* Hover para sidebar com mesma cor das abas */
   .modern-card-hover:hover {
     background: hsl(var(--brand-secondary)) !important;
-  }
-  
-  .modern-card-hover:hover span,
-  .modern-card-hover:hover svg {
-    color: white !important;
   }
 
   .tab-button.active {
@@ -392,55 +385,33 @@ All colors MUST be HSL.
     @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100;
   }
 
-  /* Botões do sistema - padrão roxo com hover verde */
+  /* Botões do sistema */
   .btn {
     @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 cursor-pointer;
-    background: hsl(var(--brand-primary)) !important;
-    color: white !important;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-
-  .btn:hover {
-    background: hsl(var(--brand-secondary)) !important;
-    color: white !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .btn:active {
-    transform: scale(0.98);
   }
 
   .btn-primary {
-    background: hsl(var(--brand-primary)) !important;
-    color: white !important;
+    @apply text-white shadow-lg hover:shadow-xl active:scale-95;
+    background: hsl(var(--brand-primary));
   }
 
   .btn-primary:hover {
-    background: hsl(var(--brand-secondary)) !important;
-    color: white !important;
+    @apply transform -translate-y-0.5;
+    background: hsl(var(--brand-primary) / 0.9);
   }
 
   .btn-secondary {
-    background: hsl(var(--brand-primary)) !important;
-    color: white !important;
+    @apply text-white shadow-lg hover:shadow-xl;
+    background: hsl(var(--brand-secondary));
   }
 
   .btn-secondary:hover {
-    background: hsl(var(--brand-secondary)) !important;
-    color: white !important;
+    @apply transform -translate-y-0.5;
+    background: hsl(var(--brand-secondary) / 0.9);
   }
 
   .btn-outline {
-    @apply bg-white text-gray-700 border-2 border-gray-200;
-    background: hsl(var(--brand-primary)) !important;
-    color: white !important;
-    border: none !important;
-  }
-
-  .btn-outline:hover {
-    background: hsl(var(--brand-secondary)) !important;
-    color: white !important;
+    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 cursor-pointer active:scale-95;
   }
 
   /* Inputs modernos */
@@ -787,17 +758,7 @@ All colors MUST be HSL.
 }
 
 .tab-inactive {
-  @apply text-gray-600 hover:text-white hover:bg-gray-50;
-}
-
-.tab-inactive:hover {
-  background: hsl(var(--brand-secondary)) !important;
-  color: white !important;
-}
-
-.tab-inactive:hover span,
-.tab-inactive:hover svg {
-  color: white !important;
+  @apply text-gray-600 hover:text-gray-800 hover:bg-gray-50;
 }
 
 .tab-content {
@@ -816,509 +777,4 @@ All colors MUST be HSL.
 .tab-content .text-gray-700,
 .tab-content .text-sm {
   color: #666666 !important;
-}
-
-/* Força hover branco completo para abas */
-.tab-button:hover:not(.active) * {
-  color: white !important;
-}
-
-.tab-inactive:hover * {
-  color: white !important;
-}
-
-/* Força hover da sidebar também */
-.modern-card-hover:hover * {
-  color: white !important;
-}
-
-/* Padronização seletiva de botões - apenas botões principais */
-button.btn-primary:not(.tab-button),
-button[type="submit"]:not(.tab-button):not([class*="text-"]),
-button[class*="bg-purple"]:not(.tab-button),
-button[class*="bg-primary"]:not(.tab-button) {
-  background: hsl(var(--brand-primary)) !important;
-  color: white !important;
-  transition: all 0.3s ease;
-}
-
-button.btn-primary:not(.tab-button):hover,
-button[type="submit"]:not(.tab-button):not([class*="text-"]):hover,
-button[class*="bg-purple"]:not(.tab-button):hover,
-button[class*="bg-primary"]:not(.tab-button):hover {
-  background: hsl(var(--brand-secondary)) !important;
-  color: white !important;
-  transform: translateY(-1px);
-}
-
-/* Botões específicos do shadcn/ui */
-.bg-purple-600,
-.bg-blue-600,
-.bg-green-600,
-.bg-red-600,
-.bg-gray-600 {
-  background: hsl(var(--brand-primary)) !important;
-  color: white !important;
-}
-
-.bg-purple-600:hover,
-.bg-blue-600:hover,
-.bg-green-600:hover,
-.bg-red-600:hover,
-.bg-gray-600:hover,
-.hover\\:bg-purple-700:hover,
-.hover\\:bg-blue-700:hover,
-.hover\\:bg-green-700:hover,
-.hover\\:bg-red-700:hover,
-.hover\\:bg-gray-700:hover {
-  background: hsl(var(--brand-secondary)) !important;
-  color: white !important;
-}
-
-/* Força padronização em todos os textos de botões */
-button * {
-  color: white !important;
-}
-
-button:hover * {
-  color: white !important;
-}
-
-/* Exceções para elementos que não devem seguir padrão de botão */
-.text-blue-600,
-.text-purple-600,
-a[class*="text-"],
-button.text-blue-600,
-button.text-purple-600 {
-  background: transparent !important;
-  color: #3B82F6 !important;
-  border: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-.text-blue-600:hover,
-.text-purple-600:hover,
-a[class*="text-"]:hover,
-button.text-blue-600:hover,
-button.text-purple-600:hover {
-  background: transparent !important;
-  color: #1D4ED8 !important;
-  transform: none !important;
-}
-
-/* Específico para link "Esqueceu sua senha" */
-button.text-sm.text-blue-600 {
-  background: transparent !important;
-  color: #3B82F6 !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  border: none !important;
-  font-weight: normal !important;
-}
-
-button.text-sm.text-blue-600:hover {
-  background: transparent !important;
-  color: #1D4ED8 !important;
-  text-decoration: underline !important;
-  transform: none !important;
-}
-
-/* Força remoção completa de estilo de botão para "Esqueceu sua senha" */
-button[class*="text-blue-600"],
-button[class*="text-purple-600"] {
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-  text-decoration: none !important;
-  font-weight: normal !important;
-  color: #3B82F6 !important;
-  cursor: pointer !important;
-}
-
-button[class*="text-blue-600"]:hover,
-button[class*="text-purple-600"]:hover {
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  color: #1D4ED8 !important;
-  text-decoration: underline !important;
-  transform: none !important;
-}
-
-/* Força estilo específico para qualquer botão com texto "Esqueceu sua senha" */
-button:has-text("Esqueceu sua senha"),
-button[onclick*="forgotPassword"],
-button[type="button"]:contains("Esqueceu") {
-  all: unset !important;
-  color: #3B82F6 !important;
-  cursor: pointer !important;
-  font-size: 0.875rem !important;
-}
-
-/* Barra lateral - transparente por padrão, colorido apenas em hover */
-.sidebar-item,
-nav button,
-aside button,
-nav a,
-aside a {
-  background: transparent !important;
-  color: inherit !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-.sidebar-item:hover,
-nav button:hover,
-aside button:hover,
-nav a:hover,
-aside a:hover {
-  background: hsl(var(--brand-secondary)) !important;
-  color: white !important;
-}
-
-/* Força transparência em elementos específicos da sidebar */
-nav .flex,
-aside .flex,
-nav .modern-card-hover,
-aside .modern-card-hover {
-  background: transparent !important;
-}
-
-nav .flex:hover,
-aside .flex:hover,
-nav .modern-card-hover:hover,
-aside .modern-card-hover:hover {
-  background: hsl(var(--brand-secondary)) !important;
-}
-
-/* Links "ver mais" e similares - aparência de link roxo sem bordas */
-button[class*="text-blue"],
-button[class*="text-purple"],
-a[class*="text-"],
-.link-style,
-button.link-button {
-  background: transparent !important;
-  color: hsl(var(--brand-primary)) !important;
-  border: none !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  text-decoration: none !important;
-  font-weight: normal !important;
-}
-
-button[class*="text-blue"]:hover,
-button[class*="text-purple"]:hover,
-a[class*="text-"]:hover,
-.link-style:hover,
-button.link-button:hover {
-  color: hsl(var(--brand-secondary)) !important;
-  background: transparent !important;
-  transform: none !important;
-}
-
-/* Botões de filtro e categoria - estilo de input */
-button[class*="filter"],
-button[class*="category"],
-.filter-button,
-.category-button,
-button[class*="outline"],
-button[class*="variant-outline"] {
-  background: white !important;
-  color: #374151 !important;
-  border: 1px solid #D1D5DB !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-  padding: 0.5rem 1rem !important;
-}
-
-button[class*="filter"]:hover,
-button[class*="category"]:hover,
-.filter-button:hover,
-.category-button:hover,
-button[class*="outline"]:hover,
-button[class*="variant-outline"]:hover {
-  background: #F9FAFB !important;
-  border-color: #9CA3AF !important;
-  color: #374151 !important;
-  transform: none !important;
-}
-
-/* Remove estilo de botão padrão de elementos específicos */
-button:not([class*="btn"]):not([type="submit"]):not(.tab-button):not([class*="bg-"]) {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: inherit !important;
-}
-
-/* Força links roxos em todos os contextos */
-button[class*="text-blue-600"],
-button[class*="text-purple-600"] {
-  color: hsl(var(--brand-primary)) !important;
-}
-
-button[class*="text-blue-600"]:hover,
-button[class*="text-purple-600"]:hover {
-  color: hsl(var(--brand-secondary)) !important;
-}
-
-/* Remove sublinhado de todos os links */
-button[class*="text-blue"]:hover,
-button[class*="text-purple"]:hover,
-a[class*="text-"]:hover,
-.link-style:hover,
-button.link-button:hover {
-  text-decoration: none !important;
-}
-
-/* Força remoção completa de bordas para links específicos */
-button[type="button"][class*="text-purple"] {
-  all: unset !important;
-  color: hsl(var(--brand-primary)) !important;
-  cursor: pointer !important;
-  font-size: 0.875rem !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  text-decoration: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-button[type="button"][class*="text-purple"]:hover {
-  color: hsl(var(--brand-secondary)) !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  text-decoration: none !important;
-}
-
-/* Remove qualquer estilo residual de botões */
-.text-center button {
-  all: unset !important;
-  color: hsl(var(--brand-primary)) !important;
-  cursor: pointer !important;
-  font-size: 0.875rem !important;
-}
-
-/* Remove fundo branco e bordas da sidebar completamente */
-.modern-card-hover {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.modern-card-hover:hover {
-  background: hsl(var(--brand-secondary)) !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Força transparência em qualquer card da sidebar */
-nav [class*="card"],
-aside [class*="card"],
-nav [class*="bg-"],
-aside [class*="bg-"] {
-  background: transparent !important;
-}
-
-nav [class*="card"]:hover,
-aside [class*="card"]:hover,
-nav [class*="bg-"]:hover,
-aside [class*="bg-"]:hover {
-  background: hsl(var(--brand-secondary)) !important;
-  color: white !important;
-}
-
-/* Remove bordas brancas e força transparência completa na sidebar */
-nav *,
-aside * {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-nav .modern-card-hover,
-aside .modern-card-hover,
-nav button,
-aside button,
-nav a,
-aside a {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Botão de sair - transparente com texto vermelho */
-button[class*="logout"],
-button[class*="sair"],
-.logout-button,
-button:has-text("Sair"),
-button[onclick*="logout"] {
-  background: transparent !important;
-  color: #DC2626 !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  padding: 0.5rem 1rem !important;
-}
-
-button[class*="logout"]:hover,
-button[class*="sair"]:hover,
-.logout-button:hover,
-button:has-text("Sair"):hover,
-button[onclick*="logout"]:hover {
-  background: transparent !important;
-  color: #B91C1C !important;
-  border: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-/* Botão de colapsar - transparente */
-.collapse-button,
-button[class*="collapse"],
-button[class*="toggle"],
-.sidebar-toggle {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  color: inherit !important;
-}
-
-.collapse-button:hover,
-button[class*="collapse"]:hover,
-button[class*="toggle"]:hover,
-.sidebar-toggle:hover {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: hsl(var(--brand-secondary)) !important;
-}
-
-/* Remove qualquer borda residual de elementos da sidebar */
-nav [class*="border"],
-aside [class*="border"],
-nav [class*="ring"],
-aside [class*="ring"] {
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Botões específicos da sidebar com seletores exatos */
-.sidebar-item [data-testid="logout-button"],
-button[onClick*="logout"],
-div[className*="border-t"] button {
-  background: transparent !important;
-  color: #F87171 !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.sidebar-item [data-testid="logout-button"]:hover,
-button[onClick*="logout"]:hover,
-div[className*="border-t"] button:hover {
-  background: transparent !important;
-  color: #EF4444 !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Botão de colapsar específico - tom azul do sistema */
-div[className*="fixed"] button,
-button[className*="rounded-r-md"] {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-  color: #93C5FD !important;
-}
-
-div[className*="fixed"] button:hover,
-button[className*="rounded-r-md"]:hover {
-  background: transparent !important;
-  color: #60A5FA !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Força transparência absoluta nos itens da sidebar */
-nav button[variant="ghost"],
-nav .modern-card-hover,
-nav button {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Remove qualquer classe que adicione fundo branco */
-.modern-card-hover,
-.modern-shine,
-.modern-glow {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Força transparência em botões ghost */
-button[data-variant="ghost"],
-.button-ghost {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Estados específicos para sidebar */
-nav li button {
-  background: transparent !important;
-}
-/* Força transparência específica para botões da sidebar */
-.sidebar-logout-button,
-.sidebar-collapse-button {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-/* Botão de sair específico */
-button[variant="ghost"]:has(span:contains("Sair")),
-div[class*="border-t"] button[variant="ghost"] {
-  background: transparent !important;
-  color: #F87171 !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-div[class*="border-t"] button[variant="ghost"]:hover {
-  background: transparent !important;
-  color: #EF4444 !important;
-}
-
-/* Botão de colapsar específico */
-div[class*="fixed"][class*="top-1/2"] button {
-  background: transparent !important;
-  color: #93C5FD !important;
-  border: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-div[class*="fixed"][class*="top-1/2"] button:hover {
-  background: transparent !important;
-  color: #60A5FA !important;
 }
