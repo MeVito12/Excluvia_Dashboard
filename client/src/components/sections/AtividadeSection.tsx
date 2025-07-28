@@ -13,6 +13,7 @@ import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
+import { useProducts } from '@/hooks/useProducts';
 
 import React from 'react';
 
@@ -28,6 +29,7 @@ const AtividadeSection = () => {
   // Dados das abas usando hooks reais
   const { sales } = useSales();
   const { clients } = useClients();
+  const { products } = useProducts();
 
   // Logs de integração em tempo real - usando dados reais vázios por enquanto
   const integrationLogs: any[] = [];
@@ -426,25 +428,30 @@ const AtividadeSection = () => {
         </div>
         
         <div className="divide-y divide-gray-200">
-          {sales.map((sale) => (
-            <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium text-gray-800">Cliente ID: {sale.clientId}</h4>
-                  <p className="text-sm text-gray-600">Produto ID: {sale.productId} x{sale.quantity || 0}</p>
-                  <p className="text-xs text-gray-500">
-                    {sale.saleDate ? format(new Date(sale.saleDate), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                  <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
-                    Concluída
-                  </span>
+          {sales.map((sale) => {
+            const client = clients.find(c => c.id === sale.clientId);
+            const product = products.find(p => p.id === sale.productId);
+            
+            return (
+              <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-gray-800">{client?.name || `Cliente #${sale.clientId}`}</h4>
+                    <p className="text-sm text-gray-600">{product?.name || `Produto #${sale.productId}`} x{sale.quantity || 0}</p>
+                    <p className="text-xs text-gray-500">
+                      {sale.saleDate ? format(new Date(sale.saleDate), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
+                      Concluída
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
