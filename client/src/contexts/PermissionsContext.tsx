@@ -58,6 +58,13 @@ export const availableSections: SectionPermission[] = [
     description: 'Entradas e saídas financeiras',
     icon: 'CreditCard',
     defaultEnabled: true
+  },
+  {
+    id: 'controle',
+    label: 'Controle',
+    description: 'Gestão de usuários e permissões',
+    icon: 'Settings',
+    defaultEnabled: false
   }
 ];
 

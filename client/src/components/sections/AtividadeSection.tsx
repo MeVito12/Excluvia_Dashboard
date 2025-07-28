@@ -11,14 +11,8 @@ import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Sett
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { 
-  getActivitiesByCategory,
-  getSalesByCategory, 
-  getClientsByCategory,
-  type Activity,
-  type Sale,
-  type Client
-} from '@/lib/mockData';
+import { useSales } from '@/hooks/useSales';
+import { useClients } from '@/hooks/useClients';
 
 import React from 'react';
 
@@ -31,18 +25,12 @@ const AtividadeSection = () => {
   const [dateFrom, setDateFrom] = useState<Date | undefined>();
   const [dateTo, setDateTo] = useState<Date | undefined>();
 
-  // Dados das abas movidas do Estoque
-  const [sales, setSales] = useState(() => getSalesByCategory(selectedCategory));
-  const [clients, setClients] = useState(() => getClientsByCategory(selectedCategory));
+  // Dados das abas usando hooks reais
+  const { sales } = useSales();
+  const { clients } = useClients();
 
-  // Atualizar dados quando a categoria mudar
-  React.useEffect(() => {
-    setSales(getSalesByCategory(selectedCategory));
-    setClients(getClientsByCategory(selectedCategory));
-  }, [selectedCategory]);
-
-  // Logs de integração em tempo real - agora usando dados centralizados
-  const integrationLogs = getActivitiesByCategory(selectedCategory);
+  // Logs de integração em tempo real - usando dados reais vázios por enquanto
+  const integrationLogs: any[] = [];
 
   // Atividades tradicionais do sistema
   const systemActivities = [

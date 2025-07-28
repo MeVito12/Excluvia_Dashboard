@@ -5,16 +5,7 @@ import { useCustomConfirm } from '@/hooks/use-custom-confirm';
 import { CustomConfirm } from '@/components/ui/custom-confirm';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import { 
-  getProductsByCategory, 
-  getSpecialistsByCategory, 
-  getWhatsAppConversationsByCategory,
-  designPortfolio,
-  sitesPortfolio,
-  type Product,
-  type Specialist,
-  type WhatsAppConversation
-} from '@/lib/mockData';
+import { useProducts } from '@/hooks/useProducts';
 import { 
   MessageCircle, 
   Bot, 
@@ -53,6 +44,7 @@ const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
+  const { products } = useProducts();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [searchTerm, setSearchTerm] = useState('');
@@ -98,17 +90,14 @@ const AtendimentoSection = () => {
     return `${baseUrl}/${menuType}/${categorySlug}`;
   };
 
-  // Estado para gerenciar itens de todas as categorias
+  // Estado para gerenciar itens de todas as categorias usando dados reais
   const [categoryItems, setCategoryItems] = useState(() => {
-    // Para design e sites, usa dados de portfólio
-    if (selectedCategory === 'design') {
-      return { [selectedCategory]: designPortfolio };
+    // Para design e sites, portfólio vazio
+    if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      return { [selectedCategory]: [] };
     }
-    if (selectedCategory === 'sites') {
-      return { [selectedCategory]: sitesPortfolio };
-    }
-    // Para outras categorias, usa produtos
-    return { [selectedCategory]: getProductsByCategory(selectedCategory) };
+    // Para outras categorias, usa produtos reais
+    return { [selectedCategory]: products };
   });
 
   // Atualizar itens quando a categoria mudar

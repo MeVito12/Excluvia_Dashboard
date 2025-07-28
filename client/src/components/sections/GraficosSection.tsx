@@ -31,9 +31,9 @@ const GraficosSection = () => {
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
-  const { products } = useProducts(userId, selectedCategory);
-  const { sales } = useSales(userId, selectedCategory);
-  const { clients } = useClients(userId, selectedCategory);
+  const { products } = useProducts();
+  const { sales } = useSales();
+  const { clients } = useClients();
 
   // Função para filtrar vendas por data
   const filteredSales = useMemo(() => {

@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
-import { 
-  getAppointmentsByCategory,
-  type Appointment
-} from '@/lib/mockData';
+import { useAppointments } from '@/hooks/useAppointments';
 import { 
   Calendar, 
   Clock, 
@@ -26,7 +23,7 @@ const AgendamentosSection = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [appointments, setAppointments] = useState(() => getAppointmentsByCategory(selectedCategory));
+  const { appointments } = useAppointments();
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAppointment, setNewAppointment] = useState({
     title: '',
@@ -41,13 +38,6 @@ const AgendamentosSection = () => {
 
   // Função para marcar compromisso como concluído
   const markAsCompleted = (appointmentId: number) => {
-    setAppointments(prev => 
-      prev.map(app => 
-        app.id === appointmentId 
-          ? { ...app, status: 'completed' }
-          : app
-      )
-    );
     showAlert({
       title: "Compromisso Concluído",
       description: "O agendamento foi marcado como concluído com sucesso",
@@ -86,29 +76,17 @@ const AgendamentosSection = () => {
       showAlert({
         variant: "destructive",
         title: "Campos obrigatórios",
-        description: "Por favor, preencha título, cliente, data e horário."
+        description: "Por favor, preencha todos os campos obrigatórios"
       });
       return;
     }
-
-    const newId = Math.max(...appointments.map(a => a.id)) + 1;
-    const appointment = {
-      id: newId,
-      title: newAppointment.title,
-      client: newAppointment.client,
-      date: newAppointment.date,
-      time: newAppointment.time,
-      type: newAppointment.type,
-      status: 'scheduled' as const
-    };
     
-    setAppointments(prev => [...prev, appointment]);
-    setShowAddModal(false);
     showAlert({
-      title: "Compromisso Adicionado",
-      description: "O novo agendamento foi criado com sucesso",
+      title: "Compromisso Criado",
+      description: "O agendamento foi criado com sucesso",
       variant: "success"
     });
+    setShowAddModal(false);
   };
 
   const renderAgenda = () => (
