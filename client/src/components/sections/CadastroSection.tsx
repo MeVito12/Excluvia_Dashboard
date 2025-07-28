@@ -431,15 +431,46 @@ const CadastroSection = () => {
       return;
     }
 
-    const masterUser: NewUser = {
+    const masterUserData2 = {
       name: masterUserData.name,
       email: masterUserData.email,
       password: masterUserData.password,
-      role: 'master',
       companyId: companyCreated.id
     };
 
-    createUserMutation.mutate(masterUser);
+    createMasterUserMutation.mutate(masterUserData2);
+  };
+
+  // Handler para finalizar registro
+  const handleFinishRegistration = () => {
+    // Resetar todos os dados do formulário
+    setCompanyData({
+      fantasyName: '',
+      corporateName: '',
+      cnpj: '',
+      address: '',
+      phone: '',
+      email: '',
+      businessCategory: ''
+    });
+    setMasterUserData({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    });
+    setBranches([]);
+    setCommonUsers([]);
+    setCompanyCreated(null);
+    
+    // Voltar ao início do fluxo
+    setCurrentStep('company');
+    
+    showAlert({
+      title: "Sucesso",
+      description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
+      variant: "success"
+    });
   };
 
   // Estados para gerenciamento
