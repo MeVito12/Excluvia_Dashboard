@@ -63,7 +63,7 @@ const CadastroSection = () => {
   // Estados principais
   const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'branches' | 'users' | 'success' | 'manage'>('company');
   const [hasBranches, setHasBranches] = useState<boolean | null>(null);
-  const [showManagement, setShowManagement] = useState(false);
+  const [activeTab, setActiveTab] = useState<'cadastro' | 'gestao'>('cadastro');
   const [showPostRegistrationDialog, setShowPostRegistrationDialog] = useState(false);
   const [showCommonUsersDialog, setShowCommonUsersDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -440,59 +440,71 @@ const CadastroSection = () => {
     <div className="app-section">
       <div className="section-header">
         <h1 className="section-title">Cadastro</h1>
-        <p className="section-subtitle">Cadastro de empresas e usuários master</p>
-        <div className="section-actions">
-          <Button
-            onClick={() => {
-              setShowManagement(!showManagement);
-              if (!showManagement) {
-                fetchExistingCompanies();
-                fetchExistingUsers();
-              }
-            }}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <Users className="w-4 h-4" />
-            {showManagement ? 'Novo Cadastro' : 'Gerenciar Existentes'}
-          </Button>
-        </div>
+        <p className="section-subtitle">Cadastro de empresas e gerenciamento de usuários</p>
       </div>
 
-      {/* Indicador de Passos */}
-      <div className="main-card mb-6">
-        <div className="flex justify-center py-4">
-          <div className="flex items-center space-x-12">
-            <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {(currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '1'}
+      {/* Navegação por Abas */}
+      <div className="tab-navigation">
+        <button
+          onClick={() => {
+            setActiveTab('cadastro');
+            setCurrentStep('company');
+          }}
+          className={`tab-button ${activeTab === 'cadastro' ? 'tab-active' : 'tab-inactive'}`}
+        >
+          <Building2 className="w-4 h-4" />
+          Cadastro
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('gestao');
+            fetchExistingCompanies();
+            fetchExistingUsers();
+          }}
+          className={`tab-button ${activeTab === 'gestao' ? 'tab-active' : 'tab-inactive'}`}
+        >
+          <Users className="w-4 h-4" />
+          Gestão
+        </button>
+      </div>
+
+      {/* Conteúdo da Aba Cadastro */}
+      {activeTab === 'cadastro' && (
+        <div className="tab-content">
+          {/* Indicador de Passos */}
+          <div className="main-card mb-6">
+            <div className="flex justify-center py-4">
+              <div className="flex items-center space-x-12">
+                <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
+                  <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                    {(currentStep === 'master' || currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '1'}
+                  </div>
+                  <span className="ml-4 font-medium text-lg">Empresa</span>
+                </div>
+                
+                <div className={`w-24 h-1 rounded-full ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+                
+                <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
+                  <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                    {(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '2'}
+                  </div>
+                  <span className="ml-4 font-medium text-lg">Usuário Master</span>
+                </div>
+                
+                <div className={`w-24 h-1 rounded-full ${(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+                
+                <div className={`flex items-center ${(currentStep === 'branches' || currentStep === 'users') ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
+                  <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${(currentStep === 'branches' || currentStep === 'users') ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                    {currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '3'}
+                  </div>
+                  <span className="ml-4 font-medium text-lg">Filiais & Usuários</span>
+                </div>
               </div>
-              <span className="ml-4 font-medium text-lg">Empresa</span>
-            </div>
-            
-            <div className={`w-24 h-1 rounded-full ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
-            
-            <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : (currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? <CheckCircle className="w-6 h-6" /> : '2'}
-              </div>
-              <span className="ml-4 font-medium text-lg">Usuário Master</span>
-            </div>
-            
-            <div className={`w-24 h-1 rounded-full ${(currentStep === 'branches' || currentStep === 'users' || currentStep === 'success') ? 'bg-green-600' : 'bg-gray-300'}`}></div>
-            
-            <div className={`flex items-center ${(currentStep === 'branches' || currentStep === 'users') ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${(currentStep === 'branches' || currentStep === 'users') ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '3'}
-              </div>
-              <span className="ml-4 font-medium text-lg">Filiais & Usuários</span>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Formulário da Empresa */}
-      {currentStep === 'company' && (
+          {/* Formulário da Empresa */}
+          {currentStep === 'company' && (
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
@@ -964,35 +976,37 @@ const CadastroSection = () => {
         </div>
       )}
 
-      {/* Seção de Sucesso */}
-      {currentStep === 'success' && (
-        <div className="main-card">
-          <div className="text-center py-12">
-            <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-6" />
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-              Cadastro Realizado com Sucesso!
-            </h2>
-            <p className="text-gray-600 mb-8">
-              A empresa {companyCreated?.fantasyName} foi cadastrada com sucesso.
-            </p>
-            <div className="space-y-4">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h3 className="font-medium text-green-800 mb-2">Resumo do Cadastro</h3>
-                <p className="text-green-700">
-                  <strong>Empresa:</strong> {companyCreated?.fantasyName}<br />
-                  <strong>CNPJ:</strong> {companyCreated?.cnpj}<br />
-                  <strong>Filiais:</strong> {branches.length}<br />
-                  <strong>Usuários:</strong> {commonUsers.length + 1} (incluindo master)
+          {/* Seção de Sucesso */}
+          {currentStep === 'success' && (
+            <div className="main-card">
+              <div className="text-center py-12">
+                <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-6" />
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                  Cadastro Realizado com Sucesso!
+                </h2>
+                <p className="text-gray-600 mb-8">
+                  A empresa {companyCreated?.fantasyName} foi cadastrada com sucesso.
                 </p>
+                <div className="space-y-4">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <h3 className="font-medium text-green-800 mb-2">Resumo do Cadastro</h3>
+                    <p className="text-green-700">
+                      <strong>Empresa:</strong> {companyCreated?.fantasyName}<br />
+                      <strong>CNPJ:</strong> {companyCreated?.cnpj}<br />
+                      <strong>Filiais:</strong> {branches.length}<br />
+                      <strong>Usuários:</strong> {commonUsers.length + 1} (incluindo master)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
-      {/* Seção de Gerenciamento */}
-      {showManagement && (
-        <div className="space-y-6">
+      {/* Conteúdo da Aba Gestão */}
+      {activeTab === 'gestao' && (
+        <div className="tab-content space-y-6">
           {/* Gerenciar Usuários */}
           <div className="main-card">
             <div className="card-header">
@@ -1161,7 +1175,7 @@ const CadastroSection = () => {
                               setCompanyCreated(selectedCompany);
                               setHasBranches(true);
                               setCurrentStep('branches');
-                              setShowManagement(false);
+                              setActiveTab('cadastro');
                             }}
                             className="w-full bg-green-600 hover:bg-green-700 text-white"
                           >
@@ -1172,7 +1186,7 @@ const CadastroSection = () => {
                             onClick={() => {
                               setCompanyCreated(selectedCompany);
                               setCurrentStep('users');
-                              setShowManagement(false);
+                              setActiveTab('cadastro');
                             }}
                             className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                           >

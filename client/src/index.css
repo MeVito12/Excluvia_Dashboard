@@ -733,3 +733,27 @@ All colors MUST be HSL.
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--brand-primary) / 0.8);
 }
+
+/* ====================================== */
+/* SISTEMA DE ABAS */
+/* ====================================== */
+
+.tab-navigation {
+  @apply flex bg-white rounded-lg p-1 border border-gray-200 mb-6;
+}
+
+.tab-button {
+  @apply flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all duration-200 text-sm flex-1 justify-center;
+}
+
+.tab-active {
+  @apply bg-purple-600 text-white shadow-md;
+}
+
+.tab-inactive {
+  @apply text-gray-600 hover:text-gray-800 hover:bg-gray-50;
+}
+
+.tab-content {
+  @apply space-y-6;
+}

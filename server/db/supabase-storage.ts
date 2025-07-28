@@ -222,8 +222,7 @@ export class SupabaseStorage implements Storage {
     const db = await this.getConnection();
     const { usersTable } = await import('./schema');
     
-    return db.select().from(usersTable)
-      .order(usersTable.id);
+    return db.select().from(usersTable);
   }
 
   async updateUserRole(userId: number, role: string): Promise<User | null> {
@@ -315,8 +314,7 @@ export class SupabaseStorage implements Storage {
     const db = await this.getConnection();
     const { companiesTable } = await import('./schema');
     
-    return db.select().from(companiesTable)
-      .order(companiesTable.id);
+    return db.select().from(companiesTable);
   }
 
   // ====================================
