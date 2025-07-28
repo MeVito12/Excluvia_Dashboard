@@ -214,7 +214,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <button
                   type="button"
                   onClick={openForgotPassword}
-                  className="text-sm text-purple-600 hover:text-purple-800 hover:underline bg-transparent border-none outline-none shadow-none p-0 m-0"
+                  className="text-sm text-purple-600 hover:text-purple-800 bg-transparent border-none outline-none shadow-none p-0 m-0"
                   style={{
                     background: 'transparent !important',
                     border: 'none !important',
