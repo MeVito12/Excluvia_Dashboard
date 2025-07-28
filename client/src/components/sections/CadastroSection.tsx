@@ -595,7 +595,7 @@ const CadastroSection = () => {
             <h2 className="text-lg font-medium text-black mb-2">
               Acesso Restrito
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-700">
               Apenas CEOs podem acessar o cadastro de empresas e usuários master.
             </p>
           </div>
@@ -962,10 +962,10 @@ const CadastroSection = () => {
           
           <div className="text-center py-8">
             <Building2 className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            <h3 className="text-xl font-semibold text-black mb-4">
               Sua empresa possui filiais?
             </h3>
-            <p className="text-gray-600 mb-8">
+            <p className="text-gray-700 mb-8">
               Você pode cadastrar as filiais da sua empresa agora ou pular esta etapa.
             </p>
             
@@ -1071,13 +1071,13 @@ const CadastroSection = () => {
           {/* Lista de Filiais Cadastradas */}
           {branches.length > 0 && (
             <div className="mt-8 pt-6 border-t">
-              <h4 className="font-medium text-gray-800 mb-4">Filiais Cadastradas</h4>
+              <h4 className="font-medium text-black mb-4">Filiais Cadastradas</h4>
               <div className="space-y-3">
                 {branches.map((branch, index) => (
                   <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-800">{branch.name}</p>
-                      <p className="text-sm text-gray-600">{branch.address}</p>
+                      <p className="font-medium text-black">{branch.name}</p>
+                      <p className="text-sm text-gray-700">{branch.address}</p>
                     </div>
                     <Button
                       variant="ghost"
@@ -1175,13 +1175,13 @@ const CadastroSection = () => {
           {/* Lista de Usuários Cadastrados */}
           {commonUsers.length > 0 && (
             <div className="mt-8 pt-6 border-t">
-              <h4 className="font-medium text-gray-800 mb-4">Usuários Cadastrados</h4>
+              <h4 className="font-medium text-black mb-4">Usuários Cadastrados</h4>
               <div className="space-y-3">
                 {commonUsers.map((user, index) => (
                   <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-800">{user.name}</p>
-                      <p className="text-sm text-gray-600">{user.email}</p>
+                      <p className="font-medium text-black">{user.name}</p>
+                      <p className="text-sm text-gray-700">{user.email}</p>
                     </div>
                     <Button
                       variant="ghost"
@@ -1204,10 +1204,10 @@ const CadastroSection = () => {
             <div className="main-card">
               <div className="text-center py-12">
                 <CheckCircle className="w-20 h-20 text-green-600 mx-auto mb-6" />
-                <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                <h2 className="text-2xl font-semibold text-black mb-4">
                   Cadastro Realizado com Sucesso!
                 </h2>
-                <p className="text-gray-600 mb-8">
+                <p className="text-gray-700 mb-8">
                   A empresa {companyCreated?.fantasyName} foi cadastrada com sucesso.
                 </p>
                 <div className="space-y-4">
@@ -1243,7 +1243,7 @@ const CadastroSection = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Lista de Usuários */}
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-4">Usuários Cadastrados</h4>
+                  <h4 className="font-medium mb-4" style={{ color: '#000000' }}>Usuários Cadastrados</h4>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {existingUsers.map((user) => (
                       <div 
@@ -1260,14 +1260,14 @@ const CadastroSection = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-gray-800">{user.name}</p>
-                            <p className="text-sm text-gray-600">{user.email}</p>
+                            <p className="font-medium" style={{ color: '#000000' }}>{user.name}</p>
+                            <p className="text-sm" style={{ color: '#666666' }}>{user.email}</p>
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                               user.role === 'ceo' ? 'bg-red-100 text-red-800' :
                               user.role === 'master' ? 'bg-purple-100 text-purple-800' :
-                              'bg-gray-100 text-gray-800'
+                              'bg-gray-100 text-black'
                             }`}>
                               {user.role === 'ceo' ? 'CEO' : 
                                user.role === 'master' ? 'Master' : 
@@ -1284,15 +1284,15 @@ const CadastroSection = () => {
                 <div>
                   {selectedUser ? (
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-gray-800 mb-4">Editar Usuário</h4>
+                      <h4 className="font-medium mb-4" style={{ color: '#000000' }}>Editar Usuário</h4>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-sm text-gray-600">Nome:</p>
-                          <p className="font-medium">{selectedUser.name}</p>
+                          <p className="text-sm" style={{ color: '#666666' }}>Nome:</p>
+                          <p className="font-medium" style={{ color: '#000000' }}>{selectedUser.name}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">E-mail:</p>
-                          <p className="font-medium">{selectedUser.email}</p>
+                          <p className="text-sm" style={{ color: '#666666' }}>E-mail:</p>
+                          <p className="font-medium" style={{ color: '#000000' }}>{selectedUser.email}</p>
                         </div>
                         <div className="space-y-2">
                           <Label className="text-sm font-medium" style={{ color: "#000000" }}>Nova Role</Label>
@@ -1337,7 +1337,7 @@ const CadastroSection = () => {
                   ) : (
                     <div className="bg-gray-50 p-8 rounded-lg text-center">
                       <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Selecione um usuário para editar</p>
+                      <p className="text-gray-700">Selecione um usuário para editar</p>
                     </div>
                   )}
                 </div>
@@ -1358,7 +1358,7 @@ const CadastroSection = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Lista de Empresas */}
                 <div>
-                  <h4 className="font-medium text-gray-800 mb-4">Empresas Cadastradas</h4>
+                  <h4 className="font-medium text-black mb-4">Empresas Cadastradas</h4>
                   <div className="space-y-2 max-h-96 overflow-y-auto">
                     {existingCompanies.map((company) => (
                       <div 
@@ -1371,9 +1371,9 @@ const CadastroSection = () => {
                         onClick={() => setSelectedCompany(company)}
                       >
                         <div>
-                          <p className="font-medium text-gray-800">{company.fantasyName}</p>
-                          <p className="text-sm text-gray-600">{company.cnpj}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="font-medium text-black">{company.fantasyName}</p>
+                          <p className="text-sm text-gray-700">{company.cnpj}</p>
+                          <p className="text-xs text-gray-700">
                             {businessCategories.find(cat => cat.value === company.businessCategory)?.label}
                           </p>
                         </div>
@@ -1386,10 +1386,10 @@ const CadastroSection = () => {
                 <div>
                   {selectedCompany ? (
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-gray-800 mb-4">Ações da Empresa</h4>
+                      <h4 className="font-medium text-black mb-4">Ações da Empresa</h4>
                       <div className="space-y-4">
                         <div>
-                          <p className="text-sm text-gray-600">Empresa:</p>
+                          <p className="text-sm text-gray-700">Empresa:</p>
                           <p className="font-medium">{selectedCompany.fantasyName}</p>
                         </div>
                         <div className="space-y-2">
@@ -1422,7 +1422,7 @@ const CadastroSection = () => {
                   ) : (
                     <div className="bg-gray-50 p-8 rounded-lg text-center">
                       <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Selecione uma empresa para gerenciar</p>
+                      <p className="text-gray-700">Selecione uma empresa para gerenciar</p>
                     </div>
                   )}
                 </div>
