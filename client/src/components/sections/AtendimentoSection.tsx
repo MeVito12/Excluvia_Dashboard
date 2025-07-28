@@ -102,23 +102,21 @@ const AtendimentoSection = () => {
 
   // Atualizar itens quando a categoria mudar
   React.useEffect(() => {
-    if (selectedCategory === 'design') {
-      setCategoryItems({ [selectedCategory]: designPortfolio });
-    } else if (selectedCategory === 'sites') {
-      setCategoryItems({ [selectedCategory]: sitesPortfolio });
+    if (selectedCategory === 'design' || selectedCategory === 'sites') {
+      setCategoryItems({ [selectedCategory]: [] });
     } else {
-      setCategoryItems({ [selectedCategory]: getProductsByCategory(selectedCategory) });
+      setCategoryItems({ [selectedCategory]: products });
     }
-  }, [selectedCategory]);
+  }, [selectedCategory, products]);
 
-  // Estado para especialistas
+  // Estado para especialistas - usando dados vazios por enquanto
   const [specialists, setSpecialists] = useState(() => {
-    return { [selectedCategory]: getSpecialistsByCategory(selectedCategory) };
+    return { [selectedCategory]: [] };
   });
 
   // Atualizar especialistas quando a categoria mudar
   React.useEffect(() => {
-    setSpecialists({ [selectedCategory]: getSpecialistsByCategory(selectedCategory) });
+    setSpecialists({ [selectedCategory]: [] });
   }, [selectedCategory]);
 
   // Função para buscar itens da categoria atual

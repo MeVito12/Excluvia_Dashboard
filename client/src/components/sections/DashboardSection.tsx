@@ -24,11 +24,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
-import { 
-  getAppointmentsByCategory,
-  getActivitiesByCategory,
-  getWhatsAppConversationsByCategory
-} from '@/lib/mockData';
+import { useAppointments } from '@/hooks/useAppointments';
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
@@ -40,15 +36,15 @@ const DashboardSection = () => {
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
-  const { products, isLoading: productsLoading } = useProducts(userId, selectedCategory);
-  const { sales, isLoading: salesLoading } = useSales(userId, selectedCategory);
-  const { clients, isLoading: clientsLoading } = useClients(userId, selectedCategory);
-  const { transfers, isLoading: transfersLoading } = useTransfers(userId, selectedCategory);
+  const { products, isLoading: productsLoading } = useProducts();
+  const { sales, isLoading: salesLoading } = useSales();
+  const { clients, isLoading: clientsLoading } = useClients();
+  const { transfers, isLoading: transfersLoading } = useTransfers();
+  const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
-  // Dados mock para agendamentos, atividades e atendimentos
-  const appointments = getAppointmentsByCategory(selectedCategory);
-  const activities = getActivitiesByCategory(selectedCategory);
-  const whatsappChats = getWhatsAppConversationsByCategory(selectedCategory);
+  // Dados vazios para atividades e WhatsApp por enquanto
+  const activities: any[] = [];
+  const whatsappChats: any[] = [];
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {

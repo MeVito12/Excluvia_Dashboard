@@ -222,8 +222,8 @@ const AgendamentosSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos Hoje</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">12</p>
-              <p className="text-xs text-blue-600 mt-1">4 pendentes</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{appointments?.length || 0}</p>
+              <p className="text-xs text-blue-600 mt-1">{appointments?.filter(a => a.status === 'scheduled').length || 0} pendentes</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <Calendar className="h-6 w-6 text-blue-600" />
@@ -234,9 +234,9 @@ const AgendamentosSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Lembretes Enviados</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">48</p>
-              <p className="text-xs text-purple-600 mt-1">Últimas 24h</p>
+              <p className="text-sm font-medium text-gray-600">Total de Agendamentos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{appointments?.length || 0}</p>
+              <p className="text-xs text-purple-600 mt-1">Todos os registros</p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">
               <Bell className="h-6 w-6 text-purple-600" />

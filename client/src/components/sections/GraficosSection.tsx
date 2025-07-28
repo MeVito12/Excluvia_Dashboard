@@ -6,7 +6,7 @@ import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
-import DatabaseChart from '@/components/DatabaseChart';
+// Removido import do DatabaseChart - não existe
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -204,12 +204,10 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <DatabaseChart 
-              type="bar" 
-              title="Vendas Filtradas" 
-              data={filteredSales} 
-              dateRange={{ from: dateFrom, to: dateTo }} 
-            />
+            <div className="text-center py-8">
+              <p className="text-2xl font-bold text-gray-900">{filteredSales.length} vendas</p>
+              <p className="text-gray-500">Total de vendas no período</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -221,12 +219,10 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <DatabaseChart 
-              type="pie" 
-              title="Top Produtos do Período" 
-              data={filteredSales}
-              dateRange={{ from: dateFrom, to: dateTo }}
-            />
+            <div className="text-center py-8">
+              <p className="text-2xl font-bold text-gray-900">{products.length} produtos</p>
+              <p className="text-gray-500">Produtos registrados</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -238,12 +234,10 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <DatabaseChart 
-              type="line" 
-              title="Crescimento no Período" 
-              data={filteredSales}
-              dateRange={{ from: dateFrom, to: dateTo }}
-            />
+            <div className="text-center py-8">
+              <p className="text-2xl font-bold text-gray-900">R$ {calculateMetrics.totalSales}</p>
+              <p className="text-gray-500">Receita total do período</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -255,12 +249,10 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <DatabaseChart 
-              type="area" 
-              title="Clientes no Período" 
-              data={clients}
-              dateRange={{ from: dateFrom, to: dateTo }}
-            />
+            <div className="text-center py-8">
+              <p className="text-2xl font-bold text-gray-900">{clients.length} clientes</p>
+              <p className="text-gray-500">Total de clientes cadastrados</p>
+            </div>
           </CardContent>
         </Card>
       </div>
