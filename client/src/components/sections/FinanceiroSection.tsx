@@ -252,7 +252,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income' && e.status === 'paid').reduce((total, entry) => total + entry.amount, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income' && e.status === 'paid').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
               <p className="text-xs text-green-600 mt-1">Entradas pagas</p>
             </div>
@@ -267,7 +267,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Despesas Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense' && e.status === 'paid').reduce((total, entry) => total + entry.amount, 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense' && e.status === 'paid').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
               <p className="text-xs text-red-600 mt-1">Saídas pagas</p>
             </div>
@@ -283,8 +283,8 @@ const FinanceiroSection = () => {
               <p className="text-sm font-medium text-gray-600">Saldo Atual</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
                 {isLoading ? '...' : `R$ ${(
-                  financialEntries.filter(e => e.type === 'income' && e.status === 'paid').reduce((total, entry) => total + entry.amount, 0) -
-                  financialEntries.filter(e => e.type === 'expense' && e.status === 'paid').reduce((total, entry) => total + entry.amount, 0)
+                  financialEntries.filter(e => e.type === 'income' && e.status === 'paid').reduce((total, entry) => total + Number(entry.amount || 0), 0) -
+                  financialEntries.filter(e => e.type === 'expense' && e.status === 'paid').reduce((total, entry) => total + Number(entry.amount || 0), 0)
                 ).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
               <p className="text-xs text-blue-600 mt-1">Entradas - Saídas</p>
@@ -446,7 +446,7 @@ const FinanceiroSection = () => {
                       
                       <div className="text-right">
                         <span className="text-xl font-bold text-gray-900">
-                          R$ {entry.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </span>
                       </div>
                     </div>
