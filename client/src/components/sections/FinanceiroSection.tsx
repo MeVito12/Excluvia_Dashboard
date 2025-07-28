@@ -36,14 +36,12 @@ const FinanceiroSection = () => {
   const userId = (user as any)?.id || 1;
 
   const { 
-    financialEntries, 
+    entries: financialEntries = [], 
     isLoading, 
-    createFinancialEntry, 
-    updateFinancialEntry, 
-    deleteFinancialEntry,
-    payFinancialEntry,
-    revertFinancialEntry 
-  } = useFinancial(userId, selectedCategory);
+    createEntry: createFinancialEntry, 
+    updateEntry: updateFinancialEntry, 
+    deleteEntry: deleteFinancialEntry
+  } = useFinancial();
 
   const [activeTab, setActiveTab] = useState('entradas');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -107,7 +105,7 @@ const FinanceiroSection = () => {
         currentInstallment: formData.isInstallment ? parseInt(formData.currentInstallment) : undefined
       };
 
-      await createFinancialEntry.mutateAsync(entryData);
+      await createFinancialEntry(entryData);
       
       showAlert({
         title: "Sucesso",
@@ -130,11 +128,13 @@ const FinanceiroSection = () => {
     if (!selectedEntry) return;
 
     try {
-      await payFinancialEntry.mutateAsync({
+      await updateFinancialEntry({
         id: selectedEntry.id,
-        paymentDate: new Date(paymentData.paymentDate),
-        paymentMethod: paymentData.paymentMethod,
-        paymentProof: paymentData.paymentProof || undefined
+        entry: {
+          status: 'paid',
+          paymentDate: new Date(paymentData.paymentDate),
+          paymentMethod: paymentData.paymentMethod
+        }
       });
 
       showAlert({
@@ -156,7 +156,14 @@ const FinanceiroSection = () => {
 
   const handleRevertPayment = async (entryId: number) => {
     try {
-      await revertFinancialEntry.mutateAsync(entryId);
+      await updateFinancialEntry({
+        id: entryId,
+        entry: {
+          status: 'pending',
+          paymentDate: undefined,
+          paymentMethod: undefined
+        }
+      });
       
       showAlert({
         title: "Sucesso",
@@ -174,7 +181,7 @@ const FinanceiroSection = () => {
 
   const handleDeleteEntry = async (entryId: number) => {
     try {
-      await deleteFinancialEntry.mutateAsync(entryId);
+      await deleteFinancialEntry(entryId);
       
       showAlert({
         title: "Sucesso",
