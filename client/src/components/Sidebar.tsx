@@ -216,10 +216,9 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           <div className="p-3 md:p-4 border-t border-[hsl(220_100%_8%)]">
             <button
               onClick={logout}
-              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 flex items-center"
+              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 flex items-center border border-white/20 rounded-md hover:border-white/30"
               style={{
                 background: 'transparent',
-                border: 'none',
                 boxShadow: 'none',
                 outline: 'none',
                 cursor: 'pointer'
@@ -245,10 +244,9 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       )}>
         <button
           onClick={handleToggle}
-          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 flex items-center justify-center"
+          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 flex items-center justify-center border border-white/20 hover:border-white/30"
           style={{
             background: 'transparent',
-            border: 'none',
             boxShadow: 'none',
             outline: 'none',
             cursor: 'pointer'
