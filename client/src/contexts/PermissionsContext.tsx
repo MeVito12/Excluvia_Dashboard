@@ -71,6 +71,7 @@ export const availableSections: SectionPermission[] = [
 interface PermissionsContextType {
   userPermissions: string[];
   isMasterUser: boolean;
+  isGestaoUser: boolean;
   canAccessSection: (sectionId: string) => boolean;
   updateUserPermissions: (userId: number, permissions: string[]) => void;
   getAllUserPermissions: () => Record<number, string[]>;
@@ -85,6 +86,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // Verifica se é usuário master ou CEO
   const isMasterUser = (user as any)?.role === 'master' || (user as any)?.role === 'ceo';
+  const isGestaoUser = (user as any)?.role === 'ceo'; // Perfil Gestão tem acesso universal
 
   // Carrega permissões do localStorage
   useEffect(() => {
@@ -142,6 +144,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       value={{
         userPermissions,
         isMasterUser,
+        isGestaoUser,
         canAccessSection,
         updateUserPermissions,
         getAllUserPermissions

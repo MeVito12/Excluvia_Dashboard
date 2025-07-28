@@ -1265,11 +1265,11 @@ const CadastroSection = () => {
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                              user.role === 'ceo' ? 'bg-red-100 text-red-800' :
+                              user.role === 'ceo' ? 'bg-blue-100 text-blue-800' :
                               user.role === 'master' ? 'bg-purple-100 text-purple-800' :
                               'bg-gray-100 text-black'
                             }`}>
-                              {user.role === 'ceo' ? 'CEO' : 
+                              {user.role === 'ceo' ? 'Gestão' : 
                                user.role === 'master' ? 'Master' : 
                                'Usuário'}
                             </span>

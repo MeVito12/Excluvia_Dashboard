@@ -48,7 +48,7 @@ interface Company {
 
 const ControleSection = () => {
   const { user } = useAuth();
-  const { updateUserPermissions, getAllUserPermissions, isMasterUser } = usePermissions();
+  const { updateUserPermissions, getAllUserPermissions, isMasterUser, isGestaoUser } = usePermissions();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const queryClient = useQueryClient();
   
@@ -71,16 +71,24 @@ const ControleSection = () => {
     enabled: !!user?.id && isMasterUser
   });
 
-  // Buscar usuários da empresa
+  // Buscar usuários - Gestão vê todos, outros veem apenas da sua empresa
   const { data: companyUsers = [], isLoading: usersLoading } = useQuery({
-    queryKey: [`/api/company-users/${company?.id}`],
+    queryKey: isGestaoUser ? ['/api/all-users'] : [`/api/company-users/${company?.id}`],
     queryFn: async (): Promise<UserData[]> => {
-      if (!company?.id) return [];
-      const response = await fetch(`/api/company-users/${company.id}`);
-      if (!response.ok) throw new Error('Erro ao buscar usuários');
-      return response.json();
+      if (isGestaoUser) {
+        // Perfil Gestão vê todos os usuários de todas as empresas
+        const response = await fetch('/api/all-users');
+        if (!response.ok) throw new Error('Erro ao buscar usuários');
+        return response.json();
+      } else {
+        // Outros perfis veem apenas da sua empresa
+        if (!company?.id) return [];
+        const response = await fetch(`/api/company-users/${company.id}`);
+        if (!response.ok) throw new Error('Erro ao buscar usuários');
+        return response.json();
+      }
     },
-    enabled: !!company?.id
+    enabled: (isGestaoUser || !!company?.id) && isMasterUser
   });
 
   // Mutation para atualizar permissões
