@@ -866,3 +866,12 @@ button.system-btn-primary.bg-purple-600 * {
   color: white !important;
 }
 .system-btn-primary, .system-btn-primary * { color: #ffffff !important; }
+
+/* Force white text for colored buttons */
+.bg-green-600, .bg-green-600 *, .bg-green-700, .bg-green-700 * {
+  color: white !important;
+}
+
+.bg-blue-600, .bg-blue-600 *, .bg-blue-700, .bg-blue-700 * {
+  color: white !important;
+}

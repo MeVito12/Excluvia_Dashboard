@@ -1413,10 +1413,10 @@ const CadastroSection = () => {
                               setActiveTab('cadastro');
                             }}
                             className="w-full bg-green-600 hover:bg-green-700"
-                            style={{ color: 'white' }}
+                            style={{ color: 'white !important' }}
                           >
-                            <Building2 className="w-4 h-4 mr-2" style={{ color: 'white' }} />
-                            <span style={{ color: 'white' }}>Adicionar Filiais</span>
+                            <Building2 className="w-4 h-4 mr-2" style={{ color: 'white !important' }} />
+                            <span style={{ color: 'white !important', textShadow: 'none' }}>Adicionar Filiais</span>
                           </Button>
                           <Button
                             onClick={() => {
@@ -1425,10 +1425,10 @@ const CadastroSection = () => {
                               setActiveTab('cadastro');
                             }}
                             className="w-full bg-blue-600 hover:bg-blue-700"
-                            style={{ color: 'white' }}
+                            style={{ color: 'white !important' }}
                           >
-                            <Users className="w-4 h-4 mr-2" style={{ color: 'white' }} />
-                            <span style={{ color: 'white' }}>Adicionar Usuários</span>
+                            <Users className="w-4 h-4 mr-2" style={{ color: 'white !important' }} />
+                            <span style={{ color: 'white !important', textShadow: 'none' }}>Adicionar Usuários</span>
                           </Button>
                         </div>
                       </div>
