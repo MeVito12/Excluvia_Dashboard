@@ -267,9 +267,9 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Despesas Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense' && e.status === 'paid').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
-              <p className="text-xs text-red-600 mt-1">Saídas pagas</p>
+              <p className="text-xs text-red-600 mt-1">Total de saídas</p>
             </div>
             <div className="p-3 rounded-full bg-red-100">
               <TrendingDown className="h-6 w-6 text-red-600" />
@@ -282,10 +282,12 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Saldo Atual</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${(
-                  financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0) -
-                  financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0)
-                ).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {isLoading ? '...' : (() => {
+                  const receitas = financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0);
+                  const despesas = financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0);
+                  const saldo = receitas - despesas;
+                  return `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+                })()}
               </p>
               <p className="text-xs text-blue-600 mt-1">Entradas - Saídas</p>
             </div>
