@@ -214,15 +214,15 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
 
           {/* Footer - Logout */}
           <div className="p-3 md:p-4 border-t border-[hsl(220_100%_8%)]">
-            <Button
-              variant="ghost"
+            <button
               onClick={logout}
-              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 sidebar-logout-button"
+              className="w-full justify-start text-red-400 hover:text-red-600 transition-all duration-300 p-3 flex items-center"
               style={{
-                background: 'transparent !important',
-                border: 'none !important',
-                boxShadow: 'none !important',
-                outline: 'none !important'
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                outline: 'none',
+                cursor: 'pointer'
               }}
             >
               <ModernIcon 
@@ -233,7 +233,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                 className="mr-3 flex-shrink-0 !text-red-400"
               />
               <span className="font-medium text-sm">Sair do Sistema</span>
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -243,16 +243,15 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
         "fixed top-1/2 -translate-y-1/2 z-50 transition-all duration-300",
         isCollapsed ? "left-0" : "left-64"
       )}>
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={handleToggle}
-          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 sidebar-collapse-button"
+          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 flex items-center justify-center"
           style={{
-            background: 'transparent !important',
-            border: 'none !important',
-            boxShadow: 'none !important',
-            outline: 'none !important'
+            background: 'transparent',
+            border: 'none',
+            boxShadow: 'none',
+            outline: 'none',
+            cursor: 'pointer'
           }}
         >
           <ModernIcon 
@@ -260,9 +259,9 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
             variant="default"
             size="sm"
             animated={true}
-            className="!text-white"
+            className="!text-blue-200"
           />
-        </Button>
+        </button>
       </div>
     </>
   );
