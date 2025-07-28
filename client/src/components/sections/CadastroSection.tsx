@@ -371,6 +371,76 @@ const CadastroSection = () => {
     });
   };
 
+  // Handler para envio de usuário comum
+  const handleCommonUserSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newCommonUser.name.trim() || !newCommonUser.email.trim()) {
+      showAlert({
+        title: "Erro",
+        description: "Nome e e-mail são obrigatórios.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!validateEmail(newCommonUser.email)) {
+      showAlert({
+        title: "Erro",
+        description: "E-mail inválido.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const userToCreate = {
+      ...newCommonUser,
+      companyId: companyCreated?.id || 0
+    };
+
+    setCommonUsers(prev => [...prev, userToCreate]);
+    setNewCommonUser({ name: '', email: '', role: 'user' });
+    
+    showAlert({
+      title: "Sucesso",
+      description: "Usuário adicionado com sucesso!",
+      variant: "default"
+    });
+  };
+
+  // Handler para envio do usuário master
+  const handleMasterUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!companyCreated) {
+      showAlert({
+        title: "Erro",
+        description: "Empresa não encontrada. Tente novamente.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (masterUserData.password !== masterUserData.confirmPassword) {
+      showAlert({
+        title: "Erro",
+        description: "As senhas não coincidem.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const masterUser: NewUser = {
+      name: masterUserData.name,
+      email: masterUserData.email,
+      password: masterUserData.password,
+      role: 'master',
+      companyId: companyCreated.id
+    };
+
+    createUserMutation.mutate(masterUser);
+  };
+
   // Estados para gerenciamento
   const [existingCompanies, setExistingCompanies] = useState<any[]>([]);
   const [existingUsers, setExistingUsers] = useState<any[]>([]);
