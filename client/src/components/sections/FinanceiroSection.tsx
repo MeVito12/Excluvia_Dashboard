@@ -464,13 +464,21 @@ const FinanceiroSection = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        setSelectedEntry(entry);
-                        setIsEditModalOpen(true);
+                        // Simular visualização de comprovante
+                        if (entry.paymentProof) {
+                          window.open(entry.paymentProof, '_blank');
+                        } else {
+                          showAlert({
+                            title: "Comprovante",
+                            description: "Nenhum comprovante anexado para este registro",
+                            variant: "warning"
+                          });
+                        }
                       }}
-                      className="btn btn-outline p-2"
-                      title="Visualizar"
+                      className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+                      title="Visualizar comprovante"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-4 h-4 text-gray-600" />
                     </button>
 
                     {entry.status !== 'paid' && (
@@ -479,30 +487,30 @@ const FinanceiroSection = () => {
                           setSelectedEntry(entry);
                           setIsPayModalOpen(true);
                         }}
-                        className="btn btn-outline p-2"
+                        className="w-8 h-8 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded transition-colors"
                         title="Marcar como pago"
                       >
-                        <CheckCircle className="w-4 h-4" />
+                        <CheckCircle className="w-4 h-4 text-green-600" />
                       </button>
                     )}
 
                     {entry.status === 'paid' && entry.type === 'expense' && (
                       <button
                         onClick={() => handleRevertPayment(entry.id)}
-                        className="btn btn-outline p-2"
+                        className="w-8 h-8 flex items-center justify-center bg-yellow-100 hover:bg-yellow-200 rounded transition-colors"
                         title="Reverter pagamento"
                       >
-                        <RotateCcw className="w-4 h-4" />
+                        <RotateCcw className="w-4 h-4 text-yellow-600" />
                       </button>
                     )}
 
                     {entry.type === 'expense' && (
                       <button
                         onClick={() => handleDeleteEntry(entry.id)}
-                        className="btn btn-outline p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        className="w-8 h-8 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded transition-colors"
                         title="Excluir"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
                     )}
                   </div>
