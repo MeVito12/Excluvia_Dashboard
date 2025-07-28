@@ -244,10 +244,10 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       )}>
         <button
           onClick={handleToggle}
-          className="h-12 w-6 p-0 text-blue-200 hover:text-blue-400 rounded-r-md rounded-l-none transition-all duration-300 flex items-center justify-center border border-white/20 hover:border-white/30"
+          className="h-20 w-8 p-0 text-white hover:text-white rounded-r-lg rounded-l-none transition-all duration-300 flex items-center justify-center border border-white/10 hover:border-white/20"
           style={{
-            background: 'transparent',
-            boxShadow: 'none',
+            background: 'hsl(220, 100%, 12%)',
+            boxShadow: '2px 0 10px rgba(0, 0, 0, 0.3)',
             outline: 'none',
             cursor: 'pointer'
           }}
@@ -255,9 +255,9 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           <ModernIcon 
             icon={isCollapsed ? ChevronRight : ChevronLeft}
             variant="default"
-            size="sm"
+            size="md"
             animated={true}
-            className="!text-blue-200"
+            className="!text-white"
           />
         </button>
       </div>
