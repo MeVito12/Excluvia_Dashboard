@@ -392,33 +392,55 @@ All colors MUST be HSL.
     @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100;
   }
 
-  /* Botões do sistema */
+  /* Botões do sistema - padrão roxo com hover verde */
   .btn {
     @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2 cursor-pointer;
+    background: hsl(var(--brand-primary)) !important;
+    color: white !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn:hover {
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
   }
 
   .btn-primary {
-    @apply text-white shadow-lg hover:shadow-xl active:scale-95;
-    background: hsl(var(--brand-primary));
+    background: hsl(var(--brand-primary)) !important;
+    color: white !important;
   }
 
   .btn-primary:hover {
-    @apply transform -translate-y-0.5;
-    background: hsl(var(--brand-primary) / 0.9);
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
   }
 
   .btn-secondary {
-    @apply text-white shadow-lg hover:shadow-xl;
-    background: hsl(var(--brand-secondary));
+    background: hsl(var(--brand-primary)) !important;
+    color: white !important;
   }
 
   .btn-secondary:hover {
-    @apply transform -translate-y-0.5;
-    background: hsl(var(--brand-secondary) / 0.9);
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
   }
 
   .btn-outline {
-    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 cursor-pointer active:scale-95;
+    @apply bg-white text-gray-700 border-2 border-gray-200;
+    background: hsl(var(--brand-primary)) !important;
+    color: white !important;
+    border: none !important;
+  }
+
+  .btn-outline:hover {
+    background: hsl(var(--brand-secondary)) !important;
+    color: white !important;
   }
 
   /* Inputs modernos */
@@ -807,5 +829,51 @@ All colors MUST be HSL.
 
 /* Força hover da sidebar também */
 .modern-card-hover:hover * {
+  color: white !important;
+}
+
+/* Padronização global de botões seguindo padrão das abas */
+button:not(.tab-button):not(.bg-transparent) {
+  background: hsl(var(--brand-primary)) !important;
+  color: white !important;
+  transition: all 0.3s ease;
+}
+
+button:not(.tab-button):not(.bg-transparent):hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+  transform: translateY(-1px);
+}
+
+/* Botões específicos do shadcn/ui */
+.bg-purple-600,
+.bg-blue-600,
+.bg-green-600,
+.bg-red-600,
+.bg-gray-600 {
+  background: hsl(var(--brand-primary)) !important;
+  color: white !important;
+}
+
+.bg-purple-600:hover,
+.bg-blue-600:hover,
+.bg-green-600:hover,
+.bg-red-600:hover,
+.bg-gray-600:hover,
+.hover\\:bg-purple-700:hover,
+.hover\\:bg-blue-700:hover,
+.hover\\:bg-green-700:hover,
+.hover\\:bg-red-700:hover,
+.hover\\:bg-gray-700:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+}
+
+/* Força padronização em todos os textos de botões */
+button * {
+  color: white !important;
+}
+
+button:hover * {
   color: white !important;
 }
