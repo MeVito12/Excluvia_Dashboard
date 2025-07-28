@@ -199,42 +199,12 @@ const CadastroSection = () => {
       if (!response.ok) throw new Error('Erro ao criar usuário master');
       return response.json();
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       showAlert({
         title: "Usuário Master Criado",
-        description: `${masterUserData.name} foi cadastrado com sucesso! Fazendo login automático...`,
+        description: `${masterUserData.name} foi cadastrado com sucesso!`,
         variant: "success"
       });
-      
-      // Fazer login automático com as credenciais do usuário master
-      try {
-        const loginResponse = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: masterUserData.email,
-            password: masterUserData.password
-          })
-        });
-
-        if (loginResponse.ok) {
-          const loginData = await loginResponse.json();
-          login(loginData.user);
-          
-          showAlert({
-            title: "Login Realizado",
-            description: "Você foi autenticado automaticamente com sucesso!",
-            variant: "success"
-          });
-        }
-      } catch (error) {
-        console.error('Erro no login automático:', error);
-        showAlert({
-          title: "Aviso",
-          description: "Usuário criado com sucesso, mas houve erro no login automático. Faça login manualmente.",
-          variant: "default"
-        });
-      }
       
       // Ir para etapa de pergunta sobre filiais
       setCurrentStep('branches');
