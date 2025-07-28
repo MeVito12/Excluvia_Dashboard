@@ -422,16 +422,16 @@ const AtividadeSection = () => {
             <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="font-medium text-gray-800">{sale.clientName}</h4>
-                  <p className="text-sm text-gray-600">{sale.productName} x{sale.quantity}</p>
-                  <p className="text-xs text-gray-500">{format(new Date(sale.date), 'dd/MM/yyyy HH:mm', { locale: ptBR })}</p>
+                  <h4 className="font-medium text-gray-800">Cliente ID: {sale.clientId}</h4>
+                  <p className="text-sm text-gray-600">Produto ID: {sale.productId} x{sale.quantity || 0}</p>
+                  <p className="text-xs text-gray-500">
+                    {sale.saleDate ? format(new Date(sale.saleDate), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {sale.total.toFixed(2)}</p>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    sale.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {sale.status === 'completed' ? 'Concluída' : 'Pendente'}
+                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
+                  <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
+                    Concluída
                   </span>
                 </div>
               </div>
