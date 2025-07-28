@@ -76,27 +76,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Company creation route (only for CEO)
-  app.post("/api/companies", async (req, res) => {
-    try {
-      const storage = await databaseManager.getStorage();
-      const newCompany = await storage.createCompany(req.body);
-      res.json(newCompany);
-    } catch (error) {
-      console.error("Error creating company:", error);
-      res.status(500).json({ error: "Erro ao criar empresa" });
-    }
-  });
+  // ====================================
+  // COMPANIES
+  // ====================================
 
-  // Get companies route
-  app.get("/api/companies", async (req, res) => {
+  // GET /api/companies - Buscar todas as empresas
+  app.get('/api/companies', async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
       const companies = await storage.getCompanies();
       res.json(companies);
     } catch (error) {
-      console.error("Error fetching companies:", error);
-      res.status(500).json({ error: "Erro ao buscar empresas" });
+      console.error('Error fetching companies:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
+  // POST /api/companies - Criar empresa
+  app.post('/api/companies', async (req, res) => {
+    try {
+      const { fantasyName, corporateName, cnpj, businessCategory } = req.body;
+      
+      if (!fantasyName || !corporateName || !cnpj || !businessCategory) {
+        return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const newCompany = await storage.createCompany({
+        fantasyName,
+        corporateName,
+        cnpj,
+        businessCategory,
+        createdBy: 1, // CEO user ID
+        createdAt: new Date()
+      });
+
+      res.status(201).json(newCompany);
+    } catch (error) {
+      console.error('Error creating company:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
+  // GET /api/branches - Buscar todas as filiais
+  app.get('/api/branches', async (req, res) => {
+    try {
+      const companyId = req.query.companyId ? parseInt(req.query.companyId as string) : undefined;
+      const storage = await databaseManager.getStorage();
+      const branches = await storage.getBranches(companyId);
+      res.json(branches);
+    } catch (error) {
+      console.error('Error fetching branches:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+  });
+
+  // POST /api/branches - Criar filial
+  app.post('/api/branches', async (req, res) => {
+    try {
+      const { companyId, name, address } = req.body;
+      
+      if (!companyId || !name) {
+        return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' });
+      }
+
+      const storage = await databaseManager.getStorage();
+      const newBranch = await storage.createBranch({
+        companyId,
+        name,
+        address,
+        createdAt: new Date()
+      });
+
+      res.status(201).json(newBranch);
+    } catch (error) {
+      console.error('Error creating branch:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
     }
   });
 

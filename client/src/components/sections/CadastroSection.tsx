@@ -4,24 +4,22 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { 
   Building2, 
   User, 
   Mail, 
-  Lock, 
-  Users, 
   CheckCircle, 
   AlertCircle,
   Eye,
   EyeOff,
+  Users,
   Plus,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import ModernIcon from '@/components/ui/modern-icon';
 
@@ -65,7 +63,6 @@ const CadastroSection = () => {
   // Estados principais
   const [currentStep, setCurrentStep] = useState<'company' | 'master' | 'success'>('company');
   const [showPostRegistrationDialog, setShowPostRegistrationDialog] = useState(false);
-  const [showBranchDialog, setShowBranchDialog] = useState(false);
   const [showCommonUsersDialog, setShowCommonUsersDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -106,7 +103,6 @@ const CadastroSection = () => {
     const cleanCNPJ = cnpj.replace(/[^\d]/g, '');
     if (cleanCNPJ.length !== 14) return false;
     
-    // Validação básica de CNPJ (algoritmo simplificado)
     if (/^(\d)\1+$/.test(cleanCNPJ)) return false;
     
     let sum = 0;
@@ -274,11 +270,11 @@ const CadastroSection = () => {
       <div className="app-section">
         <div className="main-card">
           <div className="flex items-center gap-3 mb-6">
-            <Building2 className="w-6 h-6 text-red-600" />
+            <Shield className="w-6 h-6 text-red-600" />
             <h1 className="text-xl font-semibold text-gray-800">Acesso Negado</h1>
           </div>
           <div className="text-center py-12">
-            <Building2 className="w-16 h-16 text-red-400 mx-auto mb-4" />
+            <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h2 className="text-lg font-medium text-gray-700 mb-2">
               Acesso Restrito
             </h2>
@@ -301,243 +297,246 @@ const CadastroSection = () => {
       </div>
 
       {/* Indicador de Passos */}
-      <div className="flex justify-center mb-8">
-        <div className="flex items-center space-x-8">
-          <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : currentStep === 'master' || currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${currentStep === 'company' ? 'border-purple-600 bg-purple-100' : currentStep === 'master' || currentStep === 'success' ? 'border-green-600 bg-green-100' : 'border-gray-300'}`}>
-              {currentStep === 'master' || currentStep === 'success' ? <CheckCircle className="w-4 h-4" /> : '1'}
+      <div className="main-card mb-6">
+        <div className="flex justify-center">
+          <div className="flex items-center space-x-8">
+            <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : currentStep === 'master' || currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-semibold ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'master' || currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {currentStep === 'master' || currentStep === 'success' ? <CheckCircle className="w-5 h-5" /> : '1'}
+              </div>
+              <span className="ml-3 font-medium">Empresa</span>
             </div>
-            <span className="ml-2 font-medium">Empresa</span>
-          </div>
-          
-          <div className={`w-16 h-0.5 ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
-          
-          <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${currentStep === 'master' ? 'border-purple-600 bg-purple-100' : currentStep === 'success' ? 'border-green-600 bg-green-100' : 'border-gray-300'}`}>
-              {currentStep === 'success' ? <CheckCircle className="w-4 h-4" /> : '2'}
+            
+            <div className={`w-20 h-1 rounded ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+            
+            <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
+              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-semibold ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {currentStep === 'success' ? <CheckCircle className="w-5 h-5" /> : '2'}
+              </div>
+              <span className="ml-3 font-medium">Usuário Master</span>
             </div>
-            <span className="ml-2 font-medium">Usuário Master</span>
           </div>
         </div>
       </div>
 
       {/* Formulário da Empresa */}
       {currentStep === 'company' && (
-        <Card className="standard-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Building2 className="w-5 h-5" />
-              Dados da Empresa Principal
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCompanySubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="fantasyName">Nome Fantasia *</Label>
+        <div className="main-card">
+          <div className="flex items-center gap-3 mb-6">
+            <ModernIcon icon={Building2} className="w-6 h-6" />
+            <h2 className="text-lg font-semibold text-gray-800">Dados da Empresa Principal</h2>
+          </div>
+          
+          <form onSubmit={handleCompanySubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="fantasyName" className="text-sm font-medium text-gray-700">Nome Fantasia *</Label>
+                <Input
+                  id="fantasyName"
+                  value={companyData.fantasyName}
+                  onChange={(e) => setCompanyData(prev => ({ ...prev, fantasyName: e.target.value }))}
+                  placeholder="Ex: Farmácia Central"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="corporateName" className="text-sm font-medium text-gray-700">Razão Social *</Label>
+                <Input
+                  id="corporateName"
+                  value={companyData.corporateName}
+                  onChange={(e) => setCompanyData(prev => ({ ...prev, corporateName: e.target.value }))}
+                  placeholder="Ex: Farmácia Central Ltda"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="cnpj" className="text-sm font-medium text-gray-700">CNPJ *</Label>
+                <div className="relative">
                   <Input
-                    id="fantasyName"
-                    value={companyData.fantasyName}
-                    onChange={(e) => setCompanyData(prev => ({ ...prev, fantasyName: e.target.value }))}
-                    placeholder="Ex: Farmácia Central"
+                    id="cnpj"
+                    value={companyData.cnpj}
+                    onChange={(e) => handleCNPJChange(e.target.value)}
+                    placeholder="00.000.000/0001-00"
+                    maxLength={18}
+                    className="focus:ring-purple-500 focus:border-purple-500"
                     required
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="corporateName">Razão Social *</Label>
-                  <Input
-                    id="corporateName"
-                    value={companyData.corporateName}
-                    onChange={(e) => setCompanyData(prev => ({ ...prev, corporateName: e.target.value }))}
-                    placeholder="Ex: Farmácia Central Ltda"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="cnpj">CNPJ *</Label>
-                  <div className="relative">
-                    <Input
-                      id="cnpj"
-                      value={companyData.cnpj}
-                      onChange={(e) => handleCNPJChange(e.target.value)}
-                      placeholder="00.000.000/0001-00"
-                      maxLength={18}
-                      required
-                    />
-                    {cnpjValid === true && (
-                      <CheckCircle className="absolute right-3 top-3 w-4 h-4 text-green-600" />
-                    )}
-                    {cnpjValid === false && (
-                      <AlertCircle className="absolute right-3 top-3 w-4 h-4 text-red-600" />
-                    )}
-                  </div>
+                  {cnpjValid === true && (
+                    <CheckCircle className="absolute right-3 top-3 w-4 h-4 text-green-600" />
+                  )}
                   {cnpjValid === false && (
-                    <p className="text-sm text-red-600">CNPJ inválido</p>
+                    <AlertCircle className="absolute right-3 top-3 w-4 h-4 text-red-600" />
                   )}
                 </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="businessCategory">Categoria do Negócio *</Label>
-                  <Select
-                    value={companyData.businessCategory}
-                    onValueChange={(value) => setCompanyData(prev => ({ ...prev, businessCategory: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione a categoria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {businessCategories.map((category) => (
-                        <SelectItem key={category.value} value={category.value}>
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {cnpjValid === false && (
+                  <p className="text-sm text-red-600">CNPJ inválido</p>
+                )}
               </div>
 
-              <div className="flex justify-end">
-                <Button 
-                  type="submit" 
-                  disabled={createCompanyMutation.isPending}
-                  className="bg-purple-600 hover:bg-purple-700"
+              <div className="space-y-2">
+                <Label htmlFor="businessCategory" className="text-sm font-medium text-gray-700">Categoria do Negócio *</Label>
+                <Select
+                  value={companyData.businessCategory}
+                  onValueChange={(value) => setCompanyData(prev => ({ ...prev, businessCategory: value }))}
                 >
-                  {createCompanyMutation.isPending ? 'Cadastrando...' : 'Cadastrar Empresa'}
-                </Button>
+                  <SelectTrigger className="focus:ring-purple-500 focus:border-purple-500">
+                    <SelectValue placeholder="Selecione a categoria" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {businessCategories.map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </form>
-          </CardContent>
-        </Card>
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <Button 
+                type="submit" 
+                disabled={createCompanyMutation.isPending}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+              >
+                {createCompanyMutation.isPending ? 'Cadastrando...' : 'Cadastrar Empresa'}
+              </Button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Formulário do Usuário Master */}
       {currentStep === 'master' && (
-        <Card className="standard-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Usuário Master - {companyCreated?.fantasyName}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleMasterUserSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="masterName">Nome Completo *</Label>
+        <div className="main-card">
+          <div className="flex items-center gap-3 mb-6">
+            <ModernIcon icon={User} className="w-6 h-6" />
+            <h2 className="text-lg font-semibold text-gray-800">Usuário Master - {companyCreated?.fantasyName}</h2>
+          </div>
+          
+          <form onSubmit={handleMasterUserSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="masterName" className="text-sm font-medium text-gray-700">Nome Completo *</Label>
+                <Input
+                  id="masterName"
+                  value={masterUserData.name}
+                  onChange={(e) => setMasterUserData(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Ex: João Silva"
+                  className="focus:ring-purple-500 focus:border-purple-500"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="masterEmail" className="text-sm font-medium text-gray-700">E-mail *</Label>
+                <div className="relative">
                   <Input
-                    id="masterName"
-                    value={masterUserData.name}
-                    onChange={(e) => setMasterUserData(prev => ({ ...prev, name: e.target.value }))}
-                    placeholder="Ex: João Silva"
+                    id="masterEmail"
+                    type="email"
+                    value={masterUserData.email}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    placeholder="joao@empresa.com"
+                    className="focus:ring-purple-500 focus:border-purple-500 pr-20"
                     required
                   />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="masterEmail">E-mail *</Label>
-                  <div className="relative">
-                    <Input
-                      id="masterEmail"
-                      type="email"
-                      value={masterUserData.email}
-                      onChange={(e) => handleEmailChange(e.target.value)}
-                      placeholder="joao@empresa.com"
-                      required
-                    />
-                    <Mail className="absolute right-3 top-3 w-4 h-4 text-gray-400" />
-                    {emailValid === true && (
-                      <CheckCircle className="absolute right-8 top-3 w-4 h-4 text-green-600" />
-                    )}
-                    {emailValid === false && (
-                      <AlertCircle className="absolute right-8 top-3 w-4 h-4 text-red-600" />
-                    )}
-                  </div>
+                  <Mail className="absolute right-3 top-3 w-4 h-4 text-gray-400" />
+                  {emailValid === true && (
+                    <CheckCircle className="absolute right-8 top-3 w-4 h-4 text-green-600" />
+                  )}
                   {emailValid === false && (
-                    <p className="text-sm text-red-600">E-mail inválido</p>
+                    <AlertCircle className="absolute right-8 top-3 w-4 h-4 text-red-600" />
                   )}
                 </div>
+                {emailValid === false && (
+                  <p className="text-sm text-red-600">E-mail inválido</p>
+                )}
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="masterPassword">Senha *</Label>
-                  <div className="relative">
-                    <Input
-                      id="masterPassword"
-                      type={showPassword ? "text" : "password"}
-                      value={masterUserData.password}
-                      onChange={(e) => handlePasswordChange('password', e.target.value)}
-                      placeholder="Mínimo 8 caracteres"
-                      minLength={8}
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                  {masterUserData.password && masterUserData.password.length < 8 && (
-                    <p className="text-sm text-red-600">Senha deve ter no mínimo 8 caracteres</p>
-                  )}
+              <div className="space-y-2">
+                <Label htmlFor="masterPassword" className="text-sm font-medium text-gray-700">Senha *</Label>
+                <div className="relative">
+                  <Input
+                    id="masterPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={masterUserData.password}
+                    onChange={(e) => handlePasswordChange('password', e.target.value)}
+                    placeholder="Mínimo 8 caracteres"
+                    minLength={8}
+                    className="focus:ring-purple-500 focus:border-purple-500"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
                 </div>
+                {masterUserData.password && masterUserData.password.length < 8 && (
+                  <p className="text-sm text-red-600">Senha deve ter no mínimo 8 caracteres</p>
+                )}
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirmar Senha *</Label>
-                  <div className="relative">
-                    <Input
-                      id="confirmPassword"
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={masterUserData.confirmPassword}
-                      onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
-                      placeholder="Confirme a senha"
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                    {passwordMatch === true && masterUserData.confirmPassword && (
-                      <CheckCircle className="absolute right-10 top-3 w-4 h-4 text-green-600" />
-                    )}
-                    {passwordMatch === false && masterUserData.confirmPassword && (
-                      <AlertCircle className="absolute right-10 top-3 w-4 h-4 text-red-600" />
-                    )}
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">Confirmar Senha *</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={masterUserData.confirmPassword}
+                    onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
+                    placeholder="Confirme a senha"
+                    className="focus:ring-purple-500 focus:border-purple-500"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
+                  {passwordMatch === true && masterUserData.confirmPassword && (
+                    <CheckCircle className="absolute right-10 top-3 w-4 h-4 text-green-600" />
+                  )}
                   {passwordMatch === false && masterUserData.confirmPassword && (
-                    <p className="text-sm text-red-600">Senhas não coincidem</p>
+                    <AlertCircle className="absolute right-10 top-3 w-4 h-4 text-red-600" />
                   )}
                 </div>
+                {passwordMatch === false && masterUserData.confirmPassword && (
+                  <p className="text-sm text-red-600">Senhas não coincidem</p>
+                )}
               </div>
+            </div>
 
-              <div className="flex justify-between">
-                <Button 
-                  type="button" 
-                  variant="outline"
-                  onClick={() => setCurrentStep('company')}
-                >
-                  Voltar
-                </Button>
-                <Button 
-                  type="submit" 
-                  disabled={createMasterUserMutation.isPending}
-                  className="bg-purple-600 hover:bg-purple-700"
-                >
-                  {createMasterUserMutation.isPending ? 'Criando...' : 'Criar Usuário Master'}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            <div className="flex justify-between pt-4">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setCurrentStep('company')}
+              >
+                Voltar
+              </Button>
+              <Button 
+                type="submit" 
+                disabled={createMasterUserMutation.isPending}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+              >
+                {createMasterUserMutation.isPending ? 'Criando...' : 'Criar Usuário Master'}
+              </Button>
+            </div>
+          </form>
+        </div>
       )}
 
       {/* Diálogo Pós-Cadastro */}
@@ -554,18 +553,6 @@ const CadastroSection = () => {
           </DialogHeader>
           
           <div className="space-y-4">
-            <Button
-              onClick={() => {
-                setShowPostRegistrationDialog(false);
-                setShowBranchDialog(true);
-              }}
-              className="w-full justify-start"
-              variant="outline"
-            >
-              <Building2 className="w-4 h-4 mr-2" />
-              Cadastrar Filiais
-            </Button>
-            
             <Button
               onClick={() => {
                 setShowPostRegistrationDialog(false);
@@ -609,11 +596,9 @@ const CadastroSection = () => {
           
           <div className="space-y-4">
             {/* Formulário para novo usuário */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">Novo Usuário</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <div className="main-card">
+              <h4 className="font-medium mb-4">Novo Usuário</h4>
+              <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <Input
                     placeholder="Nome completo"
@@ -639,8 +624,8 @@ const CadastroSection = () => {
                     Adicionar
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Lista de usuários adicionados */}
             {commonUsers.length > 0 && (
@@ -671,7 +656,6 @@ const CadastroSection = () => {
             </Button>
             <Button
               onClick={() => {
-                // Aqui você salvaria os usuários comuns
                 setShowCommonUsersDialog(false);
                 showAlert({
                   title: "Usuários Salvos",
@@ -681,6 +665,7 @@ const CadastroSection = () => {
                 setCommonUsers([]);
               }}
               disabled={commonUsers.length === 0}
+              className="bg-purple-600 hover:bg-purple-700"
             >
               Salvar Usuários
             </Button>
