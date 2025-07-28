@@ -1274,23 +1274,6 @@ const EstoqueSection = () => {
                   }`}>
                     {product.status}
                   </span>
-                  <div className="mt-1 flex justify-center">
-                    {product.status === 'Vencido' && (
-                      <AlertTriangle className="w-4 h-4 text-red-500" />
-                    )}
-                    {product.status === 'Vencimento Próximo' && (
-                      <Clock className="w-4 h-4 text-yellow-500" />
-                    )}
-                    {product.status === 'Estoque Baixo' && (
-                      <Package className="w-4 h-4 text-orange-500" />
-                    )}
-                    {product.status === 'Sem Estoque' && (
-                      <XCircle className="w-4 h-4 text-red-600" />
-                    )}
-                    {product.status === 'Em Estoque' && (
-                      <CheckCircle className="w-4 h-4 text-green-500" />
-                    )}
-                  </div>
                 </div>
               </div>
               <div className="flex gap-2">
