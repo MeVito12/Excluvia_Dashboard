@@ -362,17 +362,18 @@ const FinanceiroSection = () => {
           {/* Filtros */}
           <div className="flex flex-wrap gap-4 items-center mb-6">
             <div className="flex-1">
-              <Input
+              <input
+                type="text"
                 placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full"
+                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-md"
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Todos os status</option>
               <option value="pending">Pendente</option>
@@ -380,15 +381,15 @@ const FinanceiroSection = () => {
               <option value="overdue">Vencido</option>
               <option value="paid">Pago</option>
             </select>
-            <Button
-              variant="outline"
+            <button
               onClick={() => {
                 setSearchTerm('');
                 setStatusFilter('all');
               }}
+              className="btn btn-outline"
             >
               Limpar Filtros
-            </Button>
+            </button>
           </div>
 
           {/* Lista de Entradas Financeiras */}
@@ -410,116 +411,101 @@ const FinanceiroSection = () => {
               </p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="item-list">
               {filteredEntries.map((entry) => (
-                <div key={entry.id} className="list-card">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-full ${entry.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
-                        {entry.type === 'income' ? (
-                          <TrendingUp className="w-4 h-4 text-green-600" />
-                        ) : (
-                          <TrendingDown className="w-4 h-4 text-red-600" />
+                <div key={entry.id} className="list-item">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${entry.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
+                      {entry.type === 'income' ? (
+                        <TrendingUp className="w-6 h-6 text-green-600" />
+                      ) : (
+                        <TrendingDown className="w-6 h-6 text-red-600" />
+                      )}
+                    </div>
+                    
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-800">{entry.description}</h4>
+                      <p className="text-sm text-gray-600">
+                        Vencimento: {entry.dueDate ? new Date(entry.dueDate).toLocaleDateString('pt-BR') : 'Data não informada'}
+                      </p>
+                      
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className={`badge ${
+                          entry.status === 'paid' ? 'badge-success' : 
+                          entry.status === 'pending' ? 'badge-warning' : 
+                          entry.status === 'near_due' ? 'badge-warning' :
+                          entry.status === 'overdue' ? 'badge-error' :
+                          'badge-warning'
+                        }`}>
+                          {getStatusLabel(entry.status)}
+                        </span>
+
+                        {entry.isInstallment && (
+                          <span className="badge badge-info">
+                            {entry.currentInstallment}/{entry.installmentCount}
+                          </span>
+                        )}
+
+                        {entry.isBoleto && (
+                          <span className="badge badge-primary">
+                            Boleto
+                          </span>
                         )}
                       </div>
-                      
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900">{entry.description}</h4>
-                        <p className="text-sm text-gray-600">
-                          Vencimento: {entry.dueDate ? new Date(entry.dueDate).toLocaleDateString('pt-BR') : 'Data não informada'}
-                        </p>
-                        
-                        <div className="flex items-center gap-2 mt-2">
-                          {getStatusBadge(entry.status)}
-
-                          {entry.isInstallment && (
-                            <Badge variant="outline" className="text-blue-600 border-blue-200">
-                              {entry.currentInstallment}/{entry.installmentCount}
-                            </Badge>
-                          )}
-
-                          {entry.isBoleto && (
-                            <Badge variant="outline" className="text-purple-600 border-purple-200">
-                              Boleto
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <span className="text-xl font-bold text-gray-900">
-                          R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
-                      </div>
                     </div>
+                  </div>
+                  
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">
+                      R$ {Number(entry.amount || 0).toFixed(2)}
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedEntry(entry);
+                        setIsEditModalOpen(true);
+                      }}
+                      className="btn btn-outline p-2"
+                      title="Visualizar"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
 
-                    <div className="flex items-center gap-2">
+                    {entry.status !== 'paid' && (
                       <button
                         onClick={() => {
                           setSelectedEntry(entry);
-                          setIsEditModalOpen(true);
+                          setIsPayModalOpen(true);
                         }}
-                        className="btn-action btn-action-view"
-                        title="Visualizar"
+                        className="btn btn-outline p-2"
+                        title="Marcar como pago"
                       >
-                        <Eye className="w-4 h-4" />
+                        <CheckCircle className="w-4 h-4" />
                       </button>
+                    )}
 
-                      {entry.status !== 'paid' && (
-                        <button
-                          onClick={() => {
-                            setSelectedEntry(entry);
-                            setIsPayModalOpen(true);
-                          }}
-                          className="btn-action btn-action-success"
-                          title="Marcar como pago"
-                        >
-                          <CheckCircle className="w-4 h-4" />
-                        </button>
-                      )}
+                    {entry.status === 'paid' && entry.type === 'expense' && (
+                      <button
+                        onClick={() => handleRevertPayment(entry.id)}
+                        className="btn btn-outline p-2"
+                        title="Reverter pagamento"
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                      </button>
+                    )}
 
-                      {entry.status === 'paid' && (
-                        <button
-                          onClick={() => handleRevertPayment(entry.id)}
-                          className="btn-action btn-action-warning"
-                          title="Reverter pagamento"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                        </button>
-                      )}
-
+                    {entry.type === 'expense' && (
                       <button
                         onClick={() => handleDeleteEntry(entry.id)}
-                        className="btn-action btn-action-danger"
+                        className="btn btn-outline p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                         title="Excluir"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    </div>
+                    )}
                   </div>
-
-                  {/* Alertas de vencimento */}
-                  {entry.status === 'near_due' && (
-                    <div className="mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 text-yellow-600" />
-                        <span className="text-sm text-yellow-800">
-                          Vence em breve - {Math.ceil((new Date(entry.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))} dias
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {entry.status === 'overdue' && (
-                    <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <XCircle className="w-4 h-4 text-red-600" />
-                        <span className="text-sm text-red-800">
-                          Vencido há {Math.ceil((new Date().getTime() - new Date(entry.dueDate).getTime()) / (1000 * 60 * 60 * 24))} dias
-                        </span>
-                      </div>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
@@ -544,7 +530,7 @@ const FinanceiroSection = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">
-                {activeTab === 'entradas' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
+                Nova Saída Financeira
               </h3>
               <button
                 onClick={() => {
@@ -671,20 +657,20 @@ const FinanceiroSection = () => {
 
               <div className="flex gap-3 pt-4">
                 <button
-                  onClick={handleCreateEntry}
-                  disabled={!formData.description || !formData.amount || !formData.dueDate}
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {activeTab === 'entradas' ? 'Criar Entrada' : 'Criar Saída'}
-                </button>
-                <button
                   onClick={() => {
                     setIsCreateModalOpen(false);
                     resetForm();
                   }}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                  className="btn btn-outline"
                 >
                   Cancelar
+                </button>
+                <button
+                  onClick={handleCreateEntry}
+                  disabled={!formData.description || !formData.amount || !formData.dueDate}
+                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Criar Saída
                 </button>
               </div>
             </div>
@@ -770,20 +756,20 @@ const FinanceiroSection = () => {
 
               <div className="flex gap-3 pt-4">
                 <button
-                  onClick={handlePayEntry}
-                  disabled={!paymentData.paymentDate || !paymentData.paymentMethod}
-                  className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Confirmar Pagamento
-                </button>
-                <button
                   onClick={() => {
                     setIsPayModalOpen(false);
                     setSelectedEntry(null);
                   }}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400"
+                  className="btn btn-outline"
                 >
                   Cancelar
+                </button>
+                <button
+                  onClick={handlePayEntry}
+                  disabled={!paymentData.paymentDate || !paymentData.paymentMethod}
+                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Confirmar Pagamento
                 </button>
               </div>
             </div>
