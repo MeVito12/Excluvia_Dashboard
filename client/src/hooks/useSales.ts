@@ -1,59 +1,49 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+import type { Sale, NewSale } from '@shared/schema';
 
-export interface Sale {
-  id: number;
-  productId: number;
-  clientId: number;
-  quantity: number;
-  totalPrice: number;
-  paymentMethod?: string;
-  businessCategory: string;
-  userId: number;
-  saleDate: Date;
-}
-
-export interface NewSale {
-  productId: number;
-  clientId: number;
-  quantity: number;
-  totalPrice: number;
-  paymentMethod?: string;
-  businessCategory: string;
-  userId: number;
-  saleDate: Date;
-}
-
-export function useSales(userId: number, businessCategory: string) {
+export const useSales = () => {
+  const apiClient = useApiClient();
   const queryClient = useQueryClient();
-  const queryKey = ['sales', userId, businessCategory];
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
 
-  // Buscar vendas
-  const { data: sales = [], isLoading, error } = useQuery({
-    queryKey,
-    queryFn: () => fetch(`/api/sales?userId=${userId}&businessCategory=${businessCategory}`)
-      .then(res => res.json())
+  const query = useQuery({
+    queryKey: ['sales', (user as any)?.id, selectedCategory],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory
+      });
+      return apiClient.get(`/api/sales?${params}`);
+    },
+    enabled: !!(user && selectedCategory)
   });
 
-  // Criar venda
-  const createSaleMutation = useMutation({
-    mutationFn: (saleData: NewSale) => 
-      apiRequest('/api/sales', {
-        method: 'POST',
-        body: JSON.stringify(saleData)
-      }),
+  const createMutation = useMutation({
+    mutationFn: async (sale: NewSale) => {
+      return apiClient.post('/api/sales', sale);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
-      // Invalidar cache financeiro também já que vendas geram entradas automáticas
-      queryClient.invalidateQueries({ queryKey: ['financial'] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['sales', (user as any)?.id, selectedCategory] 
+      });
+      // Invalidar também produtos e financeiro pois vendas afetam estoque e geram entradas
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
   return {
-    sales,
-    isLoading,
-    error,
-    createSale: createSaleMutation.mutate,
-    isCreating: createSaleMutation.isPending,
+    sales: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createSale: createMutation.mutate,
+    isCreating: createMutation.isPending
   };
-}
+};

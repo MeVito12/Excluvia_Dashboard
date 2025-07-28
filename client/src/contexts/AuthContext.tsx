@@ -6,6 +6,7 @@ interface User {
   email: string;
   userType: string;
   businessCategory: string;
+  permissions?: string[];
 }
 
 interface AuthContextType {

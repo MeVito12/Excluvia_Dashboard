@@ -42,35 +42,38 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     setError('');
     setIsLoading(true);
 
-    // Simular delay de autenticação
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      // Autenticação real via API
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    // Verificar credenciais e definir categoria automaticamente
-    let userFound = false;
-    for (const [category, userData] of Object.entries(categoryUsers)) {
-      if (email === userData.email && password === userData.password) {
-        // Para usuário master, usar a categoria 'estetica' por padrão
-        const businessCategory = category === 'master' ? 'estetica' : category;
+      if (response.ok) {
+        const { user } = await response.json();
         
         // Definir categoria no localStorage e contexto
-        localStorage.setItem('userBusinessCategory', businessCategory);
-        setSelectedCategory(businessCategory);
+        localStorage.setItem('userBusinessCategory', user.businessCategory);
+        setSelectedCategory(user.businessCategory);
         
         onLogin({
-          name: userData.name,
-          email: userData.email,
-          userType: userData.userType,
-          businessCategory: businessCategory,
-          id: category === 'master' ? 1 : 2
-        } as any);
-        
-        userFound = true;
-        break;
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          userType: user.userType,
+          businessCategory: user.businessCategory,
+          permissions: user.permissions
+        });
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Erro na autenticação');
       }
-    }
-
-    if (!userFound) {
-      setError('Email ou senha incorretos.');
+    } catch (error) {
+      console.error('Erro de login:', error);
+      setError('Erro de conexão. Tente novamente.');
     }
 
     setIsLoading(false);

@@ -1,89 +1,68 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+import type { Product, NewProduct } from '@shared/schema';
 
-export interface Product {
-  id: number;
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  minStock?: number;
-  isPerishable?: boolean;
-  manufacturingDate?: Date;
-  expiryDate?: Date;
-  businessCategory: string;
-  userId: number;
-  createdAt: Date;
-}
-
-export interface NewProduct {
-  name: string;
-  description?: string;
-  price: number;
-  stock: number;
-  minStock?: number;
-  isPerishable?: boolean;
-  manufacturingDate?: Date;
-  expiryDate?: Date;
-  businessCategory: string;
-  userId: number;
-}
-
-export function useProducts(userId: number, businessCategory: string) {
+export const useProducts = () => {
+  const apiClient = useApiClient();
   const queryClient = useQueryClient();
-  const queryKey = ['products', userId, businessCategory];
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
 
-  // Buscar produtos
-  const { data: products = [], isLoading, error } = useQuery({
-    queryKey,
-    queryFn: () => fetch(`/api/products?userId=${userId}&businessCategory=${businessCategory}`)
-      .then(res => res.json())
+  const query = useQuery({
+    queryKey: ['products', (user as any)?.id, selectedCategory],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory
+      });
+      return apiClient.get(`/api/products?${params}`);
+    },
+    enabled: !!(user && selectedCategory)
   });
 
-  // Criar produto
-  const createProductMutation = useMutation({
-    mutationFn: (productData: NewProduct) => 
-      apiRequest('/api/products', {
-        method: 'POST',
-        body: JSON.stringify(productData)
-      }),
+  const createMutation = useMutation({
+    mutationFn: async (product: NewProduct) => {
+      return apiClient.post('/api/products', product);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Atualizar produto
-  const updateProductMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<NewProduct> }) =>
-      apiRequest(`/api/products/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data)
-      }),
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, product }: { id: number, product: Partial<NewProduct> }) => {
+      return apiClient.put(`/api/products/${id}`, product);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Excluir produto
-  const deleteProductMutation = useMutation({
-    mutationFn: (id: number) => 
-      apiRequest(`/api/products/${id}`, {
-        method: 'DELETE'
-      }),
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/products/${id}`);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
   return {
-    products,
-    isLoading,
-    error,
-    createProduct: createProductMutation.mutate,
-    updateProduct: updateProductMutation.mutate,
-    deleteProduct: deleteProductMutation.mutate,
-    isCreating: createProductMutation.isPending,
-    isUpdating: updateProductMutation.isPending,
-    isDeleting: deleteProductMutation.isPending,
+    products: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createProduct: createMutation.mutate,
+    updateProduct: updateMutation.mutate,
+    deleteProduct: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
   };
-}
+};

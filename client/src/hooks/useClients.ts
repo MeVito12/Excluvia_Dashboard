@@ -1,79 +1,68 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+import type { Client, NewClient } from '@shared/schema';
 
-export interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  businessCategory: string;
-  userId: number;
-  createdAt: Date;
-}
-
-export interface NewClient {
-  name: string;
-  email: string;
-  phone: string;
-  businessCategory: string;
-  userId: number;
-}
-
-export function useClients(userId: number, businessCategory: string) {
+export const useClients = () => {
+  const apiClient = useApiClient();
   const queryClient = useQueryClient();
-  const queryKey = ['clients', userId, businessCategory];
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
 
-  // Buscar clientes
-  const { data: clients = [], isLoading, error } = useQuery({
-    queryKey,
-    queryFn: () => fetch(`/api/clients?userId=${userId}&businessCategory=${businessCategory}`)
-      .then(res => res.json())
+  const query = useQuery({
+    queryKey: ['clients', (user as any)?.id, selectedCategory],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory
+      });
+      return apiClient.get(`/api/clients?${params}`);
+    },
+    enabled: !!(user && selectedCategory)
   });
 
-  // Criar cliente
-  const createClientMutation = useMutation({
-    mutationFn: (clientData: NewClient) => 
-      apiRequest('/api/clients', {
-        method: 'POST',
-        body: JSON.stringify(clientData)
-      }),
+  const createMutation = useMutation({
+    mutationFn: async (client: NewClient) => {
+      return apiClient.post('/api/clients', client);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Atualizar cliente
-  const updateClientMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<NewClient> }) =>
-      apiRequest(`/api/clients/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data)
-      }),
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, client }: { id: number, client: Partial<NewClient> }) => {
+      return apiClient.put(`/api/clients/${id}`, client);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Excluir cliente
-  const deleteClientMutation = useMutation({
-    mutationFn: (id: number) => 
-      apiRequest(`/api/clients/${id}`, {
-        method: 'DELETE'
-      }),
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/clients/${id}`);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
   return {
-    clients,
-    isLoading,
-    error,
-    createClient: createClientMutation.mutate,
-    updateClient: updateClientMutation.mutate,
-    deleteClient: deleteClientMutation.mutate,
-    isCreating: createClientMutation.isPending,
-    isUpdating: updateClientMutation.isPending,
-    isDeleting: deleteClientMutation.isPending,
+    clients: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createClient: createMutation.mutate,
+    updateClient: updateMutation.mutate,
+    deleteClient: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
   };
-}
+};

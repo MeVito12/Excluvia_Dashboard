@@ -44,11 +44,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Middleware para extrair userId do header de autorização
+  const getUserIdFromRequest = (req: any): number => {
+    const userId = req.headers['x-user-id'];
+    return userId ? parseInt(userId) : 1; // Fallback para 1 se não encontrado
+  };
+
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = 1; // TODO: Get from session/auth
+      const userId = getUserIdFromRequest(req);
       const appointments = await storage.getAppointments(userId);
       res.json(appointments);
     } catch (error) {
@@ -65,10 +71,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/appointments", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = 1; // TODO: Get from session/auth
+      const userId = getUserIdFromRequest(req);
       const validatedData = appointmentSchema.parse({
         ...req.body,
-        userId: 1, // TODO: Get from session/auth
+        userId,
         startTime: new Date(req.body.startTime),
         endTime: new Date(req.body.endTime),
       });
@@ -124,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/products", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const products = await storage.getProducts(userId, businessCategory);
       res.json(products);
@@ -137,7 +143,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/products", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const productData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const productData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!productData.name || productData.price == null || productData.stock == null) {
@@ -191,7 +201,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/sales", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const sales = await storage.getSales(userId, businessCategory);
       res.json(sales);
@@ -204,7 +214,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/sales", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const saleData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const saleData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!saleData.productId || !saleData.clientId || !saleData.quantity || !saleData.totalPrice) {
@@ -252,7 +266,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/clients", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const clients = await storage.getClients(userId, businessCategory);
       res.json(clients);
@@ -265,7 +279,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/clients", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const clientData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const clientData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!clientData.name || !clientData.email || !clientData.phone) {
@@ -319,7 +337,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/transfers", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "alimenticio";
       const transfers = await storage.getTransfers(userId, businessCategory);
       res.json(transfers);
@@ -332,7 +350,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/transfers", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const transferData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const transferData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!transferData.productId || !transferData.fromBranchId || !transferData.toBranchId || !transferData.quantity) {
@@ -369,7 +391,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/branches", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "alimenticio";
       const branches = await storage.getBranches(userId, businessCategory);
       res.json(branches);
@@ -382,7 +404,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/branches", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const branchData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const branchData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!branchData.name || !branchData.address) {
@@ -485,7 +511,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/financial", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = parseInt(req.query.userId as string) || 1;
+      const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const entries = await storage.getFinancialEntries(userId, businessCategory);
       res.json(entries);
@@ -498,7 +524,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/financial", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const entryData = req.body;
+      const userId = getUserIdFromRequest(req);
+      const entryData = {
+        ...req.body,
+        userId
+      };
       
       // Validação básica
       if (!entryData.type || !entryData.amount || !entryData.description || !entryData.dueDate) {

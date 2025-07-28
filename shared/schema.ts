@@ -193,7 +193,6 @@ export interface FinancialEntry {
 
 // Tipos para criar novos registros
 export type NewCompany = Omit<Company, 'id' | 'createdAt'>;
-export type NewBranch = Omit<Branch, 'id' | 'createdAt'>;
 export type NewUser = Omit<User, 'id' | 'createdAt'>;
 export type NewUserRole = Omit<UserRole, 'id' | 'createdAt'>;
 export type NewUserHierarchy = Omit<UserHierarchy, 'id' | 'createdAt'>;

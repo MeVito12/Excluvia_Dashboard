@@ -1,91 +1,68 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
-import { FinancialEntry, NewFinancialEntry } from '@shared/schema';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+import type { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 
-export const useFinancial = (userId: number, businessCategory: string) => {
+export const useFinancial = () => {
+  const apiClient = useApiClient();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
 
-  const {
-    data: financialEntries = [],
-    isLoading,
-    error
-  } = useQuery({
-    queryKey: ['/api/financial', userId, businessCategory],
-    queryFn: async (): Promise<FinancialEntry[]> => {
-      const response = await fetch(`/api/financial?userId=${userId}&businessCategory=${businessCategory}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch financial entries');
-      }
-      return response.json();
+  const query = useQuery({
+    queryKey: ['financial', (user as any)?.id, selectedCategory],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory
+      });
+      return apiClient.get(`/api/financial?${params}`);
+    },
+    enabled: !!(user && selectedCategory)
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (entry: NewFinancialEntry) => {
+      return apiClient.post('/api/financial', entry);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  const createFinancialEntry = useMutation({
-    mutationFn: async (entry: NewFinancialEntry): Promise<FinancialEntry> => {
-      return apiRequest('/api/financial', {
-        method: 'POST',
-        body: JSON.stringify(entry)
-      });
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, entry }: { id: number, entry: Partial<NewFinancialEntry> }) => {
+      return apiClient.put(`/api/financial/${id}`, entry);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  const updateFinancialEntry = useMutation({
-    mutationFn: async ({ id, entry }: { id: number; entry: Partial<FinancialEntry> }): Promise<FinancialEntry> => {
-      return apiRequest(`/api/financial/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(entry)
-      });
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/financial/${id}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
-    }
-  });
-
-  const deleteFinancialEntry = useMutation({
-    mutationFn: async (id: number): Promise<void> => {
-      return apiRequest(`/api/financial/${id}`, {
-        method: 'DELETE'
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial', (user as any)?.id, selectedCategory] 
       });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
-    }
-  });
-
-  const payFinancialEntry = useMutation({
-    mutationFn: async ({ id, paymentProof }: { id: number; paymentProof: string }): Promise<FinancialEntry> => {
-      return apiRequest(`/api/financial/${id}/pay`, {
-        method: 'POST',
-        body: JSON.stringify({ paymentProof })
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
-    }
-  });
-
-  const revertFinancialEntry = useMutation({
-    mutationFn: async (id: number): Promise<FinancialEntry> => {
-      return apiRequest(`/api/financial/${id}/revert`, {
-        method: 'POST'
-      });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
     }
   });
 
   return {
-    financialEntries,
-    isLoading,
-    error,
-    createFinancialEntry,
-    updateFinancialEntry,
-    deleteFinancialEntry,
-    payFinancialEntry,
-    revertFinancialEntry
+    entries: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createEntry: createMutation.mutate,
+    updateEntry: updateMutation.mutate,
+    deleteEntry: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
   };
 };

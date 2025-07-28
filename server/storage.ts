@@ -112,9 +112,102 @@ export interface Storage {
 // Armazenamento em memória
 export class MemStorage implements Storage {
   private users: User[] = [
-    { id: 1, email: "master@sistema.com", name: "Administrador Master", businessCategory: "salao", userType: "master", createdAt: new Date() },
-    { id: 2, email: "demo@example.com", name: "Usuário Demo", businessCategory: "salao", userType: "regular", allowedSections: ["dashboard", "graficos", "estoque", "atendimento", "financeiro"], createdAt: new Date() },
-
+    { 
+      id: 1, 
+      email: "master@sistema.com", 
+      password: "master2025",
+      name: "Administrador Master", 
+      businessCategory: "salao", 
+      userType: "super_admin",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro", "controle"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date() 
+    },
+    {
+      id: 2,
+      email: "farmaceutico@farmaciacentral.com",
+      password: "farm2025",
+      name: "Dr. Fernando Farmacêutico",
+      businessCategory: "farmacia",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 3,
+      email: "veterinario@petclinic.com",
+      password: "vet2025",
+      name: "Dr. Carlos Veterinário",
+      businessCategory: "pet",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 4,
+      email: "medico@clinicasaude.com",
+      password: "med2025",
+      name: "Dra. Ana Médica",
+      businessCategory: "medico",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 5,
+      email: "chef@restaurante.com",
+      password: "chef2025",
+      name: "Chef Roberto",
+      businessCategory: "alimenticio",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 6,
+      email: "vendedor@comercial.com",
+      password: "venda2025",
+      name: "João Vendedor",
+      businessCategory: "vendas",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "estoque", "atendimento", "financeiro"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 7,
+      email: "designer@agencia.com",
+      password: "design2025",
+      name: "Maria Designer",
+      businessCategory: "design",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "atendimento"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    },
+    {
+      id: 8,
+      email: "dev@webagency.com",
+      password: "web2025",
+      name: "Pedro Desenvolvedor",
+      businessCategory: "sites",
+      userType: "employee",
+      permissions: ["dashboard", "graficos", "atividade", "agendamentos", "atendimento"],
+      isActive: true,
+      createdBy: 1,
+      createdAt: new Date()
+    }
   ];
   
   private products: Product[] = [

@@ -1,82 +1,65 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiRequest } from '@/lib/queryClient';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+import type { Appointment, NewAppointment } from '@shared/schema';
 
-export interface Appointment {
-  id: number;
-  userId: number;
-  clientId: number;
-  serviceId: number;
-  startTime: Date;
-  endTime: Date;
-  status: string;
-  notes?: string;
-}
-
-export interface NewAppointment {
-  userId: number;
-  clientId: number;
-  serviceId: number;
-  startTime: Date;
-  endTime: Date;
-  status: string;
-  notes?: string;
-}
-
-export function useAppointments(userId: number) {
+export const useAppointments = () => {
+  const apiClient = useApiClient();
   const queryClient = useQueryClient();
-  const queryKey = ['appointments', userId];
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
 
-  // Buscar agendamentos
-  const { data: appointments = [], isLoading, error } = useQuery({
-    queryKey,
-    queryFn: () => fetch(`/api/appointments`)
-      .then(res => res.json())
+  const query = useQuery({
+    queryKey: ['appointments', (user as any)?.id, selectedCategory],
+    queryFn: async () => {
+      return apiClient.get('/api/appointments');
+    },
+    enabled: !!(user && selectedCategory)
   });
 
-  // Criar agendamento
-  const createAppointmentMutation = useMutation({
-    mutationFn: (appointmentData: NewAppointment) => 
-      apiRequest('/api/appointments', {
-        method: 'POST',
-        body: JSON.stringify(appointmentData)
-      }),
+  const createMutation = useMutation({
+    mutationFn: async (appointment: NewAppointment) => {
+      return apiClient.post('/api/appointments', appointment);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Atualizar agendamento
-  const updateAppointmentMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Partial<NewAppointment> }) =>
-      apiRequest(`/api/appointments/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(data)
-      }),
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, appointment }: { id: number, appointment: Partial<NewAppointment> }) => {
+      return apiClient.put(`/api/appointments/${id}`, appointment);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Excluir agendamento
-  const deleteAppointmentMutation = useMutation({
-    mutationFn: (id: number) => 
-      apiRequest(`/api/appointments/${id}`, {
-        method: 'DELETE'
-      }),
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/appointments/${id}`);
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey });
+      queryClient.invalidateQueries({ 
+        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
   return {
-    appointments,
-    isLoading,
-    error,
-    createAppointment: createAppointmentMutation.mutate,
-    updateAppointment: updateAppointmentMutation.mutate,
-    deleteAppointment: deleteAppointmentMutation.mutate,
-    isCreating: createAppointmentMutation.isPending,
-    isUpdating: updateAppointmentMutation.isPending,
-    isDeleting: deleteAppointmentMutation.isPending,
+    appointments: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createAppointment: createMutation.mutate,
+    updateAppointment: updateMutation.mutate,
+    deleteAppointment: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
   };
-}
+};

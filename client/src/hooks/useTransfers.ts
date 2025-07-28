@@ -2,13 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transfer, NewTransfer, Branch } from "@shared/schema";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCategory } from "@/contexts/CategoryContext";
-
-const API_BASE = "/api";
+import { useApiClient } from "@/lib/apiClient";
 
 export const useTransfers = () => {
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
   const queryClient = useQueryClient();
+  const apiClient = useApiClient();
 
   // Query para buscar transferências
   const {
@@ -16,18 +16,14 @@ export const useTransfers = () => {
     isLoading: isLoadingTransfers,
     error: transfersError,
   } = useQuery({
-    queryKey: ["/api/transfers", user?.name, selectedCategory],
+    queryKey: ['transfers', (user as any)?.id, selectedCategory],
     queryFn: async () => {
-      const userId = 1;
-      const response = await fetch(
-        `${API_BASE}/transfers?userId=${userId}&businessCategory=${selectedCategory}`
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao buscar transferências");
-      }
-      return response.json() as Promise<Transfer[]>;
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory,
+      });
+      return apiClient.get(`/api/transfers?${params}`);
     },
-    enabled: !!user?.name && !!selectedCategory,
+    enabled: !!(user && selectedCategory),
   });
 
   // Query para buscar filiais
@@ -36,82 +32,38 @@ export const useTransfers = () => {
     isLoading: isLoadingBranches,
     error: branchesError,
   } = useQuery({
-    queryKey: ["/api/branches", user?.name, selectedCategory],
+    queryKey: ['branches', (user as any)?.id, selectedCategory],
     queryFn: async () => {
-      const userId = 1;
-      const response = await fetch(
-        `${API_BASE}/branches?userId=${userId}&businessCategory=${selectedCategory}`
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao buscar filiais");
-      }
-      return response.json() as Promise<Branch[]>;
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory,
+      });
+      return apiClient.get(`/api/branches?${params}`);
     },
-    enabled: !!user?.name && !!selectedCategory,
+    enabled: !!(user && selectedCategory),
   });
 
   // Mutation para criar transferência
   const createTransferMutation = useMutation({
     mutationFn: async (transferData: NewTransfer) => {
-      const response = await fetch(`${API_BASE}/transfers`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(transferData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erro ao criar transferência");
-      }
-
-      return response.json() as Promise<Transfer>;
+      return apiClient.post('/api/transfers', transferData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/transfers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
-    },
+      queryClient.invalidateQueries({ 
+        queryKey: ['transfers', (user as any)?.id, selectedCategory] 
+      });
+    }
   });
 
-  // Mutation para atualizar transferência (receber/devolver)
+  // Mutation para atualizar transferência
   const updateTransferMutation = useMutation({
-    mutationFn: async ({ 
-      id, 
-      status, 
-      receivedDate, 
-      returnDate 
-    }: { 
-      id: number; 
-      status: 'received' | 'returned';
-      receivedDate?: Date;
-      returnDate?: Date;
-    }) => {
-      const updateData: Partial<NewTransfer> = {
-        status,
-        ...(status === 'received' && { receivedDate }),
-        ...(status === 'returned' && { returnDate }),
-      };
-
-      const response = await fetch(`${API_BASE}/transfers/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Erro ao atualizar transferência");
-      }
-
-      return response.json() as Promise<Transfer>;
+    mutationFn: async ({ id, transferData }: { id: number, transferData: Partial<NewTransfer> }) => {
+      return apiClient.put(`/api/transfers/${id}`, transferData);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/transfers"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/products"] });
-    },
+      queryClient.invalidateQueries({ 
+        queryKey: ['transfers', (user as any)?.id, selectedCategory] 
+      });
+    }
   });
 
   return {
@@ -124,6 +76,6 @@ export const useTransfers = () => {
     createTransfer: createTransferMutation.mutate,
     updateTransfer: updateTransferMutation.mutate,
     isCreatingTransfer: createTransferMutation.isPending,
-    isUpdatingTransfer: updateTransferMutation.isPending,
+    isUpdatingTransfer: updateTransferMutation.isPending
   };
 };

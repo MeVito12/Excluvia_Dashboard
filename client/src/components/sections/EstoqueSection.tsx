@@ -59,8 +59,6 @@ const EstoqueSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterUnit, setFilterUnit] = useState('all');
-  const userId = 1;
-  
   // Usar hooks para dados reais da API
   const {
     products,
@@ -71,7 +69,7 @@ const EstoqueSection = () => {
     isCreating,
     isUpdating,
     isDeleting
-  } = useProducts(userId, selectedCategory);
+  } = useProducts();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<any>(null);
@@ -90,12 +88,12 @@ const EstoqueSection = () => {
     sales,
     isLoading: salesLoading,
     createSale
-  } = useSales(userId, selectedCategory);
+  } = useSales();
 
   const {
     clients,
     isLoading: clientsLoading
-  } = useClients(userId, selectedCategory);
+  } = useClients();
 
   // Hook para transferências
   const {
