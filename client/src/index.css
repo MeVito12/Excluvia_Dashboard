@@ -800,8 +800,10 @@ All colors MUST be HSL.
 
 .system-btn-primary *,
 .system-btn-primary span,
-.system-btn-primary svg {
+.system-btn-primary svg,
+.system-btn-primary .lucide {
   color: white !important;
+  fill: currentColor !important;
 }
 
 .system-btn-primary:hover {
@@ -812,8 +814,10 @@ All colors MUST be HSL.
 
 .system-btn-primary:hover *,
 .system-btn-primary:hover span,
-.system-btn-primary:hover svg {
+.system-btn-primary:hover svg,
+.system-btn-primary:hover .lucide {
   color: white !important;
+  fill: currentColor !important;
 }
 
 .system-btn-outline {
@@ -833,5 +837,16 @@ All colors MUST be HSL.
 .system-btn-outline:hover *,
 .system-btn-outline:hover span,
 .system-btn-outline:hover svg {
+  color: white !important;
+}
+
+/* Força texto branco em botões do sistema - override específico */
+button.system-btn-primary,
+button.system-btn-primary * {
+  color: white !important;
+}
+
+button.system-btn-primary:hover,
+button.system-btn-primary:hover * {
   color: white !important;
 }
