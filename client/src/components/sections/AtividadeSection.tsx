@@ -203,7 +203,7 @@ const AtividadeSection = () => {
     } else if (activeTab === 'vendas') {
       return {
         metric1: { label: 'Vendas Hoje', value: 'R$ 6.499', change: '+18% vs ontem', icon: DollarSign, color: 'green' },
-        metric2: { label: 'Total de Vendas', value: sales.length, change: 'Este mês', icon: ShoppingCart, color: 'blue' },
+        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
         metric3: { label: 'Ticket Médio', value: 'R$ 89,50', change: '+12% vs semana passada', icon: TrendingUp, color: 'purple' },
         metric4: { label: 'Meta Mensal', value: '87%', change: 'R$ 15.200 de R$ 17.500', icon: BarChart3, color: 'orange' }
       };
@@ -412,9 +412,17 @@ const AtividadeSection = () => {
       {/* Lista de vendas */}
       <div className="main-card">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Vendas ({sales.length})
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Vendas ({sales.length})
+            </h2>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total:</p>
+              <p className="text-lg font-bold text-green-600">
+                R$ {sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
         </div>
         
         <div className="divide-y divide-gray-200">
@@ -429,7 +437,7 @@ const AtividadeSection = () => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                   <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
                     Concluída
                   </span>
