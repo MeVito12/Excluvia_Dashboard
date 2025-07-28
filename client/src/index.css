@@ -1108,13 +1108,18 @@ button[type="button"][class*="text-purple"]:hover {
   font-size: 0.875rem !important;
 }
 
-/* Remove fundo branco da sidebar completamente */
+/* Remove fundo branco e bordas da sidebar completamente */
 .modern-card-hover {
   background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .modern-card-hover:hover {
   background: hsl(var(--brand-secondary)) !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Força transparência em qualquer card da sidebar */
@@ -1131,4 +1136,82 @@ nav [class*="bg-"]:hover,
 aside [class*="bg-"]:hover {
   background: hsl(var(--brand-secondary)) !important;
   color: white !important;
+}
+
+/* Remove bordas brancas e força transparência completa na sidebar */
+nav *,
+aside * {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+nav .modern-card-hover,
+aside .modern-card-hover,
+nav button,
+aside button,
+nav a,
+aside a {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Botão de sair - transparente com texto vermelho */
+button[class*="logout"],
+button[class*="sair"],
+.logout-button,
+button:has-text("Sair"),
+button[onclick*="logout"] {
+  background: transparent !important;
+  color: #DC2626 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0.5rem 1rem !important;
+}
+
+button[class*="logout"]:hover,
+button[class*="sair"]:hover,
+.logout-button:hover,
+button:has-text("Sair"):hover,
+button[onclick*="logout"]:hover {
+  background: transparent !important;
+  color: #B91C1C !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Botão de colapsar - transparente */
+.collapse-button,
+button[class*="collapse"],
+button[class*="toggle"],
+.sidebar-toggle {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: inherit !important;
+}
+
+.collapse-button:hover,
+button[class*="collapse"]:hover,
+button[class*="toggle"]:hover,
+.sidebar-toggle:hover {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: hsl(var(--brand-secondary)) !important;
+}
+
+/* Remove qualquer borda residual de elementos da sidebar */
+nav [class*="border"],
+aside [class*="border"],
+nav [class*="ring"],
+aside [class*="ring"] {
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
