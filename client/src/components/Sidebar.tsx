@@ -133,7 +133,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
     <>
       {/* Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-full bg-[hsl(220_100%_12%)] border-r border-[hsl(220_100%_8%)] transition-all duration-300 shadow-xl",
+        "fixed left-0 top-0 z-40 h-full bg-[hsl(220_13%_18%)] border-r border-[hsl(220_13%_15%)] transition-all duration-300 shadow-xl",
         "w-64",
         isCollapsed ? "-translate-x-full" : "translate-x-0"
       )}>
