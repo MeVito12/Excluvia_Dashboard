@@ -21,7 +21,8 @@ import {
   X,
   Building2,
   UserCheck,
-  Loader2
+  Loader2,
+  User
 } from 'lucide-react';
 import ModernIcon from '@/components/ui/modern-icon';
 
@@ -115,7 +116,7 @@ const ControleSection = () => {
       showAlert({
         title: "Erro",
         description: "Erro ao atualizar permissões do usuário.",
-        variant: "error"
+        variant: "destructive"
       });
     }
   });
@@ -323,8 +324,8 @@ const ControleSection = () => {
                           <div className="flex items-center gap-3">
                             {getPermissionIcon(userData.id, section.id)}
                             <div>
-                              <span className="font-medium text-sm text-gray-800">{section.name}</span>
-                              <p className="text-xs text-gray-600">{section.description}</p>
+                              <span className="font-medium text-sm text-gray-800">{section.label}</span>
+                              <p className="text-xs text-gray-600">{section.label}</p>
                             </div>
                           </div>
                           <label className="relative inline-flex items-center cursor-pointer">

@@ -832,14 +832,20 @@ All colors MUST be HSL.
   color: white !important;
 }
 
-/* Padronização global de botões seguindo padrão das abas */
-button:not(.tab-button):not(.bg-transparent) {
+/* Padronização seletiva de botões - apenas botões principais */
+button.btn-primary:not(.tab-button),
+button[type="submit"]:not(.tab-button):not([class*="text-"]),
+button[class*="bg-purple"]:not(.tab-button),
+button[class*="bg-primary"]:not(.tab-button) {
   background: hsl(var(--brand-primary)) !important;
   color: white !important;
   transition: all 0.3s ease;
 }
 
-button:not(.tab-button):not(.bg-transparent):hover {
+button.btn-primary:not(.tab-button):hover,
+button[type="submit"]:not(.tab-button):not([class*="text-"]):hover,
+button[class*="bg-purple"]:not(.tab-button):hover,
+button[class*="bg-primary"]:not(.tab-button):hover {
   background: hsl(var(--brand-secondary)) !important;
   color: white !important;
   transform: translateY(-1px);
@@ -953,4 +959,80 @@ button[type="button"]:contains("Esqueceu") {
   color: #3B82F6 !important;
   cursor: pointer !important;
   font-size: 0.875rem !important;
+}
+
+/* Barra lateral - transparente por padrão, colorido apenas em hover */
+.sidebar-item,
+nav button,
+aside button {
+  background: transparent !important;
+  color: inherit !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.sidebar-item:hover,
+nav button:hover,
+aside button:hover {
+  background: hsl(var(--brand-secondary)) !important;
+  color: white !important;
+}
+
+/* Links "ver mais" e similares - aparência de link normal */
+button[class*="text-blue"],
+button[class*="text-purple"],
+a[class*="text-"],
+.link-style,
+button.link-button {
+  background: transparent !important;
+  color: #3B82F6 !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  text-decoration: underline !important;
+  font-weight: normal !important;
+}
+
+button[class*="text-blue"]:hover,
+button[class*="text-purple"]:hover,
+a[class*="text-"]:hover,
+.link-style:hover,
+button.link-button:hover {
+  color: #1D4ED8 !important;
+  background: transparent !important;
+  transform: none !important;
+}
+
+/* Botões de filtro e categoria - estilo de input */
+button[class*="filter"],
+button[class*="category"],
+.filter-button,
+.category-button,
+button[class*="outline"],
+button[class*="variant-outline"] {
+  background: white !important;
+  color: #374151 !important;
+  border: 1px solid #D1D5DB !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+  padding: 0.5rem 1rem !important;
+}
+
+button[class*="filter"]:hover,
+button[class*="category"]:hover,
+.filter-button:hover,
+.category-button:hover,
+button[class*="outline"]:hover,
+button[class*="variant-outline"]:hover {
+  background: #F9FAFB !important;
+  border-color: #9CA3AF !important;
+  color: #374151 !important;
+  transform: none !important;
+}
+
+/* Remove estilo de botão padrão de elementos específicos */
+button:not([class*="btn"]):not([type="submit"]):not(.tab-button):not([class*="bg-"]) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
 }
