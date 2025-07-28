@@ -750,6 +750,10 @@ All colors MUST be HSL.
   @apply bg-purple-600 text-white shadow-md;
 }
 
+.tab-active, .tab-active * {
+  @apply text-white !important;
+}
+
 .tab-inactive {
   @apply text-gray-600 hover:text-gray-800 hover:bg-gray-50;
 }
