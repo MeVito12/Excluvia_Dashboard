@@ -268,11 +268,15 @@ const CadastroSection = () => {
   if ((user as any)?.role !== 'ceo') {
     return (
       <div className="app-section">
-        <div className="main-card">
-          <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-6 h-6 text-red-600" />
-            <h1 className="text-xl font-semibold text-gray-800">Acesso Negado</h1>
+        <div className="section-header">
+          <div className="header-content">
+            <div className="header-title">
+              <Shield className="w-6 h-6 text-red-600" />
+              <h1>Acesso Negado</h1>
+            </div>
           </div>
+        </div>
+        <div className="main-card">
           <div className="text-center py-12">
             <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
             <h2 className="text-lg font-medium text-gray-700 mb-2">
@@ -290,30 +294,32 @@ const CadastroSection = () => {
   return (
     <div className="app-section">
       <div className="section-header">
-        <div className="flex items-center gap-3">
-          <ModernIcon icon={Building2} className="w-6 h-6" />
-          <h1 className="text-xl font-semibold text-gray-800">Cadastro de Empresas</h1>
+        <div className="header-content">
+          <div className="header-title">
+            <ModernIcon icon={Building2} className="w-6 h-6" />
+            <h1>Cadastro</h1>
+          </div>
         </div>
       </div>
 
       {/* Indicador de Passos */}
       <div className="main-card mb-6">
-        <div className="flex justify-center">
-          <div className="flex items-center space-x-8">
+        <div className="flex justify-center py-4">
+          <div className="flex items-center space-x-12">
             <div className={`flex items-center ${currentStep === 'company' ? 'text-purple-600' : currentStep === 'master' || currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-semibold ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'master' || currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {currentStep === 'master' || currentStep === 'success' ? <CheckCircle className="w-5 h-5" /> : '1'}
+              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'company' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'master' || currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {currentStep === 'master' || currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '1'}
               </div>
-              <span className="ml-3 font-medium">Empresa</span>
+              <span className="ml-4 font-medium text-lg">Empresa</span>
             </div>
             
-            <div className={`w-20 h-1 rounded ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
+            <div className={`w-24 h-1 rounded-full ${currentStep === 'master' || currentStep === 'success' ? 'bg-green-600' : 'bg-gray-300'}`}></div>
             
             <div className={`flex items-center ${currentStep === 'master' ? 'text-purple-600' : currentStep === 'success' ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-10 h-10 rounded-full border-2 flex items-center justify-center font-semibold ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
-                {currentStep === 'success' ? <CheckCircle className="w-5 h-5" /> : '2'}
+              <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-semibold text-lg ${currentStep === 'master' ? 'border-purple-600 bg-purple-100 text-purple-700' : currentStep === 'success' ? 'border-green-600 bg-green-100 text-green-700' : 'border-gray-300 bg-gray-100'}`}>
+                {currentStep === 'success' ? <CheckCircle className="w-6 h-6" /> : '2'}
               </div>
-              <span className="ml-3 font-medium">Usuário Master</span>
+              <span className="ml-4 font-medium text-lg">Usuário Master</span>
             </div>
           </div>
         </div>
@@ -322,9 +328,11 @@ const CadastroSection = () => {
       {/* Formulário da Empresa */}
       {currentStep === 'company' && (
         <div className="main-card">
-          <div className="flex items-center gap-3 mb-6">
-            <ModernIcon icon={Building2} className="w-6 h-6" />
-            <h2 className="text-lg font-semibold text-gray-800">Dados da Empresa Principal</h2>
+          <div className="card-header">
+            <div className="card-title">
+              <ModernIcon icon={Building2} className="w-5 h-5" />
+              <span>Dados da Empresa Principal</span>
+            </div>
           </div>
           
           <form onSubmit={handleCompanySubmit} className="space-y-6">
@@ -413,9 +421,11 @@ const CadastroSection = () => {
       {/* Formulário do Usuário Master */}
       {currentStep === 'master' && (
         <div className="main-card">
-          <div className="flex items-center gap-3 mb-6">
-            <ModernIcon icon={User} className="w-6 h-6" />
-            <h2 className="text-lg font-semibold text-gray-800">Usuário Master - {companyCreated?.fantasyName}</h2>
+          <div className="card-header">
+            <div className="card-title">
+              <ModernIcon icon={User} className="w-5 h-5" />
+              <span>Usuário Master - {companyCreated?.fantasyName}</span>
+            </div>
           </div>
           
           <form onSubmit={handleMasterUserSubmit} className="space-y-6">
