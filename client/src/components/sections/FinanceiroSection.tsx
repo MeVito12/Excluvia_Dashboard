@@ -244,32 +244,7 @@ const FinanceiroSection = () => {
           <h1 className="section-title">Gestão Financeira</h1>
           <p className="section-subtitle">Controle de entradas e saídas financeiras</p>
         </div>
-        <div className="flex gap-3">
-          <Button 
-            onClick={() => {
-              resetForm();
-              setCurrentEntryType('income');
-              setSelectedEntry(null);
-              setIsCreateModalOpen(true);
-            }}
-            className="btn btn-primary"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Entrada
-          </Button>
-          <Button 
-            onClick={() => {
-              resetForm();
-              setCurrentEntryType('expense');
-              setSelectedEntry(null);
-              setIsCreateModalOpen(true);
-            }}
-            className="btn btn-outline"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Saída
-          </Button>
-        </div>
+
       </div>
 
       {/* Métricas Financeiras */}
@@ -374,15 +349,18 @@ const FinanceiroSection = () => {
                 </p>
               )}
             </div>
-            {activeTab === 'saidas' && (
-              <button 
-                className="btn btn-primary"
-                onClick={() => setIsCreateModalOpen(true)}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Nova Saída
-              </button>
-            )}
+            <button 
+              className="btn btn-primary"
+              onClick={() => {
+                resetForm();
+                setCurrentEntryType(activeTab === 'entradas' ? 'income' : 'expense');
+                setSelectedEntry(null);
+                setIsCreateModalOpen(true);
+              }}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {activeTab === 'entradas' ? 'Nova Entrada' : 'Nova Saída'}
+            </button>
           </div>
           
           {/* Filtros */}
