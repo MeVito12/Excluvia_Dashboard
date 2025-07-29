@@ -95,7 +95,7 @@ const FinanceiroSection = () => {
       const entryData: NewFinancialEntry = {
         userId,
         businessCategory: selectedCategory,
-        type: currentEntryType,
+        type: entryType,
         amount: parseFloat(formData.amount),
         description: formData.description,
         dueDate: new Date(formData.dueDate),
@@ -110,7 +110,7 @@ const FinanceiroSection = () => {
       
       showAlert({
         title: "Sucesso",
-        description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
+        description: `${activeTab === 'entradas' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
         variant: "success"
       });
       
@@ -119,7 +119,7 @@ const FinanceiroSection = () => {
     } catch (error) {
       showAlert({
         title: "Erro",
-        description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
+        description: `Erro ao criar ${activeTab === 'entradas' ? 'entrada' : 'saída'} financeira`,
         variant: "destructive"
       });
     }
@@ -564,7 +564,7 @@ const FinanceiroSection = () => {
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold text-gray-900">
-                {currentEntryType === 'income' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
+                Nova Saída Financeira
               </h3>
               <button
                 onClick={() => {
@@ -704,7 +704,7 @@ const FinanceiroSection = () => {
                   disabled={!formData.description || !formData.amount || !formData.dueDate}
                   className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {currentEntryType === 'income' ? 'Criar Entrada' : 'Criar Saída'}
+                  Criar Saída
                 </button>
               </div>
             </div>
