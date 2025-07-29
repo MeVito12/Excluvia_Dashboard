@@ -201,16 +201,12 @@ const EstoqueSection = () => {
     <div className="animate-fade-in">
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Transferências</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Transferências ({transfers?.length || 0})
+          </h3>
         </div>
 
         <div className="standard-list-container">
-          <div className="standard-list-header">
-            <div className="standard-list-title">
-              <ArrowRightLeft className="w-5 h-5 text-purple-600" />
-              Transferências ({transfers?.length || 0})
-            </div>
-          </div>
           <div className="standard-list-content">
             {transfers?.map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
