@@ -171,6 +171,24 @@ export interface Transfer {
   updatedAt: string;
 }
 
+export interface MoneyTransfer {
+  id: number;
+  fromBranchId: number;
+  toBranchId: number;
+  amount: number;
+  description: string;
+  transferType: 'operational' | 'investment' | 'emergency' | 'reimbursement';
+  status: 'pending' | 'approved' | 'completed' | 'rejected';
+  transferDate: string;
+  completedDate?: string;
+  approvedBy?: number;
+  notes?: string;
+  companyId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ====================================
 // SCHEMAS DE VALIDAÇÃO ZOD
 // ====================================
@@ -269,6 +287,15 @@ export const TransferSchema = z.object({
   notes: z.string().optional(),
 });
 
+export const MoneyTransferSchema = z.object({
+  fromBranchId: z.number().positive("Filial de origem é obrigatória"),
+  toBranchId: z.number().positive("Filial de destino é obrigatória"),
+  amount: z.number().positive("Valor deve ser positivo"),
+  description: z.string().min(1, "Descrição é obrigatória"),
+  transferType: z.enum(['operational', 'investment', 'emergency', 'reimbursement']),
+  notes: z.string().optional(),
+});
+
 // ====================================
 // TIPOS DERIVADOS
 // ====================================
@@ -282,6 +309,7 @@ export type NewClient = z.infer<typeof ClientSchema>;
 export type NewAppointment = z.infer<typeof AppointmentSchema>;
 export type NewFinancialEntry = z.infer<typeof FinancialEntrySchema>;
 export type NewTransfer = z.infer<typeof TransferSchema>;
+export type NewMoneyTransfer = z.infer<typeof MoneyTransferSchema>;
 
 // ====================================
 // CONSTANTES
@@ -302,3 +330,5 @@ export const PAYMENT_METHODS = ['dinheiro', 'pix', 'cartao_credito', 'cartao_deb
 export const APPOINTMENT_STATUSES = ['scheduled', 'completed', 'cancelled'] as const;
 export const FINANCIAL_STATUSES = ['paid', 'pending', 'overdue'] as const;
 export const TRANSFER_STATUSES = ['pending', 'in_transit', 'completed', 'cancelled'] as const;
+export const MONEY_TRANSFER_STATUSES = ['pending', 'approved', 'completed', 'rejected'] as const;
+export const MONEY_TRANSFER_TYPES = ['operational', 'investment', 'emergency', 'reimbursement'] as const;

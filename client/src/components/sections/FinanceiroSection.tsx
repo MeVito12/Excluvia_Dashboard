@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFinancial } from '@/hooks/useFinancial';
+import { useMoneyTransfers } from '@/hooks/useMoneyTransfers';
+import { useBranches } from '@/hooks/useBranches';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { Button } from '@/components/ui/button';
@@ -11,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   CreditCard, 
   TrendingUp, 
@@ -26,9 +29,14 @@ import {
   Edit,
   Trash2,
   Calendar,
-  X
+  X,
+  ArrowLeftRight,
+  Building2,
+  DollarSign,
+  Clock,
+  Check
 } from 'lucide-react';
-import { FinancialEntry, NewFinancialEntry } from '@shared/schema';
+import { FinancialEntry, NewFinancialEntry, MoneyTransfer, NewMoneyTransfer } from '@shared/schema';
 
 const FinanceiroSection = () => {
   const { selectedCategory } = useCategory();
@@ -44,11 +52,25 @@ const FinanceiroSection = () => {
     deleteEntry: deleteFinancialEntry
   } = useFinancial();
 
+  const {
+    transfers: moneyTransfers = [],
+    isLoading: isTransfersLoading,
+    createTransfer,
+    updateTransfer,
+    deleteTransfer,
+    approveTransfer,
+    completeTransfer
+  } = useMoneyTransfers();
+
+  const { branches = [] } = useBranches();
+
   const [activeTab, setActiveTab] = useState('entradas');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<FinancialEntry | null>(null);
+  const [selectedTransfer, setSelectedTransfer] = useState<MoneyTransfer | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [currentEntryType, setCurrentEntryType] = useState<'income' | 'expense'>('income');
@@ -70,6 +92,15 @@ const FinanceiroSection = () => {
     paymentProof: ''
   });
 
+  const [transferData, setTransferData] = useState({
+    fromBranchId: '',
+    toBranchId: '',
+    amount: '',
+    description: '',
+    transferType: 'operational' as const,
+    notes: ''
+  });
+
   const resetForm = () => {
     setFormData({
       description: '',
@@ -83,7 +114,7 @@ const FinanceiroSection = () => {
     });
   };
 
-  const filteredEntries = financialEntries.filter(entry => {
+  const filteredEntries = financialEntries.filter((entry: any) => {
     const matchesTab = activeTab === 'entradas' ? entry.type === 'income' : entry.type === 'expense';
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || entry.status === statusFilter;
@@ -98,7 +129,7 @@ const FinanceiroSection = () => {
         type: currentEntryType,
         amount: parseFloat(formData.amount),
         description: formData.description,
-        dueDate: new Date(formData.dueDate),
+        dueDate: formData.dueDate,
         isBoleto: formData.isBoleto,
         boletoCode: formData.isBoleto ? formData.boletoCode : undefined,
         isInstallment: formData.isInstallment,
@@ -333,6 +364,13 @@ const FinanceiroSection = () => {
           <TrendingDown className="w-4 h-4" />
           Saídas
         </button>
+        <button
+          onClick={() => setActiveTab('transferencias')}
+          className={`tab-button ${activeTab === 'transferencias' ? 'active' : ''}`}
+        >
+          <ArrowLeftRight className="w-4 h-4" />
+          Transferências
+        </button>
       </div>
 
       {/* Conteúdo das abas */}
@@ -341,58 +379,84 @@ const FinanceiroSection = () => {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-xl font-semibold text-gray-800">
-                Gestão de {activeTab === 'entradas' ? 'Entradas' : 'Saídas'}
+                {activeTab === 'transferencias' ? 'Transferências de Dinheiro' : 
+                 activeTab === 'entradas' ? 'Gestão de Entradas' : 'Gestão de Saídas'}
               </h3>
             </div>
             <button 
               className="btn btn-primary"
               onClick={() => {
-                resetForm();
-                setCurrentEntryType(activeTab === 'entradas' ? 'income' : 'expense');
-                setSelectedEntry(null);
-                setIsCreateModalOpen(true);
+                if (activeTab === 'transferencias') {
+                  setIsTransferModalOpen(true);
+                } else {
+                  resetForm();
+                  setCurrentEntryType(activeTab === 'entradas' ? 'income' : 'expense');
+                  setSelectedEntry(null);
+                  setIsCreateModalOpen(true);
+                }
               }}
             >
               <Plus className="w-4 h-4 mr-2" />
-              {activeTab === 'entradas' ? 'Nova Entrada' : 'Nova Saída'}
+              {activeTab === 'transferencias' ? 'Nova Transferência' :
+               activeTab === 'entradas' ? 'Nova Entrada' : 'Nova Saída'}
             </button>
           </div>
           
           {/* Filtros */}
-          <div className="flex flex-wrap gap-4 items-center mb-6">
-            <div className="flex-1">
-              <input
-                type="text"
-                placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+          {activeTab !== 'transferencias' && (
+            <div className="flex flex-wrap gap-4 items-center mb-6">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
+                  value={searchTerm}
+                  onChange={(e: any) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <select
+                value={statusFilter}
+                onChange={(e: any) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Todos os status</option>
+                <option value="pending">Pendente</option>
+                <option value="near_due">Próximo ao vencimento</option>
+                <option value="overdue">Vencido</option>
+                <option value="paid">Pago</option>
+              </select>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                }}
+                className="btn btn-outline"
+              >
+                Limpar Filtros
+              </button>
             </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">Todos os status</option>
-              <option value="pending">Pendente</option>
-              <option value="near_due">Próximo ao vencimento</option>
-              <option value="overdue">Vencido</option>
-              <option value="paid">Pago</option>
-            </select>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setStatusFilter('all');
-              }}
-              className="btn btn-outline"
-            >
-              Limpar Filtros
-            </button>
-          </div>
+          )}
 
           {/* Lista de Entradas Financeiras */}
-          {isLoading ? (
+          {activeTab === 'transferencias' ? (
+            // Seção de Transferências de Dinheiro
+            <div className="standard-list-container">
+              <div className="standard-list-content">
+                <div className="text-center py-8">
+                  <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Sistema de Transferências em Desenvolvimento
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Funcionalidade de transferências de dinheiro entre filiais em implementação.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Em breve você poderá transferir valores entre unidades do negócio.
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
                 <CreditCard className="w-8 h-8 text-gray-400 mx-auto mb-2" />

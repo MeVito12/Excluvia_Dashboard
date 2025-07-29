@@ -9,6 +9,7 @@ import {
   Appointment, NewAppointment,
   FinancialEntry, NewFinancialEntry,
   Transfer, NewTransfer,
+  MoneyTransfer, NewMoneyTransfer,
   UserPermission
 } from "@shared/schema";
 
@@ -83,6 +84,12 @@ export interface Storage {
   createTransfer(transfer: NewTransfer): Promise<Transfer>;
   updateTransfer(id: number, transfer: Partial<NewTransfer>): Promise<Transfer | null>;
   deleteTransfer(id: number): Promise<boolean>;
+  
+  // Transferências de Dinheiro
+  getMoneyTransfers(companyId?: number): Promise<MoneyTransfer[]>;
+  createMoneyTransfer(transfer: NewMoneyTransfer): Promise<MoneyTransfer>;
+  updateMoneyTransfer(id: number, transfer: Partial<MoneyTransfer>): Promise<MoneyTransfer | null>;
+  deleteMoneyTransfer(id: number): Promise<boolean>;
 }
 
 // ====================================
@@ -426,6 +433,36 @@ export class SupabaseStorage implements Storage {
 
   async deleteTransfer(id: number): Promise<boolean> {
     await this.request(`transfers?id=eq.${id}`, { method: 'DELETE' });
+    return true;
+  }
+
+  // ====================================
+  // TRANSFERÊNCIAS DE DINHEIRO
+  // ====================================
+
+  async getMoneyTransfers(companyId?: number): Promise<MoneyTransfer[]> {
+    const filter = companyId ? `company_id=eq.${companyId}&` : '';
+    return this.request(`money_transfers?${filter}select=*&order=transfer_date.desc`);
+  }
+
+  async createMoneyTransfer(transfer: NewMoneyTransfer): Promise<MoneyTransfer> {
+    const [created] = await this.request('money_transfers', {
+      method: 'POST',
+      body: JSON.stringify(transfer),
+    });
+    return created;
+  }
+
+  async updateMoneyTransfer(id: number, transfer: Partial<MoneyTransfer>): Promise<MoneyTransfer | null> {
+    const [updated] = await this.request(`money_transfers?id=eq.${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(transfer),
+    });
+    return updated || null;
+  }
+
+  async deleteMoneyTransfer(id: number): Promise<boolean> {
+    await this.request(`money_transfers?id=eq.${id}`, { method: 'DELETE' });
     return true;
   }
 }

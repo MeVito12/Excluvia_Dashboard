@@ -11,6 +11,9 @@ import {
   insertAppointmentSchema,
   insertFinancialEntrySchema
 } from "./db/schema";
+import { 
+  MoneyTransferSchema 
+} from "@shared/schema";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -895,6 +898,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error reverting financial entry:", error);
       res.status(500).json({ error: "Erro ao reverter pagamento" });
+    }
+  });
+
+  // Rotas de transferências de dinheiro
+  app.get("/api/money-transfers", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = getUserIdFromRequest(req);
+      const { companyId, branchId } = getUserContextFromRequest(req);
+      
+      const transfers = await storage.getMoneyTransfers(companyId);
+      res.json(transfers);
+    } catch (error) {
+      console.error("Error fetching money transfers:", error);
+      res.status(500).json({ error: "Erro ao buscar transferências de dinheiro" });
+    }
+  });
+
+  app.post("/api/money-transfers", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const userId = getUserIdFromRequest(req);
+      const { companyId, branchId } = getUserContextFromRequest(req);
+      
+      // Validar dados usando schema
+      const transferData = MoneyTransferSchema.parse(req.body);
+      
+      const newTransfer = await storage.createMoneyTransfer({
+        ...transferData,
+        transferDate: new Date().toISOString(),
+        status: 'pending',
+        companyId: companyId || 1,
+        createdBy: userId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      
+      res.status(201).json(newTransfer);
+    } catch (error) {
+      console.error("Error creating money transfer:", error);
+      res.status(500).json({ error: "Erro ao criar transferência de dinheiro" });
+    }
+  });
+
+  app.put("/api/money-transfers/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferId = parseInt(req.params.id);
+      const updateData = req.body;
+      
+      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
+        ...updateData,
+        updatedAt: new Date().toISOString()
+      });
+      
+      if (!updatedTransfer) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      res.json(updatedTransfer);
+    } catch (error) {
+      console.error("Error updating money transfer:", error);
+      res.status(500).json({ error: "Erro ao atualizar transferência" });
+    }
+  });
+
+  app.delete("/api/money-transfers/:id", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferId = parseInt(req.params.id);
+      
+      const deleted = await storage.deleteMoneyTransfer(transferId);
+      if (!deleted) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      res.json({ message: "Transferência excluída com sucesso" });
+    } catch (error) {
+      console.error("Error deleting money transfer:", error);
+      res.status(500).json({ error: "Erro ao excluir transferência" });
+    }
+  });
+
+  app.post("/api/money-transfers/:id/approve", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferId = parseInt(req.params.id);
+      const userId = getUserIdFromRequest(req);
+      
+      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
+        status: 'approved',
+        approvedBy: userId,
+        updatedAt: new Date().toISOString()
+      });
+      
+      if (!updatedTransfer) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      res.json(updatedTransfer);
+    } catch (error) {
+      console.error("Error approving money transfer:", error);
+      res.status(500).json({ error: "Erro ao aprovar transferência" });
+    }
+  });
+
+  app.post("/api/money-transfers/:id/complete", async (req, res) => {
+    try {
+      const storage = await databaseManager.getStorage();
+      const transferId = parseInt(req.params.id);
+      
+      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
+        status: 'completed',
+        completedDate: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+      
+      if (!updatedTransfer) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      res.json(updatedTransfer);
+    } catch (error) {
+      console.error("Error completing money transfer:", error);
+      res.status(500).json({ error: "Erro ao completar transferência" });
     }
   });
 
