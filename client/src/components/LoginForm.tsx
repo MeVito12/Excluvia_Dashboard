@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Mail } from 'lucide-react';
-
+import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
 
 interface LoginFormProps {
@@ -114,7 +114,11 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
         {/* Logo e Slogan */}
         <div className="text-center mb-8">
           <div className="mb-6">
-            <h1 className="text-4xl font-bold text-white mb-4">Sistema de Gestão</h1>
+            <img 
+              src={logoImage} 
+              alt="excluv.ia Logo" 
+              className="w-80 h-20 object-contain mx-auto"
+            />
           </div>
           <div className="space-y-2">
             <p className="text-2xl font-semibold">

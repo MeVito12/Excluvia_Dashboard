@@ -3,259 +3,483 @@ import {
   Database, 
   Users, 
   TrendingUp, 
-  Calendar,
+  Calendar, 
+  Clock, 
+  Bell, 
+  AlertTriangle, 
   ShoppingCart,
   Activity,
   Package,
   ExternalLink,
+  MessageSquare,
+  ArrowRight,
+
   BarChart3
 } from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCustomAlert } from '@/hooks/use-custom-alert';
+import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
+import { useTransfers } from '@/hooks/useTransfers';
 import { useAppointments } from '@/hooks/useAppointments';
 
 const DashboardSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
+  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  
   const [dateFrom, setDateFrom] = useState<string>('');
   const [dateTo, setDateTo] = useState<string>('');
+  const userId = user?.id || 1;
 
-  const { products } = useProducts();
-  const { sales } = useSales();
-  const { clients } = useClients();
-  const { appointments } = useAppointments();
+  // Hooks para dados reais da API
+  const { products, isLoading: productsLoading } = useProducts();
+  const { sales, isLoading: salesLoading } = useSales();
+  const { clients, isLoading: clientsLoading } = useClients();
+  const { transfers, isLoading: transfersLoading } = useTransfers();
+  const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
+  // Dados vazios para atividades e WhatsApp - usando apenas dados reais
+  const activities: any[] = [];
+  const whatsappChats: any[] = [];
+
+  // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {
     if (!dateFrom && !dateTo) return data;
-    return data.filter((item: any) => {
+    
+    return data.filter(item => {
       const itemDate = new Date(item[dateField]);
       const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
       const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
+      
       return itemDate >= fromDate && itemDate <= toDate;
     });
   };
 
-  const filteredSales = filterByDateRange(sales, 'date');
-  const filteredAppointments = filterByDateRange(appointments, 'date');
+  // Dados filtrados por período
+  const filteredSales = useMemo(() => filterByDateRange(sales, 'saleDate'), [sales, dateFrom, dateTo]);
+  const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
+  const filteredAppointments = useMemo(() => filterByDateRange(appointments, 'startTime'), [appointments, dateFrom, dateTo]);
+  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'transferDate'), [transfers, dateFrom, dateTo]);
 
-  const totalRevenue = filteredSales.reduce((sum: number, sale: any) => sum + (sale.total || 0), 0);
-  const averageTicket = filteredSales.length > 0 ? totalRevenue / filteredSales.length : 0;
+  // Análise de produtos críticos
+  const criticalProducts = useMemo(() => {
+    const today = new Date();
+    return products.filter(product => {
+      // Produtos vencidos
+      if (product.expiryDate && new Date(product.expiryDate) < today) return true;
+      
+      // Produtos próximos ao vencimento (3 dias)
+      if (product.expiryDate) {
+        const diffTime = new Date(product.expiryDate).getTime() - today.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays <= 3 && diffDays >= 0) return true;
+      }
+      
+      // Produtos sem estoque
+      if (product.stock === 0) return true;
+      
+      // Produtos com estoque baixo
+      if (product.stock <= (product.minStock || 10)) return true;
+      
+      return false;
+    });
+  }, [products]);
 
+  // Função de navegação para seções
+  const navigateToSection = (sectionName: string) => {
+    // Esta função será implementada com roteamento
+    showAlert({
+      title: `Navegando para ${sectionName}`,
+      description: `Redirecionando para a seção ${sectionName}...`,
+      variant: "success"
+    });
+  };
+
+  // Limpar filtros
   const clearFilters = () => {
     setDateFrom('');
     setDateTo('');
   };
 
-  const applyFilters = () => {
-    // Filtros já aplicados automaticamente pelos hooks
-    alert('Filtros aplicados');
-  };
-
-  const navigateToSection = (sectionName: string) => {
-    alert(`Navegando para ${sectionName}`);
-  };
-
   return (
     <div className="app-section">
       <div className="section-header">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-            <Database className="h-6 w-6 text-purple-600" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        </div>
+        <h1 className="section-title">Dashboard</h1>
+        <p className="section-subtitle">
+          Visão geral completa do seu negócio em tempo real
+        </p>
       </div>
 
-      {/* Filtros de Data */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <h3 className="text-sm font-medium text-gray-700 mb-3">Filtrar por Período</h3>
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <label className="block text-sm text-gray-600 mb-1">Data inicial</label>
+      {/* Filtros por Data */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filtrar por Período</h3>
+        
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data inicial:</span>
             <input
               type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
               placeholder="dd/mm/aaaa"
             />
           </div>
-          <div className="flex-1">
-            <label className="block text-sm text-gray-600 mb-1">Data final</label>
+
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm font-medium text-gray-700">Data final:</span>
             <input
               type="date"
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
               placeholder="dd/mm/aaaa"
             />
           </div>
-          <div className="flex items-end gap-2">
-            <button
-              onClick={clearFilters}
-              className="btn btn-outline"
-            >
-              Limpar Filtros
-            </button>
-            <button
-              onClick={applyFilters}
-              className="btn btn-primary"
-            >
-              Aplicar Filtros
-            </button>
+
+          <button 
+            onClick={clearFilters}
+            className="px-4 py-2 bg-white text-gray-700 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Limpar Filtros
+          </button>
+
+          <button 
+            onClick={() => {
+              const period = dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual';
+              showAlert({
+                title: "Filtros Aplicados",
+                description: `Dashboard atualizado para o período: ${period}`,
+                variant: "success"
+              });
+            }}
+            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+          >
+            Aplicar Filtros
+          </button>
+        </div>
+      </div>
+
+      {/* Cards de Métricas Principais */}
+      <div className="metrics-grid mb-8">
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Receita Total</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-xs text-green-600 mt-1">{filteredSales.length} vendas realizadas</p>
+            </div>
+            <div className="p-3 rounded-full bg-green-100">
+              <TrendingUp className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Produtos Críticos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{criticalProducts.length}</p>
+              <p className="text-xs text-red-600 mt-1">Necessitam atenção</p>
+            </div>
+            <div className="p-3 rounded-full bg-red-100">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Agendamentos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{filteredAppointments.length}</p>
+              <p className="text-xs text-blue-600 mt-1">No período</p>
+            </div>
+            <div className="p-3 rounded-full bg-blue-100">
+              <Calendar className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card-standard">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Atividades</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{filteredActivities.length}</p>
+              <p className="text-xs text-purple-600 mt-1">Registros de atividade</p>
+            </div>
+            <div className="p-3 rounded-full bg-purple-100">
+              <Activity className="h-6 w-6 text-purple-600" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Grid de Métricas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Receita Total</p>
-              <p className="text-2xl font-bold text-green-600">R$ {(totalRevenue || 0).toFixed(2)}</p>
-            </div>
-            <TrendingUp className="h-8 w-8 text-green-600" />
-          </div>
-        </div>
-
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Total de Vendas</p>
-              <p className="text-2xl font-bold text-blue-600">{filteredSales.length}</p>
-            </div>
-            <ShoppingCart className="h-8 w-8 text-blue-600" />
-          </div>
-        </div>
-
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Ticket Médio</p>
-              <p className="text-2xl font-bold text-purple-600">R$ {(averageTicket || 0).toFixed(2)}</p>
-            </div>
-            <BarChart3 className="h-8 w-8 text-purple-600" />
-          </div>
-        </div>
-
-        <div className="metric-card-standard">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-gray-600">Clientes Ativos</p>
-              <p className="text-2xl font-bold text-orange-600">{clients.length}</p>
-            </div>
-            <Users className="h-8 w-8 text-orange-600" />
-          </div>
-        </div>
-      </div>
-
-      {/* Seções de Dados */}
+      {/* Grid de Seções Integradas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Vendas Recentes */}
-        <div className="main-card">
+        
+        {/* Vendas do Gráficos */}
+        <div className="main-card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Vendas Recentes</h3>
+            <div className="flex items-center gap-3">
+              <BarChart3 className="w-5 h-5 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Vendas Recentes</h3>
+            </div>
             <button
               onClick={() => navigateToSection('Gráficos')}
-              className="btn btn-outline flex items-center gap-2"
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
             >
-              Ver Todas
-              <ExternalLink className="h-4 w-4" />
+              Ver mais <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="space-y-2">
-            {filteredSales.slice(0, 5).map((sale: any) => (
-              <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+          
+          <div className="space-y-3">
+            {filteredSales.slice(0, 3).map((sale) => (
+              <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium">{sale.client}</p>
-                  <p className="text-sm text-gray-600">{sale.date}</p>
+                  <p className="font-medium text-gray-800">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">Qtd: {sale.quantity}</p>
                 </div>
-                <p className="font-semibold text-green-600">R$ {(sale.total || 0).toFixed(2)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Próximos Compromissos */}
-        <div className="main-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Próximos Compromissos</h3>
-            <button
-              onClick={() => navigateToSection('Agendamentos')}
-              className="btn btn-outline flex items-center gap-2"
-            >
-              Ver Todos
-              <ExternalLink className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="space-y-2">
-            {filteredAppointments.slice(0, 5).map((appointment: any) => (
-              <div key={appointment.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded">
-                <Calendar className="h-5 w-5 text-blue-600" />
-                <div>
-                  <p className="font-medium">{appointment.title}</p>
-                  <p className="text-sm text-gray-600">{appointment.client}</p>
-                  <p className="text-sm text-gray-500">{appointment.date} às {appointment.time}</p>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                    {sale.paymentMethod || 'Dinheiro'}
+                  </span>
                 </div>
               </div>
             ))}
+            {filteredSales.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma venda no período selecionado</p>
+            )}
           </div>
         </div>
 
-        {/* Produtos com Baixo Estoque */}
-        <div className="main-card">
+        {/* Atividades */}
+        <div className="main-card p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Estoque Baixo</h3>
-            <button
-              onClick={() => navigateToSection('Estoque')}
-              className="btn btn-outline flex items-center gap-2"
-            >
-              Ver Estoque
-              <ExternalLink className="h-4 w-4" />
-            </button>
-          </div>
-          <div className="space-y-2">
-            {products.filter((product: any) => product.quantity < 10).slice(0, 5).map((product: any) => (
-              <div key={product.id} className="flex items-center justify-between p-3 bg-red-50 rounded">
-                <div className="flex items-center gap-3">
-                  <Package className="h-5 w-5 text-red-600" />
-                  <div>
-                    <p className="font-medium">{product.name}</p>
-                    <p className="text-sm text-gray-600">Estoque: {product.quantity}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Atividades Recentes */}
-        <div className="main-card">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Atividades Recentes</h3>
+            <div className="flex items-center gap-3">
+              <Activity className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Atividades Recentes</h3>
+            </div>
             <button
               onClick={() => navigateToSection('Atividade')}
-              className="btn btn-outline flex items-center gap-2"
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
             >
-              Ver Todas
-              <ExternalLink className="h-4 w-4" />
+              Ver mais <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded">
-              <Activity className="h-5 w-5 text-green-600" />
-              <div>
-                <p className="font-medium">Sistema atualizado</p>
-                <p className="text-sm text-gray-600">Dados sincronizados com sucesso</p>
+          
+          <div className="space-y-3">
+            {filteredActivities.slice(0, 3).map((activity) => (
+              <div key={activity.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                <Activity className="w-4 h-4 text-purple-500 mt-1" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-800">{activity.action}</p>
+                  <p className="text-xs text-gray-500">{new Date(activity.timestamp).toLocaleString()}</p>
+                </div>
               </div>
+            ))}
+            {filteredActivities.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma atividade no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Agendamentos */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Próximos Compromissos</h3>
             </div>
+            <button
+              onClick={() => navigateToSection('Agendamentos')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredAppointments.slice(0, 3).map((appointment) => (
+              <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">{appointment.title}</p>
+                  <p className="text-sm text-gray-600">{appointment.clientName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">
+                    {new Date(appointment.startTime).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(appointment.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {filteredAppointments.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum agendamento no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Alertas de Estoque */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Package className="w-5 h-5 text-orange-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Alertas de Estoque</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Estoque')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {criticalProducts.slice(0, 3).map((product) => {
+              const getStatus = () => {
+                if (product.expiryDate && new Date(product.expiryDate) < new Date()) return { text: 'Vencido', color: 'red' };
+                if (product.expiryDate) {
+                  const diffTime = new Date(product.expiryDate).getTime() - new Date().getTime();
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                  if (diffDays <= 3 && diffDays >= 0) return { text: 'Vence em breve', color: 'yellow' };
+                }
+                if (product.stock === 0) return { text: 'Sem estoque', color: 'red' };
+                if (product.stock <= (product.minStock || 10)) return { text: 'Estoque baixo', color: 'orange' };
+                return { text: 'Normal', color: 'green' };
+              };
+              
+              const status = getStatus();
+              
+              return (
+                <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-800">{product.name}</p>
+                    <p className="text-sm text-gray-600">Estoque: {product.stock}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${{
+                      red: 'bg-red-100 text-red-800',
+                      yellow: 'bg-yellow-100 text-yellow-800',
+                      orange: 'bg-orange-100 text-orange-800',
+                      green: 'bg-green-100 text-green-800'
+                    }[status.color]}`}>
+                      {status.text}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+            {criticalProducts.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum produto crítico no momento</p>
+            )}
+          </div>
+        </div>
+
+        {/* Transferências */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <ArrowRight className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Transferências</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Estoque')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {filteredTransfers.slice(0, 3).map((transfer) => (
+              <div key={transfer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">Qtd: {transfer.quantity}</p>
+                  <p className="text-sm text-gray-600">{transfer.notes}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">
+                    {new Date(transfer.transferDate).toLocaleDateString()}
+                  </p>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    transfer.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                    transfer.status === 'sent' ? 'bg-blue-100 text-blue-800' :
+                    transfer.status === 'received' ? 'bg-green-100 text-green-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {transfer.status === 'pending' ? 'Pendente' :
+                     transfer.status === 'sent' ? 'Enviado' :
+                     transfer.status === 'received' ? 'Recebido' : 'Devolvido'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {filteredTransfers.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhuma transferência no período selecionado</p>
+            )}
+          </div>
+        </div>
+
+        {/* Atendimentos WhatsApp */}
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <MessageSquare className="w-5 h-5 text-green-600" />
+              <h3 className="text-lg font-semibold text-gray-800">Atendimentos Recentes</h3>
+            </div>
+            <button
+              onClick={() => navigateToSection('Atendimento')}
+              className="flex items-center gap-1 text-sm text-purple-600 hover:text-purple-800"
+            >
+              Ver mais <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            {whatsappChats.slice(0, 3).map((chat) => (
+              <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-800">{chat.name}</p>
+                  <p className="text-sm text-gray-600 truncate max-w-xs">{chat.lastMessage}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">{chat.time}</p>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    chat.status === 'online' ? 'bg-green-100 text-green-800' : 
+                    chat.status === 'away' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'
+                  }`}>
+                    {chat.status === 'online' ? 'Online' : 
+                     chat.status === 'away' ? 'Ausente' : 'Offline'}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {whatsappChats.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum atendimento recente</p>
+            )}
           </div>
         </div>
       </div>
+
+      <CustomAlert 
+        isOpen={isOpen}
+        onClose={closeAlert}
+        title={alertData.title}
+        description={alertData.description}
+        variant={alertData.variant}
+      />
     </div>
   );
 };

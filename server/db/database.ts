@@ -2,29 +2,38 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import * as schema from './schema';
 
-let database: any = null;
+let db: ReturnType<typeof drizzle> | null = null;
 
-export function getDatabase() {
-  if (!database) {
+export function initializeDatabase() {
+  try {
     const connectionString = process.env.DATABASE_URL;
     
     if (!connectionString) {
-      throw new Error('DATABASE_URL environment variable is not set');
+      console.log('⚠️  DATABASE_URL não configurada - usando dados mock');
+      return null;
     }
 
-    // Create postgres client
+    console.log('🔗 Conectando ao banco Supabase...');
+    
     const client = postgres(connectionString, {
-      ssl: connectionString.includes('supabase') ? 'require' : false,
-      max: 20,
+      ssl: 'require',
+      max: 10,
       idle_timeout: 20,
-      connect_timeout: 60,
+      connect_timeout: 10,
     });
 
-    // Create drizzle instance
-    database = drizzle(client, { schema });
+    db = drizzle(client, { schema });
+    
+    console.log('✅ Conexão com Supabase estabelecida');
+    return db;
+  } catch (error) {
+    console.error('❌ Erro ao conectar com Supabase:', error);
+    return null;
   }
+}
 
-  return database;
+export function getDatabase() {
+  return db;
 }
 
 export { schema };

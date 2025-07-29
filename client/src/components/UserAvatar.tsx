@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import avatarImage from "@assets/2-_1751286302473_1752877604587.png";
 
 interface UserAvatarProps {
   username: string;
@@ -16,27 +16,14 @@ const UserAvatar = ({ username, size = "medium" }: UserAvatarProps) => {
     medium: "text-base"
   };
 
-  const iconSizes = {
-    small: "w-4 h-4",
-    medium: "w-6 h-6"
-  };
-
-  // Generate initials from username
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
   return (
     <div className="flex items-center gap-3">
-      <div className={`${avatarSizes[size]} rounded-2xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-105 modern-card-hover`}>
-        <span className="text-white font-semibold text-sm">
-          {getInitials(username)}
-        </span>
+      <div className={`${avatarSizes[size]} rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:scale-105 modern-card-hover`}>
+        <img 
+          src={avatarImage} 
+          alt={`Avatar de ${username}`} 
+          className="w-full h-full object-cover"
+        />
       </div>
       <div className="flex flex-col">
         <span className={`${textSizes[size]} font-semibold text-white`}>

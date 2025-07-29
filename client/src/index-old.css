@@ -1,0 +1,519 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 158 89% 53%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 262 83% 58%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Padronização de cores do sistema */
+    --brand-primary: 262 83% 58%;
+    --brand-secondary: 158 89% 53%;
+    --brand-dark: 220 100% 12%;
+    --brand-darker: 220 100% 8%;
+    
+    /* Cores funcionais padronizadas */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 84% 60%;
+    --info: 221 83% 53%;
+    
+    /* Backgrounds padronizados */
+    --card-glass: 0 0% 100% / 0.95;
+    --section-bg: 0 0% 98%;
+    --metric-bg: 0 0% 100%;
+    --hover-bg: 0 0% 96%;
+    
+    /* Sombras padronizadas */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .dark {
+    --background: 220 100% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 220 100% 12%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 220 100% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 262 83% 58%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 220 100% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 100% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 158 89% 53%;
+    --accent-foreground: 220 100% 8%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 100% 15%;
+    --input: 220 100% 15%;
+    --ring: 262 83% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
+  }
+}
+
+/* Sistema de Design Completamente Novo */
+@layer components {
+  /* Container principal das seções */
+  .app-section {
+    @apply min-h-screen p-8;
+    background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
+  }
+
+  /* Cabeçalho das seções */
+  .section-header {
+    @apply mb-8;
+  }
+
+  .section-title {
+    @apply text-4xl font-bold text-white mb-2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .section-subtitle {
+    @apply text-lg text-white/80;
+  }
+
+  /* Cards principais */
+  .main-card {
+    @apply bg-white rounded-2xl shadow-2xl border-0 overflow-hidden;
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Navegação por tabs moderna */
+  .tab-navigation {
+    @apply flex bg-gray-50 rounded-xl p-1 mb-6;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .tab-button {
+    @apply flex items-center gap-3 px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300 flex-1 justify-center;
+    color: #6b7280;
+  }
+
+  .tab-button:hover {
+    @apply bg-white/50;
+    color: #374151;
+  }
+
+  .tab-button.active {
+    @apply bg-white text-white shadow-lg;
+    background: hsl(var(--brand-primary));
+    transform: translateY(-1px);
+  }
+
+  /* Cards de métricas */
+  .metric-card {
+    @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300;
+  }
+
+  .metric-card:hover {
+    @apply transform -translate-y-1;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Cards de conteúdo */
+  .content-card {
+    @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100;
+  }
+
+  /* Botões do sistema */
+  .btn {
+    @apply px-6 py-3 rounded-lg font-medium transition-all duration-300 flex items-center gap-2;
+  }
+
+  .btn-primary {
+    @apply text-white shadow-lg hover:shadow-xl;
+    background: hsl(var(--brand-primary));
+  }
+
+  .btn-primary:hover {
+    @apply transform -translate-y-0.5;
+    background: hsl(var(--brand-primary) / 0.9);
+  }
+
+  .btn-secondary {
+    @apply text-white shadow-lg hover:shadow-xl;
+    background: hsl(var(--brand-secondary));
+  }
+
+  .btn-secondary:hover {
+    @apply transform -translate-y-0.5;
+    background: hsl(var(--brand-secondary) / 0.9);
+  }
+
+  .btn-outline {
+    @apply bg-white text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50;
+  }
+
+  /* Inputs modernos */
+  .modern-input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-transparent focus:ring-2 transition-all duration-300;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+  }
+
+  .modern-input:focus {
+    --tw-ring-color: hsl(var(--brand-primary) / 0.3);
+  }
+
+  /* Grid responsivo */
+  .metrics-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8;
+  }
+
+  .content-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+  }
+
+  /* Lista de itens */
+  .item-list {
+    @apply space-y-4;
+  }
+
+  .list-item {
+    @apply flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-300;
+  }
+
+  .list-item:hover {
+    @apply transform translate-x-2;
+  }
+
+  /* Status badges */
+  .badge {
+    @apply px-3 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .badge-primary {
+    @apply text-white;
+    background: hsl(var(--brand-primary));
+  }
+
+  /* Animações personalizadas */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Custom gradient backgrounds */
+.gradient-brand {
+  background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-secondary)) 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(135deg, hsl(var(--dashboard-darker)) 0%, hsl(var(--dashboard-dark)) 100%);
+}
+
+/* Toques modernos sutis mantendo o esquema de cores atual */
+.modern-glass {
+  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modern-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.modern-card-hover:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modern-gradient-subtle {
+  background: linear-gradient(135deg, 
+    hsl(var(--card)) 0%, 
+    hsl(var(--muted) / 0.5) 100%);
+}
+
+.modern-border-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: linear-gradient(45deg, 
+    hsl(var(--primary)), 
+    hsl(var(--accent)), 
+    hsl(var(--primary)));
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modern-border-glow:hover::before {
+  opacity: 0.8;
+}
+
+.modern-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.modern-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  transition: transform 0.6s ease;
+}
+
+.modern-shine:hover::after {
+  transform: translateX(100%) translateY(100%) rotate(45deg);
+}
+
+/* Animações sutis */
+.modern-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-3px); }
+}
+
+.modern-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+/* Efeito de brilho sutil nos cards */
+.modern-glow {
+  box-shadow: 0 0 20px rgba(262, 83%, 58%, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.modern-glow:hover {
+  box-shadow: 0 0 30px rgba(262, 83%, 58%, 0.2);
+}
+
+/* Scrollbar moderna mantendo as cores do tema */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary)),
+    hsl(var(--accent))
+  );
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--accent)),
+    hsl(var(--primary))
+  );
+}
+
+/* Sistema de Design Unificado */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Animações suaves uniformes */
+.unified-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.unified-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Cards com efeito moderno */
+.unified-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.95) 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Tabs responsivas */
+.unified-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.unified-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.unified-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.unified-tab:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.unified-tab.active {
+  color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.unified-tab.inactive {
+  background: #f9fafb;
+  color: #374151;
+}
+
+.unified-tab.inactive:hover {
+  background: #f3f4f6;
+}
