@@ -470,56 +470,66 @@ const AtividadeSection = () => {
 
   const renderClients = () => (
     <div>
-      {/* Filtros */}
-      <div className="main-card p-6 mb-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 text-gray-500" />
-            <Input
+      {/* Barra de busca e filtros */}
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Campo de busca */}
+          <div className="flex-1 min-w-[200px] relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
+            <input
+              type="text"
               placeholder="Buscar clientes..."
-              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={searchTerm || ''}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
+          {/* Filtro Data Inicial */}
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">De:</span>
+            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
               onChange={(e) => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateFrom(date);
               }}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
 
+          {/* Filtro Data Final */}
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Até:</span>
+            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
               onChange={(e) => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateTo(date);
               }}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
 
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => {
-              setDateFrom(undefined);
-              setDateTo(undefined);
-            }}
-            className="cursor-pointer"
-          >
-            Limpar Filtros
-          </Button>
+          {/* Botão de limpar filtros */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setDateFrom(undefined);
+                setDateTo(undefined);
+              }}
+              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Limpar Filtros
+            </button>
+          </div>
         </div>
       </div>
 
@@ -569,56 +579,66 @@ const AtividadeSection = () => {
 
   const renderReports = () => (
     <div>
-      {/* Filtros */}
-      <div className="main-card p-6 mb-6">
-        <div className="flex flex-wrap gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 text-gray-500" />
-            <Input
+      {/* Barra de busca e filtros */}
+      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Campo de busca */}
+          <div className="flex-1 min-w-[200px] relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
+            <input
+              type="text"
               placeholder="Buscar relatórios..."
-              className="w-64 bg-white text-gray-900 placeholder:text-gray-500 border-gray-200 focus:border-purple-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              value={searchTerm || ''}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
+          {/* Filtro Data Inicial */}
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">De:</span>
+            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
               onChange={(e) => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateFrom(date);
               }}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
 
+          {/* Filtro Data Final */}
           <div className="flex items-center gap-2">
             <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600">Até:</span>
+            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
               onChange={(e) => {
                 const date = e.target.value ? new Date(e.target.value) : undefined;
                 setDateTo(date);
               }}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
             />
           </div>
 
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => {
-              setDateFrom(undefined);
-              setDateTo(undefined);
-            }}
-            className="cursor-pointer"
-          >
-            Limpar Filtros
-          </Button>
+          {/* Botão de limpar filtros */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setDateFrom(undefined);
+                setDateTo(undefined);
+              }}
+              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Limpar Filtros
+            </button>
+          </div>
         </div>
       </div>
 
