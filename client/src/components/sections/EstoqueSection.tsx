@@ -40,15 +40,17 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
-  const { showConfirm, confirmOpen, confirmData, closeConfirm, handleConfirm } = useCustomConfirm();
+  const { showConfirm, isOpen: confirmOpen, confirmData, closeConfirm, handleConfirm } = useCustomConfirm();
   
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [showAddTransferModal, setShowAddTransferModal] = useState(false);
 
   // Hooks para dados
-  const { data: products = [] } = useProducts();
-  const { data: transfers = [] } = useTransfers();
+  const { products = [] } = useProducts();
+  const { transfers = [] } = useTransfers();
 
   // Tabs do sistema
   const tabs = [
@@ -66,7 +68,7 @@ const EstoqueSection = () => {
           </h3>
           <button 
             className="btn btn-primary"
-            onClick={() => console.log('Adicionar produto')}
+            onClick={() => setShowAddProductModal(true)}
           >
             <Plus className="w-4 h-4" />
             Adicionar Produto
@@ -183,7 +185,7 @@ const EstoqueSection = () => {
               <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhum produto encontrado</h3>
               <p className="text-gray-500 mb-4">Comece adicionando produtos ao seu estoque</p>
               <button 
-                onClick={() => console.log('Adicionar primeiro produto')}
+                onClick={() => setShowAddProductModal(true)}
                 className="btn btn-primary"
               >
                 <Plus className="w-4 h-4" />
@@ -206,7 +208,7 @@ const EstoqueSection = () => {
           </h3>
           <button 
             className="btn btn-primary"
-            onClick={() => console.log('Adicionar transferência')}
+            onClick={() => setShowAddTransferModal(true)}
           >
             <Plus className="w-4 h-4" />
             Adicionar Transferência
@@ -286,6 +288,155 @@ const EstoqueSection = () => {
 
       {activeTab === 'produtos' && renderProducts()}
       {activeTab === 'transferencias' && renderTransfers()}
+
+      {/* Modal Adicionar Produto */}
+      {showAddProductModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Adicionar Novo Produto</h3>
+              <button 
+                onClick={() => setShowAddProductModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                <input
+                  type="text"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Ex: Paracetamol 500mg"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Preço</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="0.00"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="100"
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    showAlert({
+                      title: "Produto Adicionado",
+                      description: "O produto foi adicionado com sucesso ao estoque!",
+                      variant: "default"
+                    });
+                    setShowAddProductModal(false);
+                  }}
+                  className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  Adicionar
+                </button>
+                <button
+                  onClick={() => setShowAddProductModal(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Adicionar Transferência */}
+      {showAddTransferModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Nova Transferência</h3>
+              <button 
+                onClick={() => setShowAddTransferModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option value="">Selecione um produto</option>
+                  {products.map((product: any) => (
+                    <option key={product.id} value={product.id}>{product.name}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Filial Origem</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option value="">Selecione origem</option>
+                  <option value="matriz">Matriz - Centro</option>
+                  <option value="norte">Filial Norte</option>
+                  <option value="sul">Filial Sul</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Filial Destino</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
+                  <option value="">Selecione destino</option>
+                  <option value="matriz">Matriz - Centro</option>
+                  <option value="norte">Filial Norte</option>
+                  <option value="sul">Filial Sul</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="10"
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    showAlert({
+                      title: "Transferência Criada",
+                      description: "A transferência foi criada e está pendente de aprovação!",
+                      variant: "default"
+                    });
+                    setShowAddTransferModal(false);
+                  }}
+                  className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  Criar Transferência
+                </button>
+                <button
+                  onClick={() => setShowAddTransferModal(false)}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CustomAlert isOpen={isOpen} onClose={closeAlert} {...alertData} />
       <CustomConfirm 
