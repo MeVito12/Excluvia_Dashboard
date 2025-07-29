@@ -45,6 +45,7 @@ const EstoqueSection = () => {
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showAddTransferModal, setShowAddTransferModal] = useState(false);
 
@@ -75,30 +76,51 @@ const EstoqueSection = () => {
           </button>
         </div>
 
-        {/* Filtros */}
-        <div className="flex gap-4 mb-6">
-          <div className="flex items-center gap-2">
-            <Search className="h-4 w-4 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Buscar produtos..."
-              className="w-64 px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          {/* Filtros */}
+          <div className="flex flex-wrap gap-4 items-center mb-6">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Buscar produtos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <select
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Todas as categorias</option>
+              <option value="medicamentos">Medicamentos</option>
+              <option value="cosmeticos">Cosméticos</option>
+              <option value="higiene">Higiene</option>
+              <option value="alimentos">Alimentos</option>
+              <option value="equipamentos">Equipamentos</option>
+            </select>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">Todos os status</option>
+              <option value="Em Estoque">Em Estoque</option>
+              <option value="Estoque Baixo">Estoque Baixo</option>
+              <option value="Vencido">Vencido</option>
+              <option value="Próximo ao Vencimento">Próximo ao Vencimento</option>
+            </select>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setFilterCategory('all');
+                setStatusFilter('all');
+              }}
+              className="btn btn-outline"
+            >
+              Limpar Filtros
+            </button>
           </div>
-          
-          <select
-            className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          >
-            <option value="all">Todas as categorias</option>
-            <option value="medicamentos">Medicamentos</option>
-            <option value="cosmeticos">Cosméticos</option>
-            <option value="higiene">Higiene</option>
-          </select>
-        </div>
 
         <div className="standard-list-container">
           <div className="standard-list-content">
@@ -107,7 +129,9 @@ const EstoqueSection = () => {
                 const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
-                return searchMatch && categoryMatch;
+                const status = getProductStatus(product.stock, product.minStock || 0, product.expiryDate?.toString());
+                const statusMatch = statusFilter === 'all' || status === statusFilter;
+                return searchMatch && categoryMatch && statusMatch;
               })
               .map((product: any) => {
                 const status = getProductStatus(product.stock, product.minStock || 0, product.expiryDate?.toString());
@@ -215,9 +239,48 @@ const EstoqueSection = () => {
           </button>
         </div>
 
+        {/* Filtros */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar transferências..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">Todos os status</option>
+            <option value="pending">Pendente</option>
+            <option value="approved">Aprovado</option>
+            <option value="completed">Concluído</option>
+            <option value="rejected">Rejeitado</option>
+          </select>
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setStatusFilter('all');
+            }}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
+        </div>
+
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {transfers?.map((transfer: any) => (
+            {transfers
+              ?.filter(transfer => {
+                const searchMatch = (transfer.productName || `Produto ID: ${transfer.productId}`).toLowerCase().includes(searchTerm.toLowerCase());
+                const statusMatch = statusFilter === 'all' || transfer.status === statusFilter;
+                return searchMatch && statusMatch;
+              })
+              .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{transfer.productName || `Produto ID: ${transfer.productId}`}</div>
