@@ -41,7 +41,7 @@ const DashboardSection = () => {
   const filteredSales = filterByDateRange(sales, 'date');
   const filteredAppointments = filterByDateRange(appointments, 'date');
 
-  const totalRevenue = filteredSales.reduce((sum: number, sale: any) => sum + sale.total, 0);
+  const totalRevenue = filteredSales.reduce((sum: number, sale: any) => sum + (sale.total || 0), 0);
   const averageTicket = filteredSales.length > 0 ? totalRevenue / filteredSales.length : 0;
 
   const clearFilters = () => {
@@ -116,7 +116,7 @@ const DashboardSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Receita Total</p>
-              <p className="text-2xl font-bold text-green-600">R$ {totalRevenue.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-green-600">R$ {(totalRevenue || 0).toFixed(2)}</p>
             </div>
             <TrendingUp className="h-8 w-8 text-green-600" />
           </div>
@@ -136,7 +136,7 @@ const DashboardSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Ticket Médio</p>
-              <p className="text-2xl font-bold text-purple-600">R$ {averageTicket.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-purple-600">R$ {(averageTicket || 0).toFixed(2)}</p>
             </div>
             <BarChart3 className="h-8 w-8 text-purple-600" />
           </div>
@@ -174,7 +174,7 @@ const DashboardSection = () => {
                   <p className="font-medium">{sale.client}</p>
                   <p className="text-sm text-gray-600">{sale.date}</p>
                 </div>
-                <p className="font-semibold text-green-600">R$ {sale.total.toFixed(2)}</p>
+                <p className="font-semibold text-green-600">R$ {(sale.total || 0).toFixed(2)}</p>
               </div>
             ))}
           </div>
