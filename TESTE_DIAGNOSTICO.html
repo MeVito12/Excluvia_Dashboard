@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Design System</title>
+    <style>
+        /* COPIE E COLE O CSS_STANDALONE.css AQUI */
+        /* Ou linke: <link rel="stylesheet" href="CSS_STANDALONE.css"> */
+        
+        /* Reset básico */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+          line-height: 1.6;
+          color: #374151;
+          background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+          min-height: 100vh;
+        }
+
+        .app-section {
+          min-height: 100vh;
+          padding: 2rem;
+          background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+        }
+
+        .section-header {
+          margin-bottom: 2rem;
+        }
+
+        .section-title {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: white;
+          margin-bottom: 0.5rem;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-subtitle {
+          font-size: 1.125rem;
+          color: rgba(255, 255, 255, 0.8);
+        }
+
+        .main-card {
+          background: white;
+          border-radius: 1rem;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          border: none;
+          overflow: hidden;
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .metrics-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+          background: white;
+          border-radius: 0.75rem;
+          padding: 1.5rem;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+          border: 1px solid #f3f4f6;
+          transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          border: none;
+          font-size: 0.875rem;
+          text-decoration: none;
+          margin-right: 1rem;
+        }
+
+        .btn-primary {
+          background: #8b5cf6;
+          color: white;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+          background: #10b981 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+          background: white;
+          color: #374151;
+          border: 2px solid #e5e7eb;
+        }
+
+        .btn-outline:hover {
+          border-color: #d1d5db;
+          background: #f9fafb;
+          transform: translateY(-1px);
+        }
+
+        .text-lg { font-size: 1.125rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .font-semibold { font-weight: 600; }
+        .font-bold { font-weight: bold; }
+        .text-gray-900 { color: #111827; }
+        .text-purple-600 { color: #8b5cf6; }
+        .text-green-600 { color: #16a34a; }
+        .mt-6 { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="app-section">
+        <div class="section-header">
+            <h1 class="section-title">🎯 TESTE DO DESIGN SYSTEM</h1>
+            <p class="section-subtitle">Se você vê um fundo roxo degradê e texto branco, está funcionando!</p>
+        </div>
+        
+        <div class="main-card">
+            <h2 style="margin-bottom: 1rem; color: #111827;">✅ Cards e Métricas</h2>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold text-gray-900">Métrica 1</h3>
+                    <p class="text-2xl font-bold text-purple-600">1.234</p>
+                    <p style="color: #6b7280; font-size: 0.875rem;">+12% hoje</p>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold text-gray-900">Métrica 2</h3>
+                    <p class="text-2xl font-bold text-green-600">5.678</p>
+                    <p style="color: #6b7280; font-size: 0.875rem;">+5% semana</p>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <h3 style="margin-bottom: 1rem; color: #111827;">🎨 Botões</h3>
+                <button class="btn btn-primary">Botão Roxo → Verde (hover)</button>
+                <button class="btn btn-outline">Botão com Borda</button>
+            </div>
+            
+            <div class="mt-6">
+                <h3 style="margin-bottom: 1rem; color: #111827;">📋 Checklist de Funcionamento</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Fundo roxo degradê visível</li>
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Título branco grande</li>
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Cards brancos com sombra</li>
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Números coloridos (roxo e verde)</li>
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Botões com hover effect</li>
+                    <li style="padding: 0.5rem 0; color: #059669;">✅ Cards sobem no hover</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Teste JavaScript
+        console.log('🎯 Design System carregado com sucesso!');
+        
+        // Adicionar logs de debug
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado');
+            
+            // Verificar se as classes estão aplicadas
+            const appSection = document.querySelector('.app-section');
+            const computedStyle = window.getComputedStyle(appSection);
+            
+            console.log('Background do app-section:', computedStyle.background);
+            console.log('Padding do app-section:', computedStyle.padding);
+            
+            // Testar hover nos cards
+            const cards = document.querySelectorAll('.metric-card');
+            cards.forEach((card, index) => {
+                card.addEventListener('mouseenter', () => {
+                    console.log(`Card ${index + 1} hover ativado`);
+                });
+            });
+            
+            // Testar botões
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach((btn, index) => {
+                btn.addEventListener('click', () => {
+                    alert(`Botão ${index + 1} funcionando! Design system OK!`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
