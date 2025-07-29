@@ -415,111 +415,110 @@ const FinanceiroSection = () => {
               </p>
             </div>
           ) : (
-            <div className="item-list">
-              {filteredEntries.map((entry) => (
-                <div key={entry.id} className="list-item">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${entry.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
-                      {entry.type === 'income' ? (
-                        <TrendingUp className="w-6 h-6 text-green-600" />
-                      ) : (
-                        <TrendingDown className="w-6 h-6 text-red-600" />
-                      )}
-                    </div>
-                    
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-800">{entry.description}</h4>
-                      <p className="text-sm text-gray-600">
+            <div className="standard-list-container">
+              <div className="standard-list-header">
+                <div className="standard-list-title">
+                  <CreditCard className="w-5 h-5 text-purple-600" />
+                  {activeTab === 'entradas' ? 'Entradas Financeiras' : 'Saídas Financeiras'} ({filteredEntries.length})
+                </div>
+              </div>
+              <div className="standard-list-content">
+                {filteredEntries.map((entry) => (
+                  <div key={entry.id} className="standard-list-item group">
+                    <div className="list-item-main">
+                      <div className="list-item-title">{entry.description}</div>
+                      <div className="list-item-subtitle">
                         Vencimento: {entry.dueDate ? new Date(entry.dueDate).toLocaleDateString('pt-BR') : 'Data não informada'}
-                      </p>
-                      
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className={`badge ${
-                          entry.status === 'paid' ? 'badge-success' : 
-                          entry.status === 'pending' ? 'badge-warning' : 
-                          entry.status === 'near_due' ? 'badge-warning' :
-                          entry.status === 'overdue' ? 'badge-error' :
-                          'badge-warning'
+                      </div>
+                      <div className="list-item-meta flex items-center gap-2">
+                        <span className={`list-status-badge ${
+                          entry.status === 'paid' ? 'status-success' : 
+                          entry.status === 'pending' ? 'status-warning' : 
+                          entry.status === 'near_due' ? 'status-warning' :
+                          entry.status === 'overdue' ? 'status-danger' :
+                          'status-warning'
                         }`}>
                           {getStatusLabel(entry.status)}
                         </span>
 
                         {entry.isInstallment && (
-                          <span className="badge badge-info">
+                          <span className="list-status-badge status-info">
                             {entry.currentInstallment}/{entry.installmentCount}
                           </span>
                         )}
 
                         {entry.isBoleto && (
-                          <span className="badge badge-primary">
+                          <span className="list-status-badge status-info">
                             Boleto
                           </span>
                         )}
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">
-                      R$ {Number(entry.amount || 0).toFixed(2)}
-                    </p>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        // Simular visualização de comprovante
-                        if (entry.paymentProof) {
-                          window.open(entry.paymentProof, '_blank');
-                        } else {
-                          showAlert({
-                            title: "Comprovante",
-                            description: "Nenhum comprovante anexado para este registro",
-                            variant: "warning"
-                          });
-                        }
-                      }}
-                      className="w-8 h-8 flex items-center justify-center bg-gray-100 hover:bg-gray-200 rounded transition-colors"
-                      title="Visualizar comprovante"
-                    >
-                      <Eye className="w-4 h-4 text-gray-600" />
-                    </button>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">
+                          R$ {Number(entry.amount || 0).toFixed(2)}
+                        </p>
+                      </div>
+                      
+                      <div className="list-item-actions">
+                        <button
+                          onClick={() => {
+                            // Simular visualização de comprovante
+                            if (entry.paymentProof) {
+                              window.open(entry.paymentProof, '_blank');
+                            } else {
+                              showAlert({
+                                title: "Comprovante",
+                                description: "Nenhum comprovante anexado para este registro",
+                                variant: "warning"
+                              });
+                            }
+                          }}
+                          className="list-action-button view"
+                          title="Visualizar comprovante"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
 
-                    {entry.status !== 'paid' && (
-                      <button
-                        onClick={() => {
-                          setSelectedEntry(entry);
-                          setIsPayModalOpen(true);
-                        }}
-                        className="w-8 h-8 flex items-center justify-center bg-green-100 hover:bg-green-200 rounded transition-colors"
-                        title="Marcar como pago"
-                      >
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                      </button>
-                    )}
+                        {entry.status !== 'paid' && (
+                          <button
+                            onClick={() => {
+                              setSelectedEntry(entry);
+                              setIsPayModalOpen(true);
+                            }}
+                            className="list-action-button edit"
+                            title="Marcar como pago"
+                          >
+                            <CheckCircle className="w-4 h-4" />
+                          </button>
+                        )}
 
-                    {entry.status === 'paid' && entry.type === 'expense' && (
-                      <button
-                        onClick={() => handleRevertPayment(entry.id)}
-                        className="w-8 h-8 flex items-center justify-center bg-yellow-100 hover:bg-yellow-200 rounded transition-colors"
-                        title="Reverter pagamento"
-                      >
-                        <RotateCcw className="w-4 h-4 text-yellow-600" />
-                      </button>
-                    )}
+                        {entry.status === 'paid' && entry.type === 'expense' && (
+                          <button
+                            onClick={() => handleRevertPayment(entry.id)}
+                            className="list-action-button transfer"
+                            title="Reverter pagamento"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                          </button>
+                        )}
 
-                    {entry.type === 'expense' && (
-                      <button
-                        onClick={() => handleDeleteEntry(entry.id)}
-                        className="w-8 h-8 flex items-center justify-center bg-red-100 hover:bg-red-200 rounded transition-colors"
-                        title="Excluir"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </button>
-                    )}
+                        {entry.type === 'expense' && (
+                          <button
+                            onClick={() => handleDeleteEntry(entry.id)}
+                            className="list-action-button delete"
+                            title="Excluir"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
         </div>

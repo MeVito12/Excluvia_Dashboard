@@ -427,31 +427,44 @@ const AtividadeSection = () => {
           </div>
         </div>
         
-        <div className="divide-y divide-gray-200">
-          {sales.map((sale: any) => {
-            const client = clients.find((c: any) => c.id === sale.clientId);
-            const product = products.find((p: any) => p.id === sale.productId);
-            
-            return (
-              <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-medium text-gray-800">{client?.name || `Cliente #${sale.clientId}`}</h4>
-                    <p className="text-sm text-gray-600">{product?.name || `Produto #${sale.productId}`} x{sale.quantity || 0}</p>
-                    <p className="text-xs text-gray-500">
+        <div className="standard-list-container">
+          <div className="standard-list-header">
+            <div className="standard-list-title">
+              <ShoppingCart className="w-5 h-5 text-purple-600" />
+              Vendas ({sales.length})
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total:</p>
+              <p className="text-lg font-bold text-green-600">
+                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
+          <div className="standard-list-content">
+            {sales.map((sale: any) => {
+              const client = clients.find((c: any) => c.id === sale.clientId);
+              const product = products.find((p: any) => p.id === sale.productId);
+              
+              return (
+                <div key={sale.id} className="standard-list-item group">
+                  <div className="list-item-main">
+                    <div className="list-item-title">{client?.name || `Cliente #${sale.clientId}`}</div>
+                    <div className="list-item-subtitle">{product?.name || `Produto #${sale.productId}`} x{sale.quantity || 0}</div>
+                    <div className="list-item-meta">
                       {sale.saleDate ? format(new Date(sale.saleDate), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
-                    </p>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                    <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
-                      Concluída
-                    </span>
+                  
+                  <div className="flex items-center gap-3">
+                    <span className="list-status-badge status-success">Concluída</span>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -514,32 +527,36 @@ const AtividadeSection = () => {
 
       {/* Lista de clientes */}
       <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Clientes ({clients.length})
-          </h2>
-        </div>
         
-        <div className="divide-y divide-gray-200">
-          {clients.map((client: any) => (
-            <div key={client.id} className="p-6 hover:bg-gray-50 transition-colors">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium text-gray-800">{client.name}</h4>
-                  <p className="text-sm text-gray-600">{client.email}</p>
-                  <p className="text-xs text-gray-500">{client.phone}</p>
+        <div className="standard-list-container">
+          <div className="standard-list-header">
+            <div className="standard-list-title">
+              <Users className="w-5 h-5 text-purple-600" />
+              Clientes ({clients.length})
+            </div>
+          </div>
+          <div className="standard-list-content">
+            {clients.map((client: any) => (
+              <div key={client.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{client.name}</div>
+                  <div className="list-item-subtitle">{client.email}</div>
+                  <div className="list-item-meta">{client.phone}</div>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">Total: R$ {client.totalSpent?.toFixed(2) || '0.00'}</p>
-                  <span className={`text-xs px-2 py-1 rounded-full ${
-                    client.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                
+                <div className="flex items-center gap-3">
+                  <span className={`list-status-badge ${
+                    client.status === 'active' ? 'status-success' : 'status-warning'
                   }`}>
                     {client.status === 'active' ? 'Ativo' : 'Inativo'}
                   </span>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {client.totalSpent?.toFixed(2) || '0.00'}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>

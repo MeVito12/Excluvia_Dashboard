@@ -126,78 +126,68 @@ const AgendamentosSection = () => {
         </div>
 
         {/* Lista de compromissos */}
-        <div className="space-y-4">
-          {appointments.map((appointment) => (
-            <div key={appointment.id} className="list-card">
-              <div className="list-card-header">
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <div className="metric-card-icon bg-purple-100 !p-2">
-                    <Calendar className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="list-card-title">{appointment.title}</h4>
-                      <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">#{appointment.id}</span>
-                    </div>
-                    <div className="list-card-content">
-                      <p>Cliente: {appointment.client}</p>
-                      <p>Data: {appointment.date} às {appointment.time}</p>
-                      <p>Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
-                               appointment.type === 'consulta' ? 'Consulta' : 'Follow-up'}</p>
-                    </div>
+        <div className="standard-list-container">
+          <div className="standard-list-header">
+            <div className="standard-list-title">
+              <Calendar className="w-5 h-5 text-purple-600" />
+              Compromissos ({appointments.length})
+            </div>
+          </div>
+          <div className="standard-list-content">
+            {appointments.map((appointment) => (
+              <div key={appointment.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{appointment.title}</div>
+                  <div className="list-item-subtitle">Cliente: {appointment.client}</div>
+                  <div className="list-item-meta">
+                    Data: {appointment.date} às {appointment.time} | Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
+                     appointment.type === 'consulta' ? 'Consulta' : 'Follow-up'}
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3 flex-shrink-0">
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    appointment.status === 'scheduled' ? 'bg-green-100 text-green-800' :
-                    appointment.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                    'bg-gray-100 text-gray-800'
+                <div className="flex items-center gap-3">
+                  <span className={`list-status-badge ${
+                    appointment.status === 'scheduled' ? 'status-success' :
+                    appointment.status === 'completed' ? 'status-info' :
+                    'status-warning'
                   }`}>
                     {appointment.status === 'scheduled' ? 'Agendado' : 
                      appointment.status === 'completed' ? 'Concluído' : 'Cancelado'}
+                  </span>
+                  
+                  <div className="list-item-actions">
+                    <button 
+                      onClick={() => {
+                        showAlert({
+                          title: `Visualizando Compromisso`,
+                          description: `${appointment.title}\nCliente: ${appointment.client}\nData: ${appointment.date} às ${appointment.time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
+                          variant: "default"
+                        });
+                      }}
+                      className="list-action-button view"
+                      title="Visualizar"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => editAppointment(appointment.id)}
+                      className="list-action-button edit"
+                      title="Editar"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={() => markAsCompleted(appointment.id)}
+                      className="list-action-button transfer"
+                      title="Marcar como concluído"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
-              
-              <div className="list-card-footer">
-                <button 
-                  onClick={() => {
-                    showAlert({
-                      title: `Visualizando Compromisso`,
-                      description: `${appointment.title}\nCliente: ${appointment.client}\nData: ${appointment.date} às ${appointment.time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
-                      variant: "default"
-                    });
-                  }}
-                  className="p-1 text-gray-400 hover:text-purple-600 transition-colors"
-                  title="Visualizar"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                </button>
-                <button 
-                  onClick={() => editAppointment(appointment.id)}
-                  className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
-                  title="Editar"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                <button 
-                  onClick={() => markAsCompleted(appointment.id)}
-                  className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-                  title="Marcar como concluído"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
