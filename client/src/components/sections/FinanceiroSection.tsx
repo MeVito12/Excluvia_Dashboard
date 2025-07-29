@@ -92,7 +92,6 @@ const FinanceiroSection = () => {
 
   const handleCreateEntry = async () => {
     try {
-      const entryType = activeTab === 'entradas' ? 'income' : 'expense';
       const entryData: NewFinancialEntry = {
         userId,
         businessCategory: selectedCategory,
