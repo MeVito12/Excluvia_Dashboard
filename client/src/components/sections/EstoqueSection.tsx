@@ -204,6 +204,13 @@ const EstoqueSection = () => {
           <h3 className="text-lg font-semibold text-gray-900">
             Transferências ({transfers?.length || 0})
           </h3>
+          <button 
+            className="btn btn-primary"
+            onClick={() => console.log('Adicionar transferência')}
+          >
+            <Plus className="w-4 h-4" />
+            Adicionar Transferência
+          </button>
         </div>
 
         <div className="standard-list-container">
