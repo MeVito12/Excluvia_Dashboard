@@ -56,23 +56,25 @@ const AgendamentosSection = () => {
     setShowAddModal(true);
   };
 
+  // Estados para filtros de data
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  // Função para limpar filtros
+  const clearFilters = () => {
+    setSearchTerm('');
+    setStartDate('');
+    setEndDate('');
+  };
+
   // Renderização da agenda
   const renderAgenda = () => (
     <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Agenda</h2>
-        <button 
-          onClick={openAddModal}
-          className="system-btn-primary transition-colors flex items-center gap-2"
-        >
-          + Adicionar Compromisso
-        </button>
-      </div>
-
-      {/* Barra de busca e filtros */}
+      {/* Barra de busca e filtros com botão adicionar */}
       <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Campo de busca */}
+          <div className="flex-1 min-w-[200px] relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
             <input
               type="text"
@@ -82,12 +84,50 @@ const AgendamentosSection = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <select className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-            <option>Todos os status</option>
-            <option>Agendado</option>
-            <option>Concluído</option>
-            <option>Cancelado</option>
-          </select>
+
+          {/* Filtro Data Inicial */}
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
+
+          {/* Filtro Data Final */}
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
+
+          {/* Botões de ação */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Limpar Filtros
+            </button>
+            
+            <button 
+              onClick={openAddModal}
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2 whitespace-nowrap"
+            >
+              <Plus className="h-4 w-4" />
+              Adicionar Compromisso
+            </button>
+          </div>
         </div>
       </div>
 
@@ -101,7 +141,7 @@ const AgendamentosSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {appointments.map((appointment) => (
+            {appointments.map((appointment: any) => (
               <div key={appointment.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{appointment.title}</div>
@@ -176,7 +216,7 @@ const AgendamentosSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos Hoje</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{appointments?.length || 0}</p>
-              <p className="text-xs text-blue-600 mt-1">{appointments?.filter(a => a.status === 'scheduled').length || 0} pendentes</p>
+              <p className="text-xs text-blue-600 mt-1">{appointments?.filter((a: any) => a.status === 'scheduled').length || 0} pendentes</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <Calendar className="h-6 w-6 text-blue-600" />
@@ -319,7 +359,7 @@ const AgendamentosSection = () => {
                     showAlert({
                       title: "Campos Obrigatórios",
                       description: "Por favor, preencha todos os campos obrigatórios (título, cliente, data e horário)",
-                      variant: "error"
+                      variant: "destructive"
                     });
                   }
                 }}
