@@ -39,7 +39,7 @@ const DashboardSection = () => {
   const { products, isLoading: productsLoading } = useProducts();
   const { sales, isLoading: salesLoading } = useSales();
   const { clients, isLoading: clientsLoading } = useClients();
-  const { transfers, isLoading: transfersLoading } = useTransfers();
+  const { transfers, isLoadingTransfers: transfersLoading } = useTransfers();
   const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
   // Dados vazios para atividades e WhatsApp - usando apenas dados reais
@@ -68,7 +68,7 @@ const DashboardSection = () => {
   // Análise de produtos críticos
   const criticalProducts = useMemo(() => {
     const today = new Date();
-    return products.filter(product => {
+    return products.filter((product: any) => {
       // Produtos vencidos
       if (product.expiryDate && new Date(product.expiryDate) < today) return true;
       
@@ -347,7 +347,7 @@ const DashboardSection = () => {
           </div>
           
           <div className="space-y-3">
-            {criticalProducts.slice(0, 3).map((product) => {
+            {criticalProducts.slice(0, 3).map((product: any) => {
               const getStatus = () => {
                 if (product.expiryDate && new Date(product.expiryDate) < new Date()) return { text: 'Vencido', color: 'red' };
                 if (product.expiryDate) {

@@ -197,7 +197,7 @@ const CadastroSection = () => {
             setBranches([branch]);
           }
         } catch (error) {
-          console.error('Erro ao criar filial matriz:', error);
+
         }
       }
       
@@ -400,7 +400,7 @@ const CadastroSection = () => {
     };
 
     setBranches(prev => [...prev, branchToCreate]);
-    setNewBranch({ name: '', address: '', phone: '', email: '' });
+    setNewBranch({ name: '', address: '', phone: '', email: '', isMain: false });
     
     showAlert({
       title: "Sucesso",
@@ -437,7 +437,7 @@ const CadastroSection = () => {
     };
 
     setCommonUsers(prev => [...prev, userToCreate]);
-    setNewCommonUser({ name: '', email: '', role: 'user' });
+    setNewCommonUser({ name: '', email: '', password: '', role: 'user' });
     
     showAlert({
       title: "Sucesso",
@@ -472,6 +472,7 @@ const CadastroSection = () => {
       name: masterUserData.name,
       email: masterUserData.email,
       password: masterUserData.password,
+      confirmPassword: masterUserData.confirmPassword,
       companyId: companyCreated.id
     };
 
@@ -529,7 +530,7 @@ const CadastroSection = () => {
         setExistingCompanies(companies);
       }
     } catch (error) {
-      console.error('Error fetching companies:', error);
+
     }
   };
 
@@ -544,7 +545,7 @@ const CadastroSection = () => {
         setExistingUsers(users);
       }
     } catch (error) {
-      console.error('Error fetching users:', error);
+
     }
   };
 

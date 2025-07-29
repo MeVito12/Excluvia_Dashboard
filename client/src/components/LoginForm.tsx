@@ -72,7 +72,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
         setError(errorData.error || 'Erro na autenticação');
       }
     } catch (error) {
-      console.error('Erro de login:', error);
+
       setError('Erro de conexão. Tente novamente.');
     }
 

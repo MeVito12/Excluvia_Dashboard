@@ -204,9 +204,9 @@ const AtividadeSection = () => {
       };
     } else if (activeTab === 'vendas') {
       return {
-        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
-        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
-        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
+        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
+        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
+        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
         metric4: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
@@ -421,16 +421,16 @@ const AtividadeSection = () => {
             <div className="text-right">
               <p className="text-sm text-gray-600">Total:</p>
               <p className="text-lg font-bold text-green-600">
-                R$ {sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
         </div>
         
         <div className="divide-y divide-gray-200">
-          {sales.map((sale) => {
-            const client = clients.find(c => c.id === sale.clientId);
-            const product = products.find(p => p.id === sale.productId);
+          {sales.map((sale: any) => {
+            const client = clients.find((c: any) => c.id === sale.clientId);
+            const product = products.find((p: any) => p.id === sale.productId);
             
             return (
               <div key={sale.id} className="p-6 hover:bg-gray-50 transition-colors">
@@ -521,7 +521,7 @@ const AtividadeSection = () => {
         </div>
         
         <div className="divide-y divide-gray-200">
-          {clients.map((client) => (
+          {clients.map((client: any) => (
             <div key={client.id} className="p-6 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-between">
                 <div>
@@ -619,7 +619,7 @@ const AtividadeSection = () => {
               <div className="text-right">
                 <Button 
                   onClick={() => {
-                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ ${sales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}"\n"Transações","${sales.length} vendas"`;
+                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}"\n"Transações","${sales.length} vendas"`;
                     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                     const link = document.createElement('a');
                     link.href = URL.createObjectURL(blob);
