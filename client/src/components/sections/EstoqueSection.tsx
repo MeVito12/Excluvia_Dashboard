@@ -61,7 +61,9 @@ const EstoqueSection = () => {
     <div className="animate-fade-in">
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-semibold text-gray-800">Produtos</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Produtos ({products.length})
+          </h3>
           <button 
             className="btn btn-primary"
             onClick={() => console.log('Adicionar produto')}
@@ -97,12 +99,6 @@ const EstoqueSection = () => {
         </div>
 
         <div className="standard-list-container">
-          <div className="standard-list-header">
-            <div className="standard-list-title">
-              <Package className="w-5 h-5 text-purple-600" />
-              Produtos ({products.length})
-            </div>
-          </div>
           <div className="standard-list-content">
             {products
               .filter(product => {
