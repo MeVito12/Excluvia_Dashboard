@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFinancial } from '@/hooks/useFinancial';
+import { useToast } from '@/hooks/use-toast';
 
 
 import { Button } from '@/components/ui/button';
@@ -33,6 +34,7 @@ import { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 const FinanceiroSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const userId = (user as any)?.id || 1;
 
@@ -108,7 +110,7 @@ const FinanceiroSection = () => {
 
       await createFinancialEntry(entryData);
       
-
+      toast({
         title: "Sucesso",
         description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
       });
@@ -116,7 +118,7 @@ const FinanceiroSection = () => {
       setIsCreateModalOpen(false);
       resetForm();
     } catch (error) {
-
+      toast({
         title: "Erro",
         description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
       });
@@ -136,7 +138,7 @@ const FinanceiroSection = () => {
         }
       });
 
-
+      toast({
         title: "Sucesso",
         description: "Pagamento registrado com sucesso",
       });
@@ -144,7 +146,7 @@ const FinanceiroSection = () => {
       setIsPayModalOpen(false);
       setSelectedEntry(null);
     } catch (error) {
-
+      toast({
         title: "Erro",
         description: "Erro ao registrar pagamento",
       });
@@ -162,12 +164,12 @@ const FinanceiroSection = () => {
         }
       });
       
-
+      toast({
         title: "Sucesso",
         description: "Pagamento revertido com sucesso",
       });
     } catch (error) {
-
+      toast({
         title: "Erro",
         description: "Erro ao reverter pagamento",
       });
@@ -178,12 +180,12 @@ const FinanceiroSection = () => {
     try {
       await deleteFinancialEntry(entryId);
       
-
+      toast({
         title: "Sucesso",
         description: "Registro excluído com sucesso",
       });
     } catch (error) {
-
+      toast({
         title: "Erro",
         description: "Erro ao excluir registro",
       });
@@ -464,7 +466,7 @@ const FinanceiroSection = () => {
                         if (entry.paymentProof) {
                           window.open(entry.paymentProof, '_blank');
                         } else {
-
+                          toast({
                             title: "Comprovante",
                             description: "Nenhum comprovante anexado para este registro",
                           });
@@ -779,10 +781,6 @@ const FinanceiroSection = () => {
           </div>
         </div>
       )}
-
-      {/* Alerta customizado */}
-        isOpen={isOpen}
-      />
     </div>
   );
 };

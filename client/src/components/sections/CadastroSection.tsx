@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -61,7 +62,7 @@ const businessCategories = [
 
 const CadastroSection = () => {
   const { user } = useAuth();
-
+  const { toast } = useToast();
   const queryClient = useQueryClient();
 
   // Estados principais
@@ -203,12 +204,13 @@ const CadastroSection = () => {
       
       setCurrentStep('master');
 
-        title: "Empresa Cadastrada",
+      toast({
+        title: "Empresa Cadastrada", 
         description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
       });
     },
     onError: () => {
-
+      toast({
         title: "Erro",
         description: "Erro ao cadastrar empresa. Tente novamente.",
       });
@@ -235,7 +237,7 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-
+      toast({
         title: "Usuário Master Criado",
         description: `${masterUserData.name} foi cadastrado com sucesso!`,
       });
@@ -244,7 +246,7 @@ const CadastroSection = () => {
       setCurrentStep('branches');
     },
     onError: () => {
-
+      toast({
         title: "Erro",
         description: "Erro ao criar usuário master. Tente novamente.",
       });
@@ -277,12 +279,13 @@ const CadastroSection = () => {
         isMain: false
       });
 
+      toast({
         title: "Filial Criada",
         description: `${branch.name} foi cadastrada com sucesso!`,
       });
     },
     onError: () => {
-
+      toast({
         title: "Erro",
         description: "Erro ao criar filial. Tente novamente.",
       });
@@ -314,12 +317,13 @@ const CadastroSection = () => {
         role: 'user'
       });
 
+      toast({
         title: "Usuário Criado",
         description: `${newUser.name} foi cadastrado com sucesso!`,
       });
     },
     onError: () => {
-
+      toast({
         title: "Erro",
         description: "Erro ao criar usuário. Tente novamente.",
       });
@@ -330,7 +334,7 @@ const CadastroSection = () => {
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory || !companyData.address.trim()) {
-
+      toast({
         title: "Campos Obrigatórios",
         description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
       });
@@ -377,7 +381,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newBranch.name.trim()) {
-
+      toast({
         title: "Erro",
         description: "Nome da filial é obrigatório.",
       });
@@ -392,7 +396,7 @@ const CadastroSection = () => {
     setBranches(prev => [...prev, branchToCreate]);
     setNewBranch({ name: '', address: '', phone: '', email: '' });
     
-
+    toast({
       title: "Sucesso",
       description: "Filial adicionada com sucesso!",
     });
@@ -403,7 +407,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newCommonUser.name.trim() || !newCommonUser.email.trim()) {
-
+      toast({
         title: "Erro",
         description: "Nome e e-mail são obrigatórios.",
       });
@@ -411,7 +415,7 @@ const CadastroSection = () => {
     }
 
     if (!validateEmail(newCommonUser.email)) {
-
+      toast({
         title: "Erro",
         description: "E-mail inválido.",
       });
@@ -426,7 +430,7 @@ const CadastroSection = () => {
     setCommonUsers(prev => [...prev, userToCreate]);
     setNewCommonUser({ name: '', email: '', role: 'user' });
     
-
+    toast({
       title: "Sucesso",
       description: "Usuário adicionado com sucesso!",
     });
@@ -437,7 +441,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!companyCreated) {
-
+      toast({
         title: "Erro",
         description: "Empresa não encontrada. Tente novamente.",
       });
@@ -445,7 +449,7 @@ const CadastroSection = () => {
     }
 
     if (masterUserData.password !== masterUserData.confirmPassword) {
-
+      toast({
         title: "Erro",
         description: "As senhas não coincidem.",
       });
@@ -488,7 +492,7 @@ const CadastroSection = () => {
     // Voltar ao início do fluxo
     setCurrentStep('company');
     
-
+    toast({
       title: "Sucesso",
       description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
     });
@@ -546,7 +550,7 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-
+      toast({
         title: "Role Atualizada",
         description: "Role do usuário foi atualizada com sucesso!",
       });
@@ -555,7 +559,7 @@ const CadastroSection = () => {
       setNewRole('');
     },
     onError: () => {
-
+      toast({
         title: "Erro",
         description: "Erro ao atualizar role do usuário.",
       });
@@ -1426,9 +1430,6 @@ const CadastroSection = () => {
           </div>
         </div>
       )}
-
-        isOpen={isOpen}
-      />
     </div>
   );
 };

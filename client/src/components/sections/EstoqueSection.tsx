@@ -13,8 +13,13 @@ const EstoqueSection = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({
     name: '',
-    quantity: '',
-    price: ''
+    category: '',
+    stock: '',
+    minStock: '',
+    price: '',
+    isPerishable: false,
+    description: '',
+    barcode: ''
   });
 
   // Categorias que não têm sistema de estoque
@@ -26,19 +31,33 @@ const EstoqueSection = () => {
   );
 
   const addProduct = () => {
-    if (!newProduct.name || !newProduct.quantity) {
-      alert('Por favor, preencha nome e quantidade');
+    if (!newProduct.name || !newProduct.stock || !newProduct.category) {
+      alert('Por favor, preencha nome, estoque e categoria');
       return;
     }
 
     const productData = {
       name: newProduct.name,
-      quantity: parseInt(newProduct.quantity),
-      price: parseFloat(newProduct.price) || 0
+      category: newProduct.category,
+      price: parseFloat(newProduct.price) || 0,
+      stock: parseInt(newProduct.stock),
+      minStock: parseInt(newProduct.minStock) || 0,
+      isPerishable: newProduct.isPerishable,
+      description: newProduct.description,
+      barcode: newProduct.barcode
     };
 
     createProduct(productData);
-    setNewProduct({ name: '', quantity: '', price: '' });
+    setNewProduct({ 
+      name: '', 
+      category: '', 
+      stock: '', 
+      minStock: '', 
+      price: '', 
+      isPerishable: false, 
+      description: '', 
+      barcode: '' 
+    });
     setShowAddModal(false);
   };
 
@@ -204,19 +223,45 @@ const EstoqueSection = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Quantidade
+                  Categoria
                 </label>
                 <Input
-                  type="number"
-                  value={newProduct.quantity}
-                  onChange={(e) => setNewProduct({...newProduct, quantity: e.target.value})}
-                  placeholder="Quantidade em estoque"
+                  type="text"
+                  value={newProduct.category}
+                  onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
+                  placeholder="Categoria do produto"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Estoque
+                  </label>
+                  <Input
+                    type="number"
+                    value={newProduct.stock}
+                    onChange={(e) => setNewProduct({...newProduct, stock: e.target.value})}
+                    placeholder="Quantidade"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Estoque Mínimo
+                  </label>
+                  <Input
+                    type="number"
+                    value={newProduct.minStock}
+                    onChange={(e) => setNewProduct({...newProduct, minStock: e.target.value})}
+                    placeholder="Min."
+                  />
+                </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Preço (Opcional)
+                  Preço
                 </label>
                 <Input
                   type="number"
@@ -225,6 +270,43 @@ const EstoqueSection = () => {
                   onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
                   placeholder="Preço unitário"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição (Opcional)
+                </label>
+                <Input
+                  type="text"
+                  value={newProduct.description}
+                  onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
+                  placeholder="Descrição do produto"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Código de Barras (Opcional)
+                </label>
+                <Input
+                  type="text"
+                  value={newProduct.barcode}
+                  onChange={(e) => setNewProduct({...newProduct, barcode: e.target.value})}
+                  placeholder="Código de barras"
+                />
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="isPerishable"
+                  checked={newProduct.isPerishable}
+                  onChange={(e) => setNewProduct({...newProduct, isPerishable: e.target.checked})}
+                  className="rounded border-gray-300"
+                />
+                <label htmlFor="isPerishable" className="text-sm font-medium text-gray-700">
+                  Produto perecível
+                </label>
               </div>
             </div>
 
