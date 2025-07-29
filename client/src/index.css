@@ -82,7 +82,7 @@ All colors MUST be HSL.
     --brand-secondary: 158 89% 53%;
     --brand-dark: 220 100% 12%;
     --brand-darker: 220 100% 8%;
-    
+
     /* Cores funcionais padronizadas */
     --success: 142 76% 36%;
     --warning: 38 92% 50%;
@@ -129,7 +129,8 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(135deg, hsl(var(--brand-darker)) 0%, hsl(var(--brand-dark)) 100%);
-    overflow-x: hidden; /* Previne scroll horizontal em mobile */
+    overflow-x: hidden;
+    /* Previne scroll horizontal em mobile */
   }
 
   /* Scroll responsivo */
@@ -158,6 +159,7 @@ All colors MUST be HSL.
 
 /* Sistema de Design Novo e Consistente */
 @layer components {
+
   /* Container principal das seções */
   .app-section {
     @apply min-h-screen p-4 md:p-6 space-y-4 md:space-y-6;
@@ -324,7 +326,7 @@ All colors MUST be HSL.
     cursor: pointer !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   /* Força cor branca dos ícones em hover com mesma transição */
   .tab-button:hover:not(.active) svg {
     color: white !important;
@@ -346,18 +348,18 @@ All colors MUST be HSL.
     color: white !important;
     transform: translateY(-2px);
   }
-  
+
   /* Força cor branca dos ícones nas abas ativas com transição */
   .tab-button.active svg {
     color: white !important;
     transition: all 0.3s ease;
   }
-  
+
   /* Força cor dos botões não ativos */
   .tab-button:not(.active) {
     color: #374151 !important;
   }
-  
+
   /* Força cor dos ícones nas abas com transição sincronizada */
   .tab-button:not(.active) svg {
     color: #374151 !important;
@@ -589,16 +591,27 @@ All colors MUST be HSL.
   }
 
   /* Garantir visibilidade de todos os elementos */
-  input, select, button, textarea {
+  input,
+  select,
+  button,
+  textarea {
     @apply text-gray-900;
   }
 
-  input::placeholder, textarea::placeholder {
+  input::placeholder,
+  textarea::placeholder {
     @apply text-gray-500;
   }
 
   /* Garantir interatividade COMPLETA de TODOS os elementos */
-  button, input, select, textarea, [role="button"], [tabindex], a, label {
+  button,
+  input,
+  select,
+  textarea,
+  [role="button"],
+  [tabindex],
+  a,
+  label {
     @apply cursor-pointer;
     pointer-events: auto !important;
     position: relative !important;
@@ -612,7 +625,11 @@ All colors MUST be HSL.
   }
 
   /* Corrigir todos os elementos clicáveis específicos */
-  .tab-button, .btn, .metric-card, .badge, .list-item {
+  .tab-button,
+  .btn,
+  .metric-card,
+  .badge,
+  .list-item {
     pointer-events: auto !important;
     cursor: pointer !important;
     position: relative !important;
@@ -620,16 +637,23 @@ All colors MUST be HSL.
   }
 
   /* Garantir que cards não bloqueiem cliques */
-  .main-card, .content-card, .metric-card {
+  .main-card,
+  .content-card,
+  .metric-card {
     pointer-events: auto !important;
   }
 
-  .main-card *, .content-card *, .metric-card * {
+  .main-card *,
+  .content-card *,
+  .metric-card * {
     pointer-events: auto !important;
   }
 
   /* Corrigir elementos interativos específicos do shadcn */
-  [data-state], [data-radix-collection-item], .select__trigger, .select__content {
+  [data-state],
+  [data-radix-collection-item],
+  .select__trigger,
+  .select__content {
     pointer-events: auto !important;
     z-index: 9999 !important;
   }
@@ -643,9 +667,21 @@ All colors MUST be HSL.
   }
 
   /* Garantir que TODOS os elementos clickáveis funcionem */
-  [onclick], [role="button"], [tabindex], .clickable, .cursor-pointer,
-  input[type="button"], input[type="submit"], input[type="reset"],
-  button, select, a, label, .tab-button, .btn, .badge {
+  [onclick],
+  [role="button"],
+  [tabindex],
+  .clickable,
+  .cursor-pointer,
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  button,
+  select,
+  a,
+  label,
+  .tab-button,
+  .btn,
+  .badge {
     pointer-events: auto !important;
     cursor: pointer !important;
     z-index: 999 !important;
@@ -653,54 +689,85 @@ All colors MUST be HSL.
   }
 
   /* Forçar interatividade em elementos específicos do sistema */
-  .metric-card, .list-item, .content-card button, .main-card button,
-  [data-radix-select-trigger], [data-radix-popover-trigger],
-  .modern-input, input[type="date"], input[type="search"] {
+  .metric-card,
+  .list-item,
+  .content-card button,
+  .main-card button,
+  [data-radix-select-trigger],
+  [data-radix-popover-trigger],
+  .modern-input,
+  input[type="date"],
+  input[type="search"] {
     pointer-events: auto !important;
     cursor: pointer !important;
     z-index: 999 !important;
   }
 
   /* Remover qualquer bloqueio de eventos */
-  .app-section *, .main-card *, .content-card * {
+  .app-section *,
+  .main-card *,
+  .content-card * {
     pointer-events: auto !important;
   }
 
   /* Override para componentes shadcn/ui */
-  [data-radix-select-content], [data-radix-popover-content],
-  [data-radix-dialog-content], [data-radix-dropdown-menu-content] {
+  [data-radix-select-content],
+  [data-radix-popover-content],
+  [data-radix-dialog-content],
+  [data-radix-dropdown-menu-content] {
     pointer-events: auto !important;
     z-index: 99999 !important;
   }
 
   /* CORREÇÃO CRÍTICA: Remover elementos que podem estar bloqueando */
-  ::before, ::after {
+  ::before,
+  ::after {
     pointer-events: none !important;
   }
 
   /* Forçar interatividade em elementos específicos do sistema */
-  div[role="tab"], div[role="tabpanel"], div[role="button"], 
-  span[role="button"], a[role="button"] {
+  div[role="tab"],
+  div[role="tabpanel"],
+  div[role="button"],
+  span[role="button"],
+  a[role="button"] {
     pointer-events: auto !important;
     cursor: pointer !important;
     z-index: 1000 !important;
   }
 
   /* Garantir que overlays não bloqueiem cliques */
-  .absolute, .fixed, .relative {
+  .absolute,
+  .fixed,
+  .relative {
     pointer-events: auto !important;
   }
 
-  .absolute::before, .absolute::after,
-  .fixed::before, .fixed::after,
-  .relative::before, .relative::after {
+  .absolute::before,
+  .absolute::after,
+  .fixed::before,
+  .fixed::after,
+  .relative::before,
+  .relative::after {
     pointer-events: none !important;
   }
 
   /* RESET COMPLETO de eventos para elementos específicos */
-  input, select, button, textarea, a, label, 
-  [onclick], [onmousedown], [onmouseup], [onchange],
-  .tab-button, .btn, .metric-card, .badge, .list-item {
+  input,
+  select,
+  button,
+  textarea,
+  a,
+  label,
+  [onclick],
+  [onmousedown],
+  [onmouseup],
+  [onchange],
+  .tab-button,
+  .btn,
+  .metric-card,
+  .badge,
+  .list-item {
     pointer-events: auto !important;
     cursor: pointer !important;
     z-index: 1000 !important;
@@ -733,7 +800,11 @@ All colors MUST be HSL.
   }
 
   /* Garantir que elementos de layout não bloqueiem */
-  .min-h-screen, .bg-gradient-to-br, .text-white, .relative, .overflow-hidden {
+  .min-h-screen,
+  .bg-gradient-to-br,
+  .text-white,
+  .relative,
+  .overflow-hidden {
     pointer-events: auto !important;
   }
 
@@ -754,7 +825,8 @@ All colors MUST be HSL.
   }
 
   /* Garantir z-index adequado para elementos interativos */
-  .main-card button, .content-card button {
+  .main-card button,
+  .content-card button {
     position: relative;
     z-index: 10;
   }
@@ -795,6 +867,7 @@ All colors MUST be HSL.
       opacity: 0;
       transform: translateY(20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -810,6 +883,7 @@ All colors MUST be HSL.
       opacity: 0;
       transform: translateY(10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -886,6 +960,7 @@ All colors MUST be HSL.
 .tab-content {
   @apply space-y-6;
 }
+
 /* Forçar visibilidade em todas as seções de gestão */
 .bg-gray-50 p,
 .bg-gray-50 span,
@@ -962,7 +1037,7 @@ button.system-btn-primary *,
 
 button.system-btn-primary:hover,
 button.system-btn-primary:hover *,
-.system-btn-primary:hover,  
+.system-btn-primary:hover,
 .system-btn-primary:hover * {
   color: white !important;
   text-decoration-color: white !important;
@@ -975,13 +1050,23 @@ button.system-btn-primary.bg-purple-600,
 button.system-btn-primary.bg-purple-600 * {
   color: white !important;
 }
-.system-btn-primary, .system-btn-primary * { color: #ffffff !important; }
+
+.system-btn-primary,
+.system-btn-primary * {
+  color: #ffffff !important;
+}
 
 /* Force white text for colored buttons */
-.bg-green-600, .bg-green-600 *, .bg-green-700, .bg-green-700 * {
+.bg-green-600,
+.bg-green-600 *,
+.bg-green-700,
+.bg-green-700 * {
   color: white !important;
 }
 
-.bg-blue-600, .bg-blue-600 *, .bg-blue-700, .bg-blue-700 * {
+.bg-blue-600,
+.bg-blue-600 *,
+.bg-blue-700,
+.bg-blue-700 * {
   color: white !important;
 }

@@ -1,0 +1,330 @@
+/* === SISTEMA DE CLASSES CSS PADRONIZADO === */
+/* Copie estas classes para seu novo projeto */
+
+/* 1. LAYOUT PRINCIPAL */
+.app-section {
+  @apply min-h-screen bg-gray-50 p-6;
+}
+
+.section-header {
+  @apply mb-8;
+}
+
+.section-title {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.section-subtitle {
+  @apply text-gray-600 text-lg;
+}
+
+.main-card {
+  @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
+}
+
+/* 2. SISTEMA DE ABAS */
+.tab-navigation {
+  @apply flex space-x-1 bg-gray-100 rounded-lg p-1 mb-6;
+}
+
+.tab-button {
+  @apply flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 text-gray-600 hover:text-gray-900 hover:bg-white;
+}
+
+.tab-button.active {
+  @apply bg-white text-gray-900 shadow-sm;
+}
+
+/* 3. SISTEMA DE MÉTRICAS */
+.metrics-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8;
+}
+
+.metric-card {
+  @apply bg-white p-6 rounded-lg shadow-sm border border-gray-200;
+}
+
+.metric-card-standard {
+  @apply bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200;
+}
+
+/* 4. SISTEMA DE FILTROS */
+.filter-container {
+  @apply flex flex-wrap gap-4 items-center mb-6;
+}
+
+.search-input {
+  @apply w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.filter-select {
+  @apply px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* 5. SISTEMA DE BOTÕES */
+.btn {
+  @apply px-4 py-2 rounded-md font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center gap-2;
+}
+
+.btn-primary {
+  @apply bg-purple-600 text-white hover:bg-purple-700 focus:ring-purple-500;
+}
+
+.btn-outline {
+  @apply bg-gray-300 text-gray-700 hover:bg-gray-400 focus:ring-gray-500;
+}
+
+.btn-success {
+  @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+}
+
+.btn-danger {
+  @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+/* 6. SISTEMA DE LISTAS PADRONIZADO */
+.standard-list-container {
+  @apply space-y-3;
+}
+
+.standard-list-content {
+  @apply space-y-2;
+}
+
+.standard-list-item {
+  @apply flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors group;
+}
+
+.list-item-main {
+  @apply flex-1;
+}
+
+.list-item-title {
+  @apply font-semibold text-gray-900 text-lg;
+}
+
+.list-item-subtitle {
+  @apply text-gray-600 text-sm mt-1;
+}
+
+.list-item-meta {
+  @apply text-gray-500 text-xs mt-2;
+}
+
+/* 7. SISTEMA DE STATUS E BADGES */
+.list-status-badge {
+  @apply px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.status-success {
+  @apply bg-green-100 text-green-800 border border-green-200;
+}
+
+.status-warning {
+  @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+}
+
+.status-danger {
+  @apply bg-red-100 text-red-800 border border-red-200;
+}
+
+.status-info {
+  @apply bg-blue-100 text-blue-800 border border-blue-200;
+}
+
+.status-pending {
+  @apply bg-gray-100 text-gray-800 border border-gray-200;
+}
+
+/* Badges alternativos */
+.badge-success {
+  @apply bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-danger {
+  @apply bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+/* 8. BOTÕES DE AÇÃO EM LISTAS */
+.list-action-button {
+  @apply w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-200 opacity-0 group-hover:opacity-100;
+}
+
+.list-action-button.edit {
+  @apply bg-blue-100 text-blue-600 hover:bg-blue-200;
+}
+
+.list-action-button.delete {
+  @apply bg-red-100 text-red-600 hover:bg-red-200;
+}
+
+.list-action-button.transfer {
+  @apply bg-purple-100 text-purple-600 hover:bg-purple-200;
+}
+
+.list-action-button.sales {
+  @apply bg-green-100 text-green-600 hover:bg-green-200;
+}
+
+.list-action-button.view {
+  @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+}
+
+/* 9. SISTEMA DE ANIMAÇÕES */
+.animate-fade-in {
+  @apply animate-in fade-in duration-300;
+}
+
+.animate-slide-up {
+  @apply animate-in slide-in-from-bottom-2 duration-300;
+}
+
+/* 10. SISTEMA DE FORMULÁRIOS */
+.form-group {
+  @apply space-y-2;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.form-input {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+}
+
+.form-select {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white;
+}
+
+.form-textarea {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-vertical min-h-[100px];
+}
+
+/* 11. SISTEMA DE MODAIS */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg p-6 w-full max-w-md mx-4 shadow-xl;
+}
+
+.modal-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.modal-title {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.modal-close {
+  @apply text-gray-400 hover:text-gray-600 text-xl;
+}
+
+.modal-body {
+  @apply space-y-4;
+}
+
+.modal-footer {
+  @apply flex gap-3 pt-4;
+}
+
+/* 12. SISTEMA DE ESTADOS VAZIOS */
+.empty-state {
+  @apply text-center py-8;
+}
+
+.empty-state-icon {
+  @apply w-16 h-16 text-gray-300 mx-auto mb-4;
+}
+
+.empty-state-title {
+  @apply text-lg font-semibold text-gray-700 mb-2;
+}
+
+.empty-state-description {
+  @apply text-gray-500 mb-4;
+}
+
+/* 13. SISTEMA DE CARREGAMENTO */
+.loading-container {
+  @apply flex items-center justify-center py-8;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600;
+}
+
+/* 14. RESPONSIVIDADE */
+@media (max-width: 768px) {
+  .app-section {
+    @apply p-4;
+  }
+  
+  .section-title {
+    @apply text-2xl;
+  }
+  
+  .metrics-grid {
+    @apply grid-cols-1;
+  }
+  
+  .filter-container {
+    @apply flex-col items-stretch;
+  }
+  
+  .tab-navigation {
+    @apply flex-wrap;
+  }
+}
+
+/* 15. UTILITÁRIOS CUSTOMIZADOS */
+.text-truncate {
+  @apply truncate;
+}
+
+.text-wrap {
+  @apply break-words;
+}
+
+.shadow-soft {
+  @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.border-soft {
+  @apply border border-gray-200 hover:border-gray-300 transition-colors;
+}
+
+/* 16. ESTADOS DE HOVER E FOCUS */
+.hover-lift {
+  @apply transform hover:scale-105 transition-transform duration-200;
+}
+
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+}
+
+/* 17. CORES CUSTOMIZADAS (para usar com Tailwind) */
+.bg-brand-primary {
+  background-color: hsl(262, 83%, 58%);
+}
+
+.bg-brand-secondary {
+  background-color: hsl(158, 89%, 53%);
+}
+
+.text-brand-primary {
+  color: hsl(262, 83%, 58%);
+}
+
+.text-brand-secondary {
+  color: hsl(158, 89%, 53%);
+}
