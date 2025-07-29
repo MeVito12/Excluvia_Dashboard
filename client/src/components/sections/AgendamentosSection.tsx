@@ -205,7 +205,6 @@ const AgendamentosSection = () => {
       <div className="section-header">
         <h1 className="section-title">Agendamentos</h1>
         <p className="section-subtitle">
-          {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - 
           Gerencie seus agendamentos e lembretes automáticos
         </p>
       </div>

@@ -1271,7 +1271,6 @@ const AtendimentoSection = () => {
       <div className="section-header">
         <h1 className="section-title">Atendimento ao Cliente</h1>
         <p className="section-subtitle">
-          {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - 
           Sistema completo de atendimento WhatsApp com IA
         </p>
       </div>

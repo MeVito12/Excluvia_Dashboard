@@ -767,8 +767,7 @@ const AtividadeSection = () => {
       <div className="section-header">
         <h1 className="section-title">Atividades e Negócios</h1>
         <p className="section-subtitle">
-          {categories.find(c => c.value === selectedCategory)?.label || 'Categoria Selecionada'} - 
-          Monitore atividades, vendas, clientes e relatórios
+          Monitore atividades, vendas, clientes e relatórios do seu negócio
         </p>
       </div>
 
