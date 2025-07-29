@@ -414,18 +414,20 @@ const AtividadeSection = () => {
       {/* Lista de vendas */}
       <div className="main-card">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Vendas ({sales.length})
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Vendas ({sales.length})
+            </h2>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total:</p>
+              <p className="text-lg font-bold text-green-600">
+                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
+          </div>
         </div>
         
         <div className="standard-list-container">
-          <div className="standard-list-header">
-            <div className="standard-list-title">
-              <ShoppingCart className="w-5 h-5 text-purple-600" />
-              Vendas ({sales.length})
-            </div>
-          </div>
           <div className="standard-list-content">
             {sales.map((sale: any) => {
               const client = clients.find((c: any) => c.id === sale.clientId);
