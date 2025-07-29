@@ -343,11 +343,6 @@ const FinanceiroSection = () => {
               <h3 className="text-xl font-semibold text-gray-800">
                 Gestão de {activeTab === 'entradas' ? 'Entradas' : 'Saídas'}
               </h3>
-              {activeTab === 'entradas' && (
-                <p className="text-sm text-blue-600 mt-1">
-                  💡 Entradas são criadas automaticamente quando vendas são registradas (sempre pagas)
-                </p>
-              )}
             </div>
             <button 
               className="btn btn-primary"
