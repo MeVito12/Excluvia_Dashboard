@@ -11,7 +11,7 @@ interface ModernIconProps {
   animated?: boolean;
   gradient?: boolean;
   glow?: boolean;
-  category?: 'pet' | 'saude' | 'alimenticio' | 'vendas' | 'design' | 'sites';
+  category?: 'pet' | 'saude' | 'vendas' | 'design' | 'sites';
   contextual?: boolean;
   className?: string;
 }
@@ -65,7 +65,7 @@ const ModernIcon: React.FC<ModernIconProps> = ({
     const categoryColors = {
       'pet': 'text-purple-600',
       'saude': 'text-blue-600',
-      'alimenticio': 'text-green-600',
+
       'vendas': 'text-purple-700',
       'design': 'text-teal-600',
       'sites': 'text-indigo-600'
@@ -77,7 +77,7 @@ const ModernIcon: React.FC<ModernIconProps> = ({
     const categoryBackgrounds = {
       'pet': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo vibrante da imagem
       'saude': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]', // Azul escuro da imagem
-      'alimenticio': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon da imagem
+
       'vendas': 'bg-gradient-to-br from-[#9333ea] to-[#7c3aed]', // Roxo vibrante
       'design': 'bg-gradient-to-br from-[#00ff88] to-[#00e57a]', // Verde neon
       'sites': 'bg-gradient-to-br from-[#1e3a8a] to-[#1e40af]' // Azul escuro
@@ -89,7 +89,7 @@ const ModernIcon: React.FC<ModernIconProps> = ({
     const categoryGlows = {
       'pet': 'shadow-[#9333ea]/30 hover:shadow-[#9333ea]/50',
       'saude': 'shadow-[#1e3a8a]/30 hover:shadow-[#1e3a8a]/50',
-      'alimenticio': 'shadow-[#00ff88]/30 hover:shadow-[#00ff88]/50',
+
       'vendas': 'shadow-[#9333ea]/30 hover:shadow-[#9333ea]/50',
       'design': 'shadow-[#00ff88]/30 hover:shadow-[#00ff88]/50',
       'sites': 'shadow-[#1e3a8a]/30 hover:shadow-[#1e3a8a]/50'

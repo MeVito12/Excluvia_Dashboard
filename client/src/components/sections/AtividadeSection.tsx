@@ -54,7 +54,7 @@ const AtividadeSection = () => {
       status: 'success', 
       user: 'Ana Costa',
       type: 'sale',
-      category: 'alimenticio'
+      category: 'vendas'
     },
     { 
       id: 'sys_3',

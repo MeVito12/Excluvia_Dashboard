@@ -112,26 +112,6 @@ export const categoryProducts: Record<string, Product[]> = {
     { id: 11, name: 'Protetor Solar FPS 60', category: 'dermatologicos', stock: 3, minStock: 15, price: 32.50, description: 'Protetor solar facial - tubo 60g', isPerishable: true, expiryDate: '2025-07-20', manufacturingDate: '2024-07-20', status: 'Estoque Baixo', available: true },
     { id: 12, name: 'Termômetro Digital', category: 'equipamentos', stock: 0, minStock: 8, price: 89.90, description: 'Termômetro clínico digital preciso', isPerishable: false, expiryDate: '2026-12-31', manufacturingDate: '2024-01-01', status: 'Sem Estoque', available: false }
   ],
-  alimenticio: [
-    { id: 1, name: 'Pizza Margherita', category: 'pizzas', stock: 2, minStock: 10, price: 35.00, description: 'Pizza tradicional com manjericão fresco', isPerishable: true, expiryDate: '2024-12-10', manufacturingDate: '2024-12-05', status: 'Vencido', available: true },
-    { id: 2, name: 'Hambúrguer Artesanal', category: 'hamburgueres', stock: 5, minStock: 8, price: 28.90, description: 'Hambúrguer 180g com fritas artesanais', isPerishable: true, expiryDate: '2025-01-16', manufacturingDate: '2025-01-13', status: 'Estoque Baixo', available: true },
-    { id: 3, name: 'Lasanha Bolonhesa', category: 'massas', stock: 15, minStock: 5, price: 32.50, description: 'Lasanha tradicional com molho bolonhesa', isPerishable: true, expiryDate: '2025-02-16', manufacturingDate: '2025-01-12', status: 'Em Estoque', available: true },
-    { id: 4, name: 'Salmão Grelhado', category: 'peixes', stock: 8, minStock: 3, price: 45.00, description: 'Salmão fresco grelhado com legumes', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2025-01-12', status: 'Vencimento Próximo', available: true },
-    { id: 5, name: 'Suco Natural de Laranja', category: 'bebidas', stock: 0, minStock: 15, price: 8.50, description: 'Suco natural de laranja 300ml', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2025-01-14', status: 'Sem Estoque', available: false },
-    { id: 6, name: 'Refrigerante Cola 350ml', category: 'bebidas', stock: 45, minStock: 20, price: 5.00, description: 'Refrigerante sabor cola gelado', isPerishable: true, expiryDate: '2025-08-15', manufacturingDate: '2024-08-15', status: 'Em Estoque', available: true },
-    { id: 7, name: 'Água Mineral 500ml', category: 'bebidas', stock: 20, minStock: 25, price: 3.50, description: 'Água mineral natural sem gás', isPerishable: false, expiryDate: '2026-12-31', manufacturingDate: '2024-01-15', status: 'Estoque Baixo', available: true },
-    { id: 8, name: 'Tiramisù', category: 'sobremesas', stock: 12, minStock: 4, price: 15.90, description: 'Sobremesa italiana tradicional', isPerishable: true, expiryDate: '2025-01-14', manufacturingDate: '2025-01-10', status: 'Vencimento Próximo', available: true },
-    { id: 9, name: 'Sorvete Chocolate', category: 'sobremesas', stock: 1, minStock: 5, price: 12.00, description: 'Sorvete artesanal de chocolate', isPerishable: true, expiryDate: '2025-06-20', manufacturingDate: '2024-12-20', status: 'Estoque Baixo', available: true },
-    { id: 10, name: 'Torta de Limão', category: 'sobremesas', stock: 8, minStock: 3, price: 18.50, description: 'Torta cremosa de limão siciliano', isPerishable: true, expiryDate: '2025-02-20', manufacturingDate: '2025-01-15', status: 'Em Estoque', available: true },
-    { id: 11, name: 'Pão Francês', category: 'ingredientes', stock: 15, minStock: 30, price: 0.80, description: 'Pão francês tradicional fresquinho', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2025-01-14', status: 'Estoque Baixo', available: true },
-    { id: 12, name: 'Leite Integral 1L', category: 'ingredientes', stock: 0, minStock: 15, price: 5.20, description: 'Leite integral pasteurizado', isPerishable: true, expiryDate: '2024-12-20', manufacturingDate: '2024-12-10', status: 'Vencido', available: false },
-    { id: 13, name: 'Queijo Mussarela 500g', category: 'ingredientes', stock: 25, minStock: 8, price: 28.90, description: 'Queijo mussarela fatiado', isPerishable: true, expiryDate: '2025-02-10', manufacturingDate: '2025-01-05', status: 'Em Estoque', available: true },
-    { id: 14, name: 'Açaí na Tigela', category: 'sobremesas', stock: 20, minStock: 8, price: 14.90, description: 'Açaí cremoso com granola e banana', isPerishable: true, expiryDate: '2025-04-30', manufacturingDate: '2024-10-30', status: 'Em Estoque', available: true },
-    { id: 15, name: 'Sanduíche Natural', category: 'pratos', stock: 3, minStock: 6, price: 18.50, description: 'Sanduíche integral com peito de peru', isPerishable: true, expiryDate: '2025-01-16', manufacturingDate: '2025-01-15', status: 'Estoque Baixo', available: true },
-    { id: 16, name: 'Sopa de Legumes', category: 'pratos', stock: 18, minStock: 5, price: 16.90, description: 'Sopa caseira de legumes frescos', isPerishable: true, expiryDate: '2025-01-15', manufacturingDate: '2025-01-12', status: 'Vencimento Próximo', available: true },
-    { id: 17, name: 'Brownie de Chocolate', category: 'sobremesas', stock: 0, minStock: 5, price: 12.90, description: 'Brownie artesanal com chocolate belga', isPerishable: true, expiryDate: '2024-12-25', manufacturingDate: '2024-12-20', status: 'Vencido', available: false },
-    { id: 18, name: 'Café Expresso', category: 'bebidas', stock: 50, minStock: 20, price: 4.50, description: 'Café expresso tradicional', isPerishable: false, expiryDate: '2025-12-31', manufacturingDate: '2024-01-10', status: 'Em Estoque', available: true }
-  ],
 
   pet: [
     { id: 1, name: 'Ração Premium Golden Adulto', category: 'racao', stock: 2, minStock: 10, price: 89.90, description: 'Ração premium para cães adultos de grande porte', isPerishable: true, expiryDate: '2025-02-28', manufacturingDate: '2024-08-28', status: 'Estoque Baixo', available: true },
@@ -192,13 +172,6 @@ export const categorySales: Record<string, Sale[]> = {
     { id: 4, date: '2024-12-25', client: 'Carlos Lima', items: ['Losartana 50mg x3', 'Metformina 850mg x2'], total: 77.70, status: 'Concluída', paymentMethod: 'Dinheiro' },
     { id: 5, date: '2024-12-24', client: 'Fernanda Oliveira', items: ['Ibuprofeno 600mg x2', 'Protetor Solar x1'], total: 82.30, status: 'Concluída', paymentMethod: 'Cartão' }
   ],
-  alimenticio: [
-    { id: 1, date: '2024-12-26', client: 'Mesa 5', items: ['Pizza Margherita x2', 'Refrigerante x2'], total: 81.00, status: 'Concluída', paymentMethod: 'Dinheiro' },
-    { id: 2, date: '2024-12-26', client: 'Delivery - João Silva', items: ['Hambúrguer Artesanal x1', 'Batata Frita x1'], total: 38.90, status: 'Entregue', paymentMethod: 'PIX' },
-    { id: 3, date: '2024-12-25', client: 'Mesa 12', items: ['Lasanha Bolonhesa x1', 'Suco Laranja x1'], total: 41.00, status: 'Concluída', paymentMethod: 'Cartão' },
-    { id: 4, date: '2024-12-25', client: 'Balcão - Maria Santos', items: ['Salmão Grelhado x1', 'Água Mineral x1'], total: 48.50, status: 'Concluída', paymentMethod: 'Débito' },
-    { id: 5, date: '2024-12-24', client: 'Delivery - Pedro Costa', items: ['Tiramisù x2', 'Pizza Margherita x1'], total: 66.80, status: 'Entregue', paymentMethod: 'PIX' }
-  ],
 
   pet: [
     { id: 1, date: '2024-12-26', client: 'Ana Silva', items: ['Ração Premium Golden x1', 'Antipulgas Frontline x1'], total: 135.40, status: 'Concluída', paymentMethod: 'Cartão' },
@@ -239,13 +212,6 @@ export const categoryClients: Record<string, Client[]> = {
     { id: 3, name: 'Ana Costa', email: 'ana.costa@email.com', phone: '(11) 99999-3333', lastOrder: '2024-12-25', totalSpent: 234.70, status: 'Ativo', type: 'Diabético', address: 'Rua da Saúde, 789' },
     { id: 4, name: 'Carlos Lima', email: 'carlos.lima@email.com', phone: '(11) 99999-4444', lastOrder: '2024-12-25', totalSpent: 456.20, status: 'Ativo', type: 'Cardíaco', address: 'Av. Médica, 321' },
     { id: 5, name: 'Fernanda Oliveira', email: 'fernanda.oliveira@email.com', phone: '(11) 99999-5555', lastOrder: '2024-12-24', totalSpent: 189.50, status: 'Ativo', type: 'Regular', address: 'Rua do Medicamento, 654' }
-  ],
-  alimenticio: [
-    { id: 1, name: 'João Silva', email: 'joao.silva@email.com', phone: '(11) 99999-1111', lastOrder: '2024-12-26', totalSpent: 234.50, status: 'Ativo', type: 'Delivery', address: 'Rua das Flores, 123' },
-    { id: 2, name: 'Maria Santos', email: 'maria.santos@email.com', phone: '(11) 99999-2222', lastOrder: '2024-12-25', totalSpent: 456.80, status: 'Ativo', type: 'Balcão', address: 'Av. Principal, 456' },
-    { id: 3, name: 'Pedro Costa', email: 'pedro.costa@email.com', phone: '(11) 99999-3333', lastOrder: '2024-12-24', totalSpent: 189.90, status: 'Ativo', type: 'Delivery', address: 'Rua do Comércio, 789' },
-    { id: 4, name: 'Ana Oliveira', email: 'ana.oliveira@email.com', phone: '(11) 99999-4444', lastOrder: '2024-12-23', totalSpent: 567.30, status: 'VIP', type: 'Mesa', address: 'Av. Central, 321' },
-    { id: 5, name: 'Carlos Lima', email: 'carlos.lima@email.com', phone: '(11) 99999-5555', lastOrder: '2024-12-20', totalSpent: 123.45, status: 'Inativo', type: 'Delivery', address: 'Rua Secundária, 654' }
   ],
 
   pet: [
@@ -288,12 +254,6 @@ export const categoryAppointments: Record<string, Appointment[]> = {
     { id: 3, title: 'Aplicação de Vacina', client: 'Ana Costa', date: '2024-12-30', time: '11:00', type: 'vacina', status: 'confirmed', service: 'Vacina da gripe' },
     { id: 4, title: 'Teste de Glicemia', client: 'Carlos Lima', date: '2025-01-02', time: '08:30', type: 'exame', status: 'scheduled', service: 'Teste rápido glicemia' },
     { id: 5, title: 'Entrega de Medicamentos', client: 'Fernanda Oliveira', date: '2025-01-03', time: '14:00', type: 'entrega', status: 'scheduled', service: 'Entrega domiciliar' }
-  ],
-  alimenticio: [
-    { id: 1, title: 'Reserva Mesa para 6 pessoas', client: 'João Silva', date: '2024-12-30', time: '19:30', type: 'reserva', status: 'scheduled', service: 'Jantar Especial' },
-    { id: 2, title: 'Evento Corporativo', client: 'Empresa ABC', date: '2024-12-31', time: '18:00', type: 'evento', status: 'confirmed', service: 'Buffet Executivo' },
-    { id: 3, title: 'Degustação de Vinhos', client: 'Maria Santos', date: '2025-01-05', time: '20:00', type: 'degustacao', status: 'scheduled', service: 'Harmonização' },
-    { id: 4, title: 'Aula de Culinária', client: 'Pedro Costa', date: '2025-01-08', time: '15:00', type: 'aula', status: 'scheduled', service: 'Workshop Massas' }
   ],
 
   pet: [
@@ -391,12 +351,6 @@ export const categoryWhatsAppConversations: Record<string, WhatsAppConversation[
     { id: 4, name: 'Carlos Lima', lastMessage: 'Podem entregar os medicamentos em casa?', time: '13:10', unread: 0, status: 'online', category: 'farmacia' },
     { id: 5, name: 'Fernanda Oliveira', lastMessage: 'Obrigada pela orientação sobre o medicamento!', time: '12:30', unread: 0, status: 'offline', category: 'farmacia' }
   ],
-  alimenticio: [
-    { id: 1, name: 'João Silva', lastMessage: 'Gostaria de fazer um pedido para delivery', time: '14:30', unread: 2, status: 'online', category: 'alimenticio' },
-    { id: 2, name: 'Maria Santos', lastMessage: 'Qual o horário de funcionamento hoje?', time: '13:45', unread: 1, status: 'offline', category: 'alimenticio' },
-    { id: 3, name: 'Pedro Costa', lastMessage: 'Vocês têm pratos vegetarianos?', time: '12:20', unread: 0, status: 'away', category: 'alimenticio' },
-    { id: 4, name: 'Ana Oliveira', lastMessage: 'Obrigada pela refeição deliciosa!', time: '11:15', unread: 0, status: 'offline', category: 'alimenticio' }
-  ],
 
   pet: [
     { id: 1, name: 'Ana Silva', lastMessage: 'Meu cachorro está com alergia, podem ajudar?', time: '15:20', unread: 3, status: 'online', category: 'pet' },
@@ -446,12 +400,6 @@ export const categoryActivities: Record<string, Activity[]> = {
     { id: 3, timestamp: new Date('2024-12-26T14:20:00'), type: 'stock', action: 'Reposição de Estoque', description: 'Vitamina D3 - recebimento de 100 unidades', category: 'farmacia', status: 'success', user: 'Sistema' },
     { id: 4, timestamp: new Date('2024-12-26T13:10:00'), type: 'delivery', action: 'Entrega Agendada', description: 'Carlos Lima - medicamentos para entrega domiciliar', category: 'farmacia', status: 'success', user: 'Sistema' },
     { id: 5, timestamp: new Date('2024-12-26T12:30:00'), type: 'prescription', action: 'Receita Validada', description: 'Fernanda Oliveira - receita de antibiótico aprovada', category: 'farmacia', status: 'success', user: 'Dr. Fernando Farmacêutico' }
-  ],
-  alimenticio: [
-    { id: 1, timestamp: new Date('2024-12-26T14:30:00'), type: 'order', action: 'Novo Pedido', description: 'Pedido #123 - Pizza Margherita x2', category: 'alimenticio', status: 'success', user: 'João Silva' },
-    { id: 2, timestamp: new Date('2024-12-26T13:45:00'), type: 'delivery', action: 'Entrega Realizada', description: 'Delivery para Rua das Flores, 123', category: 'alimenticio', status: 'success', user: 'Sistema' },
-    { id: 3, timestamp: new Date('2024-12-26T12:20:00'), type: 'payment', action: 'Pagamento PIX', description: 'Pagamento recebido - R$ 81,00', category: 'alimenticio', status: 'success', user: 'Sistema PIX' },
-    { id: 4, timestamp: new Date('2024-12-26T11:15:00'), type: 'reservation', action: 'Reserva Confirmada', description: 'Mesa para 6 pessoas - 31/12 às 19:30', category: 'alimenticio', status: 'success', user: 'Ana Oliveira' }
   ],
 
   pet: [

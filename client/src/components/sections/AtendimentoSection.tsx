@@ -58,7 +58,7 @@ const AtendimentoSection = () => {
     name: '',
     description: '',
     price: '',
-    category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+    category: selectedCategory === 'vendas' ? 'pratos' : 'produtos'
   });
   const [qrCodeData, setQrCodeData] = useState('');
   const [showAddPortfolioModal, setShowAddPortfolioModal] = useState(false);
@@ -86,7 +86,7 @@ const AtendimentoSection = () => {
   const generateShareUrl = () => {
     const baseUrl = window.location.origin;
     const categorySlug = selectedCategory;
-    const menuType = selectedCategory === 'alimenticio' ? 'cardapio' : 'catalogo';
+    const menuType = selectedCategory === 'vendas' ? 'cardapio' : 'catalogo';
     return `${baseUrl}/${menuType}/${categorySlug}`;
   };
 
@@ -185,7 +185,7 @@ const AtendimentoSection = () => {
       );
     } else {
       // Criar novo item
-      if (selectedCategory === 'alimenticio') {
+      if (selectedCategory === 'vendas') {
         saveMenuItemWithIngredients();
         return;
       } else {
@@ -222,7 +222,7 @@ const AtendimentoSection = () => {
         // Mensagens específicas por categoria usando o sistema temático
         if (selectedCategory === 'design' || selectedCategory === 'sites') {
           showError('PROJETO EXCLUÍDO', `"${itemName}" foi removido do portfólio permanentemente.`);
-        } else if (selectedCategory === 'alimenticio') {
+        } else if (selectedCategory === 'vendas') {
           showError('PRATO EXCLUÍDO', `"${itemName}" foi removido do cardápio. Estoque atualizado automaticamente.`);
         } else {
           showError('PRODUTO EXCLUÍDO', `"${itemName}" foi removido do catálogo. Estoque sincronizado automaticamente.`);
@@ -257,7 +257,7 @@ const AtendimentoSection = () => {
       } else {
         showWarning(`PROJETO ${statusText}`, `"${itemName}" foi ocultado do portfólio.`);
       }
-    } else if (selectedCategory === 'alimenticio') {
+    } else if (selectedCategory === 'vendas') {
       if (newStatus) {
         showSuccess(`PRATO ${statusText}`, `"${itemName}" está disponível para pedidos. Estoque sincronizado.`);
       } else {
@@ -461,7 +461,7 @@ const AtendimentoSection = () => {
       name: '',
       description: '',
       price: '',
-      category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+      category: selectedCategory === 'vendas' ? 'pratos' : 'produtos'
     });
     setShowAddItemModal(true);
   };
@@ -494,7 +494,7 @@ const AtendimentoSection = () => {
       // Aqui seria a integração com a API - item salvo com sucesso
       
       showSuccess(
-        `${selectedCategory === 'alimenticio' ? 'PRATO' : 'PRODUTO'} ADICIONADO`,
+        `${selectedCategory === 'vendas' ? 'PRATO' : 'PRODUTO'} ADICIONADO`,
         `"${newItem.name}" foi adicionado com sucesso!`
       );
       setShowAddItemModal(false);
@@ -502,7 +502,7 @@ const AtendimentoSection = () => {
         name: '',
         description: '',
         price: '',
-        category: selectedCategory === 'alimenticio' ? 'pratos' : 'produtos'
+        category: selectedCategory === 'vendas' ? 'pratos' : 'produtos'
       });
     } else {
       showError('Campos obrigatórios', 'Por favor, preencha ao menos o nome e o preço.');
@@ -549,9 +549,7 @@ const AtendimentoSection = () => {
   // Tabs baseadas na categoria
   const getTabs = () => {
     let catalogLabel = 'Catálogos';
-    if (selectedCategory === 'alimenticio') {
-      catalogLabel = 'Cardápios';
-    } else if (selectedCategory === 'design' || selectedCategory === 'sites') {
+    if (selectedCategory === 'design' || selectedCategory === 'sites') {
       catalogLabel = 'Portfólio';
     }
     
@@ -566,11 +564,6 @@ const AtendimentoSection = () => {
       baseTabs.splice(2, 0, { id: 'especialistas', label: 'Especialistas', icon: Users });
     }
     
-    // Adicionar aba de pagamento para categorias alimentícias
-    if (selectedCategory === 'alimenticio') {
-      baseTabs.push({ id: 'pagamento', label: 'Pagamento', icon: CreditCard });
-    }
-    
     return baseTabs;
   };
 
@@ -579,24 +572,19 @@ const AtendimentoSection = () => {
     return [];
   };
 
-  // Catálogos/Cardápios usando apenas dados reais do banco
+  // Catálogos usando apenas dados reais do banco
   const getCatalogs = () => {
-    if (selectedCategory === 'alimenticio') {
-      // Para alimentício, usar dados reais do banco também
-      return [];
-    } else {
-      // Para outras categorias, puxar automaticamente do estoque
-      const stockProducts = getCurrentCategoryItems();
-      return stockProducts.map((product: any) => ({
-        id: product.id,
-        name: product.name || product.title,
-        price: product.price ? `R$ ${Number(product.price).toFixed(2).replace('.', ',')}` : 'Sob consulta',
-        description: product.description,
-        category: product.category,
-        stock: product.stock,
-        isFromStock: true
-      }));
-    }
+    // Para todas as categorias, puxar automaticamente do estoque
+    const stockProducts = getCurrentCategoryItems();
+    return stockProducts.map((product: any) => ({
+      id: product.id,
+      name: product.name || product.title,
+      price: product.price ? `R$ ${Number(product.price).toFixed(2).replace('.', ',')}` : 'Sob consulta',
+      description: product.description,
+      category: product.category,
+      stock: product.stock,
+      isFromStock: true
+    }));
   };
 
   const renderMessages = () => (
@@ -860,7 +848,7 @@ const AtendimentoSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-gray-800">
-            {selectedCategory === 'alimenticio' ? 'Cardápio Digital' : 'Catálogo de Produtos'}
+            {selectedCategory === 'vendas' ? 'Cardápio Digital' : 'Catálogo de Produtos'}
           </h3>
           <div className="flex items-center gap-3">
             <button 
@@ -877,7 +865,7 @@ const AtendimentoSection = () => {
               <QrCode className="w-4 h-4" />
               QR Code
             </button>
-            {selectedCategory === 'alimenticio' && (
+            {selectedCategory === 'vendas' && (
               <button 
                 onClick={handleAddItem}
                 className="btn btn-primary"
@@ -890,7 +878,7 @@ const AtendimentoSection = () => {
         </div>
 
         {/* Aviso de integração automática */}
-        {selectedCategory !== 'alimenticio' && (
+        {selectedCategory !== 'vendas' && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 text-blue-700">
               <CheckCircle className="w-5 h-5" />
@@ -1060,7 +1048,7 @@ const AtendimentoSection = () => {
                 <QrCode className="w-32 h-32 text-gray-400" />
               </div>
               <p className="text-sm text-gray-600 mb-4">
-                Escaneie o QR Code para acessar o {selectedCategory === 'alimenticio' ? 'cardápio' : 'catálogo'}
+                Escaneie o QR Code para acessar o {selectedCategory === 'vendas' ? 'cardápio' : 'catálogo'}
               </p>
               <button className="btn btn-outline w-full flex items-center justify-center gap-2">
                 <Download className="w-4 h-4" />
@@ -1158,10 +1146,10 @@ const AtendimentoSection = () => {
                   </div>
                   <div>
                     <h5 className="font-medium text-gray-800">
-                      {selectedCategory === 'alimenticio' ? 'Desconto 20% - Pizza Margherita' : 'Black Friday - Eletrônicos'}
+                      {selectedCategory === 'vendas' ? 'Desconto 20% - Pizza Margherita' : 'Black Friday - Eletrônicos'}
                     </h5>
                     <p className="text-sm text-gray-600">
-                      {selectedCategory === 'alimenticio' 
+                      {selectedCategory === 'vendas' 
                         ? 'Promoção especial para novos clientes' 
                         : 'Descontos em smartphones e notebooks'
                       }
@@ -1187,10 +1175,10 @@ const AtendimentoSection = () => {
                   </div>
                   <div>
                     <h5 className="font-medium text-gray-800">
-                      {selectedCategory === 'alimenticio' ? 'Cliente VIP - Frete Grátis' : 'Programa VIP - Desconto Progressivo'}
+                      {selectedCategory === 'vendas' ? 'Cliente VIP - Frete Grátis' : 'Programa VIP - Desconto Progressivo'}
                     </h5>
                     <p className="text-sm text-gray-600">
-                      {selectedCategory === 'alimenticio' 
+                      {selectedCategory === 'vendas' 
                         ? 'Entrega gratuita para pedidos acima de R$ 50' 
                         : 'Descontos crescentes baseados em compras'
                       }
@@ -1221,7 +1209,7 @@ const AtendimentoSection = () => {
                 </div>
                 <h5 className="font-medium text-gray-800 mb-2">Desconto por Categoria</h5>
                 <p className="text-sm text-gray-600 mb-4">
-                  {selectedCategory === 'alimenticio' 
+                  {selectedCategory === 'vendas' 
                     ? 'Promoções em pizzas, bebidas e sobremesas' 
                     : 'Descontos em eletrônicos, roupas e casa'
                   }
@@ -1377,7 +1365,7 @@ const AtendimentoSection = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">
-                {isEditingItem ? 'Editar' : 'Adicionar'} {selectedCategory === 'alimenticio' ? 'Prato' : 'Produto'}
+                {isEditingItem ? 'Editar' : 'Adicionar'} {selectedCategory === 'vendas' ? 'Prato' : 'Produto'}
               </h3>
               <button 
                 onClick={() => {
@@ -1402,11 +1390,11 @@ const AtendimentoSection = () => {
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder={selectedCategory === 'alimenticio' ? 'Ex: Pizza Margherita' : 'Ex: Smartphone XYZ'}
+                  placeholder={selectedCategory === 'vendas' ? 'Ex: Pizza Margherita' : 'Ex: Smartphone XYZ'}
                 />
               </div>
               
-              {selectedCategory === 'alimenticio' ? (
+              {selectedCategory === 'vendas' ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Ingredientes *
@@ -1472,7 +1460,7 @@ const AtendimentoSection = () => {
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  {selectedCategory === 'alimenticio' ? (
+                  {selectedCategory === 'vendas' ? (
                     <>
                       <option value="pratos">Pratos Principais</option>
                       <option value="bebidas">Bebidas</option>

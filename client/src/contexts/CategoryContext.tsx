@@ -12,7 +12,7 @@ export const categories = [
   { value: 'pet', label: 'Pet & Veterinário', icon: '🐕', description: 'Clínicas veterinárias, pet shops e cuidados animais' },
   { value: 'medico', label: 'Médico & Saúde', icon: '⚕️', description: 'Clínicas médicas, consultórios e serviços de saúde' },
   { value: 'estetica', label: 'Estética & Beleza', icon: '💅', description: 'Clínicas de estética, salões e tratamentos de beleza' },
-  { value: 'alimenticio', label: 'Alimentício', icon: '🍽️', description: 'Restaurantes, delivery e serviços alimentícios' },
+
   { value: 'tecnologia', label: 'Tecnologia', icon: '💻', description: 'Empresas de tecnologia e serviços digitais' },
   { value: 'educacao', label: 'Educação', icon: '📚', description: 'Escolas, cursos e instituições de ensino' },
   { value: 'beleza', label: 'Beleza & Cosméticos', icon: '💄', description: 'Lojas de cosméticos e produtos de beleza' },

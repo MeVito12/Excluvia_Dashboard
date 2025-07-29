@@ -53,7 +53,7 @@ const businessCategories = [
   { value: 'farmacia', label: 'Farmácia' },
   { value: 'pet', label: 'Veterinária' },
   { value: 'medico', label: 'Clínica Médica' },
-  { value: 'alimenticio', label: 'Alimentício' },
+
   { value: 'vendas', label: 'Vendas/Comércio' },
   { value: 'design', label: 'Design Gráfico' },
   { value: 'sites', label: 'Criação de Sites' }
