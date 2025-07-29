@@ -51,6 +51,7 @@ const FinanceiroSection = () => {
   const [selectedEntry, setSelectedEntry] = useState<FinancialEntry | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [currentEntryType, setCurrentEntryType] = useState<'income' | 'expense'>('income');
 
   const [formData, setFormData] = useState({
     description: '',
@@ -243,6 +244,32 @@ const FinanceiroSection = () => {
         <div>
           <h1 className="section-title">Gestão Financeira</h1>
           <p className="section-subtitle">Controle de entradas e saídas financeiras</p>
+        </div>
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => {
+              resetForm();
+              setCurrentEntryType('income');
+              setSelectedEntry(null);
+              setIsCreateModalOpen(true);
+            }}
+            className="btn btn-primary"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Entrada
+          </Button>
+          <Button 
+            onClick={() => {
+              resetForm();
+              setCurrentEntryType('expense');
+              setSelectedEntry(null);
+              setIsCreateModalOpen(true);
+            }}
+            className="btn btn-outline"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Saída
+          </Button>
         </div>
       </div>
 
