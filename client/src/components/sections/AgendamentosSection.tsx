@@ -12,7 +12,8 @@ import {
   Edit,
   CheckCircle,
   Bell,
-  AlertTriangle
+  AlertTriangle,
+  Eye
 } from 'lucide-react';
 
 // Removed getAppointmentData function - now using centralized mock data
