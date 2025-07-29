@@ -411,12 +411,6 @@ const FinanceiroSection = () => {
             </div>
           ) : (
             <div className="standard-list-container">
-              <div className="standard-list-header">
-                <div className="standard-list-title">
-                  <CreditCard className="w-5 h-5 text-purple-600" />
-                  {activeTab === 'entradas' ? 'Entradas Financeiras' : 'Saídas Financeiras'} ({filteredEntries.length})
-                </div>
-              </div>
               <div className="standard-list-content">
                 {filteredEntries.map((entry) => (
                   <div key={entry.id} className="standard-list-item group">

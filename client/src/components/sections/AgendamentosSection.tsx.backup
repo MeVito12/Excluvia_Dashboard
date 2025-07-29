@@ -16,6 +16,8 @@ import {
   Eye
 } from 'lucide-react';
 
+// Removed getAppointmentData function - now using centralized mock data
+
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
@@ -33,6 +35,8 @@ const AgendamentosSection = () => {
     notes: ''
   });
 
+
+
   // Função para marcar compromisso como concluído
   const markAsCompleted = (appointmentId: number) => {
     showAlert({
@@ -44,64 +48,95 @@ const AgendamentosSection = () => {
 
   // Função para editar compromisso
   const editAppointment = (appointmentId: number) => {
-    showAlert({
-      title: "Editar Compromisso",
-      description: "Funcionalidade de edição será implementada em breve",
-      variant: "default"
-    });
+    const appointment = appointments.find(app => app.id === appointmentId);
+    if (appointment) {
+      showAlert({
+        title: `Editando: ${appointment.title}`,
+        description: "Funcionalidade em desenvolvimento. Em breve você poderá editar compromissos.",
+        variant: "default"
+      });
+    }
   };
 
-  // Função para abrir modal de adicionar
+  // Função para abrir modal de adicionar compromisso
   const openAddModal = () => {
+    setNewAppointment({
+      title: '',
+      client: '',
+      date: new Date().toISOString().split('T')[0],
+      time: '09:00',
+      type: 'consulta',
+      notes: ''
+    });
     setShowAddModal(true);
   };
 
-  // Renderização da agenda
+  // Função para salvar novo compromisso
+  const saveNewAppointment = () => {
+    if (!newAppointment.title || !newAppointment.client || !newAppointment.date || !newAppointment.time) {
+      showAlert({
+        variant: "destructive",
+        title: "Campos obrigatórios",
+        description: "Por favor, preencha todos os campos obrigatórios"
+      });
+      return;
+    }
+    
+    showAlert({
+      title: "Compromisso Criado",
+      description: "O agendamento foi criado com sucesso",
+      variant: "success"
+    });
+    setShowAddModal(false);
+  };
+
   const renderAgenda = () => (
     <div className="animate-fade-in">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800">Agenda</h2>
-        <button 
-          onClick={openAddModal}
-          className="system-btn-primary transition-colors flex items-center gap-2"
-        >
-          + Adicionar Compromisso
-        </button>
-      </div>
+      {/* Quadro único de Compromissos - formato uniforme */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-black">Compromissos</h3>
+          <button 
+            onClick={openAddModal}
+            className="system-btn-primary transition-colors flex items-center gap-2"
+          >
+            + Adicionar Compromisso
+          </button>
+        </div>
 
-      {/* Barra de busca e filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4">
-          <div className="flex-1 relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar compromissos..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        {/* Barra de busca e filtros */}
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
+              <input
+                type="text"
+                placeholder="Buscar compromissos..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <select className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+              <option>Todos os status</option>
+              <option>Agendado</option>
+              <option>Concluído</option>
+              <option>Cancelado</option>
+            </select>
           </div>
-          <select className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-            <option>Todos os status</option>
-            <option>Agendado</option>
-            <option>Concluído</option>
-            <option>Cancelado</option>
-          </select>
         </div>
-      </div>
 
-      {/* Lista de compromissos */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Compromissos ({appointments.length})
-          </h2>
-        </div>
-        
-        <div className="standard-list-container">
-          <div className="standard-list-content">
-            {appointments.map((appointment) => (
+        {/* Lista de compromissos */}
+        <div className="main-card">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Compromissos ({appointments.length})
+            </h2>
+          </div>
+          
+          <div className="standard-list-container">
+            <div className="standard-list-content">
+              {appointments.map((appointment) => (
               <div key={appointment.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{appointment.title}</div>
@@ -159,6 +194,10 @@ const AgendamentosSection = () => {
       </div>
     </div>
   );
+
+
+
+
 
   return (
     <div className="app-section">
@@ -243,7 +282,7 @@ const AgendamentosSection = () => {
                 />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Data *
@@ -281,6 +320,7 @@ const AgendamentosSection = () => {
                   <option value="consulta">Consulta</option>
                   <option value="reuniao">Reunião</option>
                   <option value="followup">Follow-up</option>
+                  <option value="emergencia">Emergência</option>
                 </select>
               </div>
               
@@ -299,42 +339,26 @@ const AgendamentosSection = () => {
             </div>
             
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
                 onClick={() => setShowAddModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
               >
                 Cancelar
               </button>
-              <button 
-                onClick={() => {
-                  if (newAppointment.title && newAppointment.client && newAppointment.date && newAppointment.time) {
-                    showAlert({
-                      title: "Compromisso Agendado",
-                      description: `O compromisso "${newAppointment.title}" foi agendado com sucesso para ${newAppointment.date} às ${newAppointment.time}`,
-                      variant: "success"
-                    });
-                    setNewAppointment({ title: '', client: '', date: '', time: '', type: 'consulta', notes: '' });
-                    setShowAddModal(false);
-                  } else {
-                    showAlert({
-                      title: "Campos Obrigatórios",
-                      description: "Por favor, preencha todos os campos obrigatórios (título, cliente, data e horário)",
-                      variant: "error"
-                    });
-                  }
-                }}
-                className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              <button
+                onClick={saveNewAppointment}
+                className="flex-1 px-4 py-2 system-btn-primary"
               >
-                Agendar
+                Adicionar
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <CustomAlert 
-        isOpen={isOpen} 
-        onClose={closeAlert} 
+      
+      <CustomAlert
+        isOpen={isOpen}
+        onClose={closeAlert}
         title={alertData.title}
         description={alertData.description}
         variant={alertData.variant}

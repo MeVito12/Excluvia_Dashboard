@@ -515,14 +515,21 @@ const AtividadeSection = () => {
 
       {/* Lista de clientes */}
       <div className="main-card">
-        
-        <div className="standard-list-container">
-          <div className="standard-list-header">
-            <div className="standard-list-title">
-              <Users className="w-5 h-5 text-purple-600" />
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
               Clientes ({clients.length})
+            </h2>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total gasto:</p>
+              <p className="text-lg font-bold text-blue-600">
+                R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
             </div>
           </div>
+        </div>
+        
+        <div className="standard-list-container">
           <div className="standard-list-content">
             {clients.map((client: any) => (
               <div key={client.id} className="standard-list-item group">
