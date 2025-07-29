@@ -326,12 +326,6 @@ const EstoqueSection = () => {
       <div className="section-header">
         <h1 className="section-title">Estoque</h1>
         <p className="section-subtitle">
-          {selectedCategory === 'farmacia' ? 'Farmácia Central' :
-           selectedCategory === 'pet' ? 'Pet Clinic' :
-           selectedCategory === 'medico' ? 'Clínica Saúde' :
-           selectedCategory === 'vendas' ? 'Comercial Tech' :
-           selectedCategory === 'design' ? 'Agência Creative' :
-           selectedCategory === 'sites' ? 'Web Agency' : 'Categoria Selecionada'} - 
           Gerencie produtos, estoque e transferências entre filiais
         </p>
       </div>
