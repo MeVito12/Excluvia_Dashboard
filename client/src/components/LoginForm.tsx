@@ -221,21 +221,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
               </div>
             </form>
 
-            {/* Credenciais disponíveis */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-600 font-medium mb-2">Credenciais disponíveis:</p>
-              <div className="grid grid-cols-1 gap-1 text-xs text-gray-500">
-                <p><strong>Gestão:</strong> gestao@excluv.ia / gestao2025</p>
-                <p><strong>Master:</strong> master@[empresa].com / master2025</p>
-                <p><strong>Farmácia:</strong> farmaceutico@farmaciacentral.com / farm2025</p>
-                <p><strong>Pet:</strong> veterinario@petclinic.com / vet2025</p>
-                <p><strong>Médico:</strong> medico@clinicasaude.com / med2025</p>
-                <p><strong>Alimentício:</strong> chef@restaurante.com / chef2025</p>
-                <p><strong>Vendas:</strong> vendedor@comercial.com / venda2025</p>
-                <p><strong>Design:</strong> designer@agencia.com / design2025</p>
-                <p><strong>Sites:</strong> dev@webagency.com / web2025</p>
-              </div>
-            </div>
+
           </CardContent>
         </Card>
 
