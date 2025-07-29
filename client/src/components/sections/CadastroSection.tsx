@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
+
+
 import { 
   Building2, 
   User, 
@@ -61,7 +61,7 @@ const businessCategories = [
 
 const CadastroSection = () => {
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const queryClient = useQueryClient();
 
   // Estados principais
@@ -202,17 +202,15 @@ const CadastroSection = () => {
       }
       
       setCurrentStep('master');
-      showAlert({
+
         title: "Empresa Cadastrada",
         description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
-        variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao cadastrar empresa. Tente novamente.",
-        variant: "destructive"
       });
     }
   });
@@ -237,20 +235,18 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-      showAlert({
+
         title: "Usuário Master Criado",
         description: `${masterUserData.name} foi cadastrado com sucesso!`,
-        variant: "success"
       });
       
       // Ir para etapa de pergunta sobre filiais
       setCurrentStep('branches');
     },
     onError: () => {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao criar usuário master. Tente novamente.",
-        variant: "destructive"
       });
     }
   });
@@ -280,17 +276,15 @@ const CadastroSection = () => {
         email: '',
         isMain: false
       });
-      showAlert({
+
         title: "Filial Criada",
         description: `${branch.name} foi cadastrada com sucesso!`,
-        variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao criar filial. Tente novamente.",
-        variant: "destructive"
       });
     }
   });
@@ -319,17 +313,15 @@ const CadastroSection = () => {
         password: '',
         role: 'user'
       });
-      showAlert({
+
         title: "Usuário Criado",
         description: `${newUser.name} foi cadastrado com sucesso!`,
-        variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao criar usuário. Tente novamente.",
-        variant: "destructive"
       });
     }
   });
@@ -338,10 +330,9 @@ const CadastroSection = () => {
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory || !companyData.address.trim()) {
-      showAlert({
+
         title: "Campos Obrigatórios",
         description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
-        variant: "destructive"
       });
       return;
     }
@@ -386,10 +377,9 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newBranch.name.trim()) {
-      showAlert({
+
         title: "Erro",
         description: "Nome da filial é obrigatório.",
-        variant: "destructive"
       });
       return;
     }
@@ -402,10 +392,9 @@ const CadastroSection = () => {
     setBranches(prev => [...prev, branchToCreate]);
     setNewBranch({ name: '', address: '', phone: '', email: '' });
     
-    showAlert({
+
       title: "Sucesso",
       description: "Filial adicionada com sucesso!",
-      variant: "default"
     });
   };
 
@@ -414,19 +403,17 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newCommonUser.name.trim() || !newCommonUser.email.trim()) {
-      showAlert({
+
         title: "Erro",
         description: "Nome e e-mail são obrigatórios.",
-        variant: "destructive"
       });
       return;
     }
 
     if (!validateEmail(newCommonUser.email)) {
-      showAlert({
+
         title: "Erro",
         description: "E-mail inválido.",
-        variant: "destructive"
       });
       return;
     }
@@ -439,10 +426,9 @@ const CadastroSection = () => {
     setCommonUsers(prev => [...prev, userToCreate]);
     setNewCommonUser({ name: '', email: '', role: 'user' });
     
-    showAlert({
+
       title: "Sucesso",
       description: "Usuário adicionado com sucesso!",
-      variant: "default"
     });
   };
 
@@ -451,19 +437,17 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!companyCreated) {
-      showAlert({
+
         title: "Erro",
         description: "Empresa não encontrada. Tente novamente.",
-        variant: "destructive"
       });
       return;
     }
 
     if (masterUserData.password !== masterUserData.confirmPassword) {
-      showAlert({
+
         title: "Erro",
         description: "As senhas não coincidem.",
-        variant: "destructive"
       });
       return;
     }
@@ -504,10 +488,9 @@ const CadastroSection = () => {
     // Voltar ao início do fluxo
     setCurrentStep('company');
     
-    showAlert({
+
       title: "Sucesso",
       description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
-      variant: "success"
     });
   };
 
@@ -563,20 +546,18 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-      showAlert({
+
         title: "Role Atualizada",
         description: "Role do usuário foi atualizada com sucesso!",
-        variant: "success"
       });
       fetchExistingUsers();
       setSelectedUser(null);
       setNewRole('');
     },
     onError: () => {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao atualizar role do usuário.",
-        variant: "destructive"
       });
     }
   });
@@ -1446,12 +1427,7 @@ const CadastroSection = () => {
         </div>
       )}
 
-      <CustomAlert
         isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
       />
     </div>
   );

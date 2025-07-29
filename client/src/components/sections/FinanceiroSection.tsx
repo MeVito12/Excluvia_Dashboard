@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFinancial } from '@/hooks/useFinancial';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
+
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -33,7 +33,7 @@ import { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 const FinanceiroSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const userId = (user as any)?.id || 1;
 
   const { 
@@ -108,19 +108,17 @@ const FinanceiroSection = () => {
 
       await createFinancialEntry(entryData);
       
-      showAlert({
+
         title: "Sucesso",
         description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
-        variant: "success"
       });
       
       setIsCreateModalOpen(false);
       resetForm();
     } catch (error) {
-      showAlert({
+
         title: "Erro",
         description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
-        variant: "destructive"
       });
     }
   };
@@ -138,19 +136,17 @@ const FinanceiroSection = () => {
         }
       });
 
-      showAlert({
+
         title: "Sucesso",
         description: "Pagamento registrado com sucesso",
-        variant: "success"
       });
 
       setIsPayModalOpen(false);
       setSelectedEntry(null);
     } catch (error) {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao registrar pagamento",
-        variant: "destructive"
       });
     }
   };
@@ -166,16 +162,14 @@ const FinanceiroSection = () => {
         }
       });
       
-      showAlert({
+
         title: "Sucesso",
         description: "Pagamento revertido com sucesso",
-        variant: "success"
       });
     } catch (error) {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao reverter pagamento",
-        variant: "destructive"
       });
     }
   };
@@ -184,16 +178,14 @@ const FinanceiroSection = () => {
     try {
       await deleteFinancialEntry(entryId);
       
-      showAlert({
+
         title: "Sucesso",
         description: "Registro excluído com sucesso",
-        variant: "success"
       });
     } catch (error) {
-      showAlert({
+
         title: "Erro",
         description: "Erro ao excluir registro",
-        variant: "destructive"
       });
     }
   };
@@ -472,10 +464,9 @@ const FinanceiroSection = () => {
                         if (entry.paymentProof) {
                           window.open(entry.paymentProof, '_blank');
                         } else {
-                          showAlert({
+
                             title: "Comprovante",
                             description: "Nenhum comprovante anexado para este registro",
-                            variant: "warning"
                           });
                         }
                       }}
@@ -790,12 +781,7 @@ const FinanceiroSection = () => {
       )}
 
       {/* Alerta customizado */}
-      <CustomAlert
         isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
       />
     </div>
   );

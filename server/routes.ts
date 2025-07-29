@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { databaseManager } from "./db/database-manager";
+import { SupabaseStorage } from "./db/supabase-storage";
 import { 
   insertCompanySchema,
   insertBranchSchema,
@@ -16,7 +16,7 @@ import {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Health check
   app.get("/api/health", async (_req, res) => {
-    const dbStatus = databaseManager.getStatus();
+    const dbStatus = "supabase";
     res.json({ 
       status: "ok", 
       database: dbStatus 
@@ -32,7 +32,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const user = await storage.getUserByEmail(email);
       
       if (!user || user.password !== password) {
@@ -59,7 +59,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Usuário não autenticado" });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const companyData = insertCompanySchema.parse({
         ...req.body,
         createdBy: parseInt(userId as string)
@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/companies", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const companies = await storage.getCompanies();
       res.json(companies);
     } catch (error) {
@@ -87,7 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Routes para cadastro de filiais
   app.post("/api/branches", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const branchData = insertBranchSchema.parse(req.body);
       
       const newBranch = await storage.createBranch(branchData);
@@ -100,7 +100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/branches/:companyId", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const branches = await storage.getBranchesByCompany(parseInt(req.params.companyId));
       res.json(branches);
     } catch (error) {
@@ -117,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Usuário não autenticado" });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userData = insertUserSchema.parse({
         ...req.body,
         role: 'master',
@@ -137,7 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/master-users", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const users = await storage.getMasterUsers();
       res.json(users);
     } catch (error) {
@@ -154,7 +154,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Usuário não autenticado" });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userData = insertUserSchema.parse({
         ...req.body,
         role: req.body.role || 'user',
@@ -175,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Route para buscar todos os usuários (para gerenciamento)
   app.get("/api/all-users", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const users = await storage.getAllUsers();
       
       // Remover senhas dos usuários retornados
@@ -197,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Role é obrigatória" });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const updatedUser = await storage.updateUserRole(userId, role);
       
       if (!updatedUser) {
@@ -220,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GET /api/companies - Buscar todas as empresas
   app.get('/api/companies', async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const companies = await storage.getCompanies();
       res.json(companies);
     } catch (error) {
@@ -238,7 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const newCompany = await storage.createCompany({
         fantasyName,
         corporateName,
@@ -259,7 +259,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/branches', async (req, res) => {
     try {
       const companyId = req.query.companyId ? parseInt(req.query.companyId as string) : undefined;
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const branches = await storage.getBranches(companyId);
       res.json(branches);
     } catch (error) {
@@ -277,7 +277,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: 'Campos obrigatórios não preenchidos' });
       }
 
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const newBranch = await storage.createBranch({
         companyId,
         name,
@@ -317,7 +317,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "alimenticio";
       const appointments = await storage.getAppointments(userId, businessCategory);
@@ -332,7 +332,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/appointments", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const validatedData = AppointmentSchema.parse({
         ...req.body,
@@ -351,7 +351,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/appointments/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const appointmentId = parseInt(req.params.id);
       const appointmentData = {
         ...req.body,
@@ -373,7 +373,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/appointments/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const appointmentId = parseInt(req.params.id);
       
       const deleted = await storage.deleteAppointment(appointmentId);
@@ -391,7 +391,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de produtos
   app.get("/api/products", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const products = await storage.getProducts(userId, businessCategory);
@@ -404,7 +404,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/products", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const productData = {
         ...req.body,
@@ -426,7 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/products/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const productId = parseInt(req.params.id);
       const productData = req.body;
       
@@ -444,7 +444,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/products/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const productId = parseInt(req.params.id);
       
       const deleted = await storage.deleteProduct(productId);
@@ -462,7 +462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const sales = await storage.getSales(userId, businessCategory);
@@ -475,7 +475,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/sales", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const saleData = {
         ...req.body,
@@ -528,7 +528,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const clients = await storage.getClients(userId, businessCategory);
@@ -541,7 +541,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/clients", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const clientData = {
         ...req.body,
@@ -563,7 +563,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/clients/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const clientId = parseInt(req.params.id);
       const clientData = req.body;
       
@@ -581,7 +581,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/clients/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const clientId = parseInt(req.params.id);
       
       const deleted = await storage.deleteClient(clientId);
@@ -599,7 +599,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas para transferências
   app.get("/api/transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const transfers = await storage.getTransfers(userId);
       res.json(transfers);
@@ -611,7 +611,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const transferData = {
         ...req.body,
@@ -633,7 +633,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/transfers/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const transferId = parseInt(req.params.id);
       const transferData = req.body;
       
@@ -652,7 +652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas para filiais
   app.get("/api/branches", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "alimenticio";
       const branches = await storage.getBranches(userId, businessCategory);
@@ -665,7 +665,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/branches", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const branchData = {
         ...req.body,
@@ -690,7 +690,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Buscar usuários da empresa para o master
   app.get("/api/company-users/:companyId", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const companyId = Number(req.params.companyId);
       
       if (!companyId) {
@@ -708,7 +708,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Buscar empresa do usuário master
   app.get("/api/user-company/:userId", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = Number(req.params.userId);
       
       if (!userId) {
@@ -740,7 +740,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Atualizar permissões de usuário
   app.put("/api/users/:userId/permissions", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = Number(req.params.userId);
       const { allowedSections } = req.body;
       
@@ -773,7 +773,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas financeiras
   app.get("/api/financial", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const businessCategory = req.query.businessCategory as string || "salao";
       const entries = await storage.getFinancialEntries(userId, businessCategory);
@@ -786,7 +786,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/financial", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const userId = getUserIdFromRequest(req);
       const entryData = {
         ...req.body,
@@ -826,7 +826,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/financial/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const entryId = parseInt(req.params.id);
       const entryData = req.body;
       
@@ -844,7 +844,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/financial/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const entryId = parseInt(req.params.id);
       
       const deleted = await storage.deleteFinancialEntry(entryId);
@@ -861,7 +861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/financial/:id/pay", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const entryId = parseInt(req.params.id);
       const { paymentProof } = req.body;
       
@@ -883,7 +883,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/financial/:id/revert", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const entryId = parseInt(req.params.id);
       
       const updatedEntry = await storage.revertFinancialEntry(entryId);
