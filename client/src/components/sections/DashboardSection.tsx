@@ -54,8 +54,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     sales.forEach((sale: any) => {
       activitiesList.push({
         id: `sale-${sale.id}`,
-        action: `Venda realizada: R$ ${Number(sale.totalPrice || 0).toFixed(2)}`,
-        timestamp: sale.saleDate,
+        action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
+        timestamp: sale.sale_date,
         type: 'sale'
       });
     });
@@ -65,7 +65,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       activitiesList.push({
         id: `appointment-${appointment.id}`,
         action: `Agendamento: ${appointment.title}`,
-        timestamp: appointment.startTime,
+        timestamp: appointment.appointment_date,
         type: 'appointment'
       });
     });
@@ -98,21 +98,21 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   };
 
   // Dados filtrados por período
-  const filteredSales = useMemo(() => filterByDateRange(sales, 'saleDate'), [sales, dateFrom, dateTo]);
+  const filteredSales = useMemo(() => filterByDateRange(sales, 'sale_date'), [sales, dateFrom, dateTo]);
   const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
-  const filteredAppointments = useMemo(() => filterByDateRange(appointments, 'startTime'), [appointments, dateFrom, dateTo]);
-  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'transferDate'), [transfers, dateFrom, dateTo]);
+  const filteredAppointments = useMemo(() => filterByDateRange(appointments, 'appointment_date'), [appointments, dateFrom, dateTo]);
+  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'created_at'), [transfers, dateFrom, dateTo]);
 
   // Análise de produtos críticos
   const criticalProducts = useMemo(() => {
     const today = new Date();
     return products.filter((product: any) => {
       // Produtos vencidos
-      if (product.expiryDate && new Date(product.expiryDate) < today) return true;
+      if (product.expiry_date && new Date(product.expiry_date) < today) return true;
       
       // Produtos próximos ao vencimento (3 dias)
-      if (product.expiryDate) {
-        const diffTime = new Date(product.expiryDate).getTime() - today.getTime();
+      if (product.expiry_date) {
+        const diffTime = new Date(product.expiry_date).getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         if (diffDays <= 3 && diffDays >= 0) return true;
       }
@@ -121,7 +121,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       if (product.stock === 0) return true;
       
       // Produtos com estoque baixo
-      if (product.stock <= (product.minStock || 10)) return true;
+      if (product.stock <= (product.min_stock || 10)) return true;
       
       return false;
     });
@@ -218,7 +218,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
               <p className="text-xs text-green-600 mt-1">{filteredSales.length} vendas realizadas</p>
             </div>
@@ -290,13 +290,13 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
             {filteredSales.slice(0, 3).map((sale) => (
               <div key={sale.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-800">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
+                  <p className="font-medium text-gray-800">R$ {Number(sale.total_price || 0).toFixed(2)}</p>
                   <p className="text-sm text-gray-600">Qtd: {sale.quantity}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">{new Date(sale.sale_date).toLocaleDateString()}</p>
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                    {sale.paymentMethod || 'Dinheiro'}
+                    {sale.payment_method || 'Dinheiro'}
                   </span>
                 </div>
               </div>
@@ -358,14 +358,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
               <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-800">{appointment.title}</p>
-                  <p className="text-sm text-gray-600">{appointment.clientName}</p>
+                  <p className="text-sm text-gray-600">{appointment.client_name}</p>
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {new Date(appointment.startTime).toLocaleDateString()}
+                    {new Date(appointment.appointment_date).toLocaleDateString()}
                   </p>
                   <p className="text-sm text-gray-500">
-                    {new Date(appointment.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                    {appointment.start_time}
                   </p>
                 </div>
               </div>
@@ -394,14 +394,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           <div className="space-y-3">
             {criticalProducts.slice(0, 3).map((product: any) => {
               const getStatus = () => {
-                if (product.expiryDate && new Date(product.expiryDate) < new Date()) return { text: 'Vencido', color: 'red' };
-                if (product.expiryDate) {
-                  const diffTime = new Date(product.expiryDate).getTime() - new Date().getTime();
+                if (product.expiry_date && new Date(product.expiry_date) < new Date()) return { text: 'Vencido', color: 'red' };
+                if (product.expiry_date) {
+                  const diffTime = new Date(product.expiry_date).getTime() - new Date().getTime();
                   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                   if (diffDays <= 3 && diffDays >= 0) return { text: 'Vence em breve', color: 'yellow' };
                 }
                 if (product.stock === 0) return { text: 'Sem estoque', color: 'red' };
-                if (product.stock <= (product.minStock || 10)) return { text: 'Estoque baixo', color: 'orange' };
+                if (product.stock <= (product.min_stock || 10)) return { text: 'Estoque baixo', color: 'orange' };
                 return { text: 'Normal', color: 'green' };
               };
               
@@ -456,7 +456,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {new Date(transfer.transferDate).toLocaleDateString()}
+                    {new Date(transfer.created_at).toLocaleDateString()}
                   </p>
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
                     transfer.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
