@@ -188,4 +188,6 @@ Changelog:
 
 ```
 Preferred communication style: Simple, everyday language.
+Never modify components or features that weren't explicitly requested.
+Product registration should include: name, minimum stock, current stock, for sale checkbox (with price field), perishable checkbox (with manufacturing and expiry date fields).
 ```

@@ -51,6 +51,8 @@ const EstoqueSection = () => {
   const [showAddTransferModal, setShowAddTransferModal] = useState(false);
   const [showEditProductModal, setShowEditProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [showForSalePrice, setShowForSalePrice] = useState(false);
+  const [showPerishableDates, setShowPerishableDates] = useState(false);
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -76,8 +78,7 @@ const EstoqueSection = () => {
       deleteProduct(product.id);
       showAlert({
         title: 'Produto Excluído',
-        description: `O produto "${product.name}" foi excluído com sucesso.`,
-        type: 'success'
+        description: `O produto "${product.name}" foi excluído com sucesso.`
       });
     });
   };
@@ -85,16 +86,14 @@ const EstoqueSection = () => {
   const handleStockControl = (product: Product) => {
     showAlert({
       title: 'Controle de Estoque',
-      description: `Produto: ${product.name}\nEstoque atual: ${product.stock} unidades\nEstoque mínimo: ${product.minStock || 0} unidades`,
-      type: 'info'
+      description: `Produto: ${product.name}\nEstoque atual: ${product.stock} unidades\nEstoque mínimo: ${product.minStock || 0} unidades`
     });
   };
 
   const handleRegisterSale = (product: Product) => {
     showAlert({
       title: 'Registrar Venda',
-      description: `Função de venda para o produto "${product.name}" será implementada em breve.`,
-      type: 'info'
+      description: `Função de venda para o produto "${product.name}" será implementada em breve.`
     });
   };
 
@@ -525,7 +524,7 @@ const EstoqueSection = () => {
       {/* Modal Adicionar Produto */}
       {showAddProductModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Adicionar Novo Produto</h3>
               <button 
@@ -536,57 +535,139 @@ const EstoqueSection = () => {
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
-                <input
-                  type="text"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="Ex: Paracetamol 500mg"
-                />
-              </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Preço</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="0.00"
-                />
+              showAlert({
+                title: "Produto Adicionado",
+                description: "O produto foi adicionado com sucesso ao estoque!"
+              });
+              setShowAddProductModal(false);
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
+                  <input
+                    name="name"
+                    type="text"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Ex: Paracetamol 500mg"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Estoque Mínimo</label>
+                    <input
+                      name="minStock"
+                      type="number"
+                      min="0"
+                      defaultValue="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="10"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Estoque Atual</label>
+                    <input
+                      name="stock"
+                      type="number"
+                      min="0"
+                      defaultValue="0"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="100"
+                    />
+                  </div>
+                </div>
+                
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <input
+                      id="forSale"
+                      name="forSale"
+                      type="checkbox"
+                      onChange={(e) => setShowForSalePrice(e.target.checked)}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="forSale" className="text-sm font-medium text-gray-700">
+                      Está à venda
+                    </label>
+                  </div>
+                  
+                  {showForSalePrice && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Preço de Venda</label>
+                      <input
+                        name="price"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="0.00"
+                      />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <input
+                      id="isPerishable"
+                      name="isPerishable"
+                      type="checkbox"
+                      onChange={(e) => setShowPerishableDates(e.target.checked)}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="isPerishable" className="text-sm font-medium text-gray-700">
+                      É perecível
+                    </label>
+                  </div>
+                  
+                  {showPerishableDates && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Data de Fabricação</label>
+                        <input
+                          name="manufacturingDate"
+                          type="date"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Data de Vencimento</label>
+                        <input
+                          name="expiryDate"
+                          type="date"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="submit"
+                    className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
+                  >
+                    Adicionar Produto
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddProductModal(false)}
+                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
-                <input
-                  type="number"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="100"
-                />
-              </div>
-              
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => {
-                    showAlert({
-                      title: "Produto Adicionado",
-                      description: "O produto foi adicionado com sucesso ao estoque!",
-                      variant: "default"
-                    });
-                    setShowAddProductModal(false);
-                  }}
-                  className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
-                >
-                  Adicionar
-                </button>
-                <button
-                  onClick={() => setShowAddProductModal(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
+            </form>
+            
+
           </div>
         </div>
       )}
@@ -700,13 +781,12 @@ const EstoqueSection = () => {
                 minStock: parseInt(formData.get('minStock') as string)
               };
               
-              updateProduct({ id: editingProduct.id, ...updatedProduct });
+              updateProduct({ id: editingProduct.id, product: updatedProduct });
               setShowEditProductModal(false);
               setEditingProduct(null);
               showAlert({
                 title: 'Produto Atualizado',
-                description: `O produto "${updatedProduct.name}" foi atualizado com sucesso.`,
-                type: 'success'
+                description: `O produto "${updatedProduct.name}" foi atualizado com sucesso.`
               });
             }}>
               <div className="space-y-4">
