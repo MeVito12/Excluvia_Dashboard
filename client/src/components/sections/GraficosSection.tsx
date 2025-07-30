@@ -392,35 +392,7 @@ const GraficosSection = () => {
           </CardContent>
         </Card>
 
-        <Card className="main-card">
-          <CardHeader>
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-blue-600" />
-              Tendência de Crescimento ({calculateMetrics.period})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <p className="text-2xl font-bold text-gray-900">R$ {Number(calculateMetrics.totalSales).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-              <p className="text-gray-500">Receita total do período</p>
-            </div>
-          </CardContent>
-        </Card>
 
-        <Card className="main-card">
-          <CardHeader>
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Users className="h-5 w-5 text-cyan-600" />
-              Análise de Clientes ({calculateMetrics.period})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-8">
-              <p className="text-2xl font-bold text-gray-900">{clients.length} clientes</p>
-              <p className="text-gray-500">Total de clientes cadastrados</p>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Top Produtos do Período */}
