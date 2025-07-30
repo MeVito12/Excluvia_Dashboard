@@ -23,6 +23,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [showDemoModal, setShowDemoModal] = useState(false);
 
   // Sistema de usuários por categoria
   const categoryUsers = {
@@ -36,6 +37,52 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative', userType: 'regular' },
     'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency', userType: 'regular' }
   };
+
+  // Perfis de demonstração com dados completos
+  const demoProfiles = [
+    {
+      category: 'farmacia',
+      name: 'Dr. Fernando Farmacêutico',
+      business: 'Farmácia Central',
+      description: 'Sistema completo para farmácias com controle de medicamentos, vendas e estoque com validade',
+      features: ['Controle de medicamentos', 'Gestão de validade', 'Receitas médicas', 'Vendas automatizadas']
+    },
+    {
+      category: 'pet',
+      name: 'Dr. Carlos Veterinário', 
+      business: 'Pet Clinic',
+      description: 'Plataforma veterinária com agendamentos, prontuários e controle de produtos pet',
+      features: ['Agendamentos veterinários', 'Prontuários digitais', 'Produtos pet', 'Consultas e vacinas']
+    },
+    {
+      category: 'medico',
+      name: 'Dra. Ana Médica',
+      business: 'Clínica Saúde', 
+      description: 'Sistema médico completo com agendamentos, prontuários e controle financeiro',
+      features: ['Agendamentos médicos', 'Prontuários eletrônicos', 'Controle financeiro', 'Equipamentos médicos']
+    },
+    {
+      category: 'vendas',
+      name: 'João Vendedor',
+      business: 'Comercial Tech',
+      description: 'Plataforma de vendas B2B com gestão de clientes corporativos e produtos tecnológicos',
+      features: ['Vendas B2B', 'Clientes corporativos', 'Produtos tecnológicos', 'Relatórios de vendas']
+    },
+    {
+      category: 'design',
+      name: 'Maria Designer',
+      business: 'Agência Creative',
+      description: 'Gestão de projetos criativos com portfólio, clientes e controle de campanhas',
+      features: ['Portfólio de projetos', 'Gestão de campanhas', 'Clientes criativos', 'Propostas comerciais']
+    },
+    {
+      category: 'sites',
+      name: 'Pedro Desenvolvedor', 
+      business: 'Web Agency',
+      description: 'Agência de desenvolvimento web com projetos, clientes e gestão técnica completa',
+      features: ['Projetos web', 'Desenvolvimento técnico', 'Clientes digitais', 'Hospedagem e domínios']
+    }
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +153,45 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     setResetEmail('');
     setResetSuccess(false);
     setError('');
+  };
+
+  const handleDemoLogin = async (profile: any) => {
+    setIsLoading(true);
+    const userData = categoryUsers[profile.category as keyof typeof categoryUsers];
+    
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          email: userData.email, 
+          password: userData.password 
+        }),
+      });
+
+      if (response.ok) {
+        const { user } = await response.json();
+        
+        localStorage.setItem('userBusinessCategory', user.businessCategory);
+        setSelectedCategory(user.businessCategory);
+        
+        onLogin({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          businessCategory: user.businessCategory,
+          permissions: user.permissions
+        });
+      }
+    } catch (error) {
+      setError('Erro ao acessar demonstração');
+    }
+    
+    setIsLoading(false);
+    setShowDemoModal(false);
   };
 
   return (
@@ -210,13 +296,27 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 )}
               </Button>
 
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <button
                   type="button"
                   onClick={openForgotPassword}
                   className="text-sm text-purple-600 hover:text-purple-800"
                 >
                   Esqueceu sua senha?
+                </button>
+                
+                <div className="flex items-center justify-center">
+                  <div className="border-t border-gray-300 flex-1"></div>
+                  <span className="px-3 text-xs text-gray-500">ou</span>
+                  <div className="border-t border-gray-300 flex-1"></div>
+                </div>
+                
+                <button
+                  type="button"
+                  onClick={() => setShowDemoModal(true)}
+                  className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium rounded-md hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
+                >
+                  🚀 Acessar Demonstração
                 </button>
               </div>
             </form>
@@ -297,6 +397,88 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 </Button>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal de Demonstração */}
+        <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
+          <DialogContent className="bg-white max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-gray-900 text-center">
+                🚀 Demonstração do Sistema
+              </DialogTitle>
+              <DialogDescription className="text-gray-600 text-center">
+                Escolha um perfil para explorar todas as funcionalidades com dados reais
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+              {demoProfiles.map((profile, index) => (
+                <div 
+                  key={profile.category}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-purple-300"
+                  onClick={() => handleDemoLogin(profile)}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-lg text-gray-900">{profile.name}</h3>
+                      <p className="text-sm text-purple-600 font-medium">{profile.business}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center text-2xl">
+                      {profile.category === 'farmacia' ? '💊' :
+                       profile.category === 'pet' ? '🐕' :
+                       profile.category === 'medico' ? '🏥' :
+                       profile.category === 'vendas' ? '💼' :
+                       profile.category === 'design' ? '🎨' : '💻'}
+                    </div>
+                  </div>
+                  
+                  <p className="text-sm text-gray-600 mb-3">{profile.description}</p>
+                  
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-gray-700">Funcionalidades incluídas:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {profile.features.map((feature, idx) => (
+                        <span 
+                          key={idx}
+                          className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded-full"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <button className="w-full mt-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-medium rounded-md hover:from-purple-600 hover:to-blue-600 transition-colors">
+                    Acessar Demonstração
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+              <div className="flex items-start space-x-3">
+                <div className="text-2xl">ℹ️</div>
+                <div>
+                  <h4 className="font-medium text-blue-900 mb-1">Sobre a Demonstração</h4>
+                  <p className="text-sm text-blue-800">
+                    Cada perfil possui dados completos e reais do Supabase incluindo: produtos, vendas, 
+                    clientes, agendamentos, transferências e relatórios financeiros. Explore todas as 
+                    funcionalidades sem limitações.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex justify-center mt-4">
+              <Button 
+                variant="outline"
+                onClick={() => setShowDemoModal(false)}
+                className="px-8"
+              >
+                Fechar
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
       </div>
