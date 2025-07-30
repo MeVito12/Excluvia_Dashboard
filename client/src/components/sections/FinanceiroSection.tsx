@@ -716,411 +716,371 @@ const FinanceiroSection = () => {
         </div>
       </div>
 
-      {/* Modal de Criação - Personalizado */}
+      {/* Modal de Criação - Padrão do Estoque */}
       {isCreateModalOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsCreateModalOpen(false);
-              resetForm();
-            }
-          }}
-        >
-          <div 
-            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">
                 {currentEntryType === 'income' ? 'Nova Entrada Financeira' : 'Nova Saída Financeira'}
               </h3>
-              <button
+              <button 
                 onClick={() => {
                   setIsCreateModalOpen(false);
                   resetForm();
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <X className="w-6 h-6" />
+                ✕
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Descrição *
-                </label>
-                <input
-                  id="description"
-                  type="text"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Digite a descrição"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">
-                  Valor (R$) *
-                </label>
-                <input
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  placeholder="0,00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
-                  Data de Vencimento *
-                </label>
-                <input
-                  id="dueDate"
-                  type="date"
-                  value={formData.dueDate}
-                  onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <input
-                  id="isBoleto"
-                  type="checkbox"
-                  checked={formData.isBoleto}
-                  onChange={(e) => setFormData({ ...formData, isBoleto: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="isBoleto" className="text-sm text-gray-700">É um boleto</label>
-              </div>
-
-              {formData.isBoleto && (
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handleCreateEntry();
+            }}>
+              <div className="space-y-4">
                 <div>
-                  <label htmlFor="boletoCode" className="block text-sm font-medium text-gray-700 mb-1">
-                    Código do Boleto
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Descrição *</label>
                   <input
-                    id="boletoCode"
                     type="text"
-                    value={formData.boletoCode}
-                    onChange={(e) => setFormData({ ...formData, boletoCode: e.target.value })}
-                    placeholder="Código de barras do boleto"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Digite a descrição"
                   />
                 </div>
-              )}
 
-              <div className="flex items-center space-x-2">
-                <input
-                  id="isInstallment"
-                  type="checkbox"
-                  checked={formData.isInstallment}
-                  onChange={(e) => setFormData({ ...formData, isInstallment: e.target.checked })}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label htmlFor="isInstallment" className="text-sm text-gray-700">É parcelado</label>
-              </div>
-
-              {formData.isInstallment && (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label htmlFor="currentInstallment" className="block text-sm font-medium text-gray-700 mb-1">
-                      Parcela Atual
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$) *</label>
                     <input
-                      id="currentInstallment"
                       type="number"
-                      value={formData.currentInstallment}
-                      onChange={(e) => setFormData({ ...formData, currentInstallment: e.target.value })}
-                      placeholder="1"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      step="0.01"
+                      required
+                      value={formData.amount}
+                      onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="0,00"
                     />
                   </div>
+                  
                   <div>
-                    <label htmlFor="installmentCount" className="block text-sm font-medium text-gray-700 mb-1">
-                      Total de Parcelas
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Data de Vencimento *</label>
                     <input
-                      id="installmentCount"
-                      type="number"
-                      value={formData.installmentCount}
-                      onChange={(e) => setFormData({ ...formData, installmentCount: e.target.value })}
-                      placeholder="12"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      type="date"
+                      required
+                      value={formData.dueDate}
+                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                   </div>
                 </div>
-              )}
+                
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <input
+                      id="isBoleto"
+                      type="checkbox"
+                      checked={formData.isBoleto}
+                      onChange={(e) => setFormData({ ...formData, isBoleto: e.target.checked })}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="isBoleto" className="text-sm font-medium text-gray-700">
+                      É um boleto
+                    </label>
+                  </div>
+                  
+                  {formData.isBoleto && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Código do Boleto</label>
+                      <input
+                        type="text"
+                        value={formData.boletoCode}
+                        onChange={(e) => setFormData({ ...formData, boletoCode: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        placeholder="Código de barras do boleto"
+                      />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center space-x-2 mb-3">
+                    <input
+                      id="isInstallment"
+                      type="checkbox"
+                      checked={formData.isInstallment}
+                      onChange={(e) => setFormData({ ...formData, isInstallment: e.target.checked })}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                    />
+                    <label htmlFor="isInstallment" className="text-sm font-medium text-gray-700">
+                      É parcelado
+                    </label>
+                  </div>
+                  
+                  {formData.isInstallment && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Parcela Atual</label>
+                        <input
+                          type="number"
+                          value={formData.currentInstallment}
+                          onChange={(e) => setFormData({ ...formData, currentInstallment: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          placeholder="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Total de Parcelas</label>
+                        <input
+                          type="number"
+                          value={formData.installmentCount}
+                          onChange={(e) => setFormData({ ...formData, installmentCount: e.target.value })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          placeholder="12"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => {
-                    setIsCreateModalOpen(false);
-                    resetForm();
-                  }}
-                  className="btn btn-outline"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleCreateEntry}
-                  disabled={!formData.description || !formData.amount || !formData.dueDate}
-                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {currentEntryType === 'income' ? 'Criar Entrada' : 'Criar Saída'}
-                </button>
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCreateModalOpen(false);
+                      resetForm();
+                    }}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!formData.description || !formData.amount || !formData.dueDate}
+                    className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {currentEntryType === 'income' ? 'Criar Entrada' : 'Criar Saída'}
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Modal de Pagamento - Personalizado */}
+      {/* Modal de Pagamento - Padrão do Estoque */}
       {isPayModalOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsPayModalOpen(false);
-              setSelectedEntry(null);
-            }
-          }}
-        >
-          <div 
-            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Registrar Pagamento
-              </h3>
-              <button
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Registrar Pagamento</h3>
+              <button 
                 onClick={() => {
                   setIsPayModalOpen(false);
                   setSelectedEntry(null);
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <X className="w-6 h-6" />
+                ✕
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700 mb-1">
-                  Data do Pagamento *
-                </label>
-                <input
-                  id="paymentDate"
-                  type="date"
-                  value={paymentData.paymentDate}
-                  onChange={(e) => setPaymentData({ ...paymentData, paymentDate: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handlePayEntry();
+            }}>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Data do Pagamento *</label>
+                  <input
+                    type="date"
+                    required
+                    value={paymentData.paymentDate}
+                    onChange={(e) => setPaymentData({ ...paymentData, paymentDate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-1">
-                  Método de Pagamento *
-                </label>
-                <select
-                  id="paymentMethod"
-                  value={paymentData.paymentMethod}
-                  onChange={(e) => setPaymentData({ ...paymentData, paymentMethod: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="dinheiro">Dinheiro</option>
-                  <option value="cartao">Cartão</option>
-                  <option value="pix">PIX</option>
-                  <option value="transferencia">Transferência</option>
-                  <option value="boleto">Boleto</option>
-                </select>
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Método de Pagamento *</label>
+                  <select
+                    required
+                    value={paymentData.paymentMethod}
+                    onChange={(e) => setPaymentData({ ...paymentData, paymentMethod: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="">Selecione o método</option>
+                    <option value="dinheiro">Dinheiro</option>
+                    <option value="cartao">Cartão</option>
+                    <option value="pix">PIX</option>
+                    <option value="transferencia">Transferência</option>
+                    <option value="boleto">Boleto</option>
+                  </select>
+                </div>
 
-              <div>
-                <label htmlFor="paymentProof" className="block text-sm font-medium text-gray-700 mb-1">
-                  Comprovante (URL)
-                </label>
-                <input
-                  id="paymentProof"
-                  type="url"
-                  value={paymentData.paymentProof}
-                  onChange={(e) => setPaymentData({ ...paymentData, paymentProof: e.target.value })}
-                  placeholder="https://exemplo.com/comprovante.pdf"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Comprovante (URL)</label>
+                  <input
+                    type="url"
+                    value={paymentData.paymentProof}
+                    onChange={(e) => setPaymentData({ ...paymentData, paymentProof: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="https://exemplo.com/comprovante.pdf"
+                  />
+                </div>
 
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => {
-                    setIsPayModalOpen(false);
-                    setSelectedEntry(null);
-                  }}
-                  className="btn btn-outline"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handlePayEntry}
-                  disabled={!paymentData.paymentDate || !paymentData.paymentMethod}
-                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Confirmar Pagamento
-                </button>
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsPayModalOpen(false);
+                      setSelectedEntry(null);
+                    }}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!paymentData.paymentDate || !paymentData.paymentMethod}
+                    className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Confirmar Pagamento
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}
 
-      {/* Modal de Transferências Monetárias */}
+      {/* Modal de Transferências Monetárias - Padrão do Estoque */}
       {isTransferModalOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              setIsTransferModalOpen(false);
-            }
-          }}
-        >
-          <div 
-            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-gray-900">
-                Nova Transferência de Dinheiro
-              </h3>
-              <button
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Nova Transferência de Dinheiro</h3>
+              <button 
                 onClick={() => setIsTransferModalOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <X className="w-6 h-6" />
+                ✕
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="fromBranch" className="block text-sm font-medium text-gray-700 mb-1">
-                  Filial de Origem *
-                </label>
-                <select
-                  id="fromBranch"
-                  value={transferData.fromBranchId}
-                  onChange={(e) => setTransferData({ ...transferData, fromBranchId: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Selecione a filial de origem</option>
-                  {branches.map((branch) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              handleCreateTransfer();
+            }}>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filial de Origem *</label>
+                    <select
+                      required
+                      value={transferData.fromBranchId}
+                      onChange={(e) => setTransferData({ ...transferData, fromBranchId: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Selecione origem</option>
+                      {branches.map((branch) => (
+                        <option key={branch.id} value={branch.id}>
+                          {branch.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-              <div>
-                <label htmlFor="toBranch" className="block text-sm font-medium text-gray-700 mb-1">
-                  Filial de Destino *
-                </label>
-                <select
-                  id="toBranch"
-                  value={transferData.toBranchId}
-                  onChange={(e) => setTransferData({ ...transferData, toBranchId: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Selecione a filial de destino</option>
-                  {branches.filter(branch => branch.id.toString() !== transferData.fromBranchId).map((branch) => (
-                    <option key={branch.id} value={branch.id}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Filial de Destino *</label>
+                    <select
+                      required
+                      value={transferData.toBranchId}
+                      onChange={(e) => setTransferData({ ...transferData, toBranchId: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Selecione destino</option>
+                      {branches.filter(branch => branch.id.toString() !== transferData.fromBranchId).map((branch) => (
+                        <option key={branch.id} value={branch.id}>
+                          {branch.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-              <div>
-                <label htmlFor="transferAmount" className="block text-sm font-medium text-gray-700 mb-1">
-                  Valor da Transferência (R$) *
-                </label>
-                <input
-                  id="transferAmount"
-                  type="number"
-                  step="0.01"
-                  value={transferData.amount}
-                  onChange={(e) => setTransferData({ ...transferData, amount: e.target.value })}
-                  placeholder="0,00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Valor da Transferência (R$) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    required
+                    value={transferData.amount}
+                    onChange={(e) => setTransferData({ ...transferData, amount: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="0,00"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="transferDescription" className="block text-sm font-medium text-gray-700 mb-1">
-                  Descrição *
-                </label>
-                <input
-                  id="transferDescription"
-                  type="text"
-                  value={transferData.description}
-                  onChange={(e) => setTransferData({ ...transferData, description: e.target.value })}
-                  placeholder="Motivo da transferência"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Descrição *</label>
+                  <input
+                    type="text"
+                    required
+                    value={transferData.description}
+                    onChange={(e) => setTransferData({ ...transferData, description: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Motivo da transferência"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="transferType" className="block text-sm font-medium text-gray-700 mb-1">
-                  Tipo de Transferência *
-                </label>
-                <select
-                  id="transferType"
-                  value={transferData.transferType}
-                  onChange={(e) => setTransferData({ ...transferData, transferType: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="operational">Operacional</option>
-                  <option value="investment">Investimento</option>
-                  <option value="emergency">Emergência</option>
-                  <option value="reimbursement">Reembolso</option>
-                </select>
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Transferência *</label>
+                  <select
+                    required
+                    value={transferData.transferType}
+                    onChange={(e) => setTransferData({ ...transferData, transferType: e.target.value as any })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="operational">Operacional</option>
+                    <option value="investment">Investimento</option>
+                    <option value="emergency">Emergência</option>
+                    <option value="reimbursement">Reembolso</option>
+                  </select>
+                </div>
 
-              <div>
-                <label htmlFor="transferNotes" className="block text-sm font-medium text-gray-700 mb-1">
-                  Observações
-                </label>
-                <textarea
-                  id="transferNotes"
-                  value={transferData.notes}
-                  onChange={(e) => setTransferData({ ...transferData, notes: e.target.value })}
-                  placeholder="Observações adicionais (opcional)"
-                  rows={3}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+                  <textarea
+                    value={transferData.notes}
+                    onChange={(e) => setTransferData({ ...transferData, notes: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Observações adicionais (opcional)"
+                    rows={3}
+                  />
+                </div>
 
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => setIsTransferModalOpen(false)}
-                  className="btn btn-outline"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleCreateTransfer}
-                  disabled={!transferData.fromBranchId || !transferData.toBranchId || !transferData.amount || !transferData.description || isCreatingTransfer}
-                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isCreatingTransfer ? 'Criando...' : 'Criar Transferência'}
-                </button>
+                <div className="flex gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() => setIsTransferModalOpen(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!transferData.fromBranchId || !transferData.toBranchId || !transferData.amount || !transferData.description || isCreatingTransfer}
+                    className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isCreatingTransfer ? 'Criando...' : 'Criar Transferência'}
+                  </button>
+                </div>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}

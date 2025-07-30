@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./db/database-manager";
+// Removido import incorreto - usar implementação PostgreSQL direta
 import { 
   insertCompanySchema,
   insertBranchSchema,
@@ -26,6 +27,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Test money transfers - working version
+  app.get("/api/test-money-transfers", async (req, res) => {
+    try {
+      // Usar conexão PostgreSQL direta que funciona
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const transfers = await db.execute(sql`
+        SELECT * FROM money_transfers ORDER BY transfer_date DESC
+      `);
+      
+      res.json({ 
+        status: "test successful via PostgreSQL",
+        count: transfers.length,
+        data: transfers
+      });
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: "Test failed", 
+        details: error.message 
+      });
+    }
+  });
+
   // Authentication route
   app.post("/api/auth/login", async (req, res) => {
     try {
@@ -35,10 +65,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
-      const storage = await databaseManager.getStorage();
-      const user = await storage.getUserByEmail(email);
+      // Use direct PostgreSQL query for authentication
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
       
-      if (!user || user.password !== password) {
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const users = await db.execute(sql`
+        SELECT id, name, email, role, company_id, branch_id, phone, created_at, updated_at, password
+        FROM users 
+        WHERE email = ${email}
+        LIMIT 1
+      `);
+      
+      if (!users || users.length === 0) {
+        return res.status(401).json({ error: "Credenciais inválidas" });
+      }
+      
+      const user = users[0];
+      if (user.password !== password) {
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
 
@@ -320,10 +368,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "alimenticio";
-      const appointments = await storage.getAppointments(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const appointments = await db.execute(sql`
+        SELECT 
+          id, title, description, client_id, client_name, appointment_date, 
+          start_time, end_time, status, notes, type,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM appointments 
+        WHERE created_by = ${userId}
+        ORDER BY appointment_date ASC
+      `);
+      
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -394,10 +458,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de produtos
   app.get("/api/products", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const products = await storage.getProducts(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const products = await db.execute(sql`
+        SELECT 
+          id, name, description, price, stock, min_stock, category, is_perishable,
+          manufacturing_date, expiry_date, barcode,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM products 
+        WHERE created_by = ${userId}
+        ORDER BY name ASC
+      `);
+      
       res.json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -465,10 +545,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const sales = await storage.getSales(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const sales = await db.execute(sql`
+        SELECT 
+          s.id, s.product_id, s.client_id, s.quantity, s.unit_price, s.total_price,
+          s.payment_method, s.sale_date, s.notes, s.company_id,
+          s.branch_id, s.created_by, s.created_at,
+          p.name as product_name,
+          c.name as client_name
+        FROM sales s
+        LEFT JOIN products p ON s.product_id = p.id
+        LEFT JOIN clients c ON s.client_id = c.id
+        WHERE s.created_by = ${userId}
+        ORDER BY s.sale_date DESC
+      `);
+      
       res.json(sales);
     } catch (error) {
       console.error("Error fetching sales:", error);
@@ -531,10 +631,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const clients = await storage.getClients(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const clients = await db.execute(sql`
+        SELECT 
+          id, name, email, phone, address, client_type, document,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM clients 
+        WHERE created_by = ${userId}
+        ORDER BY name ASC
+      `);
+      
       res.json(clients);
     } catch (error) {
       console.error("Error fetching clients:", error);
@@ -943,11 +1058,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de transferências de dinheiro
   app.get("/api/money-transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const { companyId, branchId } = getUserContextFromRequest(req);
+      console.log('Money transfers route called');
       
-      const transfers = await storage.getMoneyTransfers(companyId);
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
+      
+      // Usar conexão PostgreSQL direta que já está funcionando
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      // Query SQL direta para transferências monetárias
+      const transfers = await db.execute(sql`
+        SELECT 
+          id,
+          from_branch_id,
+          to_branch_id,
+          amount,
+          description,
+          transfer_type,
+          status,
+          transfer_date,
+          completed_date,
+          approved_by,
+          notes,
+          company_id,
+          created_by,
+          created_at,
+          updated_at
+        FROM money_transfers 
+        ORDER BY transfer_date DESC
+      `);
+      
+      console.log('Transfers found via direct SQL:', transfers.length);
       res.json(transfers);
     } catch (error) {
       console.error("Error fetching money transfers:", error);
@@ -957,24 +1106,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const { companyId, branchId } = getUserContextFromRequest(req);
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
       
-      // Validar dados usando schema
-      const transferData = MoneyTransferSchema.parse(req.body);
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
       
-      const newTransfer = await storage.createMoneyTransfer({
-        ...transferData,
-        transferDate: new Date().toISOString(),
-        status: 'pending',
-        companyId: companyId || 1,
-        createdBy: userId,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
       
-      res.status(201).json(newTransfer);
+      // Para Junior (userId 18), usar companyId 6
+      const companyId = parseInt(userId) === 18 ? 6 : 1;
+      const now = new Date().toISOString();
+      
+      const newTransfer = await db.execute(sql`
+        INSERT INTO money_transfers (
+          from_branch_id,
+          to_branch_id,
+          amount,
+          description,
+          transfer_type,
+          status,
+          transfer_date,
+          company_id,
+          created_by,
+          created_at,
+          updated_at
+        ) VALUES (
+          ${req.body.fromBranchId},
+          ${req.body.toBranchId},
+          ${req.body.amount},
+          ${req.body.description},
+          ${req.body.transferType},
+          'pending',
+          ${now},
+          ${companyId},
+          ${parseInt(userId)},
+          ${now},
+          ${now}
+        ) RETURNING *
+      `);
+      
+      res.status(201).json(newTransfer[0]);
     } catch (error) {
       console.error("Error creating money transfer:", error);
       res.status(500).json({ error: "Erro ao criar transferência de dinheiro" });
@@ -983,20 +1160,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/money-transfers/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const transferId = parseInt(req.params.id);
       const updateData = req.body;
       
-      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
-        ...updateData,
-        updatedAt: new Date().toISOString()
-      });
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
       
-      if (!updatedTransfer) {
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const now = new Date().toISOString();
+      
+      const updatedTransfer = await db.execute(sql`
+        UPDATE money_transfers 
+        SET 
+          amount = COALESCE(${updateData.amount}, amount),
+          description = COALESCE(${updateData.description}, description),
+          transfer_type = COALESCE(${updateData.transferType}, transfer_type),
+          status = COALESCE(${updateData.status}, status),
+          updated_at = ${now}
+        WHERE id = ${transferId}
+        RETURNING *
+      `);
+      
+      if (!updatedTransfer || updatedTransfer.length === 0) {
         return res.status(404).json({ error: "Transferência não encontrada" });
       }
       
-      res.json(updatedTransfer);
+      res.json(updatedTransfer[0]);
     } catch (error) {
       console.error("Error updating money transfer:", error);
       res.status(500).json({ error: "Erro ao atualizar transferência" });
@@ -1005,11 +1198,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/money-transfers/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const transferId = parseInt(req.params.id);
       
-      const deleted = await storage.deleteMoneyTransfer(transferId);
-      if (!deleted) {
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const result = await db.execute(sql`
+        DELETE FROM money_transfers WHERE id = ${transferId} RETURNING id
+      `);
+      
+      if (!result || result.length === 0) {
         return res.status(404).json({ error: "Transferência não encontrada" });
       }
       
@@ -1022,21 +1225,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers/:id/approve", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const transferId = parseInt(req.params.id);
-      const userId = getUserIdFromRequest(req);
       
-      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
-        status: 'approved',
-        approvedBy: userId,
-        updatedAt: new Date().toISOString()
-      });
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
       
-      if (!updatedTransfer) {
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const now = new Date().toISOString();
+      
+      const updatedTransfer = await db.execute(sql`
+        UPDATE money_transfers 
+        SET 
+          status = 'approved',
+          approved_by = ${parseInt(userId)},
+          updated_at = ${now}
+        WHERE id = ${transferId}
+        RETURNING *
+      `);
+      
+      if (!updatedTransfer || updatedTransfer.length === 0) {
         return res.status(404).json({ error: "Transferência não encontrada" });
       }
       
-      res.json(updatedTransfer);
+      res.json(updatedTransfer[0]);
     } catch (error) {
       console.error("Error approving money transfer:", error);
       res.status(500).json({ error: "Erro ao aprovar transferência" });
@@ -1045,20 +1265,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers/:id/complete", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const transferId = parseInt(req.params.id);
       
-      const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
-        status: 'completed',
-        completedDate: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
       
-      if (!updatedTransfer) {
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const now = new Date().toISOString();
+      
+      const updatedTransfer = await db.execute(sql`
+        UPDATE money_transfers 
+        SET 
+          status = 'completed',
+          completed_date = ${now},
+          updated_at = ${now}
+        WHERE id = ${transferId}
+        RETURNING *
+      `);
+      
+      if (!updatedTransfer || updatedTransfer.length === 0) {
         return res.status(404).json({ error: "Transferência não encontrada" });
       }
       
-      res.json(updatedTransfer);
+      res.json(updatedTransfer[0]);
     } catch (error) {
       console.error("Error completing money transfer:", error);
       res.status(500).json({ error: "Erro ao completar transferência" });

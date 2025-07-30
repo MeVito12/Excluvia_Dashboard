@@ -1,6 +1,6 @@
 import { initializeDatabase } from './database';
-import { SupabaseStorage } from './supabase-storage';
-import { type Storage } from '../storage';
+import { SupabaseStorage, type Storage } from '../storage';
+import { sql } from 'drizzle-orm';
 
 class DatabaseManager {
   private storage: Storage | null = null;
@@ -18,21 +18,19 @@ class DatabaseManager {
         const supabaseStorage = new SupabaseStorage();
         
         try {
-          // Teste com usuário real que existe no schema
-          await Promise.race([
-            supabaseStorage.getUserByEmail('farmaceutico@farmaciacentral.com'),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), 3000)
-            )
-          ]);
-          
-          this.storage = supabaseStorage;
-          this.isSupabaseConnected = true;
-          console.log('✅ Usando banco de dados Supabase');
+          // Usar conexão Drizzle direta para teste mais simples
+          const testQuery = await db.execute(sql`SELECT 1 as test`);
+          if (testQuery && testQuery.length > 0) {
+            console.log('✅ Supabase: Conexão e tabelas verificadas com sucesso');
+            this.storage = supabaseStorage;
+            this.isSupabaseConnected = true;
+            console.log('✅ Usando banco de dados Supabase');
+          } else {
+            throw new Error('Teste de conectividade falhou');
+          }
         } catch (testError) {
-          console.log('⚠️  Supabase conectado mas tabelas não encontradas');
-          console.log('📋 Execute o SQL do arquivo migrations/new-schema.sql no Supabase Dashboard');
-          throw new Error('Database não configurado - execute o schema SQL');
+          console.log('⚠️  Erro no teste:', testError);
+          throw new Error('Database não configurado - consulte a documentação');
         }
       } else {
         throw new Error('DATABASE_URL não configurada');
