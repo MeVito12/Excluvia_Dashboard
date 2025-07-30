@@ -277,35 +277,7 @@ export class SupabaseStorage implements Storage {
     return true;
   }
 
-  // ====================================
-  // PERMISSÕES
-  // ====================================
 
-  async getUserPermissions(userId: number): Promise<UserPermission[]> {
-    return this.request(`user_permissions?user_id=eq.${userId}&select=*`);
-  }
-
-  async updateUserPermissions(userId: number, permissions: string[]): Promise<boolean> {
-    // Remove permissões existentes
-    await this.request(`user_permissions?user_id=eq.${userId}`, { method: 'DELETE' });
-    
-    // Adiciona novas permissões
-    const newPermissions = permissions.map(section => ({
-      user_id: userId,
-      section,
-      can_view: true,
-      can_edit: true,
-      can_delete: false,
-      can_export: true
-    }));
-
-    await this.request('user_permissions', {
-      method: 'POST',
-      body: JSON.stringify(newPermissions),
-    });
-
-    return true;
-  }
 
   // ====================================
   // PRODUTOS

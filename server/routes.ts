@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./db/database-manager";
+import { SupabaseStorage } from "./db/supabase-storage";
 import { 
   insertCompanySchema,
   insertBranchSchema,
@@ -24,6 +25,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       status: "ok", 
       database: dbStatus 
     });
+  });
+
+  // Test money transfers
+  app.get("/api/test-money-transfers", async (req, res) => {
+    try {
+      const { SupabaseStorage } = await import("./storage");
+      const storage = new SupabaseStorage();
+      
+      // Test the specific method
+      const transfers = await storage.getMoneyTransfers(8);
+      
+      res.json({ 
+        status: "test successful",
+        count: transfers.length,
+        data: transfers
+      });
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: "Test failed", 
+        details: error.message 
+      });
+    }
   });
 
   // Authentication route
@@ -943,7 +966,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de transferências de dinheiro
   app.get("/api/money-transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      console.log('Money transfers route called');
       
       // Usar o sistema de headers existente
       const userId = req.headers['x-user-id'] as string;
@@ -951,10 +974,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "User ID header required" });
       }
       
-      // Para Junior (userId 18), usar companyId 6
-      const companyId = parseInt(userId) === 18 ? 6 : 1;
-      
-      const transfers = await storage.getMoneyTransfers(companyId);
+      // Usar storage correto
+      const storage = await databaseManager.getStorage();
+      const transfers = await storage.getMoneyTransfers();
+      console.log('Transfers found:', transfers.length);
       res.json(transfers);
     } catch (error) {
       console.error("Error fetching money transfers:", error);
@@ -964,7 +987,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       
       // Usar o sistema de headers existente
       const userId = req.headers['x-user-id'] as string;
@@ -994,7 +1017,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.put("/api/money-transfers/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const transferId = parseInt(req.params.id);
       const updateData = req.body;
       
@@ -1016,7 +1039,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/money-transfers/:id", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const transferId = parseInt(req.params.id);
       
       const deleted = await storage.deleteMoneyTransfer(transferId);
@@ -1033,7 +1056,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers/:id/approve", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const transferId = parseInt(req.params.id);
       
       const userId = req.headers['x-user-id'] as string;
@@ -1060,7 +1083,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/money-transfers/:id/complete", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
+      const storage = new SupabaseStorage();
       const transferId = parseInt(req.params.id);
       
       const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
