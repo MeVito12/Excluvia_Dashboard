@@ -7,10 +7,8 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
-import { DemoProvider } from "@/contexts/DemoContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
 import FloatingAIChat from "@/components/FloatingAIChat";
-import DemoIndicator from "@/components/DemoIndicator";
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
 
@@ -25,7 +23,7 @@ const AppContent = () => {
   return (
     <NotificationProvider notificationFunctions={{ showSuccess, showError, showWarning, showInfo }}>
       <Index />
-      <DemoIndicator />
+
       <NotificationSystem 
         notifications={notifications} 
         onRemove={removeNotification} 
@@ -38,17 +36,15 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CategoryProvider>
-      <DemoProvider>
-        <AuthProvider>
-          <PermissionsProvider>
-            <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <AppContent />
-            </TooltipProvider>
-          </PermissionsProvider>
-        </AuthProvider>
-      </DemoProvider>
+      <AuthProvider>
+        <PermissionsProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <AppContent />
+          </TooltipProvider>
+        </PermissionsProvider>
+      </AuthProvider>
     </CategoryProvider>
   </QueryClientProvider>
 );

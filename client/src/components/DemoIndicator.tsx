@@ -3,10 +3,8 @@ import { useCategory } from '@/contexts/CategoryContext';
 import { X } from 'lucide-react';
 
 const DemoIndicator = () => {
-  const { isDemoMode, exitDemoMode } = useDemo();
   const { selectedCategory } = useCategory();
 
-  if (!isDemoMode) return null;
 
   const getCategoryInfo = (category: string) => {
     const categories: Record<string, { name: string; emoji: string }> = {

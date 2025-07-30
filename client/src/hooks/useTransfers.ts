@@ -1,71 +1,58 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Transfer, NewTransfer, Branch } from "@shared/schema";
-import { useAuth } from "@/contexts/AuthContext";
-import { useCategory } from "@/contexts/CategoryContext";
-import { useDemo } from "@/contexts/DemoContext";
-import { useApiClient } from "@/lib/apiClient";
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+
+import type { Transfer, NewTransfer } from '@shared/schema';
 
 export const useTransfers = () => {
+  const apiClient = useApiClient();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
-  const { isDemoMode, demoData } = useDemo();
-  const queryClient = useQueryClient();
-  const apiClient = useApiClient();
 
-  // Query para buscar transferências
-  const {
-    data: transfers = [],
-    isLoading: isLoadingTransfers,
-    error: transfersError,
-  } = useQuery({
+  const query = useQuery({
     queryKey: ['transfers', (user as any)?.id, selectedCategory],
     queryFn: async () => {
-      if (isDemoMode && demoData) {
-        return demoData.transfers || [];
-      }
       const params = new URLSearchParams({
-        businessCategory: selectedCategory,
+        businessCategory: selectedCategory
       });
       return apiClient.get(`/api/transfers?${params}`);
     },
-    enabled: !!(user && selectedCategory),
+    enabled: !!(user && selectedCategory)
   });
 
-  // Query para buscar filiais
-  const {
-    data: branches = [],
-    isLoading: isLoadingBranches,
-    error: branchesError,
-  } = useQuery({
-    queryKey: ['branches', (user as any)?.id, selectedCategory],
-    queryFn: async () => {
-      if (isDemoMode) {
-        return [{ id: 1, name: 'Matriz - Demo', address: 'Endereço Demo' }];
-      }
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory,
-      });
-      return apiClient.get(`/api/branches?${params}`);
-    },
-    enabled: !!(user && selectedCategory),
-  });
-
-  // Mutation para criar transferência
-  const createTransferMutation = useMutation({
-    mutationFn: async (transferData: NewTransfer) => {
-      return apiClient.post('/api/transfers', transferData);
+  const createMutation = useMutation({
+    mutationFn: async (transfer: NewTransfer) => {
+      return apiClient.post('/api/transfers', transfer);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
         queryKey: ['transfers', (user as any)?.id, selectedCategory] 
       });
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
     }
   });
 
-  // Mutation para atualizar transferência
-  const updateTransferMutation = useMutation({
-    mutationFn: async ({ id, transferData }: { id: number, transferData: Partial<NewTransfer> }) => {
-      return apiClient.put(`/api/transfers/${id}`, transferData);
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, transfer }: { id: number, transfer: Partial<NewTransfer> }) => {
+      return apiClient.put(`/api/transfers/${id}`, transfer);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['transfers', (user as any)?.id, selectedCategory] 
+      });
+      queryClient.invalidateQueries({ 
+        queryKey: ['products', (user as any)?.id, selectedCategory] 
+      });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/transfers/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
@@ -75,15 +62,14 @@ export const useTransfers = () => {
   });
 
   return {
-    transfers,
-    branches,
-    isLoadingTransfers,
-    isLoadingBranches,
-    transfersError,
-    branchesError,
-    createTransfer: createTransferMutation.mutate,
-    updateTransfer: updateTransferMutation.mutate,
-    isCreatingTransfer: createTransferMutation.isPending,
-    isUpdatingTransfer: updateTransferMutation.isPending
+    transfers: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createTransfer: createMutation.mutate,
+    updateTransfer: updateMutation.mutate,
+    deleteTransfer: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
   };
 };

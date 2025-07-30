@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApiClient } from '@/lib/apiClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategory } from '@/contexts/CategoryContext';
-import { useDemo } from '@/contexts/DemoContext';
+
 import type { Appointment, NewAppointment } from '@shared/schema';
 
 export const useAppointments = () => {
@@ -10,15 +10,14 @@ export const useAppointments = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
-  const { isDemoMode, demoData } = useDemo();
 
   const query = useQuery({
     queryKey: ['appointments', (user as any)?.id, selectedCategory],
     queryFn: async () => {
-      if (isDemoMode && demoData) {
-        return demoData.appointments || [];
-      }
-      return apiClient.get('/api/appointments');
+      const params = new URLSearchParams({
+        businessCategory: selectedCategory
+      });
+      return apiClient.get(`/api/appointments?${params}`);
     },
     enabled: !!(user && selectedCategory)
   });

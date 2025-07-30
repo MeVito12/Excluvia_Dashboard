@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
-import { useDemo } from '@/contexts/DemoContext';
+
 
 interface LoginFormProps {
   onLogin: (user: any) => void;
@@ -16,7 +16,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
   const { setSelectedCategory } = useCategory();
-  const { setDemoMode } = useDemo();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -157,32 +157,24 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     setError('');
   };
 
-  const handleDemoLogin = async (profile: any) => {
-    setIsLoading(true);
-    
-    try {
-      // Ativar modo demo com dados mock
-      setDemoMode(profile.category);
-      
-      // Definir categoria no localStorage e contexto
-      localStorage.setItem('userBusinessCategory', profile.category);
-      setSelectedCategory(profile.category);
-      
-      // Fazer login com dados mock do perfil de demonstração
-      onLogin({
-        id: 9000 + Object.keys(demoProfiles).indexOf(profile),
-        name: profile.name,
-        email: `demo.${profile.category}@sistema.com`,
-        role: 'regular',
-        businessCategory: profile.category,
-        permissions: ['dashboard', 'graficos', 'atividade', 'estoque', 'financeiro', 'agendamentos', 'atendimento']
-      });
-    } catch (error) {
-      setError('Erro ao acessar demonstração');
+  const handleDemoLogin = async (category: string) => {
+    const demoCredentials = {
+      'farmacia': { email: 'demo.farmacia@sistema.com', password: 'demo123' },
+      'pet': { email: 'demo.pet@sistema.com', password: 'demo123' },
+      'medico': { email: 'demo.medico@sistema.com', password: 'demo123' },
+      'vendas': { email: 'demo.vendas@sistema.com', password: 'demo123' },
+      'design': { email: 'demo.design@sistema.com', password: 'demo123' },
+      'sites': { email: 'demo.sites@sistema.com', password: 'demo123' }
+    };
+
+    const credentials = demoCredentials[category as keyof typeof demoCredentials];
+    if (credentials) {
+      setEmail(credentials.email);
+      setPassword(credentials.password);
+      setShowDemoModal(false);
+      // Fazer login automaticamente
+      await handleSubmit({ preventDefault: () => {} } as React.FormEvent);
     }
-    
-    setIsLoading(false);
-    setShowDemoModal(false);
   };
 
   return (
@@ -410,7 +402,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                 <div 
                   key={profile.category}
                   className="border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-purple-300"
-                  onClick={() => handleDemoLogin(profile)}
+                  onClick={() => handleDemoLogin(profile.category)}
                 >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">

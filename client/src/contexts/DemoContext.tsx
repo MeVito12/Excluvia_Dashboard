@@ -2,17 +2,12 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { getMockDataByCategory } from '@/data/mockDemoData';
 
 interface DemoContextType {
-  isDemoMode: boolean;
-  demoData: any;
-  setDemoMode: (category: string) => void;
   exitDemoMode: () => void;
 }
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
 export const DemoProvider = ({ children }: { children: ReactNode }) => {
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const [demoData, setDemoData] = useState<any>(null);
 
   // Verificar se já estava em modo demo ao inicializar
   useEffect(() => {
@@ -28,7 +23,6 @@ export const DemoProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const setDemoMode = (category: string) => {
     const mockData = getMockDataByCategory(category);
     if (mockData) {
       setDemoData(mockData);
@@ -50,9 +44,6 @@ export const DemoProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <DemoContext.Provider value={{
-      isDemoMode,
-      demoData,
-      setDemoMode,
       exitDemoMode
     }}>
       {children}
