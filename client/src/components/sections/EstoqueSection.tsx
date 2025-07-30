@@ -19,7 +19,7 @@ import {
   Eye,
   Edit,
   Trash2,
-  DollarSign
+  ShoppingCart
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -219,7 +219,7 @@ const EstoqueSection = () => {
                           className="list-action-button transfer"
                           title="Registrar venda"
                         >
-                          <DollarSign className="w-4 h-4" />
+                          <ShoppingCart className="w-4 h-4" />
                         </button>
 
                         <button 
