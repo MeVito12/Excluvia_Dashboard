@@ -604,7 +604,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const transfers = await storage.getTransfers(userId);
+      
+      console.log('[DEBUG ROUTE] Getting transfers for userId:', userId);
+      
+      // Buscar todas as transferências para usuário 18
+      const companyId = undefined;
+      
+      console.log('[DEBUG ROUTE] Using companyId:', companyId);
+      
+      const transfers = await storage.getTransfers(companyId);
+      
+      console.log('[DEBUG ROUTE] Transfers returned:', transfers.length);
+      if (transfers.length > 0) {
+        console.log('[DEBUG ROUTE] First transfer has productName:', !!transfers[0].productName);
+      }
+      
       res.json(transfers);
     } catch (error) {
       console.error("Error fetching transfers:", error);

@@ -420,10 +420,13 @@ export class SupabaseStorage implements Storage {
     const products = await this.request('products?select=id,name');
     
     // Mapear nomes dos produtos
-    return transfers.map((transfer: any) => ({
-      ...transfer,
-      productName: products.find((p: any) => p.id === transfer.productId)?.name || null
-    }));
+    return transfers.map((transfer: any) => {
+      const product = products.find((p: any) => p.id === transfer.productId);
+      return {
+        ...transfer,
+        productName: product?.name || `Produto ID: ${transfer.productId}`
+      };
+    });
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {
