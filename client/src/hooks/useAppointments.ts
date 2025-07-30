@@ -12,14 +12,11 @@ export const useAppointments = () => {
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['appointments', (user as any)?.id, selectedCategory],
+    queryKey: ['appointments', (user as any)?.id],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory
-      });
-      return apiClient.get(`/api/appointments?${params}`);
+      return apiClient.get('/api/appointments');
     },
-    enabled: !!(user && selectedCategory)
+    enabled: !!user
   });
 
   const createMutation = useMutation({
@@ -28,7 +25,7 @@ export const useAppointments = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+        queryKey: ['appointments', (user as any)?.id] 
       });
     }
   });
@@ -39,7 +36,7 @@ export const useAppointments = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+        queryKey: ['appointments', (user as any)?.id] 
       });
     }
   });
@@ -50,7 +47,7 @@ export const useAppointments = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['appointments', (user as any)?.id, selectedCategory] 
+        queryKey: ['appointments', (user as any)?.id] 
       });
     }
   });

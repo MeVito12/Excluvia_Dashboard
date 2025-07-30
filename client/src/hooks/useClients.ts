@@ -12,14 +12,11 @@ export const useClients = () => {
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['clients', (user as any)?.id, selectedCategory],
+    queryKey: ['clients', (user as any)?.id],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory
-      });
-      return apiClient.get(`/api/clients?${params}`);
+      return apiClient.get('/api/clients');
     },
-    enabled: !!(user && selectedCategory)
+    enabled: !!user
   });
 
   const createMutation = useMutation({
@@ -28,7 +25,7 @@ export const useClients = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+        queryKey: ['clients', (user as any)?.id] 
       });
     }
   });
@@ -39,7 +36,7 @@ export const useClients = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+        queryKey: ['clients', (user as any)?.id] 
       });
     }
   });
@@ -50,7 +47,7 @@ export const useClients = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['clients', (user as any)?.id, selectedCategory] 
+        queryKey: ['clients', (user as any)?.id] 
       });
     }
   });

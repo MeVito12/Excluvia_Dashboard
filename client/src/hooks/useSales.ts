@@ -12,14 +12,11 @@ export const useSales = () => {
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['sales', (user as any)?.id, selectedCategory],
+    queryKey: ['sales', (user as any)?.id],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory
-      });
-      return apiClient.get(`/api/sales?${params}`);
+      return apiClient.get('/api/sales');
     },
-    enabled: !!(user && selectedCategory)
+    enabled: !!user
   });
 
   const createMutation = useMutation({
@@ -28,13 +25,13 @@ export const useSales = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['sales', (user as any)?.id, selectedCategory] 
+        queryKey: ['sales', (user as any)?.id] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ['products', (user as any)?.id, selectedCategory] 
+        queryKey: ['products', (user as any)?.id] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });
@@ -45,10 +42,10 @@ export const useSales = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['sales', (user as any)?.id, selectedCategory] 
+        queryKey: ['sales', (user as any)?.id] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });
@@ -59,10 +56,10 @@ export const useSales = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['sales', (user as any)?.id, selectedCategory] 
+        queryKey: ['sales', (user as any)?.id] 
       });
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });

@@ -12,14 +12,11 @@ export const useProducts = () => {
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['products', (user as any)?.id, selectedCategory],
+    queryKey: ['products', (user as any)?.id],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory
-      });
-      return apiClient.get(`/api/products?${params}`);
+      return apiClient.get('/api/products');
     },
-    enabled: !!(user && selectedCategory)
+    enabled: !!user
   });
 
   const createMutation = useMutation({
@@ -28,7 +25,7 @@ export const useProducts = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['products', (user as any)?.id, selectedCategory] 
+        queryKey: ['products', (user as any)?.id] 
       });
     }
   });
@@ -39,7 +36,7 @@ export const useProducts = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['products', (user as any)?.id, selectedCategory] 
+        queryKey: ['products', (user as any)?.id] 
       });
     }
   });
@@ -50,7 +47,7 @@ export const useProducts = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['products', (user as any)?.id, selectedCategory] 
+        queryKey: ['products', (user as any)?.id] 
       });
     }
   });

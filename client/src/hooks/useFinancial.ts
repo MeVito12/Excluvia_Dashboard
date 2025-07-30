@@ -12,14 +12,11 @@ export const useFinancial = () => {
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['financial', (user as any)?.id, selectedCategory],
+    queryKey: ['financial', (user as any)?.id],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        businessCategory: selectedCategory
-      });
-      return apiClient.get(`/api/financial?${params}`);
+      return apiClient.get('/api/financial');
     },
-    enabled: !!(user && selectedCategory)
+    enabled: !!user
   });
 
   const createMutation = useMutation({
@@ -28,7 +25,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });
@@ -39,7 +36,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });
@@ -50,7 +47,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id, selectedCategory] 
+        queryKey: ['financial', (user as any)?.id] 
       });
     }
   });
