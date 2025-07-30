@@ -162,11 +162,41 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
     const credentials = demoCredentials[category as keyof typeof demoCredentials];
     if (credentials) {
-      setEmail(credentials.email);
-      setPassword(credentials.password);
+      setIsLoading(true);
+      setError('');
       setShowDemoModal(false);
-      // Fazer login automaticamente
-      await handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+      
+      try {
+        // Fazer login direto via API
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            email: credentials.email, 
+            password: credentials.password 
+          }),
+        });
+
+        if (response.ok) {
+          const { user } = await response.json();
+          
+          // Definir categoria no localStorage e contexto
+          localStorage.setItem('userBusinessCategory', user.businessCategory || category);
+          setSelectedCategory(user.businessCategory || category);
+          
+          // Fazer login com dados reais do usuário
+          onLogin(user);
+        } else {
+          const error = await response.json();
+          setError(error.error || 'Erro ao fazer login na demonstração');
+        }
+      } catch (error) {
+        setError('Erro de conexão. Tente novamente.');
+      }
+      
+      setIsLoading(false);
     }
   };
 
