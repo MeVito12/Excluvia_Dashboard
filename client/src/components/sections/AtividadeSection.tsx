@@ -204,9 +204,9 @@ const AtividadeSection = () => {
       };
     } else if (activeTab === 'vendas') {
       return {
-        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
-        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
-        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
+        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
+        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
+        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
         metric4: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
@@ -439,7 +439,7 @@ const AtividadeSection = () => {
             <div className="text-right">
               <p className="text-sm text-gray-600">Total:</p>
               <p className="text-lg font-bold text-green-600">
-                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
             </div>
           </div>
@@ -448,23 +448,23 @@ const AtividadeSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {sales.map((sale: any) => {
-              const client = clients.find((c: any) => c.id === sale.clientId);
-              const product = products.find((p: any) => p.id === sale.productId);
+              const client = clients.find((c: any) => c.id === sale.client_id);
+              const product = products.find((p: any) => p.id === sale.product_id);
               
               return (
                 <div key={sale.id} className="standard-list-item group">
                   <div className="list-item-main">
-                    <div className="list-item-title">{client?.name || `Cliente #${sale.clientId}`}</div>
-                    <div className="list-item-subtitle">{product?.name || `Produto #${sale.productId}`} x{sale.quantity || 0}</div>
+                    <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
+                    <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
                     <div className="list-item-meta">
-                      {sale.saleDate ? format(new Date(sale.saleDate), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+                      {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-3">
                     <span className="list-status-badge status-success">Concluída</span>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                     </div>
                   </div>
                 </div>

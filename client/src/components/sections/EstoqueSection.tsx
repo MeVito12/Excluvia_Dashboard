@@ -241,16 +241,16 @@ const EstoqueSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {products
-              .filter((product: Product) => {
+              .filter((product: any) => {
                 const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
-                const status = getProductStatus(product.stock, product.minStock || 0, product.expiryDate?.toString());
+                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
                 const statusMatch = statusFilter === 'all' || status === statusFilter;
                 return searchMatch && categoryMatch && statusMatch;
               })
               .map((product: any) => {
-                const status = getProductStatus(product.stock, product.minStock || 0, product.expiryDate?.toString());
+                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
                 
                 return (
                   <div key={product.id} className="standard-list-item group">
@@ -477,7 +477,7 @@ const EstoqueSection = () => {
                   <p className="text-sm font-medium text-gray-600">Estoque Bom</p>
                   <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
-                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
                       return status === 'Em Estoque';
                     }).length || 0}
                   </p>
@@ -495,7 +495,7 @@ const EstoqueSection = () => {
                   <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
                   <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
-                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
                       return status === 'Estoque Baixo';
                     }).length || 0}
                   </p>
@@ -513,7 +513,7 @@ const EstoqueSection = () => {
                   <p className="text-sm font-medium text-gray-600">Próximos ao Vencimento</p>
                   <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
-                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
                       return status === 'Próximo ao Vencimento';
                     }).length || 0}
                   </p>
@@ -531,7 +531,7 @@ const EstoqueSection = () => {
                   <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
                   <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
-                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
                       return status === 'Vencido';
                     }).length || 0}
                   </p>

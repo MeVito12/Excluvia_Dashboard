@@ -145,9 +145,9 @@ const AgendamentosSection = () => {
               <div key={appointment.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{appointment.title}</div>
-                  <div className="list-item-subtitle">Cliente: {appointment.client}</div>
+                  <div className="list-item-subtitle">Cliente: {appointment.client_name}</div>
                   <div className="list-item-meta">
-                    Data: {appointment.date} às {appointment.time} | Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
+                    Data: {appointment.appointment_date} às {appointment.start_time} | Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
                      appointment.type === 'consulta' ? 'Consulta' : 'Follow-up'}
                   </div>
                 </div>
@@ -167,7 +167,7 @@ const AgendamentosSection = () => {
                       onClick={() => {
                         showAlert({
                           title: `Visualizando Compromisso`,
-                          description: `${appointment.title}\nCliente: ${appointment.client}\nData: ${appointment.date} às ${appointment.time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
+                          description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${appointment.appointment_date} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
                           variant: "default"
                         });
                       }}
