@@ -27,60 +27,53 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [resetSuccess, setResetSuccess] = useState(false);
   const [showDemoModal, setShowDemoModal] = useState(false);
 
-  // Sistema de usuários por categoria
+  // Sistema de usuários mantidos
   const categoryUsers = {
     'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
-
-    'farmacia': { email: 'farmaceutico@farmaciacentral.com', password: 'farm2025', name: 'Dr. Fernando Farmacêutico', business: 'Farmácia Central', userType: 'regular' },
-    'pet': { email: 'veterinario@petclinic.com', password: 'vet2025', name: 'Dr. Carlos Veterinário', business: 'Pet Clinic', userType: 'regular' },
-    'medico': { email: 'medico@clinicasaude.com', password: 'med2025', name: 'Dra. Ana Médica', business: 'Clínica Saúde', userType: 'regular' },
-
-    'vendas': { email: 'vendedor@comercial.com', password: 'venda2025', name: 'João Vendedor', business: 'Comercial Tech', userType: 'regular' },
-    'design': { email: 'designer@agencia.com', password: 'design2025', name: 'Maria Designer', business: 'Agência Creative', userType: 'regular' },
-    'sites': { email: 'dev@webagency.com', password: 'web2025', name: 'Pedro Desenvolvedor', business: 'Web Agency', userType: 'regular' }
+    'junior': { email: 'junior@mercadocentral.com.br', password: 'junior2025', name: 'Junior Coordenador', business: 'Mercado Central', userType: 'gestao' }
   };
 
-  // Perfis de demonstração com dados completos
+  // Perfis de demonstração com dados reais do banco
   const demoProfiles = [
     {
       category: 'farmacia',
-      name: 'Dr. Fernando Farmacêutico',
-      business: 'Farmácia Central',
+      name: 'Farmácia Central',
+      business: 'Demo Farmácia Central',
       description: 'Sistema completo para farmácias com controle de medicamentos, vendas e estoque com validade',
       features: ['Controle de medicamentos', 'Gestão de validade', 'Receitas médicas', 'Vendas automatizadas']
     },
     {
       category: 'pet',
-      name: 'Dr. Carlos Veterinário', 
-      business: 'Pet Clinic',
+      name: 'Pet Clinic',
+      business: 'Demo Pet Clinic',
       description: 'Plataforma veterinária com agendamentos, prontuários e controle de produtos pet',
       features: ['Agendamentos veterinários', 'Prontuários digitais', 'Produtos pet', 'Consultas e vacinas']
     },
     {
       category: 'medico',
-      name: 'Dra. Ana Médica',
-      business: 'Clínica Saúde', 
+      name: 'Clínica Saúde',
+      business: 'Demo Clínica Saúde', 
       description: 'Sistema médico completo com agendamentos, prontuários e controle financeiro',
       features: ['Agendamentos médicos', 'Prontuários eletrônicos', 'Controle financeiro', 'Equipamentos médicos']
     },
     {
       category: 'vendas',
-      name: 'João Vendedor',
-      business: 'Comercial Tech',
+      name: 'Comercial Tech',
+      business: 'Demo Comercial Tech',
       description: 'Plataforma de vendas B2B com gestão de clientes corporativos e produtos tecnológicos',
       features: ['Vendas B2B', 'Clientes corporativos', 'Produtos tecnológicos', 'Relatórios de vendas']
     },
     {
       category: 'design',
-      name: 'Maria Designer',
-      business: 'Agência Creative',
+      name: 'Agência Creative',
+      business: 'Demo Agência Creative',
       description: 'Gestão de projetos criativos com portfólio, clientes e controle de campanhas',
       features: ['Portfólio de projetos', 'Gestão de campanhas', 'Clientes criativos', 'Propostas comerciais']
     },
     {
       category: 'sites',
-      name: 'Pedro Desenvolvedor', 
-      business: 'Web Agency',
+      name: 'Web Agency',
+      business: 'Demo Web Agency',
       description: 'Agência de desenvolvimento web com projetos, clientes e gestão técnica completa',
       features: ['Projetos web', 'Desenvolvimento técnico', 'Clientes digitais', 'Hospedagem e domínios']
     }
