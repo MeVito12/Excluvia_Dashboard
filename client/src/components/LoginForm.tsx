@@ -402,29 +402,29 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
         {/* Modal de Demonstração */}
         <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
-          <DialogContent className="bg-white max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-white max-w-5xl w-[95vw] max-h-[95vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-gray-900 text-center">
+              <DialogTitle className="text-xl font-bold text-gray-900 text-center">
                 🚀 Demonstração do Sistema
               </DialogTitle>
-              <DialogDescription className="text-gray-600 text-center">
+              <DialogDescription className="text-gray-600 text-center text-sm">
                 Escolha um perfil para explorar todas as funcionalidades com dados reais
               </DialogDescription>
             </DialogHeader>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
               {demoProfiles.map((profile, index) => (
                 <div 
                   key={profile.category}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-purple-300"
+                  className="border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-purple-300"
                   onClick={() => handleDemoLogin(profile)}
                 >
-                  <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-gray-900">{profile.name}</h3>
-                      <p className="text-sm text-purple-600 font-medium">{profile.business}</p>
+                      <h3 className="font-semibold text-base text-gray-900">{profile.name}</h3>
+                      <p className="text-xs text-purple-600 font-medium">{profile.business}</p>
                     </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center text-2xl">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center text-lg">
                       {profile.category === 'farmacia' ? '💊' :
                        profile.category === 'pet' ? '🐕' :
                        profile.category === 'medico' ? '🏥' :
@@ -433,12 +433,12 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     </div>
                   </div>
                   
-                  <p className="text-sm text-gray-600 mb-3">{profile.description}</p>
+                  <p className="text-xs text-gray-600 mb-2">{profile.description}</p>
                   
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-gray-700">Funcionalidades incluídas:</p>
+                    <p className="text-xs font-medium text-gray-700">Funcionalidades:</p>
                     <div className="flex flex-wrap gap-1">
-                      {profile.features.map((feature, idx) => (
+                      {profile.features.slice(0, 2).map((feature, idx) => (
                         <span 
                           key={idx}
                           className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded-full"
@@ -446,35 +446,37 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                           {feature}
                         </span>
                       ))}
+                      {profile.features.length > 2 && (
+                        <span className="text-xs text-gray-500">+{profile.features.length - 2}</span>
+                      )}
                     </div>
                   </div>
                   
-                  <button className="w-full mt-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-sm font-medium rounded-md hover:from-purple-600 hover:to-blue-600 transition-colors">
-                    Acessar Demonstração
+                  <button className="w-full mt-3 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-medium rounded-md hover:from-purple-600 hover:to-blue-600 transition-colors">
+                    Acessar Demo
                   </button>
                 </div>
               ))}
             </div>
             
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-start space-x-3">
-                <div className="text-2xl">ℹ️</div>
+            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <div className="text-lg">ℹ️</div>
                 <div>
-                  <h4 className="font-medium text-blue-900 mb-1">Sobre a Demonstração</h4>
-                  <p className="text-sm text-blue-800">
-                    Cada perfil possui dados completos e reais do Supabase incluindo: produtos, vendas, 
-                    clientes, agendamentos, transferências e relatórios financeiros. Explore todas as 
-                    funcionalidades sem limitações.
+                  <h4 className="font-medium text-blue-900 mb-1 text-sm">Sobre a Demonstração</h4>
+                  <p className="text-xs text-blue-800">
+                    Cada perfil possui dados completos do Supabase: produtos, vendas, clientes, 
+                    agendamentos, transferências e relatórios financeiros. Explore sem limitações.
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-3">
               <Button 
                 variant="outline"
                 onClick={() => setShowDemoModal(false)}
-                className="px-8"
+                className="px-6 text-sm"
               >
                 Fechar
               </Button>
