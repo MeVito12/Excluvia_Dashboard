@@ -207,24 +207,7 @@ export const financialEntriesTable = pgTable('financial_entries', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// Tabela de transferências de dinheiro
-export const moneyTransfersTable = pgTable('money_transfers', {
-  id: integer('id').primaryKey().generatedByDefaultAsIdentity(),
-  fromBranchId: integer('from_branch_id').notNull().references(() => branchesTable.id),
-  toBranchId: integer('to_branch_id').notNull().references(() => branchesTable.id),
-  amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
-  description: text('description'),
-  transferType: text('transfer_type').notNull(), // 'operational', 'emergency', etc.
-  status: text('status').notNull().default('pending'), // 'pending', 'approved', 'completed', 'cancelled'
-  transferDate: timestamp('transfer_date'),
-  completedDate: timestamp('completed_date'),
-  approvedBy: integer('approved_by').references(() => usersTable.id),
-  notes: text('notes'),
-  companyId: integer('company_id').notNull().references(() => companiesTable.id),
-  createdBy: integer('created_by').notNull().references(() => usersTable.id),
-  createdAt: timestamp('created_at'),
-  updatedAt: timestamp('updated_at'),
-});
+
 
 // Schemas de validação
 export const insertCompanySchema = createInsertSchema(companiesTable);
@@ -245,8 +228,6 @@ export const insertAppointmentSchema = createInsertSchema(appointmentsTable);
 export const selectAppointmentSchema = createSelectSchema(appointmentsTable);
 export const insertFinancialEntrySchema = createInsertSchema(financialEntriesTable);
 export const selectFinancialEntrySchema = createSelectSchema(financialEntriesTable);
-export const insertMoneyTransferSchema = createInsertSchema(moneyTransfersTable);
-export const selectMoneyTransferSchema = createSelectSchema(moneyTransfersTable);
 
 // Tipos TypeScript
 export type Company = typeof companiesTable.$inferSelect;
@@ -267,5 +248,3 @@ export type Appointment = typeof appointmentsTable.$inferSelect;
 export type NewAppointment = typeof appointmentsTable.$inferInsert;
 export type FinancialEntry = typeof financialEntriesTable.$inferSelect;
 export type NewFinancialEntry = typeof financialEntriesTable.$inferInsert;
-export type MoneyTransfer = typeof moneyTransfersTable.$inferSelect;
-export type NewMoneyTransfer = typeof moneyTransfersTable.$inferInsert;

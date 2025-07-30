@@ -102,8 +102,7 @@ export class SupabaseStorage implements Storage {
 
   constructor() {
     this.baseUrl = process.env.VITE_SUPABASE_URL!;
-    // Use service role key for backend operations (full access)
-    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
+    this.apiKey = process.env.VITE_SUPABASE_ANON_KEY!;
   }
 
   private async request(path: string, options: RequestInit = {}): Promise<any> {
@@ -158,27 +157,6 @@ export class SupabaseStorage implements Storage {
     return this.request(`users?company_id=eq.${companyId}&select=*`);
   }
 
-  async getMasterUsers(): Promise<User[]> {
-    return this.request(`users?role=eq.master&select=*`);
-  }
-
-  async getAllUsers(): Promise<User[]> {
-    return this.request(`users?select=*`);
-  }
-
-  async updateUserRole(id: number, role: string): Promise<User | null> {
-    const [updated] = await this.request(`users?id=eq.${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ role }),
-    });
-    return updated || null;
-  }
-
-  async getUserById(id: number): Promise<User | null> {
-    const users = await this.request(`users?id=eq.${id}&select=*`);
-    return users[0] || null;
-  }
-
   // ====================================
   // EMPRESAS
   // ====================================
@@ -189,11 +167,6 @@ export class SupabaseStorage implements Storage {
 
   async getCompaniesByCreator(creatorId: number): Promise<Company[]> {
     return this.request(`companies?created_by=eq.${creatorId}&select=*&order=name.asc`);
-  }
-
-  async getCompanyById(id: number): Promise<Company | null> {
-    const companies = await this.request(`companies?id=eq.${id}&select=*`);
-    return companies[0] || null;
   }
 
   async createCompany(company: NewCompany): Promise<Company> {
@@ -260,25 +233,26 @@ export class SupabaseStorage implements Storage {
   }
 
   async updateUserPermissions(userId: number, permissions: string[]): Promise<boolean> {
-    // Delete existing permissions
+    // Remove permissões existentes
     await this.request(`user_permissions?user_id=eq.${userId}`, { method: 'DELETE' });
     
-    // Insert new permissions
-    const permissionObjects = permissions.map(permission => ({
+    // Adiciona novas permissões
+    const newPermissions = permissions.map(section => ({
       user_id: userId,
-      permission,
-      created_at: new Date().toISOString(),
+      section,
+      can_view: true,
+      can_edit: true,
+      can_delete: false,
+      can_export: true
     }));
-    
+
     await this.request('user_permissions', {
       method: 'POST',
-      body: JSON.stringify(permissionObjects),
+      body: JSON.stringify(newPermissions),
     });
-    
+
     return true;
   }
-
-
 
   // ====================================
   // PRODUTOS
@@ -430,18 +404,6 @@ export class SupabaseStorage implements Storage {
   async deleteFinancialEntry(id: number): Promise<boolean> {
     await this.request(`financial_entries?id=eq.${id}`, { method: 'DELETE' });
     return true;
-  }
-
-  async revertFinancialEntry(id: number): Promise<FinancialEntry | null> {
-    const [updated] = await this.request(`financial_entries?id=eq.${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({ 
-        status: 'pending',
-        paid_date: null,
-        updated_at: new Date().toISOString()
-      }),
-    });
-    return updated || null;
   }
 
   // ====================================
