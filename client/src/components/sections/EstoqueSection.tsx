@@ -651,17 +651,17 @@ const EstoqueSection = () => {
                 
                 <div className="flex gap-3 pt-4">
                   <button
+                    type="button"
+                    onClick={() => setShowAddProductModal(false)}
+                    className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
                     type="submit"
                     className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
                   >
                     Adicionar Produto
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowAddProductModal(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-                  >
-                    Cancelar
                   </button>
                 </div>
               </div>
@@ -728,6 +728,12 @@ const EstoqueSection = () => {
               
               <div className="flex gap-3 pt-4">
                 <button
+                  onClick={() => setShowAddTransferModal(false)}
+                  className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
                   onClick={() => {
                     showAlert({
                       title: "Transferência Criada",
@@ -739,12 +745,6 @@ const EstoqueSection = () => {
                   className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
                 >
                   Criar Transferência
-                </button>
-                <button
-                  onClick={() => setShowAddTransferModal(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
-                >
-                  Cancelar
                 </button>
               </div>
             </div>
@@ -858,21 +858,21 @@ const EstoqueSection = () => {
                 
                 <div className="flex gap-3 pt-4">
                   <button
-                    type="submit"
-                    disabled={isUpdating}
-                    className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
-                  >
-                    {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
-                  </button>
-                  <button
                     type="button"
                     onClick={() => {
                       setShowEditProductModal(false);
                       setEditingProduct(null);
                     }}
-                    className="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400 transition-colors"
+                    className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                   >
                     Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isUpdating}
+                    className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+                  >
+                    {isUpdating ? 'Salvando...' : 'Salvar Alterações'}
                   </button>
                 </div>
               </div>
