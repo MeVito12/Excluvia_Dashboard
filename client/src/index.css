@@ -17,6 +17,29 @@
   position: relative !important;
 }
 
+/* Modal de demonstração específico */
+[data-radix-portal] {
+  z-index: 10001 !important;
+}
+
+[data-radix-dialog-overlay] {
+  z-index: 10002 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-radix-dialog-content] {
+  z-index: 10003 !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
 .sheets-integration-panel {
   z-index: 10001 !important;
 }

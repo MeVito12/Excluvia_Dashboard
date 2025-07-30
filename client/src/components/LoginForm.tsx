@@ -402,7 +402,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
         {/* Modal de Demonstração */}
         <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
-          <DialogContent className="bg-white max-w-5xl w-[95vw] max-h-[95vh] overflow-y-auto">
+          <DialogContent className="bg-white max-w-4xl w-[90vw] max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-gray-900 text-center">
                 🚀 Demonstração do Sistema
