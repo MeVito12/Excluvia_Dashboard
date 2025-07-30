@@ -1,6 +1,5 @@
 import { initializeDatabase } from './database';
-import { SupabaseStorage } from './supabase-storage';
-import { type Storage } from '../storage';
+import { SupabaseStorage, type Storage } from '../storage';
 
 class DatabaseManager {
   private storage: Storage | null = null;

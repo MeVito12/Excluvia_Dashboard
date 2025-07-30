@@ -213,18 +213,17 @@ export const moneyTransfersTable = pgTable('money_transfers', {
   fromBranchId: integer('from_branch_id').notNull().references(() => branchesTable.id),
   toBranchId: integer('to_branch_id').notNull().references(() => branchesTable.id),
   amount: decimal('amount', { precision: 10, scale: 2 }).notNull(),
-  description: text('description').notNull(),
+  description: text('description'),
   transferType: text('transfer_type').notNull(), // 'operational', 'emergency', etc.
   status: text('status').notNull().default('pending'), // 'pending', 'approved', 'completed', 'cancelled'
-  transferDate: timestamp('transfer_date').defaultNow().notNull(),
+  transferDate: timestamp('transfer_date'),
+  completedDate: timestamp('completed_date'),
   approvedBy: integer('approved_by').references(() => usersTable.id),
-  approvedAt: timestamp('approved_at'),
-  completedAt: timestamp('completed_at'),
   notes: text('notes'),
-  companyId: integer('company_id').references(() => companiesTable.id),
+  companyId: integer('company_id').notNull().references(() => companiesTable.id),
   createdBy: integer('created_by').notNull().references(() => usersTable.id),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  createdAt: timestamp('created_at'),
+  updatedAt: timestamp('updated_at'),
 });
 
 // Schemas de validação
