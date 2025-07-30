@@ -52,6 +52,10 @@ const EstoqueSection = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showForSalePrice, setShowForSalePrice] = useState(false);
   const [showPerishableDates, setShowPerishableDates] = useState(false);
+  const [showStockControlModal, setShowStockControlModal] = useState(false);
+  const [stockControlProduct, setStockControlProduct] = useState<Product | null>(null);
+  const [stockAdjustment, setStockAdjustment] = useState(0);
+  const [adjustmentReason, setAdjustmentReason] = useState('');
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -83,10 +87,57 @@ const EstoqueSection = () => {
   };
 
   const handleStockControl = (product: Product) => {
-    showAlert({
-      title: 'Controle de Estoque',
-      description: `Produto: ${product.name}\nEstoque atual: ${product.stock} unidades\nEstoque mínimo: ${product.minStock || 0} unidades`
-    });
+    setStockControlProduct(product);
+    setStockAdjustment(0);
+    setAdjustmentReason('');
+    setShowStockControlModal(true);
+  };
+
+  const handleStockAdjustment = async () => {
+    if (!stockControlProduct || stockAdjustment === 0) {
+      showAlert({
+        title: 'Erro',
+        description: 'Por favor, insira uma quantidade válida para ajustar.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    const newStock = stockControlProduct.stock + stockAdjustment;
+    if (newStock < 0) {
+      showAlert({
+        title: 'Erro',
+        description: 'O estoque não pode ficar negativo.',
+        variant: 'destructive'
+      });
+      return;
+    }
+
+    try {
+      await updateProduct({
+        id: stockControlProduct.id,
+        product: {
+          ...stockControlProduct,
+          stock: newStock
+        }
+      });
+
+      showAlert({
+        title: 'Estoque Atualizado',
+        description: `Estoque do produto "${stockControlProduct.name}" atualizado de ${stockControlProduct.stock} para ${newStock} unidades.`
+      });
+
+      setShowStockControlModal(false);
+      setStockControlProduct(null);
+      setStockAdjustment(0);
+      setAdjustmentReason('');
+    } catch (error) {
+      showAlert({
+        title: 'Erro',
+        description: 'Erro ao atualizar o estoque. Tente novamente.',
+        variant: 'destructive'
+      });
+    }
   };
 
 
@@ -863,6 +914,86 @@ const EstoqueSection = () => {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Controle de Estoque */}
+      {showStockControlModal && stockControlProduct && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+            <div className="p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Controle de Estoque
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-800">{stockControlProduct.name}</h4>
+                  <p className="text-sm text-gray-600">Estoque atual: {stockControlProduct.stock} unidades</p>
+                  <p className="text-sm text-gray-600">Estoque mínimo: {stockControlProduct.minStock || 0} unidades</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quantidade a Ajustar
+                  </label>
+                  <input
+                    type="number"
+                    value={stockAdjustment}
+                    onChange={(e) => setStockAdjustment(Number(e.target.value))}
+                    placeholder="Ex: +10 para adicionar, -5 para remover"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Use números positivos para adicionar (+) ou negativos para remover (-)
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Motivo do Ajuste (Opcional)
+                  </label>
+                  <textarea
+                    value={adjustmentReason}
+                    onChange={(e) => setAdjustmentReason(e.target.value)}
+                    placeholder="Ex: Recebimento de mercadoria, correção de inventário..."
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+
+                {stockAdjustment !== 0 && (
+                  <div className="bg-blue-50 p-3 rounded-lg">
+                    <p className="text-sm text-blue-800">
+                      <strong>Novo estoque:</strong> {stockControlProduct.stock + stockAdjustment} unidades
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 pt-6">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowStockControlModal(false);
+                    setStockControlProduct(null);
+                    setStockAdjustment(0);
+                    setAdjustmentReason('');
+                  }}
+                  className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleStockAdjustment}
+                  disabled={stockAdjustment === 0 || isUpdating}
+                  className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+                >
+                  {isUpdating ? 'Atualizando...' : 'Atualizar Estoque'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
