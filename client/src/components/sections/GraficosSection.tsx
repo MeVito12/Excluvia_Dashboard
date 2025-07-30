@@ -9,7 +9,6 @@ import { useClients } from '@/hooks/useClients';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
-  Download, 
   Calendar, 
   TrendingUp, 
   BarChart3, 
@@ -434,66 +433,7 @@ const GraficosSection = () => {
         </CardContent>
       </Card>
 
-      {/* Exportar Dados - Apenas Relatório Semanal */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <Download className="h-5 w-5 text-purple-600" />
-          Exportar Dados
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Button 
-            onClick={() => {
-              // Criar CSV com dados do período filtrado
-              const csvHeader = '"Data","Produto","Quantidade","Valor Total","Método Pagamento"\n';
-              const csvData = filteredSales.map((sale: any) => {
-                const product = products.find((p: any) => p.id === sale.productId);
-                const productName = product ? product.name : `Produto ID: ${sale.productId}`;
-                return `"${new Date(sale.saleDate).toLocaleDateString()}","${productName}","${sale.quantity}","R$ ${Number(sale.totalPrice || 0).toFixed(2)}","${sale.paymentMethod || 'N/A'}"`;
-              }).join('\n');
-              
-              const csvContent = csvHeader + csvData;
-              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-              const link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = `relatorio_semanal_${new Date().toISOString().split('T')[0]}.csv`;
-              link.click();
-              
-              showAlert({
-                title: "Relatório Semanal Exportado",
-                description: `Arquivo CSV baixado com ${filteredSales.length} registros do período selecionado`,
-                variant: "success"
-              });
-            }}
-            className="system-btn-primary flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Relatório Semanal
-          </Button>
-          
-          <Button 
-            onClick={() => {
-              // Exportar métricas resumidas
-              const csvContent = `"Métrica","Valor"\n"Receita Total","R$ ${calculateMetrics.totalSales}"\n"Total de Vendas","${calculateMetrics.totalOrders}"\n"Ticket Médio","R$ ${calculateMetrics.avgTicket}"\n"Crescimento","${calculateMetrics.growth}"\n"Período","${calculateMetrics.period}"`;
-              const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-              const link = document.createElement('a');
-              link.href = URL.createObjectURL(blob);
-              link.download = `metricas_resumo_${new Date().toISOString().split('T')[0]}.csv`;
-              link.click();
-              
-              showAlert({
-                title: "Métricas Exportadas",
-                description: "Arquivo CSV baixado com resumo das métricas do período",
-                variant: "success"
-              });
-            }}
-            className="bg-green-600 text-white hover:bg-green-700 flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            Exportar Métricas
-          </Button>
-        </div>
-      </div>
+
 
       <CustomAlert 
         isOpen={isOpen}
