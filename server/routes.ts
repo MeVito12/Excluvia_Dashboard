@@ -310,9 +310,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/branches', async (req, res) => {
     try {
       const companyId = req.query.companyId ? parseInt(req.query.companyId as string) : undefined;
-      const storage = await databaseManager.getStorage();
-      const branches = await storage.getBranches(companyId);
-      res.json(branches);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      const db = await getDatabase();
+      
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      let result;
+      if (companyId) {
+        result = await db.execute(sql`
+          SELECT * FROM branches WHERE company_id = ${companyId}
+        `);
+      } else {
+        result = await db.execute(sql`
+          SELECT * FROM branches
+        `);
+      }
+      res.json(result);
     } catch (error) {
       console.error('Error fetching branches:', error);
       res.status(500).json({ error: 'Erro interno do servidor' });
@@ -807,18 +824,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Rotas para filiais
-  app.get("/api/branches", async (req, res) => {
-    try {
-      const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "alimenticio";
-      const branches = await storage.getBranches(userId, businessCategory);
-      res.json(branches);
-    } catch (error) {
-      console.error("Error fetching branches:", error);
-      res.status(500).json({ error: "Erro ao buscar filiais" });
-    }
-  });
+  // Rota duplicada removida - usar a rota principal /api/branches
 
   app.post("/api/branches", async (req, res) => {
     try {
@@ -865,29 +871,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Buscar empresa do usuário master
   app.get("/api/user-company/:userId", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = Number(req.params.userId);
       
       if (!userId) {
         return res.status(400).json({ error: "ID do usuário é obrigatório" });
       }
 
-      // Buscar usuário pelo ID (usando storage ou consulta direta)
-      const users = await storage.getAllUsers();
-      const user = users.find(u => u.id === userId);
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      const db = await getDatabase();
       
-      if (!user || !user.companyId) {
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      // Buscar usuário e empresa com join
+      const result = await db.execute(sql`
+        SELECT c.* FROM users u
+        INNER JOIN companies c ON u.company_id = c.id
+        WHERE u.id = ${userId}
+      `);
+      
+      if (result.length === 0) {
         return res.status(404).json({ error: "Usuário não possui empresa associada" });
       }
 
-      // Buscar empresa pelo ID
-      const company = await storage.getCompanyById(user.companyId);
-      
-      if (!company) {
-        return res.status(404).json({ error: "Empresa não encontrada" });
-      }
-
-      res.json(company);
+      res.json(result[0]);
     } catch (error) {
       console.error("Error fetching user company:", error);
       res.status(500).json({ error: "Erro ao buscar empresa do usuário" });
@@ -930,10 +939,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas financeiras
   app.get("/api/financial", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const entries = await storage.getFinancialEntries(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      const db = await getDatabase();
+      
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const entries = await db.execute(sql`
+        SELECT * FROM financial_entries 
+        WHERE created_by = ${userId}
+        ORDER BY created_at DESC
+      `);
+      
       res.json(entries);
     } catch (error) {
       console.error("Error fetching financial entries:", error);
