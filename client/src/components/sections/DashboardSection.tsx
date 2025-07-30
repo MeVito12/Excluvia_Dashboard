@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useLocation } from 'wouter';
 import { 
   Database, 
   Users, 
@@ -30,6 +31,7 @@ const DashboardSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+  const [, setLocation] = useLocation();
   
   const [dateFrom, setDateFrom] = useState<string>('');
   const [dateTo, setDateTo] = useState<string>('');
@@ -39,7 +41,7 @@ const DashboardSection = () => {
   const { products, isLoading: productsLoading } = useProducts();
   const { sales, isLoading: salesLoading } = useSales();
   const { clients, isLoading: clientsLoading } = useClients();
-  const { transfers, isLoadingTransfers: transfersLoading } = useTransfers();
+  const { transfers, isLoading: transfersLoading } = useTransfers();
   const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
   // Dados vazios para atividades e WhatsApp - usando apenas dados reais
@@ -91,12 +93,19 @@ const DashboardSection = () => {
 
   // Função de navegação para seções
   const navigateToSection = (sectionName: string) => {
-    // Esta função será implementada com roteamento
-    showAlert({
-      title: `Navegando para ${sectionName}`,
-      description: `Redirecionando para a seção ${sectionName}...`,
-      variant: "success"
-    });
+    const routes: { [key: string]: string } = {
+      'Gráficos': '/graficos',
+      'Atividade': '/atividade', 
+      'Agendamentos': '/agendamentos',
+      'Estoque': '/estoque',
+      'Atendimento': '/atendimento',
+      'Financeiro': '/financeiro'
+    };
+    
+    const route = routes[sectionName];
+    if (route) {
+      setLocation(route);
+    }
   };
 
   // Limpar filtros
