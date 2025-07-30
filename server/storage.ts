@@ -412,7 +412,7 @@ export class SupabaseStorage implements Storage {
 
   async getTransfers(companyId?: number): Promise<Transfer[]> {
     const filter = companyId ? `company_id=eq.${companyId}&` : '';
-    return this.request(`transfers?${filter}select=*&order=transfer_date.desc`);
+    return this.request(`transfers?${filter}select=*,products!inner(name)&order=transfer_date.desc`);
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {

@@ -347,14 +347,16 @@ const EstoqueSection = () => {
           <div className="standard-list-content">
             {transfers
               ?.filter((transfer: any) => {
-                const searchMatch = (transfer.productName || `Produto ID: ${transfer.productId}`).toLowerCase().includes(searchTerm.toLowerCase());
-                const statusMatch = statusFilter === 'all' || transfer.status === statusFilter;
+                const productName = transfer.products?.name || transfer.productName || `Produto ID: ${transfer.productId}`;
+                const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
+                const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
+                  (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
                 return searchMatch && statusMatch;
               })
               .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
                 <div className="list-item-main">
-                  <div className="list-item-title">{transfer.productName || `Produto ID: ${transfer.productId}`}</div>
+                  <div className="list-item-title">{transfer.products?.name || transfer.productName || `Produto ID: ${transfer.productId}`}</div>
                   <div className="list-item-subtitle">{transfer.quantity} unidades</div>
                   <div className="list-item-meta">
                     De: {transfer.fromBranchName} → Para: {transfer.toBranchName}
@@ -364,13 +366,13 @@ const EstoqueSection = () => {
                 <div className="flex items-center gap-3">
                   <span className={`list-status-badge ${
                     transfer.status === 'pending' ? 'status-warning' :
-                    transfer.status === 'approved' ? 'status-info' :
+                    transfer.status === 'approved' || transfer.status === 'in_transit' ? 'status-info' :
                     transfer.status === 'completed' ? 'status-success' :
                     transfer.status === 'rejected' ? 'status-danger' :
                     'status-info'
                   }`}>
                     {transfer.status === 'pending' ? 'Pendente' :
-                     transfer.status === 'approved' ? 'Aprovado' :
+                     transfer.status === 'approved' || transfer.status === 'in_transit' ? 'Aprovado' :
                      transfer.status === 'completed' ? 'Concluído' :
                      transfer.status === 'rejected' ? 'Rejeitado' :
                      transfer.status}
@@ -499,7 +501,7 @@ const EstoqueSection = () => {
                 <div>
                   <p className="text-sm font-medium text-gray-600">Aprovadas</p>
                   <p className="text-2xl font-bold text-black mt-1">
-                    {transfers?.filter((transfer: any) => transfer.status === 'approved').length || 0}
+                    {transfers?.filter((transfer: any) => transfer.status === 'approved' || transfer.status === 'in_transit').length || 0}
                   </p>
                   <p className="text-xs text-blue-600 mt-1">Aprovadas para execução</p>
                 </div>
