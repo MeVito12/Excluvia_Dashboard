@@ -102,7 +102,8 @@ export class SupabaseStorage implements Storage {
 
   constructor() {
     this.baseUrl = process.env.VITE_SUPABASE_URL!;
-    this.apiKey = process.env.VITE_SUPABASE_ANON_KEY!;
+    // Use service role key for backend operations (full access)
+    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
   }
 
   private async request(path: string, options: RequestInit = {}): Promise<any> {
