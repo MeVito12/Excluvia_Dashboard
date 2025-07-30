@@ -9,6 +9,7 @@ import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
+import type { Product, Transfer } from '@shared/schema';
 
 import { 
   Package, 
@@ -125,7 +126,7 @@ const EstoqueSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {products
-              .filter(product => {
+              .filter((product: Product) => {
                 const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
@@ -185,11 +186,11 @@ const EstoqueSection = () => {
 
                         <button 
                           onClick={() => {
-                            showConfirm({
-                              title: 'Confirmar Exclusão',
-                              message: `Tem certeza que deseja excluir o produto "${product.name}"?`,
-                              onConfirm: () => console.log('Excluir produto', product.id)
-                            });
+                            showConfirm(
+                              'Confirmar Exclusão',
+                              `Tem certeza que deseja excluir o produto "${product.name}"?`,
+                              () => console.log('Excluir produto', product.id)
+                            );
                           }}
                           className="list-action-button delete"
                           title="Excluir produto"
@@ -275,7 +276,7 @@ const EstoqueSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {transfers
-              ?.filter(transfer => {
+              ?.filter((transfer: Transfer) => {
                 const searchMatch = (transfer.productName || `Produto ID: ${transfer.productId}`).toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'all' || transfer.status === statusFilter;
                 return searchMatch && statusMatch;

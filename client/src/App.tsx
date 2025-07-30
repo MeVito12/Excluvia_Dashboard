@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { CategoryProvider } from "@/contexts/CategoryContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
+import { DemoProvider } from "@/contexts/DemoContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
 import FloatingAIChat from "@/components/FloatingAIChat";
 import Index from "./pages/Index";
@@ -35,15 +36,17 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CategoryProvider>
-      <AuthProvider>
-        <PermissionsProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AppContent />
-          </TooltipProvider>
-        </PermissionsProvider>
-      </AuthProvider>
+      <DemoProvider>
+        <AuthProvider>
+          <PermissionsProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <AppContent />
+            </TooltipProvider>
+          </PermissionsProvider>
+        </AuthProvider>
+      </DemoProvider>
     </CategoryProvider>
   </QueryClientProvider>
 );

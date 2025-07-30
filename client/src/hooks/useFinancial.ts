@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApiClient } from '@/lib/apiClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useDemo } from '@/contexts/DemoContext';
 import type { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 
 export const useFinancial = () => {
@@ -9,10 +10,14 @@ export const useFinancial = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
+  const { isDemoMode, demoData } = useDemo();
 
   const query = useQuery({
     queryKey: ['financial', (user as any)?.id, selectedCategory],
     queryFn: async () => {
+      if (isDemoMode && demoData) {
+        return demoData.financial || [];
+      }
       const params = new URLSearchParams({
         businessCategory: selectedCategory
       });

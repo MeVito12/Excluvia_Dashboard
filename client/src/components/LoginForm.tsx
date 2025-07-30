@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Mail } from 'lucide-react';
 import logoImage from "@assets/Design sem nome_1751285815327.png";
 import { useCategory } from '@/contexts/CategoryContext';
+import { useDemo } from '@/contexts/DemoContext';
 
 interface LoginFormProps {
   onLogin: (user: any) => void;
@@ -15,6 +16,7 @@ interface LoginFormProps {
 
 const LoginForm = ({ onLogin }: LoginFormProps) => {
   const { setSelectedCategory } = useCategory();
+  const { setDemoMode } = useDemo();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -157,35 +159,24 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
   const handleDemoLogin = async (profile: any) => {
     setIsLoading(true);
-    const userData = categoryUsers[profile.category as keyof typeof categoryUsers];
     
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          email: userData.email, 
-          password: userData.password 
-        }),
+      // Ativar modo demo com dados mock
+      setDemoMode(profile.category);
+      
+      // Definir categoria no localStorage e contexto
+      localStorage.setItem('userBusinessCategory', profile.category);
+      setSelectedCategory(profile.category);
+      
+      // Fazer login com dados mock do perfil de demonstração
+      onLogin({
+        id: 9000 + Object.keys(demoProfiles).indexOf(profile),
+        name: profile.name,
+        email: `demo.${profile.category}@sistema.com`,
+        role: 'regular',
+        businessCategory: profile.category,
+        permissions: ['dashboard', 'graficos', 'atividade', 'estoque', 'financeiro', 'agendamentos', 'atendimento']
       });
-
-      if (response.ok) {
-        const { user } = await response.json();
-        
-        localStorage.setItem('userBusinessCategory', user.businessCategory);
-        setSelectedCategory(user.businessCategory);
-        
-        onLogin({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          businessCategory: user.businessCategory,
-          permissions: user.permissions
-        });
-      }
     } catch (error) {
       setError('Erro ao acessar demonstração');
     }

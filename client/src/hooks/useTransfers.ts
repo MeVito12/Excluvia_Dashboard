@@ -2,11 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Transfer, NewTransfer, Branch } from "@shared/schema";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCategory } from "@/contexts/CategoryContext";
+import { useDemo } from "@/contexts/DemoContext";
 import { useApiClient } from "@/lib/apiClient";
 
 export const useTransfers = () => {
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
+  const { isDemoMode, demoData } = useDemo();
   const queryClient = useQueryClient();
   const apiClient = useApiClient();
 
@@ -18,6 +20,9 @@ export const useTransfers = () => {
   } = useQuery({
     queryKey: ['transfers', (user as any)?.id, selectedCategory],
     queryFn: async () => {
+      if (isDemoMode && demoData) {
+        return demoData.transfers || [];
+      }
       const params = new URLSearchParams({
         businessCategory: selectedCategory,
       });
@@ -34,6 +39,9 @@ export const useTransfers = () => {
   } = useQuery({
     queryKey: ['branches', (user as any)?.id, selectedCategory],
     queryFn: async () => {
+      if (isDemoMode) {
+        return [{ id: 1, name: 'Matriz - Demo', address: 'Endereço Demo' }];
+      }
       const params = new URLSearchParams({
         businessCategory: selectedCategory,
       });

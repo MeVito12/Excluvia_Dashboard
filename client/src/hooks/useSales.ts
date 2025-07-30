@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useApiClient } from '@/lib/apiClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategory } from '@/contexts/CategoryContext';
+import { useDemo } from '@/contexts/DemoContext';
 import type { Sale, NewSale } from '@shared/schema';
 
 export const useSales = () => {
@@ -9,10 +10,14 @@ export const useSales = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
+  const { isDemoMode, demoData } = useDemo();
 
   const query = useQuery({
     queryKey: ['sales', (user as any)?.id, selectedCategory],
     queryFn: async () => {
+      if (isDemoMode && demoData) {
+        return demoData.sales || [];
+      }
       const params = new URLSearchParams({
         businessCategory: selectedCategory
       });
@@ -23,6 +28,17 @@ export const useSales = () => {
 
   const createMutation = useMutation({
     mutationFn: async (sale: NewSale) => {
+      if (isDemoMode) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve({ 
+              success: true, 
+              data: { ...sale, id: Math.floor(Math.random() * 1000) + 10000 },
+              message: 'Venda registrada com sucesso (Demo)' 
+            });
+          }, 500);
+        });
+      }
       return apiClient.post('/api/sales', sale);
     },
     onSuccess: () => {
