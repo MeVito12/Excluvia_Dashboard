@@ -401,18 +401,20 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
         </Dialog>
 
         {/* Modal de Demonstração */}
-        <Dialog open={showDemoModal} onOpenChange={setShowDemoModal}>
-          <DialogContent className="bg-white max-w-4xl w-[90vw] max-h-[85vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-gray-900 text-center">
-                🚀 Demonstração do Sistema
-              </DialogTitle>
-              <DialogDescription className="text-gray-600 text-center text-sm">
-                Escolha um perfil para explorar todas as funcionalidades com dados reais
-              </DialogDescription>
-            </DialogHeader>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+        {showDemoModal && (
+          <div className="demo-modal-overlay" onClick={() => setShowDemoModal(false)}>
+            <div className="demo-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="p-6">
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-900 mb-2">
+                    🚀 Demonstração do Sistema
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    Escolha um perfil para explorar todas as funcionalidades com dados reais
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
               {demoProfiles.map((profile, index) => (
                 <div 
                   key={profile.category}
@@ -456,33 +458,34 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                     Acessar Demo
                   </button>
                 </div>
-              ))}
-            </div>
-            
-            <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-start space-x-2">
-                <div className="text-lg">ℹ️</div>
-                <div>
-                  <h4 className="font-medium text-blue-900 mb-1 text-sm">Sobre a Demonstração</h4>
-                  <p className="text-xs text-blue-800">
-                    Cada perfil possui dados completos do Supabase: produtos, vendas, clientes, 
-                    agendamentos, transferências e relatórios financeiros. Explore sem limitações.
-                  </p>
+                ))}
+                </div>
+                
+                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-start space-x-2">
+                    <div className="text-lg">ℹ️</div>
+                    <div>
+                      <h4 className="font-medium text-blue-900 mb-1 text-sm">Sobre a Demonstração</h4>
+                      <p className="text-xs text-blue-800">
+                        Cada perfil possui dados completos do Supabase: produtos, vendas, clientes, 
+                        agendamentos, transferências e relatórios financeiros. Explore sem limitações.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex justify-center mt-3">
+                  <button 
+                    onClick={() => setShowDemoModal(false)}
+                    className="px-6 py-2 border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors"
+                  >
+                    Fechar
+                  </button>
                 </div>
               </div>
             </div>
-            
-            <div className="flex justify-center mt-3">
-              <Button 
-                variant="outline"
-                onClick={() => setShowDemoModal(false)}
-                className="px-6 text-sm"
-              >
-                Fechar
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        )}
       </div>
     </div>
   );
