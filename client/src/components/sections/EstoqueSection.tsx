@@ -18,8 +18,7 @@ import {
   Search,
   Eye,
   Edit,
-  Trash2,
-  ShoppingCart
+  Trash2
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -90,12 +89,7 @@ const EstoqueSection = () => {
     });
   };
 
-  const handleRegisterSale = (product: Product) => {
-    showAlert({
-      title: 'Registrar Venda',
-      description: `Função de venda para o produto "${product.name}" será implementada em breve.`
-    });
-  };
+
 
   // Renderização dos produtos
   const renderProducts = () => (
@@ -212,14 +206,6 @@ const EstoqueSection = () => {
                           title="Controle de estoque"
                         >
                           <Package className="w-4 h-4" />
-                        </button>
-
-                        <button 
-                          onClick={() => handleRegisterSale(product)}
-                          className="list-action-button transfer"
-                          title="Registrar venda"
-                        >
-                          <ShoppingCart className="w-4 h-4" />
                         </button>
 
                         <button 
