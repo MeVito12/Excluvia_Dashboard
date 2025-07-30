@@ -332,77 +332,143 @@ const EstoqueSection = () => {
 
       {/* Cards de Métricas */}
       <div className="metrics-grid">
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Estoque Bom</p>
-              <p className="text-2xl font-bold text-green-700 mt-1">
-                {products?.filter((product: any) => {
-                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
-                  return status === 'Em Estoque';
-                }).length || 0}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Produtos em condições normais</p>
+        {activeTab === 'produtos' ? (
+          <>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Estoque Bom</p>
+                  <p className="text-2xl font-bold text-green-700 mt-1">
+                    {products?.filter((product: any) => {
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      return status === 'Em Estoque';
+                    }).length || 0}
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">Produtos em condições normais</p>
+                </div>
+                <div className="p-3 rounded-full bg-green-100">
+                  <Package className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <Package className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
-              <p className="text-2xl font-bold text-yellow-700 mt-1">
-                {products?.filter((product: any) => {
-                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
-                  return status === 'Estoque Baixo';
-                }).length || 0}
-              </p>
-              <p className="text-xs text-yellow-600 mt-1">Produtos com baixo estoque</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
+                  <p className="text-2xl font-bold text-yellow-700 mt-1">
+                    {products?.filter((product: any) => {
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      return status === 'Estoque Baixo';
+                    }).length || 0}
+                  </p>
+                  <p className="text-xs text-yellow-600 mt-1">Produtos com baixo estoque</p>
+                </div>
+                <div className="p-3 rounded-full bg-yellow-100">
+                  <Package className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-yellow-100">
-              <Package className="h-6 w-6 text-yellow-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Próximos ao Vencimento</p>
-              <p className="text-2xl font-bold text-orange-700 mt-1">
-                {products?.filter((product: any) => {
-                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
-                  return status === 'Próximo ao Vencimento';
-                }).length || 0}
-              </p>
-              <p className="text-xs text-orange-600 mt-1">Produtos próximos do vencimento</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Próximos ao Vencimento</p>
+                  <p className="text-2xl font-bold text-orange-700 mt-1">
+                    {products?.filter((product: any) => {
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      return status === 'Próximo ao Vencimento';
+                    }).length || 0}
+                  </p>
+                  <p className="text-xs text-orange-600 mt-1">Produtos próximos do vencimento</p>
+                </div>
+                <div className="p-3 rounded-full bg-orange-100">
+                  <Package className="h-6 w-6 text-orange-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-orange-100">
-              <Package className="h-6 w-6 text-orange-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
-              <p className="text-2xl font-bold text-red-700 mt-1">
-                {products?.filter((product: any) => {
-                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
-                  return status === 'Vencido';
-                }).length || 0}
-              </p>
-              <p className="text-xs text-red-600 mt-1">Produtos que já venceram</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
+                  <p className="text-2xl font-bold text-red-700 mt-1">
+                    {products?.filter((product: any) => {
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                      return status === 'Vencido';
+                    }).length || 0}
+                  </p>
+                  <p className="text-xs text-red-600 mt-1">Produtos que já venceram</p>
+                </div>
+                <div className="p-3 rounded-full bg-red-100">
+                  <Package className="h-6 w-6 text-red-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-red-100">
-              <Package className="h-6 w-6 text-red-600" />
+          </>
+        ) : (
+          <>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Pendentes</p>
+                  <p className="text-2xl font-bold text-yellow-700 mt-1">
+                    {transfers?.filter((transfer: any) => transfer.status === 'pending').length || 0}
+                  </p>
+                  <p className="text-xs text-yellow-600 mt-1">Aguardando aprovação</p>
+                </div>
+                <div className="p-3 rounded-full bg-yellow-100">
+                  <ArrowRightLeft className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Aprovadas</p>
+                  <p className="text-2xl font-bold text-blue-700 mt-1">
+                    {transfers?.filter((transfer: any) => transfer.status === 'approved').length || 0}
+                  </p>
+                  <p className="text-xs text-blue-600 mt-1">Aprovadas para execução</p>
+                </div>
+                <div className="p-3 rounded-full bg-blue-100">
+                  <ArrowRightLeft className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Concluídas</p>
+                  <p className="text-2xl font-bold text-green-700 mt-1">
+                    {transfers?.filter((transfer: any) => transfer.status === 'completed').length || 0}
+                  </p>
+                  <p className="text-xs text-green-600 mt-1">Transferências finalizadas</p>
+                </div>
+                <div className="p-3 rounded-full bg-green-100">
+                  <ArrowRightLeft className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Rejeitadas</p>
+                  <p className="text-2xl font-bold text-red-700 mt-1">
+                    {transfers?.filter((transfer: any) => transfer.status === 'rejected').length || 0}
+                  </p>
+                  <p className="text-xs text-red-600 mt-1">Transferências canceladas</p>
+                </div>
+                <div className="p-3 rounded-full bg-red-100">
+                  <ArrowRightLeft className="h-6 w-6 text-red-600" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="tab-navigation">
