@@ -186,11 +186,10 @@ const EstoqueSection = () => {
 
                         <button 
                           onClick={() => {
-                            showConfirm(
-                              'Confirmar Exclusão',
-                              `Tem certeza que deseja excluir o produto "${product.name}"?`,
-                              () => console.log('Excluir produto', product.id)
-                            );
+                            showConfirm({
+                              title: 'Confirmar Exclusão',
+                              description: `Tem certeza que deseja excluir o produto "${product.name}"?`
+                            }, () => console.log('Excluir produto', product.id));
                           }}
                           className="list-action-button delete"
                           title="Excluir produto"
@@ -276,7 +275,7 @@ const EstoqueSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {transfers
-              ?.filter((transfer: Transfer) => {
+              ?.filter((transfer: any) => {
                 const searchMatch = (transfer.productName || `Produto ID: ${transfer.productId}`).toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'all' || transfer.status === statusFilter;
                 return searchMatch && statusMatch;

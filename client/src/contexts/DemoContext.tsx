@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getMockDataByCategory } from '@/data/mockDemoData';
 
 interface DemoContextType {
@@ -13,6 +13,20 @@ const DemoContext = createContext<DemoContextType | undefined>(undefined);
 export const DemoProvider = ({ children }: { children: ReactNode }) => {
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [demoData, setDemoData] = useState<any>(null);
+
+  // Verificar se já estava em modo demo ao inicializar
+  useEffect(() => {
+    const savedDemoMode = localStorage.getItem('demoMode');
+    const savedCategory = localStorage.getItem('demoCategory');
+    
+    if (savedDemoMode === 'true' && savedCategory) {
+      const mockData = getMockDataByCategory(savedCategory);
+      if (mockData) {
+        setDemoData(mockData);
+        setIsDemoMode(true);
+      }
+    }
+  }, []);
 
   const setDemoMode = (category: string) => {
     const mockData = getMockDataByCategory(category);
@@ -29,6 +43,9 @@ export const DemoProvider = ({ children }: { children: ReactNode }) => {
     setDemoData(null);
     localStorage.removeItem('demoMode');
     localStorage.removeItem('demoCategory');
+    localStorage.removeItem('userBusinessCategory');
+    // Recarregar a página para voltar ao login
+    window.location.reload();
   };
 
   return (

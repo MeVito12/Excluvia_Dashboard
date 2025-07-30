@@ -10,6 +10,7 @@ import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import { DemoProvider } from "@/contexts/DemoContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
 import FloatingAIChat from "@/components/FloatingAIChat";
+import DemoIndicator from "@/components/DemoIndicator";
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
 
@@ -24,6 +25,7 @@ const AppContent = () => {
   return (
     <NotificationProvider notificationFunctions={{ showSuccess, showError, showWarning, showInfo }}>
       <Index />
+      <DemoIndicator />
       <NotificationSystem 
         notifications={notifications} 
         onRemove={removeNotification} 
