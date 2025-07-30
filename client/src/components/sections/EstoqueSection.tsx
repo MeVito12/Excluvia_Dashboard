@@ -64,6 +64,12 @@ const EstoqueSection = () => {
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
   const { transfers = [], updateTransfer } = useTransfers();
 
+  // Função para buscar nome do produto
+  const getProductName = (productId: number): string => {
+    const product = products.find(p => p.id === productId);
+    return product?.name || `Produto ID: ${productId}`;
+  };
+
   // Tabs do sistema
   const tabs = [
     { id: 'produtos', label: 'Produtos', icon: Package },
@@ -374,7 +380,7 @@ const EstoqueSection = () => {
           <div className="standard-list-content">
             {transfers
               ?.filter((transfer: any) => {
-                const productName = transfer.productName || `Produto ID: ${transfer.productId}`;
+                const productName = getProductName(transfer.productId);
                 const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
                   (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
@@ -383,7 +389,7 @@ const EstoqueSection = () => {
               .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
                 <div className="list-item-main">
-                  <div className="list-item-title">{transfer.productName || `Produto ID: ${transfer.productId}`}</div>
+                  <div className="list-item-title">{getProductName(transfer.productId)}</div>
                   <div className="list-item-subtitle">{transfer.quantity} unidades</div>
                   <div className="list-item-meta">
                     De: {transfer.fromBranchName} → Para: {transfer.toBranchName}

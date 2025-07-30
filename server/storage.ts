@@ -413,20 +413,54 @@ export class SupabaseStorage implements Storage {
   async getTransfers(companyId?: number): Promise<Transfer[]> {
     const filter = companyId ? `company_id=eq.${companyId}&` : '';
     
-    // Buscar transferências
-    const transfers = await this.request(`transfers?${filter}select=*&order=transfer_date.desc`);
+    // Fallback para JOIN manual por enquanto - PostgREST syntax complexa
+    const transfersQuery = `transfers?${filter}select=*&order=transfer_date.desc`;
+    const productsQuery = 'products?select=id,name';
     
-    // Buscar produtos para fazer o JOIN manualmente
-    const products = await this.request('products?select=id,name');
-    
-    // Mapear nomes dos produtos
-    return transfers.map((transfer: any) => {
-      const product = products.find((p: any) => p.id === transfer.productId);
-      return {
-        ...transfer,
-        productName: product?.name || `Produto ID: ${transfer.productId}`
-      };
-    });
+    try {
+      // Buscar dados separadamente
+      const [transfers, products] = await Promise.all([
+        this.request(transfersQuery),
+        this.request(productsQuery)
+      ]);
+      
+      console.log('[STORAGE DEBUG] Transfers found:', transfers?.length || 0);
+      console.log('[STORAGE DEBUG] Products found:', products?.length || 0);
+      console.log('[STORAGE DEBUG] First transfer productId:', transfers[0]?.productId);
+      console.log('[STORAGE DEBUG] First product:', products[0]);
+      
+      if (!transfers || !Array.isArray(transfers)) {
+        console.log('[STORAGE] No transfers found');
+        return [];
+      }
+      
+      if (!products || !Array.isArray(products)) {
+        console.log('[STORAGE] No products found - returning transfers without names');
+        return transfers.map((t: any) => ({ 
+          ...t, 
+          productName: `Produto ID: ${t.productId}` 
+        }));
+      }
+      
+      // JOIN manual
+      const result = transfers.map((transfer: any) => {
+        const product = products.find((p: any) => p.id === transfer.productId);
+        const productName = product?.name || `Produto ID: ${transfer.productId}`;
+        
+        console.log(`[STORAGE] Transfer ${transfer.id}: productId=${transfer.productId} -> ${productName}`);
+        
+        return {
+          ...transfer,
+          productName
+        };
+      });
+      
+      console.log('[STORAGE] Returning', result.length, 'transfers with productName');
+      return result;
+    } catch (error) {
+      console.error('[STORAGE ERROR] Error in getTransfers:', error);
+      return [];
+    }
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {

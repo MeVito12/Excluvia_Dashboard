@@ -619,6 +619,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('[DEBUG ROUTE] First transfer has productName:', !!transfers[0].productName);
       }
       
+      // Se productName não existe, fazer JOIN manual na rota como fallback
+      if (transfers.length > 0 && !transfers[0].productName) {
+        console.log('[DEBUG ROUTE] ProductName missing, doing manual JOIN in route');
+        try {
+          const products = await storage.getProducts(companyId);
+          console.log('[DEBUG ROUTE] Fetched', products.length, 'products for JOIN');
+          
+          const transfersWithProductName = transfers.map((transfer: any) => {
+            const product = products.find((p: any) => p.id === transfer.productId);
+            const productName = product?.name || `Produto ID: ${transfer.productId}`;
+            console.log(`[DEBUG ROUTE] Transfer ${transfer.id}: productId=${transfer.productId} -> ${productName}`);
+            return {
+              ...transfer,
+              productName
+            };
+          });
+          
+          console.log('[DEBUG ROUTE] Returning transfers with productName from route');
+          res.json(transfersWithProductName);
+          return;
+        } catch (error) {
+          console.error('[DEBUG ROUTE] Error in manual JOIN:', error);
+        }
+      }
+      
       res.json(transfers);
     } catch (error) {
       console.error("Error fetching transfers:", error);

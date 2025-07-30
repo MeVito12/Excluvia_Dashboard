@@ -469,7 +469,7 @@ All colors MUST be HSL.
   }
 
   .list-item-actions {
-    @apply flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200;
+    @apply flex items-center gap-2 opacity-0 transition-opacity duration-200;
   }
 
   .standard-list-item:hover .list-item-actions {
