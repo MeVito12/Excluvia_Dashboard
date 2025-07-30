@@ -18,7 +18,10 @@ import {
   Search,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  CheckCircle,
+  XCircle,
+  CheckCircle2
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -59,7 +62,7 @@ const EstoqueSection = () => {
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
-  const { transfers = [] } = useTransfers();
+  const { transfers = [], updateTransfer } = useTransfers();
 
   // Tabs do sistema
   const tabs = [
@@ -91,6 +94,30 @@ const EstoqueSection = () => {
     setStockAdjustment(0);
     setAdjustmentReason('');
     setShowStockControlModal(true);
+  };
+
+  // Função para ações de transferência
+  const handleTransferAction = async (transferId: number, newStatus: string) => {
+    try {
+      updateTransfer({ id: transferId, transfer: { status: newStatus } });
+      
+      const statusTexts = {
+        'approved': 'aprovada',
+        'completed': 'concluída',
+        'rejected': 'rejeitada'
+      };
+      
+      showAlert({
+        title: 'Transferência Atualizada',
+        description: `A transferência foi ${statusTexts[newStatus as keyof typeof statusTexts]} com sucesso.`
+      });
+    } catch (error) {
+      showAlert({
+        title: 'Erro',
+        description: 'Erro ao atualizar a transferência. Tente novamente.',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleStockAdjustment = async () => {
@@ -377,6 +404,37 @@ const EstoqueSection = () => {
                      transfer.status === 'rejected' ? 'Rejeitado' :
                      transfer.status}
                   </span>
+                  
+                  <div className="list-item-actions">
+                    {transfer.status === 'pending' && (
+                      <>
+                        <button 
+                          onClick={() => handleTransferAction(transfer.id, 'approved')}
+                          className="list-action-button edit"
+                          title="Aprovar transferência"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleTransferAction(transfer.id, 'rejected')}
+                          className="list-action-button delete"
+                          title="Rejeitar transferência"
+                        >
+                          <XCircle className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
+                    
+                    {(transfer.status === 'approved' || transfer.status === 'in_transit') && (
+                      <button 
+                        onClick={() => handleTransferAction(transfer.id, 'completed')}
+                        className="list-action-button view"
+                        title="Marcar como concluída"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
