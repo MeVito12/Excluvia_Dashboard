@@ -46,9 +46,43 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { transfers, isLoading: transfersLoading } = useTransfers();
   const { appointments, isLoading: appointmentsLoading } = useAppointments();
 
-  // Dados vazios para atividades e WhatsApp - usando apenas dados reais
-  const activities: any[] = [];
-  const whatsappChats: any[] = [];
+  // Gerar atividades baseadas em dados reais
+  const activities = useMemo(() => {
+    const activitiesList: any[] = [];
+    
+    // Adicionar vendas como atividades
+    sales.forEach((sale: any) => {
+      activitiesList.push({
+        id: `sale-${sale.id}`,
+        action: `Venda realizada: R$ ${Number(sale.totalPrice || 0).toFixed(2)}`,
+        timestamp: sale.saleDate,
+        type: 'sale'
+      });
+    });
+    
+    // Adicionar agendamentos como atividades
+    appointments.forEach((appointment: any) => {
+      activitiesList.push({
+        id: `appointment-${appointment.id}`,
+        action: `Agendamento: ${appointment.title}`,
+        timestamp: appointment.startTime,
+        type: 'appointment'
+      });
+    });
+    
+    // Adicionar transferências como atividades
+    transfers.forEach((transfer: any) => {
+      activitiesList.push({
+        id: `transfer-${transfer.id}`,
+        action: `Transferência de produto (${transfer.quantity} unidades)`,
+        timestamp: transfer.transferDate,
+        type: 'transfer'
+      });
+    });
+    
+    // Ordenar por data mais recente
+    return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, [sales, appointments, transfers]);
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {
@@ -459,7 +493,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           </div>
           
           <div className="space-y-3">
-            {whatsappChats.slice(0, 3).map((chat) => (
+            {[].slice(0, 3).map((chat: any) => (
               <div key={chat.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-800">{chat.name}</p>
@@ -477,7 +511,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
               </div>
             ))}
-            {whatsappChats.length === 0 && (
+            {[].length === 0 && (
               <p className="text-gray-500 text-center py-4">Nenhum atendimento recente</p>
             )}
           </div>
