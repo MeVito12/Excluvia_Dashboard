@@ -347,7 +347,7 @@ const EstoqueSection = () => {
           <div className="standard-list-content">
             {transfers
               ?.filter((transfer: any) => {
-                const productName = transfer.products?.name || transfer.productName || `Produto ID: ${transfer.productId}`;
+                const productName = transfer.productName || `Produto ID: ${transfer.productId}`;
                 const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
                   (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
@@ -356,7 +356,7 @@ const EstoqueSection = () => {
               .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
                 <div className="list-item-main">
-                  <div className="list-item-title">{transfer.products?.name || transfer.productName || `Produto ID: ${transfer.productId}`}</div>
+                  <div className="list-item-title">{transfer.productName || `Produto ID: ${transfer.productId}`}</div>
                   <div className="list-item-subtitle">{transfer.quantity} unidades</div>
                   <div className="list-item-meta">
                     De: {transfer.fromBranchName} → Para: {transfer.toBranchName}

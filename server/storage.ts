@@ -412,7 +412,18 @@ export class SupabaseStorage implements Storage {
 
   async getTransfers(companyId?: number): Promise<Transfer[]> {
     const filter = companyId ? `company_id=eq.${companyId}&` : '';
-    return this.request(`transfers?${filter}select=*,products!inner(name)&order=transfer_date.desc`);
+    
+    // Buscar transferências
+    const transfers = await this.request(`transfers?${filter}select=*&order=transfer_date.desc`);
+    
+    // Buscar produtos para fazer o JOIN manualmente
+    const products = await this.request('products?select=id,name');
+    
+    // Mapear nomes dos produtos
+    return transfers.map((transfer: any) => ({
+      ...transfer,
+      productName: products.find((p: any) => p.id === transfer.productId)?.name || null
+    }));
   }
 
   async createTransfer(transfer: NewTransfer): Promise<Transfer> {
