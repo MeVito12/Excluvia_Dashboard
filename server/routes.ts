@@ -65,10 +65,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
-      const storage = await databaseManager.getStorage();
-      const user = await storage.getUserByEmail(email);
+      // Use direct PostgreSQL query for authentication
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
       
-      if (!user || user.password !== password) {
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const users = await db.execute(sql`
+        SELECT id, name, email, role, company_id, branch_id, phone, created_at, updated_at, password
+        FROM users 
+        WHERE email = ${email}
+        LIMIT 1
+      `);
+      
+      if (!users || users.length === 0) {
+        return res.status(401).json({ error: "Credenciais inválidas" });
+      }
+      
+      const user = users[0];
+      if (user.password !== password) {
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
 
