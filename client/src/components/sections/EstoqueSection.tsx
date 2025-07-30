@@ -409,7 +409,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Estoque Bom</p>
-                  <p className="text-2xl font-bold text-green-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
                       const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
                       return status === 'Em Estoque';
@@ -427,7 +427,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
-                  <p className="text-2xl font-bold text-yellow-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
                       const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
                       return status === 'Estoque Baixo';
@@ -445,7 +445,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Próximos ao Vencimento</p>
-                  <p className="text-2xl font-bold text-orange-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
                       const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
                       return status === 'Próximo ao Vencimento';
@@ -463,7 +463,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
-                  <p className="text-2xl font-bold text-red-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
                       const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
                       return status === 'Vencido';
@@ -483,7 +483,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Pendentes</p>
-                  <p className="text-2xl font-bold text-yellow-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {transfers?.filter((transfer: any) => transfer.status === 'pending').length || 0}
                   </p>
                   <p className="text-xs text-yellow-600 mt-1">Aguardando aprovação</p>
@@ -498,7 +498,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Aprovadas</p>
-                  <p className="text-2xl font-bold text-blue-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {transfers?.filter((transfer: any) => transfer.status === 'approved').length || 0}
                   </p>
                   <p className="text-xs text-blue-600 mt-1">Aprovadas para execução</p>
@@ -513,7 +513,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Concluídas</p>
-                  <p className="text-2xl font-bold text-green-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {transfers?.filter((transfer: any) => transfer.status === 'completed').length || 0}
                   </p>
                   <p className="text-xs text-green-600 mt-1">Transferências finalizadas</p>
@@ -528,7 +528,7 @@ const EstoqueSection = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Rejeitadas</p>
-                  <p className="text-2xl font-bold text-red-700 mt-1">
+                  <p className="text-2xl font-bold text-black mt-1">
                     {transfers?.filter((transfer: any) => transfer.status === 'rejected').length || 0}
                   </p>
                   <p className="text-xs text-red-600 mt-1">Transferências canceladas</p>
