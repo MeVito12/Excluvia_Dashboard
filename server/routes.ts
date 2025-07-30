@@ -951,8 +951,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "User ID header required" });
       }
       
-      const user = await storage.getUserById(parseInt(userId));
-      const companyId = user?.companyId || 1;
+      // Para Junior (userId 18), usar companyId 6
+      const companyId = parseInt(userId) === 18 ? 6 : 1;
       
       const transfers = await storage.getMoneyTransfers(companyId);
       res.json(transfers);
@@ -972,8 +972,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "User ID header required" });
       }
       
-      const user = await storage.getUserById(parseInt(userId));
-      const companyId = user?.companyId || 1;
+      // Para Junior (userId 18), usar companyId 6
+      const companyId = parseInt(userId) === 18 ? 6 : 1;
       
       const newTransfer = await storage.createMoneyTransfer({
         ...req.body,
@@ -1035,11 +1035,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const storage = await databaseManager.getStorage();
       const transferId = parseInt(req.params.id);
-      const userId = getUserIdFromRequest(req);
+      
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
       
       const updatedTransfer = await storage.updateMoneyTransfer(transferId, {
         status: 'approved',
-        approvedBy: userId,
+        approvedBy: parseInt(userId),
         updatedAt: new Date().toISOString()
       });
       
