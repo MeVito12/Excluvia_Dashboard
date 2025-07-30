@@ -49,9 +49,11 @@ const EstoqueSection = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showAddTransferModal, setShowAddTransferModal] = useState(false);
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
   // Hooks para dados
-  const { products = [] } = useProducts();
+  const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
   const { transfers = [] } = useTransfers();
 
   // Tabs do sistema
@@ -59,6 +61,42 @@ const EstoqueSection = () => {
     { id: 'produtos', label: 'Produtos', icon: Package },
     { id: 'transferencias', label: 'Transferências', icon: ArrowRightLeft }
   ];
+
+  // Funções para manipular produtos
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setShowEditProductModal(true);
+  };
+
+  const handleDeleteProduct = (product: Product) => {
+    showConfirm({
+      title: 'Confirmar Exclusão',
+      description: `Tem certeza que deseja excluir o produto "${product.name}"?`
+    }, () => {
+      deleteProduct(product.id);
+      showAlert({
+        title: 'Produto Excluído',
+        description: `O produto "${product.name}" foi excluído com sucesso.`,
+        type: 'success'
+      });
+    });
+  };
+
+  const handleStockControl = (product: Product) => {
+    showAlert({
+      title: 'Controle de Estoque',
+      description: `Produto: ${product.name}\nEstoque atual: ${product.stock} unidades\nEstoque mínimo: ${product.minStock || 0} unidades`,
+      type: 'info'
+    });
+  };
+
+  const handleRegisterSale = (product: Product) => {
+    showAlert({
+      title: 'Registrar Venda',
+      description: `Função de venda para o produto "${product.name}" será implementada em breve.`,
+      type: 'info'
+    });
+  };
 
   // Renderização dos produtos
   const renderProducts = () => (
@@ -161,15 +199,16 @@ const EstoqueSection = () => {
                       
                       <div className="list-item-actions">
                         <button 
-                          onClick={() => console.log('Editar produto', product.id)}
+                          onClick={() => handleEditProduct(product)}
                           className="list-action-button edit"
                           title="Editar produto"
+                          disabled={isUpdating}
                         >
                           <Edit className="w-4 h-4" />
                         </button>
 
                         <button 
-                          onClick={() => console.log('Controle estoque', product.id)}
+                          onClick={() => handleStockControl(product)}
                           className="list-action-button view"
                           title="Controle de estoque"
                         >
@@ -177,7 +216,7 @@ const EstoqueSection = () => {
                         </button>
 
                         <button 
-                          onClick={() => console.log('Registrar venda', product.id)}
+                          onClick={() => handleRegisterSale(product)}
                           className="list-action-button transfer"
                           title="Registrar venda"
                         >
@@ -185,14 +224,10 @@ const EstoqueSection = () => {
                         </button>
 
                         <button 
-                          onClick={() => {
-                            showConfirm({
-                              title: 'Confirmar Exclusão',
-                              description: `Tem certeza que deseja excluir o produto "${product.name}"?`
-                            }, () => console.log('Excluir produto', product.id));
-                          }}
+                          onClick={() => handleDeleteProduct(product)}
                           className="list-action-button delete"
                           title="Excluir produto"
+                          disabled={isDeleting}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
