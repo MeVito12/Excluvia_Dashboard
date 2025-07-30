@@ -944,8 +944,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/money-transfers", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const { companyId, branchId } = getUserContextFromRequest(req);
+      
+      // Usar o sistema de headers existente
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
+      
+      const user = await storage.getUserById(parseInt(userId));
+      const companyId = user?.companyId || 1;
       
       const transfers = await storage.getMoneyTransfers(companyId);
       res.json(transfers);
@@ -958,18 +965,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/money-transfers", async (req, res) => {
     try {
       const storage = await databaseManager.getStorage();
-      const userId = getUserIdFromRequest(req);
-      const { companyId, branchId } = getUserContextFromRequest(req);
       
-      // Validar dados usando schema
-      const transferData = MoneyTransferSchema.parse(req.body);
+      // Usar o sistema de headers existente
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId) {
+        return res.status(400).json({ error: "User ID header required" });
+      }
+      
+      const user = await storage.getUserById(parseInt(userId));
+      const companyId = user?.companyId || 1;
       
       const newTransfer = await storage.createMoneyTransfer({
-        ...transferData,
+        ...req.body,
         transferDate: new Date().toISOString(),
         status: 'pending',
-        companyId: companyId || 1,
-        createdBy: userId,
+        companyId,
+        createdBy: parseInt(userId),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       });
