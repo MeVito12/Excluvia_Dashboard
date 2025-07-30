@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { useLocation } from 'wouter';
 import { 
   Database, 
   Users, 
@@ -27,11 +26,14 @@ import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
 import { useAppointments } from '@/hooks/useAppointments';
 
-const DashboardSection = () => {
+interface DashboardSectionProps {
+  onSectionChange?: (section: string) => void;
+}
+
+const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
-  const [, setLocation] = useLocation();
   
   const [dateFrom, setDateFrom] = useState<string>('');
   const [dateTo, setDateTo] = useState<string>('');
@@ -93,18 +95,18 @@ const DashboardSection = () => {
 
   // Função de navegação para seções
   const navigateToSection = (sectionName: string) => {
-    const routes: { [key: string]: string } = {
-      'Gráficos': '/graficos',
-      'Atividade': '/atividade', 
-      'Agendamentos': '/agendamentos',
-      'Estoque': '/estoque',
-      'Atendimento': '/atendimento',
-      'Financeiro': '/financeiro'
+    const sectionMap: { [key: string]: string } = {
+      'Gráficos': 'graficos',
+      'Atividade': 'atividade', 
+      'Agendamentos': 'agendamentos',
+      'Estoque': 'estoque',
+      'Atendimento': 'atendimento',
+      'Financeiro': 'financeiro'
     };
     
-    const route = routes[sectionName];
-    if (route) {
-      setLocation(route);
+    const section = sectionMap[sectionName];
+    if (section && onSectionChange) {
+      onSectionChange(section);
     }
   };
 

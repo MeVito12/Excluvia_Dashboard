@@ -18,7 +18,7 @@ const Index = () => {
   const renderActiveSection = () => {
     switch (activeSection) {
       case 'dashboard':
-        return <DashboardSection />;
+        return <DashboardSection onSectionChange={setActiveSection} />;
       case 'graficos':
         return <GraficosSection />;
       case 'atividade':
