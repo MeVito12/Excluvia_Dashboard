@@ -330,6 +330,69 @@ const EstoqueSection = () => {
         </p>
       </div>
 
+      {/* Cards de Métricas */}
+      <div className="metrics-grid">
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total de Produtos</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {products?.length || 0}
+              </p>
+              <p className="text-xs text-blue-600 mt-1">Produtos cadastrados</p>
+            </div>
+            <div className="p-3 rounded-full bg-blue-100">
+              <Package className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Valor do Estoque</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                R$ {products?.reduce((total: number, product: any) => total + (Number(product.price || 0) * Number(product.stock || 0)), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+              <p className="text-xs text-green-600 mt-1">Valor total investido</p>
+            </div>
+            <div className="p-3 rounded-full bg-green-100">
+              <DollarSign className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {products?.filter((product: any) => Number(product.stock || 0) <= Number(product.minStock || 0)).length || 0}
+              </p>
+              <p className="text-xs text-yellow-600 mt-1">Produtos com baixo estoque</p>
+            </div>
+            <div className="p-3 rounded-full bg-yellow-100">
+              <Package className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Transferências</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {transfers?.length || 0}
+              </p>
+              <p className="text-xs text-purple-600 mt-1">Transferências realizadas</p>
+            </div>
+            <div className="p-3 rounded-full bg-purple-100">
+              <ArrowRightLeft className="h-6 w-6 text-purple-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="tab-navigation">
         {tabs.map((tab) => (
           <button
