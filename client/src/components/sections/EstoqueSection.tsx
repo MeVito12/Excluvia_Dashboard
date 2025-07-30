@@ -335,29 +335,17 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total de Produtos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {products?.length || 0}
+              <p className="text-sm font-medium text-gray-600">Estoque Bom</p>
+              <p className="text-2xl font-bold text-green-700 mt-1">
+                {products?.filter((product: any) => {
+                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                  return status === 'Em Estoque';
+                }).length || 0}
               </p>
-              <p className="text-xs text-blue-600 mt-1">Produtos cadastrados</p>
-            </div>
-            <div className="p-3 rounded-full bg-blue-100">
-              <Package className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Valor do Estoque</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                R$ {products?.reduce((total: number, product: any) => total + (Number(product.price || 0) * Number(product.stock || 0)), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </p>
-              <p className="text-xs text-green-600 mt-1">Valor total investido</p>
+              <p className="text-xs text-green-600 mt-1">Produtos em condições normais</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
-              <DollarSign className="h-6 w-6 text-green-600" />
+              <Package className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
@@ -366,8 +354,11 @@ const EstoqueSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {products?.filter((product: any) => Number(product.stock || 0) <= Number(product.minStock || 0)).length || 0}
+              <p className="text-2xl font-bold text-yellow-700 mt-1">
+                {products?.filter((product: any) => {
+                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                  return status === 'Estoque Baixo';
+                }).length || 0}
               </p>
               <p className="text-xs text-yellow-600 mt-1">Produtos com baixo estoque</p>
             </div>
@@ -380,14 +371,35 @@ const EstoqueSection = () => {
         <div className="metric-card">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Transferências</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">
-                {transfers?.length || 0}
+              <p className="text-sm font-medium text-gray-600">Próximos ao Vencimento</p>
+              <p className="text-2xl font-bold text-orange-700 mt-1">
+                {products?.filter((product: any) => {
+                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                  return status === 'Próximo ao Vencimento';
+                }).length || 0}
               </p>
-              <p className="text-xs text-purple-600 mt-1">Transferências realizadas</p>
+              <p className="text-xs text-orange-600 mt-1">Produtos próximos do vencimento</p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <ArrowRightLeft className="h-6 w-6 text-purple-600" />
+            <div className="p-3 rounded-full bg-orange-100">
+              <Package className="h-6 w-6 text-orange-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Produtos Vencidos</p>
+              <p className="text-2xl font-bold text-red-700 mt-1">
+                {products?.filter((product: any) => {
+                  const status = getProductStatus(Number(product.stock || 0), Number(product.minStock || 0), product.expiryDate);
+                  return status === 'Vencido';
+                }).length || 0}
+              </p>
+              <p className="text-xs text-red-600 mt-1">Produtos que já venceram</p>
+            </div>
+            <div className="p-3 rounded-full bg-red-100">
+              <Package className="h-6 w-6 text-red-600" />
             </div>
           </div>
         </div>
