@@ -53,13 +53,12 @@ const FinanceiroSection = () => {
   } = useFinancial();
 
   const {
-    transfers: moneyTransfers = [],
+    moneyTransfers = [],
     isLoading: isTransfersLoading,
-    createTransfer,
-    updateTransfer,
-    deleteTransfer,
-    approveTransfer,
-    completeTransfer
+    createMoneyTransfer,
+    updateMoneyTransfer,
+    isCreating: isCreatingTransfer,
+    isUpdating: isUpdatingTransfer
   } = useMoneyTransfers();
 
   const { branches = [] } = useBranches();
@@ -227,6 +226,80 @@ const FinanceiroSection = () => {
         variant: "destructive"
       });
     }
+  };
+
+  // Funções para transferências monetárias
+  const handleCreateTransfer = async () => {
+    try {
+      const transferFormData: NewMoneyTransfer = {
+        fromBranchId: parseInt(transferData.fromBranchId),
+        toBranchId: parseInt(transferData.toBranchId),
+        amount: parseFloat(transferData.amount),
+        description: transferData.description,
+        transferType: transferData.transferType,
+        notes: transferData.notes
+      };
+
+      await createMoneyTransfer(transferFormData);
+      
+      showAlert({
+        title: "Sucesso",
+        description: "Transferência criada com sucesso",
+        variant: "success"
+      });
+      
+      setIsTransferModalOpen(false);
+      setTransferData({
+        fromBranchId: '',
+        toBranchId: '',
+        amount: '',
+        description: '',
+        transferType: 'operational',
+        notes: ''
+      });
+    } catch (error) {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao criar transferência",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleUpdateTransferStatus = async (transferId: number, newStatus: string) => {
+    try {
+      await updateMoneyTransfer({
+        id: transferId,
+        transfer: { status: newStatus }
+      });
+      
+      showAlert({
+        title: "Sucesso",
+        description: `Transferência ${newStatus === 'approved' ? 'aprovada' : newStatus === 'completed' ? 'concluída' : 'rejeitada'} com sucesso`,
+        variant: "success"
+      });
+    } catch (error) {
+      showAlert({
+        title: "Erro",
+        description: "Erro ao atualizar transferência",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getTransferStatusLabel = (status: string) => {
+    switch (status) {
+      case 'pending': return 'Pendente';
+      case 'approved': return 'Aprovada';
+      case 'completed': return 'Concluída';
+      case 'rejected': return 'Rejeitada';
+      default: return 'Pendente';
+    }
+  };
+
+  const getBranchName = (branchId: number) => {
+    const branch = branches.find(b => b.id === branchId);
+    return branch?.name || `Filial ${branchId}`;
   };
 
   const getStatusLabel = (status: string) => {
@@ -439,23 +512,89 @@ const FinanceiroSection = () => {
 
           {/* Lista de Entradas Financeiras */}
           {activeTab === 'transferencias' ? (
-            // Seção de Transferências de Dinheiro
-            <div className="standard-list-container">
-              <div className="standard-list-content">
-                <div className="text-center py-8">
-                  <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Sistema de Transferências em Desenvolvimento
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Funcionalidade de transferências de dinheiro entre filiais em implementação.
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Em breve você poderá transferir valores entre unidades do negócio.
-                  </p>
+            // Conteúdo da aba Transferências
+            isTransfersLoading && moneyTransfers.length === 0 ? (
+              <div className="text-center py-8">
+                <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">Carregando transferências...</p>
+              </div>
+            ) : moneyTransfers.length === 0 ? (
+              <div className="text-center py-8">
+                <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600">Nenhuma transferência encontrada</p>
+              </div>
+            ) : (
+              <div className="standard-list-container">
+                <div className="standard-list-content">
+                  {moneyTransfers.map((transfer: MoneyTransfer) => (
+                    <div key={transfer.id} className="standard-list-item group">
+                      <div className="list-item-main">
+                        <div className="list-item-title">{transfer.description}</div>
+                        <div className="list-item-subtitle">
+                          De: {getBranchName(transfer.fromBranchId)} → Para: {getBranchName(transfer.toBranchId)}
+                        </div>
+                        <div className="list-item-meta flex items-center gap-2">
+                          <span className={`list-status-badge ${
+                            transfer.status === 'completed' ? 'status-success' : 
+                            transfer.status === 'approved' ? 'status-info' : 
+                            transfer.status === 'pending' ? 'status-warning' :
+                            'status-danger'
+                          }`}>
+                            {getTransferStatusLabel(transfer.status)}
+                          </span>
+                          <span className="list-status-badge status-info">
+                            {transfer.transferType === 'operational' ? 'Operacional' :
+                             transfer.transferType === 'investment' ? 'Investimento' :
+                             transfer.transferType === 'emergency' ? 'Emergência' : 'Reembolso'}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">
+                            R$ {Number(transfer.amount || 0).toFixed(2)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(transfer.transferDate).toLocaleDateString('pt-BR')}
+                          </p>
+                        </div>
+                        
+                        <div className="list-item-actions">
+                          {transfer.status === 'pending' && (
+                            <>
+                              <button
+                                onClick={() => handleUpdateTransferStatus(transfer.id, 'approved')}
+                                className="list-action-button edit"
+                                title="Aprovar transferência"
+                              >
+                                <Check className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleUpdateTransferStatus(transfer.id, 'rejected')}
+                                className="list-action-button delete"
+                                title="Rejeitar transferência"
+                              >
+                                <X className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                          {transfer.status === 'approved' && (
+                            <button
+                              onClick={() => handleUpdateTransferStatus(transfer.id, 'completed')}
+                              className="list-action-button view"
+                              title="Marcar como concluída"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )
           ) : isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
@@ -834,6 +973,151 @@ const FinanceiroSection = () => {
                   className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Confirmar Pagamento
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Transferências Monetárias */}
+      {isTransferModalOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setIsTransferModalOpen(false);
+            }
+          }}
+        >
+          <div 
+            className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900">
+                Nova Transferência de Dinheiro
+              </h3>
+              <button
+                onClick={() => setIsTransferModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="fromBranch" className="block text-sm font-medium text-gray-700 mb-1">
+                  Filial de Origem *
+                </label>
+                <select
+                  id="fromBranch"
+                  value={transferData.fromBranchId}
+                  onChange={(e) => setTransferData({ ...transferData, fromBranchId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Selecione a filial de origem</option>
+                  {branches.map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="toBranch" className="block text-sm font-medium text-gray-700 mb-1">
+                  Filial de Destino *
+                </label>
+                <select
+                  id="toBranch"
+                  value={transferData.toBranchId}
+                  onChange={(e) => setTransferData({ ...transferData, toBranchId: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Selecione a filial de destino</option>
+                  {branches.filter(branch => branch.id.toString() !== transferData.fromBranchId).map((branch) => (
+                    <option key={branch.id} value={branch.id}>
+                      {branch.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="transferAmount" className="block text-sm font-medium text-gray-700 mb-1">
+                  Valor da Transferência (R$) *
+                </label>
+                <input
+                  id="transferAmount"
+                  type="number"
+                  step="0.01"
+                  value={transferData.amount}
+                  onChange={(e) => setTransferData({ ...transferData, amount: e.target.value })}
+                  placeholder="0,00"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="transferDescription" className="block text-sm font-medium text-gray-700 mb-1">
+                  Descrição *
+                </label>
+                <input
+                  id="transferDescription"
+                  type="text"
+                  value={transferData.description}
+                  onChange={(e) => setTransferData({ ...transferData, description: e.target.value })}
+                  placeholder="Motivo da transferência"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="transferType" className="block text-sm font-medium text-gray-700 mb-1">
+                  Tipo de Transferência *
+                </label>
+                <select
+                  id="transferType"
+                  value={transferData.transferType}
+                  onChange={(e) => setTransferData({ ...transferData, transferType: e.target.value as any })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="operational">Operacional</option>
+                  <option value="investment">Investimento</option>
+                  <option value="emergency">Emergência</option>
+                  <option value="reimbursement">Reembolso</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="transferNotes" className="block text-sm font-medium text-gray-700 mb-1">
+                  Observações
+                </label>
+                <textarea
+                  id="transferNotes"
+                  value={transferData.notes}
+                  onChange={(e) => setTransferData({ ...transferData, notes: e.target.value })}
+                  placeholder="Observações adicionais (opcional)"
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setIsTransferModalOpen(false)}
+                  className="btn btn-outline"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleCreateTransfer}
+                  disabled={!transferData.fromBranchId || !transferData.toBranchId || !transferData.amount || !transferData.description || isCreatingTransfer}
+                  className="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isCreatingTransfer ? 'Criando...' : 'Criar Transferência'}
                 </button>
               </div>
             </div>
