@@ -368,10 +368,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Appointments routes
   app.get("/api/appointments", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "alimenticio";
-      const appointments = await storage.getAppointments(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const appointments = await db.execute(sql`
+        SELECT 
+          id, title, description, client_id, client_name, appointment_date, 
+          start_time, end_time, status, notes, type,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM appointments 
+        WHERE created_by = ${userId}
+        ORDER BY appointment_date ASC
+      `);
+      
       res.json(appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -442,10 +458,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de produtos
   app.get("/api/products", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const products = await storage.getProducts(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const products = await db.execute(sql`
+        SELECT 
+          id, name, description, price, stock, min_stock, category, is_perishable,
+          manufacturing_date, expiry_date, barcode,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM products 
+        WHERE created_by = ${userId}
+        ORDER BY name ASC
+      `);
+      
       res.json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -513,10 +545,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const sales = await storage.getSales(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const sales = await db.execute(sql`
+        SELECT 
+          s.id, s.product_id, s.client_id, s.quantity, s.unit_price, s.total_price,
+          s.payment_method, s.sale_date, s.notes, s.company_id,
+          s.branch_id, s.created_by, s.created_at,
+          p.name as product_name,
+          c.name as client_name
+        FROM sales s
+        LEFT JOIN products p ON s.product_id = p.id
+        LEFT JOIN clients c ON s.client_id = c.id
+        WHERE s.created_by = ${userId}
+        ORDER BY s.sale_date DESC
+      `);
+      
       res.json(sales);
     } catch (error) {
       console.error("Error fetching sales:", error);
@@ -579,10 +631,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Rotas de clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      const storage = await databaseManager.getStorage();
       const userId = getUserIdFromRequest(req);
-      const businessCategory = req.query.businessCategory as string || "salao";
-      const clients = await storage.getClients(userId, businessCategory);
+      
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const clients = await db.execute(sql`
+        SELECT 
+          id, name, email, phone, address, client_type, document,
+          company_id, branch_id, created_by, created_at, updated_at
+        FROM clients 
+        WHERE created_by = ${userId}
+        ORDER BY name ASC
+      `);
+      
       res.json(clients);
     } catch (error) {
       console.error("Error fetching clients:", error);
