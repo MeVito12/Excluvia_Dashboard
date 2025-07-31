@@ -106,15 +106,22 @@ export class SupabaseStorage implements Storage {
     this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
   }
 
-  private async request(path: string, options: RequestInit = {}): Promise<any> {
+  private async request(path: string, options: RequestInit = {}, companyId?: number): Promise<any> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'apikey': this.apiKey,
+      'Authorization': `Bearer ${this.apiKey}`,
+      ...options.headers,
+    };
+
+    // Se companyId fornecido, definir contexto RLS
+    if (companyId) {
+      headers['rls-company-id'] = companyId.toString();
+    }
+
     const response = await fetch(`${this.baseUrl}/rest/v1/${path}`, {
       ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': this.apiKey,
-        'Authorization': `Bearer ${this.apiKey}`,
-        ...options.headers,
-      },
+      headers,
     });
 
     if (!response.ok) {
@@ -122,6 +129,20 @@ export class SupabaseStorage implements Storage {
     }
 
     return response.json();
+  }
+
+  // Método para definir contexto RLS via SQL
+  private async setRLSContext(companyId: number): Promise<void> {
+    if (companyId) {
+      await this.request(`rpc/set_config`, {
+        method: 'POST',
+        body: JSON.stringify({
+          setting_name: 'rls.company_id',
+          setting_value: companyId.toString(),
+          is_local: true
+        })
+      });
+    }
   }
 
   // ====================================

@@ -392,6 +392,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       throw new Error('User ID not found in request headers');
     }
     return parseInt(userId);
+  }
+
+  // Middleware para definir contexto RLS
+  const setRLSContext = async (req: any, res: any, next: any) => {
+    try {
+      const userId = parseInt(req.headers['x-user-id']) || 18;
+      
+      // Buscar company_id do usuário
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      const db = getDatabase();
+      
+      if (db && userId) {
+        const userResult = await db.execute(sql`
+          SELECT company_id FROM users WHERE id = ${userId}
+        `);
+        
+        if (userResult && userResult.length > 0) {
+          const companyId = userResult[0].company_id;
+          if (companyId) {
+            // Definir contexto RLS para a sessão
+            await db.execute(sql`
+              SELECT set_config('rls.company_id', ${companyId.toString()}, true)
+            `);
+          }
+        }
+      }
+      
+      next();
+    } catch (error) {
+      console.error('Error setting RLS context:', error);
+      next(); // Continuar mesmo com erro
+    }
   };
 
   // Appointments routes
