@@ -793,16 +793,16 @@ const EstoqueSection = () => {
             </div>
             
             <div className="space-y-4">
-              <div className="relative">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Produto</label>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
                 
-                {/* Combobox integrado */}
-                <div className="relative">
+                {/* Lista de pesquisa compacta */}
+                <div className="space-y-2">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                     <input
                       type="text"
-                      placeholder="Digite para pesquisar ou selecionar produto..."
+                      placeholder="Digite para pesquisar produto..."
                       value={productSearchTerm}
                       onChange={(e) => {
                         setProductSearchTerm(e.target.value);
@@ -810,32 +810,18 @@ const EstoqueSection = () => {
                         setSelectedProductId('');
                       }}
                       onFocus={() => setShowProductDropdown(true)}
-                      onBlur={(e) => {
-                        // Só fecha se não estiver clicando no dropdown
-                        if (!e.relatedTarget || !e.currentTarget.parentNode?.contains(e.relatedTarget)) {
-                          setTimeout(() => setShowProductDropdown(false), 200);
-                        }
-                      }}
-                      className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowProductDropdown(!showProductDropdown)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
                   </div>
                   
-                  {/* Dropdown com produtos filtrados */}
-                  {showProductDropdown && (
-                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                  {/* Lista compacta de produtos */}
+                  {showProductDropdown && productSearchTerm && (
+                    <div className="border border-gray-200 rounded-md bg-gray-50 max-h-32 overflow-y-auto">
                       {products
                         .filter((product: any) => 
                           product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
                         )
+                        .slice(0, 4) // Limita a 4 produtos visíveis
                         .map((product: any) => (
                           <div
                             key={product.id}
@@ -844,9 +830,9 @@ const EstoqueSection = () => {
                               setProductSearchTerm(product.name);
                               setShowProductDropdown(false);
                             }}
-                            className="px-3 py-2 hover:bg-purple-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                            className="px-3 py-2 hover:bg-white cursor-pointer text-sm border-b border-gray-200 last:border-b-0"
                           >
-                            <div className="font-medium text-gray-900 text-sm">{product.name}</div>
+                            <div className="font-medium text-gray-800">{product.name}</div>
                             <div className="text-xs text-gray-500">Estoque: {product.stock} unidades</div>
                           </div>
                         ))}
@@ -858,6 +844,41 @@ const EstoqueSection = () => {
                           Nenhum produto encontrado
                         </div>
                       )}
+                      
+                      {products.filter((product: any) => 
+                        product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                      ).length > 4 && (
+                        <div className="px-3 py-1 text-xs text-gray-400 bg-gray-100">
+                          +{products.filter((product: any) => 
+                            product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                          ).length - 4} produtos... Continue digitando
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Produto selecionado */}
+                  {selectedProductId && (
+                    <div className="bg-purple-50 border border-purple-200 rounded-md p-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm font-medium text-purple-800">
+                            {products.find(p => p.id.toString() === selectedProductId)?.name}
+                          </div>
+                          <div className="text-xs text-purple-600">
+                            Estoque: {products.find(p => p.id.toString() === selectedProductId)?.stock} unidades
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setSelectedProductId('');
+                            setProductSearchTerm('');
+                          }}
+                          className="text-purple-400 hover:text-purple-600"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
