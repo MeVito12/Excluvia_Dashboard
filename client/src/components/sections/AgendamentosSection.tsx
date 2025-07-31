@@ -3,6 +3,7 @@ import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { useAppointments } from '@/hooks/useAppointments';
+import { formatDateBR } from '@/utils/dateFormat';
 import { 
   Calendar as CalendarIcon, 
   Clock, 
@@ -147,7 +148,7 @@ const AgendamentosSection = () => {
                   <div className="list-item-title">{appointment.title}</div>
                   <div className="list-item-subtitle">Cliente: {appointment.client_name}</div>
                   <div className="list-item-meta">
-                    Data: {appointment.appointment_date} às {appointment.start_time} | Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
+                    Data: {formatDateBR(appointment.appointment_date)} às {appointment.start_time} | Tipo: {appointment.type === 'reuniao' ? 'Reunião' : 
                      appointment.type === 'consulta' ? 'Consulta' : 'Follow-up'}
                   </div>
                 </div>
@@ -167,7 +168,7 @@ const AgendamentosSection = () => {
                       onClick={() => {
                         showAlert({
                           title: `Visualizando Compromisso`,
-                          description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${appointment.appointment_date} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
+                          description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${formatDateBR(appointment.appointment_date)} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
                           variant: "default"
                         });
                       }}

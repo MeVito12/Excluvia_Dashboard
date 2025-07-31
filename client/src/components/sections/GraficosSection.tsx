@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatDateBR } from '@/utils/dateFormat';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
@@ -93,7 +94,7 @@ const GraficosSection = () => {
       const date = new Date();
       date.setDate(date.getDate() - i);
       const dateStr = date.toISOString().split('T')[0];
-      const dayName = date.toLocaleDateString('pt-BR', { weekday: 'short' });
+      const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
       const daySales = filteredSales.filter((sale: any) => 
         sale.sale_date && sale.sale_date.split('T')[0] === dateStr
@@ -111,7 +112,7 @@ const GraficosSection = () => {
     for (let i = 5; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i * 5); // Intervalos de 5 dias
-      const dayName = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
       // Simular tendência de crescimento baseada nos dados reais
       const baseValue = Math.max(0, totalSales / 6);

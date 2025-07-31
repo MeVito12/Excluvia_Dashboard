@@ -25,6 +25,7 @@ import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
 import { useAppointments } from '@/hooks/useAppointments';
+import { formatDateBR } from '@/utils/dateFormat';
 
 interface DashboardSectionProps {
   onSectionChange?: (section: string) => void;
@@ -323,7 +324,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                   <p className="text-sm text-gray-600">Qtd: {sale.quantity}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-500">{new Date(sale.sale_date).toLocaleDateString()}</p>
+                  <p className="text-sm text-gray-500">{formatDateBR(sale.sale_date)}</p>
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                     {sale.payment_method || 'Dinheiro'}
                   </span>
@@ -391,7 +392,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {new Date(appointment.appointment_date).toLocaleDateString('pt-BR')}
+                    {formatDateBR(appointment.appointment_date)}
                   </p>
                   <p className="text-sm text-gray-500">
                     {appointment.start_time}
@@ -485,7 +486,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {new Date(transfer.created_at).toLocaleDateString()}
+                    {formatDateBR(transfer.created_at)}
                   </p>
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
                     transfer.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :

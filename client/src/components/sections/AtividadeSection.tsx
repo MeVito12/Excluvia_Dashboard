@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
+import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -294,7 +295,7 @@ const AtividadeSection = () => {
                     <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
                     <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
                     <div className="list-item-meta">
-                      {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+                      {sale.sale_date ? formatDateBR(sale.sale_date) : 'Data não disponível'}
                     </div>
                   </div>
                   

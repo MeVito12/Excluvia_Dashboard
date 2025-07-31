@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatDateBR } from '@/utils/dateFormat';
 import { useFinancial } from '@/hooks/useFinancial';
 import { useMoneyTransfers } from '@/hooks/useMoneyTransfers';
 import { useBranches } from '@/hooks/useBranches';
