@@ -544,7 +544,7 @@ const FinanceiroSection = () => {
           {activeTab === 'transferencias' ? (
             <div>
               {/* Filtros para Transferências */}
-              <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+              <div className="bg-white rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-4 flex-wrap">
                   {/* Campo de busca */}
                   <div className="flex-1 min-w-[200px] relative">
