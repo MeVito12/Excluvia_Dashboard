@@ -618,14 +618,21 @@ const AtendimentoSection = () => {
   const getCatalogs = () => {
     // Para todas as categorias, puxar automaticamente do estoque
     const stockProducts = getCurrentCategoryItems();
-    return stockProducts.map((product: any) => ({
+    
+    // Para categoria alimenticia, filtrar apenas produtos marcados como "à venda"
+    const filteredProducts = selectedCategory === 'alimenticio' 
+      ? stockProducts.filter((product: any) => product.forSale === true)
+      : stockProducts;
+      
+    return filteredProducts.map((product: any) => ({
       id: product.id,
       name: product.name || product.title,
       price: product.price ? `R$ ${Number(product.price).toFixed(2).replace('.', ',')}` : 'Sob consulta',
       description: product.description,
       category: product.category,
       stock: product.stock,
-      isFromStock: true
+      isFromStock: true,
+      available: product.forSale !== false // Produto disponível se não for explicitamente false
     }));
   };
 
@@ -924,11 +931,18 @@ const AtendimentoSection = () => {
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 text-blue-700">
               <CheckCircle className="w-5 h-5" />
-              <span className="font-medium">Sincronização Automática com Estoque</span>
+              <span className="font-medium">
+                {selectedCategory === 'alimenticio' 
+                  ? 'Cardápio Automático do Estoque' 
+                  : 'Sincronização Automática com Estoque'
+                }
+              </span>
             </div>
             <p className="text-sm text-blue-600 mt-1">
-              Os produtos abaixo são carregados automaticamente do seu estoque. 
-              Para gerenciar produtos, vá para a seção Estoque.
+              {selectedCategory === 'alimenticio' 
+                ? 'Apenas produtos marcados como "à venda" no estoque aparecem no cardápio. Para adicionar itens, vá para a seção Estoque e marque produtos como "à venda".'
+                : 'Os produtos abaixo são carregados automaticamente do seu estoque. Para gerenciar produtos, vá para a seção Estoque.'
+              }
             </p>
           </div>
         )}
