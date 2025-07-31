@@ -33,7 +33,7 @@ interface SidebarProps {
 const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapsed, onToggleCollapse }: SidebarProps) => {
   const { user, logout } = useAuth();
   const { selectedCategory } = useCategory();
-  const { canAccessSection, isMasterUser } = usePermissions();
+  const { canAccessSection, isMasterUser, isCeoUser } = usePermissions();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   
   const isCollapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
@@ -106,14 +106,14 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
 
   // Filtra itens baseado em permissões e categoria
   const menuItems = allMenuItems.filter(item => {
-    // Controle só para usuários master
+    // Controle só para usuários master ou CEO
     if (item.id === 'controle') {
-      return isMasterUser;
+      return isMasterUser || isCeoUser;
     }
 
-    // Cadastro só para CEO
+    // Cadastro só para CEO (por role ou email específico)
     if (item.id === 'cadastro') {
-      return (user as any)?.role === 'ceo';
+      return (user as any)?.role === 'ceo' || (user as any)?.email === 'ceo@sistema.com';
     }
     
     // Estoque não aparece para design e sites

@@ -582,8 +582,10 @@ const CadastroSection = () => {
     }
   });
 
-  // Verificar se é CEO
-  if ((user as any)?.role !== 'ceo') {
+  // Verificar se é CEO (por role ou email específico)
+  const isCeoUser = (user as any)?.role === 'ceo' || (user as any)?.email === 'ceo@sistema.com';
+  
+  if (!isCeoUser) {
     return (
       <div className="app-section">
         <div className="section-header">
