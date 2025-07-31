@@ -373,18 +373,40 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-purple-600 rounded"></div>
+                  <span>Quantidade de Vendas</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={calculateMetrics.salesChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="day" />
-                <YAxis />
+                <XAxis 
+                  dataKey="day" 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  label={{ value: 'Vendas', angle: -90, position: 'insideLeft' }}
+                />
                 <Tooltip 
                   formatter={(value: any, name: any) => [
-                    name === 'vendas' ? `${value} vendas` : `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                    name === 'vendas' ? 'Vendas' : 'Receita'
+                    `${value} vendas`,
+                    'Quantidade de Vendas'
                   ]}
+                  labelFormatter={(label) => `Data: ${label}`}
+                  contentStyle={{
+                    backgroundColor: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
                 />
-                <Bar dataKey="vendas" fill="#8B5CF6" name="vendas" />
+                <Bar dataKey="vendas" fill="#8B5CF6" name="Vendas" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -399,13 +421,38 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-green-500 rounded"></div>
+                  <span>Unidades Vendidas</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={calculateMetrics.topProductsData} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="produto" type="category" width={80} />
-                <Tooltip formatter={(value) => [`${value} vendas`, 'Quantidade']} />
-                <Bar dataKey="vendas" fill="#06D6A0" />
+                <XAxis 
+                  type="number" 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  dataKey="produto" 
+                  type="category" 
+                  width={100} 
+                  tick={{ fontSize: 11 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <Tooltip 
+                  formatter={(value) => [`${value} unidades`, 'Quantidade Vendida']}
+                  contentStyle={{
+                    backgroundColor: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Bar dataKey="vendas" fill="#06D6A0" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -420,18 +467,40 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                  <span>Receita Total (R$)</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={calculateMetrics.categoryChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="categoria" />
-                <YAxis />
-                <Tooltip 
-                  formatter={(value: any, name: any) => [
-                    name === 'vendas' ? `${value} vendas` : `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                    name === 'vendas' ? 'Vendas' : 'Receita'
-                  ]}
+                <XAxis 
+                  dataKey="categoria" 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
                 />
-                <Bar dataKey="receita" fill="#3B82F6" name="receita" />
+                <YAxis 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  label={{ value: 'Receita (R$)', angle: -90, position: 'insideLeft' }}
+                />
+                <Tooltip 
+                  formatter={(value: any) => [
+                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+                    'Receita da Categoria'
+                  ]}
+                  labelFormatter={(label) => `Categoria: ${label}`}
+                  contentStyle={{
+                    backgroundColor: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Bar dataKey="receita" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -446,21 +515,45 @@ const GraficosSection = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <div className="mb-4">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-green-500 rounded"></div>
+                  <span>Vendas Realizadas</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-yellow-500 rounded"></div>
+                  <span>Meta de Vendas</span>
+                </div>
+              </div>
+            </div>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={calculateMetrics.performanceData}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mes" />
-                <YAxis />
+                <XAxis 
+                  dataKey="mes" 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  label={{ value: 'Vendas', angle: -90, position: 'insideLeft' }}
+                />
                 <Tooltip 
                   formatter={(value: any, name: any) => [
-                    name === 'vendas' ? `${value} vendas` : 
-                    name === 'meta' ? `${value} vendas (meta)` :
-                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                    name === 'vendas' ? 'Vendas' : name === 'meta' ? 'Meta' : 'Receita'
+                    `${value} vendas`,
+                    name === 'vendas' ? 'Vendas Realizadas' : 'Meta de Vendas'
                   ]}
+                  labelFormatter={(label) => `Mês: ${label}`}
+                  contentStyle={{
+                    backgroundColor: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
                 />
-                <Bar dataKey="vendas" fill="#06D6A0" name="vendas" />
-                <Bar dataKey="meta" fill="#FFD166" name="meta" opacity={0.7} />
+                <Bar dataKey="vendas" fill="#06D6A0" name="vendas" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="meta" fill="#FFD166" name="meta" opacity={0.7} radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
