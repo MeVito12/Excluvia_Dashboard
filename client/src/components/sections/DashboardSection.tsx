@@ -115,17 +115,20 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
   const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'created_at'), [transfers, dateFrom, dateTo]);
   
-  // Próximos compromissos (não filtrar por período, mostrar futuros)
+  // Compromissos recentes e próximos (últimos 30 dias e próximos 30 dias)
   const upcomingAppointments = useMemo(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const thirtyDaysAgo = new Date();
+    const thirtyDaysAhead = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    thirtyDaysAhead.setDate(today.getDate() + 30);
     
     return appointments
       .filter((appointment: any) => {
         const appointmentDate = new Date(appointment.appointment_date);
-        return appointmentDate >= today;
+        return appointmentDate >= thirtyDaysAgo && appointmentDate <= thirtyDaysAhead;
       })
-      .sort((a: any, b: any) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+      .sort((a: any, b: any) => new Date(b.appointment_date).getTime() - new Date(a.appointment_date).getTime());
   }, [appointments]);
 
   // Análise de produtos críticos
@@ -272,7 +275,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{upcomingAppointments.length}</p>
-              <p className="text-xs text-blue-600 mt-1">No período</p>
+              <p className="text-xs text-blue-600 mt-1">Últimos 30 dias</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <Calendar className="h-6 w-6 text-blue-600" />
@@ -397,7 +400,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
               </div>
             ))}
             {upcomingAppointments.length === 0 && (
-              <p className="text-gray-500 text-center py-4">Nenhum compromisso agendado</p>
+              <p className="text-gray-500 text-center py-4">Nenhum compromisso nos últimos 30 dias</p>
             )}
           </div>
         </div>
