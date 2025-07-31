@@ -781,7 +781,7 @@ const EstoqueSection = () => {
       {/* Modal Adicionar Transferência */}
       {showAddTransferModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto relative">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Nova Transferência</h3>
               <button 
@@ -793,8 +793,8 @@ const EstoqueSection = () => {
             </div>
             
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+              <div className="relative">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Produto</label>
                 
                 {/* Combobox integrado */}
                 <div className="relative">
@@ -810,7 +810,13 @@ const EstoqueSection = () => {
                         setSelectedProductId('');
                       }}
                       onFocus={() => setShowProductDropdown(true)}
-                      className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      onBlur={(e) => {
+                        // Só fecha se não estiver clicando no dropdown
+                        if (!e.relatedTarget || !e.currentTarget.parentNode?.contains(e.relatedTarget)) {
+                          setTimeout(() => setShowProductDropdown(false), 200);
+                        }
+                      }}
+                      className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     />
                     <button
                       type="button"
@@ -825,7 +831,7 @@ const EstoqueSection = () => {
                   
                   {/* Dropdown com produtos filtrados */}
                   {showProductDropdown && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
                       {products
                         .filter((product: any) => 
                           product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
@@ -838,10 +844,10 @@ const EstoqueSection = () => {
                               setProductSearchTerm(product.name);
                               setShowProductDropdown(false);
                             }}
-                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                            className="px-3 py-2 hover:bg-purple-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                           >
-                            <div className="font-medium text-gray-900">{product.name}</div>
-                            <div className="text-sm text-gray-500">Estoque: {product.stock} unidades</div>
+                            <div className="font-medium text-gray-900 text-sm">{product.name}</div>
+                            <div className="text-xs text-gray-500">Estoque: {product.stock} unidades</div>
                           </div>
                         ))}
                       
