@@ -136,39 +136,49 @@ const AtividadeSection = () => {
 
   // Funções para renderizar o conteúdo de cada aba
   const renderActivities = () => (
-    <div>
-      {/* Lista de atividades */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Logs ({stats.total})
-            </h2>
-            
-            {/* Filtros dentro do cabeçalho */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar atividades..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={searchTerm || ''}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                Limpar Filtros
-              </button>
-            </div>
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Logs ({stats.total})
+          </h3>
+        </div>
+
+        {/* Filtros abaixo do cabeçalho */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar atividades..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
+          <input
+            type="date"
+            value={dateFrom || ''}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data inicial"
+          />
+          <input
+            type="date"
+            value={dateTo || ''}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data final"
+          />
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setDateFrom('');
+              setDateTo('');
+            }}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
         </div>
 
         <div className="standard-list-container">
@@ -221,47 +231,55 @@ const AtividadeSection = () => {
   );
 
   const renderSales = () => (
-    <div>
-      {/* Lista de vendas */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Vendas ({sales.length})
-              </h2>
-              <div className="text-right ml-4">
-                <p className="text-sm text-gray-600">Total:</p>
-                <p className="text-lg font-bold text-green-600">
-                  R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </p>
-              </div>
-            </div>
-            
-            {/* Filtros dentro do cabeçalho */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar vendas..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={searchTerm || ''}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                Limpar Filtros
-              </button>
-            </div>
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Vendas ({sales.length})
+          </h3>
+          <div className="text-right">
+            <p className="text-sm text-gray-600">Total:</p>
+            <p className="text-lg font-bold text-green-600">
+              R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </p>
           </div>
+        </div>
+
+        {/* Filtros abaixo do cabeçalho */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar vendas..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <input
+            type="date"
+            value={dateFrom || ''}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data inicial"
+          />
+          <input
+            type="date"
+            value={dateTo || ''}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data final"
+          />
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setDateFrom('');
+              setDateTo('');
+            }}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
         </div>
         
         <div className="standard-list-container">
@@ -296,47 +314,55 @@ const AtividadeSection = () => {
   );
 
   const renderClients = () => (
-    <div>
-      {/* Lista de clientes */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Clientes ({clients.length})
-              </h2>
-              <div className="text-right ml-4">
-                <p className="text-sm text-gray-600">Total gasto:</p>
-                <p className="text-lg font-bold text-blue-600">
-                  R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                </p>
-              </div>
-            </div>
-            
-            {/* Filtros dentro do cabeçalho */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar clientes..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={searchTerm || ''}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                Limpar Filtros
-              </button>
-            </div>
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Clientes ({clients.length})
+          </h3>
+          <div className="text-right">
+            <p className="text-sm text-gray-600">Total gasto:</p>
+            <p className="text-lg font-bold text-blue-600">
+              R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </p>
           </div>
+        </div>
+
+        {/* Filtros abaixo do cabeçalho */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar clientes..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <input
+            type="date"
+            value={dateFrom || ''}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data inicial"
+          />
+          <input
+            type="date"
+            value={dateTo || ''}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data final"
+          />
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setDateFrom('');
+              setDateTo('');
+            }}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
         </div>
         
         <div className="standard-list-container">
@@ -364,43 +390,57 @@ const AtividadeSection = () => {
   );
 
   const renderReports = () => (
-    <div>
-      {/* Lista de relatórios */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Relatórios
-            </h2>
-            
-            {/* Filtros dentro do cabeçalho */}
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar relatórios..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={searchTerm || ''}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  setDateFrom('');
-                  setDateTo('');
-                }}
-                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                Limpar Filtros
-              </button>
-            </div>
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Relatórios
+          </h3>
+        </div>
+
+        {/* Filtros abaixo do cabeçalho */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar relatórios..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
+          <input
+            type="date"
+            value={dateFrom || ''}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data inicial"
+          />
+          <input
+            type="date"
+            value={dateTo || ''}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Data final"
+          />
+          <button
+            onClick={() => {
+              setSearchTerm('');
+              setDateFrom('');
+              setDateTo('');
+            }}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
         </div>
         
-        <div className="p-6">
-          <p className="text-gray-600">Relatórios disponíveis em breve.</p>
+        <div className="standard-list-container">
+          <div className="standard-list-content">
+            <div className="text-center py-8">
+              <p className="text-gray-600">Relatórios disponíveis em breve.</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -450,28 +490,17 @@ const AtividadeSection = () => {
       </div>
 
       {/* Navegação por abas - Padrão EstoqueSection */}
-      <div className="main-card mb-6">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex flex-wrap gap-2">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-purple-100 text-purple-700 border border-purple-200'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-transparent'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className="tab-navigation">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+          >
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Conteúdo da aba selecionada */}
