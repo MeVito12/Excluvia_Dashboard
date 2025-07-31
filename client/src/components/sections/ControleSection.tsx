@@ -268,43 +268,70 @@ const ControleSection = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredUsers.map(userData => (
-              <div key={userData.id} className="list-card">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
-                        <Users className="w-6 h-6 text-purple-600" />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-gray-900">{userData.name}</h3>
-                      <p className="text-sm text-gray-600">{userData.email}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs capitalize">
-                          {(userData.company_name || 'Sem empresa').replace('_', ' ')}
-                        </Badge>
-                        <Badge variant={(userData.userType || userData.role) === 'master' ? 'default' : 'secondary'} className="text-xs">
-                          {(userData.userType || userData.role) === 'master' ? 'Master' : 'Regular'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedUser(selectedUser === userData.id ? null : userData.id)}
-                    >
-                      {selectedUser === userData.id ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      {selectedUser === userData.id ? 'Ocultar' : 'Gerenciar'}
-                    </Button>
-                  </div>
-                </div>
+            {filteredUsers.map(userData => {
+              // Verificar se o usuário atual pode editar este usuário
+              const canEditUser = () => {
+                const currentUserRole = user?.role;
+                const targetUserRole = userData.role || userData.userType;
+                
+                // Apenas CEO/Gestão pode editar usuários master
+                if (targetUserRole === 'master') {
+                  return currentUserRole === 'gestao' || currentUserRole === 'ceo';
+                }
+                
+                // Usuários master podem editar usuários regulares
+                if (currentUserRole === 'master') {
+                  return targetUserRole !== 'master';
+                }
+                
+                return false;
+              };
 
-                {/* Permissions Panel */}
-                {selectedUser === userData.id && (
+              const isEditable = canEditUser();
+              
+              return (
+                <div key={userData.id} className="list-card">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                          <Users className="w-6 h-6 text-purple-600" />
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-gray-900">{userData.name}</h3>
+                        <p className="text-sm text-gray-600">{userData.email}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs capitalize">
+                            {(userData.company_name || 'Sem empresa').replace('_', ' ')}
+                          </Badge>
+                          <Badge variant={(userData.userType || userData.role) === 'master' ? 'default' : 'secondary'} className="text-xs">
+                            {(userData.userType || userData.role) === 'master' ? 'Master' : 'Regular'}
+                          </Badge>
+                          {!isEditable && (
+                            <Badge variant="destructive" className="text-xs">
+                              Protegido
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedUser(selectedUser === userData.id ? null : userData.id)}
+                        disabled={!isEditable}
+                      >
+                        {selectedUser === userData.id ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {selectedUser === userData.id ? 'Ocultar' : (isEditable ? 'Gerenciar' : 'Protegido')}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Permissions Panel */}
+                  {selectedUser === userData.id && isEditable && (
                   <div className="mt-4 pt-4 border-t border-gray-100">
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="font-medium text-gray-800 flex items-center gap-2">
@@ -342,6 +369,7 @@ const ControleSection = () => {
                               checked={hasPermission(userData.id, section.id)}
                               onChange={() => togglePermission(userData.id, section.id)}
                               className="sr-only peer"
+                              disabled={!isEditable}
                             />
                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
                           </label>
@@ -349,9 +377,10 @@ const ControleSection = () => {
                       ))}
                     </div>
                   </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
