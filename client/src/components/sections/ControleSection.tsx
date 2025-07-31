@@ -57,7 +57,7 @@ interface Company {
 
 const ControleSection = () => {
   const { user } = useAuth();
-  const { updateUserPermissions, getAllUserPermissions, isMasterUser, isGestaoUser } = usePermissions();
+  const { updateUserPermissions, getAllUserPermissions, isMasterUser, isCeoUser, isGestaoUser } = usePermissions();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const queryClient = useQueryClient();
   
@@ -77,7 +77,7 @@ const ControleSection = () => {
       }
       return response.json();
     },
-    enabled: !!user?.id && isMasterUser
+    enabled: !!user?.id && (isMasterUser || isCeoUser)
   });
 
   // Buscar usuários - Gestão vê todos, outros veem apenas da sua empresa
@@ -97,7 +97,7 @@ const ControleSection = () => {
         return response.json();
       }
     },
-    enabled: (isGestaoUser || !!company?.id) && isMasterUser
+    enabled: (isGestaoUser || !!company?.id) && (isMasterUser || isCeoUser)
   });
 
   // Mutation para atualizar permissões
@@ -150,7 +150,7 @@ const ControleSection = () => {
   }, [companyUsers]);
 
   // Verifica se o usuário atual tem acesso
-  if (!isMasterUser) {
+  if (!isMasterUser && !isCeoUser) {
     return (
       <div className="app-section">
         <div className="main-card">
@@ -271,16 +271,15 @@ const ControleSection = () => {
             {filteredUsers.map(userData => {
               // Verificar se o usuário atual pode editar este usuário
               const canEditUser = () => {
-                const currentUserRole = user?.role;
                 const targetUserRole = userData.role || userData.userType;
                 
-                // Apenas CEO/Gestão pode editar usuários master
-                if (targetUserRole === 'master') {
-                  return currentUserRole === 'gestao' || currentUserRole === 'ceo';
+                // CEO pode editar todos os usuários (incluindo masters)
+                if (isCeoUser) {
+                  return true;
                 }
                 
-                // Usuários master podem editar usuários regulares
-                if (currentUserRole === 'master') {
+                // Usuários master podem editar apenas usuários regulares (não outros masters)
+                if (isMasterUser) {
                   return targetUserRole !== 'master';
                 }
                 

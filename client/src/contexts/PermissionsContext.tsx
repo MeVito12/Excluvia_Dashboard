@@ -71,6 +71,7 @@ export const availableSections: SectionPermission[] = [
 interface PermissionsContextType {
   userPermissions: string[];
   isMasterUser: boolean;
+  isCeoUser: boolean;
   isGestaoUser: boolean;
   canAccessSection: (sectionId: string) => boolean;
   updateUserPermissions: (userId: number, permissions: string[]) => void;
@@ -85,8 +86,9 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [allUserPermissions, setAllUserPermissions] = useState<Record<number, string[]>>({});
 
   // Verifica se é usuário master ou CEO
-  const isMasterUser = (user as any)?.role === 'master' || (user as any)?.role === 'ceo';
-  const isGestaoUser = (user as any)?.role === 'ceo'; // Perfil Gestão tem acesso universal
+  const isMasterUser = (user as any)?.role === 'master';
+  const isCeoUser = (user as any)?.email === 'ceo@sistema.com'; // CEO específico
+  const isGestaoUser = isCeoUser; // CEO tem acesso universal (gestão)
 
   // Carrega permissões do localStorage
   useEffect(() => {
@@ -94,8 +96,8 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const savedPermissions = localStorage.getItem(`permissions_${(user as any).id}`);
       const savedAllPermissions = localStorage.getItem('all_user_permissions');
       
-      if (isMasterUser) {
-        // Master tem acesso a tudo, incluindo controle
+      if (isMasterUser || isCeoUser) {
+        // Master e CEO têm acesso a tudo, incluindo controle
         setUserPermissions([...availableSections.map(s => s.id), 'controle']);
       } else if (savedPermissions) {
         setUserPermissions(JSON.parse(savedPermissions));
@@ -118,7 +120,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const updateUserPermissions = (userId: number, permissions: string[]) => {
-    if (!isMasterUser) return;
+    if (!isMasterUser && !isCeoUser) return;
 
     const newAllPermissions = {
       ...allUserPermissions,
@@ -144,6 +146,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       value={{
         userPermissions,
         isMasterUser,
+        isCeoUser,
         isGestaoUser,
         canAccessSection,
         updateUserPermissions,

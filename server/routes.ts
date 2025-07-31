@@ -850,6 +850,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // === ROTAS PARA CONTROLE DE USUÁRIOS EMPRESA ===
   
+  // Buscar todos os usuários (para perfil Gestão)
+  app.get("/api/all-users", async (req, res) => {
+    try {
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      const db = await getDatabase();
+      
+      if (!db) {
+        throw new Error('Database not available');
+      }
+      
+      const users = await db.execute(sql`
+        SELECT u.id, u.name, u.email, u.role, u.phone, u.is_active, 
+               u.last_login, u.created_at, u.updated_at,
+               c.fantasy_name as company_name,
+               b.name as branch_name
+        FROM users u
+        LEFT JOIN companies c ON u.company_id = c.id
+        LEFT JOIN branches b ON u.branch_id = b.id
+        ORDER BY u.created_at DESC
+      `);
+      
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching all users:", error);
+      res.status(500).json({ error: "Erro ao buscar usuários" });
+    }
+  });
+  
   // Buscar usuários da empresa para o master
   app.get("/api/company-users/:companyId", async (req, res) => {
     try {
