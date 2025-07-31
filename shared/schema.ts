@@ -79,6 +79,7 @@ export interface Product {
   manufacturingDate?: string;
   expiryDate?: string;
   isPerishable: boolean;
+  forSale: boolean; // Se está à venda (aparece no cardápio) ou é apenas ingrediente
   companyId: number;
   branchId: number;
   createdBy: number;
