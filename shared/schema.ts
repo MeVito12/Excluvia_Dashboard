@@ -86,6 +86,32 @@ export interface Product {
   updatedAt: string;
 }
 
+// Para categoria alimenticia: produtos do cardápio que usam ingredientes do estoque
+export interface MenuProduct {
+  id: number;
+  name: string;
+  description?: string;
+  category: string;
+  price: number;
+  imageUrl?: string;
+  ingredients: MenuIngredient[]; // Lista de ingredientes necessários
+  isActive: boolean;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MenuIngredient {
+  id: number;
+  menuProductId: number;
+  productId: number; // Referência ao produto do estoque (ingrediente)
+  quantity: number; // Quantidade necessária do ingrediente
+  unit: string; // Unidade de medida (kg, g, L, ml, unidades)
+  createdAt: string;
+}
+
 export interface Sale {
   id: number;
   productId: number;
