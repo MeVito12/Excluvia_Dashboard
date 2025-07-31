@@ -15,6 +15,15 @@ import {
 import { 
   MoneyTransferSchema 
 } from "@shared/schema";
+import { 
+  validateForeignKeys, 
+  sanitizeInsertData,
+  convertBrazilianDate,
+  clientInsertSchema as validatedClientSchema,
+  appointmentInsertSchema as validatedAppointmentSchema,
+  saleInsertSchema as validatedSaleSchema,
+  financialEntryInsertSchema as validatedFinancialSchema
+} from "./database-validator";
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
