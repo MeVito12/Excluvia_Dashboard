@@ -333,7 +333,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
         {/* Modal de Recuperação de Senha */}
         <Dialog open={forgotPasswordOpen} onOpenChange={setForgotPasswordOpen}>
-          <DialogContent className="bg-white">
+          <DialogContent className="bg-white z-[60] !z-[60000] relative">
             <DialogHeader>
               <DialogTitle className="text-gray-900">Recuperar Senha</DialogTitle>
               <DialogDescription className="text-gray-600">

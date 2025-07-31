@@ -57,6 +57,15 @@
   z-index: 50001 !important;
 }
 
+/* Modal de recuperação de senha - força z-index máximo */
+[data-radix-dialog-content][class*="z-[60]"] {
+  z-index: 60000 !important;
+}
+
+[data-radix-dialog-overlay] + [data-radix-dialog-content][class*="z-[60]"] {
+  z-index: 60001 !important;
+}
+
 .sheets-integration-panel {
   z-index: 10001 !important;
 }
