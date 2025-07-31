@@ -63,6 +63,9 @@ const EstoqueSection = () => {
   const [productSearchTerm, setProductSearchTerm] = useState('');
   const [selectedProductId, setSelectedProductId] = useState('');
   const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [transferQuantity, setTransferQuantity] = useState(1);
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -72,6 +75,19 @@ const EstoqueSection = () => {
   const getProductName = (productId: number): string => {
     const product = products.find(p => p.id === productId);
     return product?.name || `Produto ID: ${productId}`;
+  };
+
+  // Função para selecionar produto na transferência
+  const selectProductForTransfer = (product: Product, quantity: number) => {
+    setSelectedProduct(product);
+    setTransferQuantity(quantity);
+    setShowProductSelectionModal(false);
+  };
+
+  // Função para remover produto selecionado
+  const removeSelectedProduct = () => {
+    setSelectedProduct(null);
+    setTransferQuantity(1);
   };
 
   // Tabs do sistema
@@ -795,94 +811,38 @@ const EstoqueSection = () => {
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Produto {selectedProduct ? '(1 selecionado)' : ''}
+                </label>
                 
-                {/* Lista de pesquisa compacta */}
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <input
-                      type="text"
-                      placeholder="Digite para pesquisar produto..."
-                      value={productSearchTerm}
-                      onChange={(e) => {
-                        setProductSearchTerm(e.target.value);
-                        setShowProductDropdown(true);
-                        setSelectedProductId('');
-                      }}
-                      onFocus={() => setShowProductDropdown(true)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    />
-                  </div>
-                  
-                  {/* Lista compacta de produtos */}
-                  {showProductDropdown && productSearchTerm && (
-                    <div className="border border-gray-200 rounded-md bg-gray-50 max-h-32 overflow-y-auto">
-                      {products
-                        .filter((product: any) => 
-                          product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                        )
-                        .slice(0, 4) // Limita a 4 produtos visíveis
-                        .map((product: any) => (
-                          <div
-                            key={product.id}
-                            onClick={() => {
-                              setSelectedProductId(product.id.toString());
-                              setProductSearchTerm(product.name);
-                              setShowProductDropdown(false);
-                            }}
-                            className="px-3 py-2 hover:bg-white cursor-pointer text-sm border-b border-gray-200 last:border-b-0"
-                          >
-                            <div className="font-medium text-gray-800">{product.name}</div>
-                            <div className="text-xs text-gray-500">Estoque: {product.stock} unidades</div>
-                          </div>
-                        ))}
-                      
-                      {products.filter((product: any) => 
-                        product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                      ).length === 0 && (
-                        <div className="px-3 py-2 text-gray-500 text-sm">
-                          Nenhum produto encontrado
-                        </div>
-                      )}
-                      
-                      {products.filter((product: any) => 
-                        product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                      ).length > 4 && (
-                        <div className="px-3 py-1 text-xs text-gray-400 bg-gray-100">
-                          +{products.filter((product: any) => 
-                            product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                          ).length - 4} produtos... Continue digitando
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  
-                  {/* Produto selecionado */}
-                  {selectedProductId && (
-                    <div className="bg-purple-50 border border-purple-200 rounded-md p-2">
+                {/* Produto selecionado */}
+                {selectedProduct && (
+                  <div className="mb-3">
+                    <div className="bg-purple-50 border border-purple-200 rounded-md p-3">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-sm font-medium text-purple-800">
-                            {products.find(p => p.id.toString() === selectedProductId)?.name}
-                          </div>
-                          <div className="text-xs text-purple-600">
-                            Estoque: {products.find(p => p.id.toString() === selectedProductId)?.stock} unidades
-                          </div>
+                          <div className="text-sm font-medium text-purple-800">{selectedProduct.name}</div>
+                          <div className="text-xs text-purple-600">Estoque: {selectedProduct.stock} unidades</div>
+                          <div className="text-xs text-purple-600 mt-1">Quantidade: {transferQuantity} unidades</div>
                         </div>
                         <button
-                          onClick={() => {
-                            setSelectedProductId('');
-                            setProductSearchTerm('');
-                          }}
+                          onClick={removeSelectedProduct}
                           className="text-purple-400 hover:text-purple-600"
                         >
                           ✕
                         </button>
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
+                
+                <button
+                  type="button"
+                  onClick={() => setShowProductSelectionModal(true)}
+                  className="w-full px-3 py-2 border border-purple-300 rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors text-sm font-medium"
+                >
+                  {selectedProduct ? '⚡ Alterar Produto' : '⚡ Selecionar Produto'}
+                </button>
               </div>
               
               <div>
@@ -909,18 +869,23 @@ const EstoqueSection = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
                 <input
                   type="number"
+                  value={transferQuantity}
+                  onChange={(e) => setTransferQuantity(parseInt(e.target.value) || 1)}
+                  min="1"
+                  max={selectedProduct?.stock || 999}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder="10"
+                  placeholder="1"
                 />
+                {selectedProduct && transferQuantity > selectedProduct.stock && (
+                  <p className="text-xs text-red-600 mt-1">Quantidade não pode ser maior que o estoque ({selectedProduct.stock})</p>
+                )}
               </div>
               
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => {
                     setShowAddTransferModal(false);
-                    setProductSearchTerm('');
-                    setSelectedProductId('');
-                    setShowProductDropdown(false);
+                    removeSelectedProduct();
                   }}
                   className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                 >
@@ -928,7 +893,7 @@ const EstoqueSection = () => {
                 </button>
                 <button
                   onClick={() => {
-                    if (!selectedProductId) {
+                    if (!selectedProduct) {
                       showAlert({
                         title: "Erro",
                         description: "Por favor, selecione um produto válido.",
@@ -936,15 +901,21 @@ const EstoqueSection = () => {
                       });
                       return;
                     }
+                    if (transferQuantity > selectedProduct.stock) {
+                      showAlert({
+                        title: "Erro",
+                        description: "Quantidade não pode ser maior que o estoque disponível.",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
                     showAlert({
                       title: "Transferência Criada",
-                      description: "A transferência foi criada e está pendente de aprovação!",
+                      description: `Transferência de ${transferQuantity} unidades de "${selectedProduct.name}" criada e pendente de aprovação!`,
                       variant: "default"
                     });
                     setShowAddTransferModal(false);
-                    setProductSearchTerm('');
-                    setSelectedProductId('');
-                    setShowProductDropdown(false);
+                    removeSelectedProduct();
                   }}
                   className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
                 >
@@ -1165,6 +1136,72 @@ const EstoqueSection = () => {
         </div>
       )}
 
+      {/* Modal de Seleção de Produtos */}
+      {showProductSelectionModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Produto para Transferência</h3>
+              <button 
+                onClick={() => setShowProductSelectionModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Campo de pesquisa */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Pesquisar produtos..."
+                  value={productSearchTerm}
+                  onChange={(e) => setProductSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+            
+            {/* Lista de produtos */}
+            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
+              {products
+                .filter((product: any) => 
+                  product.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+                  product.description?.toLowerCase().includes(productSearchTerm.toLowerCase())
+                )
+                .map((product: any) => (
+                  <ProductTransferCard 
+                    key={product.id}
+                    product={product}
+                    onSelect={selectProductForTransfer}
+                  />
+                ))}
+            </div>
+            
+            {products.length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <Package className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>Nenhum produto disponível no estoque</p>
+              </div>
+            )}
+            
+            <div className="flex gap-3 pt-4 border-t">
+              <button
+                onClick={() => {
+                  setShowProductSelectionModal(false);
+                  setProductSearchTerm('');
+                }}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CustomAlert isOpen={isOpen} onClose={closeAlert} {...alertData} />
       <CustomConfirm 
         isOpen={confirmOpen} 
@@ -1172,6 +1209,77 @@ const EstoqueSection = () => {
         onConfirm={handleConfirm} 
         {...confirmData} 
       />
+    </div>
+  );
+};
+
+// Componente para card de produto na transferência
+const ProductTransferCard = ({ product, onSelect }: { product: any; onSelect: (product: any, quantity: number) => void }) => {
+  const [quantity, setQuantity] = useState(1);
+  const [showQuantityInput, setShowQuantityInput] = useState(false);
+
+  const handleSelect = () => {
+    if (showQuantityInput) {
+      if (quantity > product.stock) {
+        alert(`Quantidade não pode ser maior que o estoque disponível (${product.stock})`);
+        return;
+      }
+      onSelect(product, quantity);
+    } else {
+      setShowQuantityInput(true);
+    }
+  };
+
+  return (
+    <div className="border border-gray-200 rounded-lg p-3 hover:border-purple-300 transition-colors bg-white">
+      <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="font-medium text-gray-800 text-sm">{product.name}</div>
+          {product.description && (
+            <div className="text-xs text-gray-500 mt-1">{product.description}</div>
+          )}
+          <div className="flex items-center gap-2 mt-2">
+            <span className="text-xs bg-gray-100 px-2 py-1 rounded">{product.category}</span>
+            <span className={`text-xs px-2 py-1 rounded ${
+              product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`}>
+              Estoque: {product.stock}
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {showQuantityInput && (
+            <div className="flex items-center gap-1">
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                min="1"
+                max={product.stock}
+                className="w-16 px-2 py-1 text-xs border border-gray-300 rounded"
+                placeholder="1"
+              />
+              <span className="text-xs text-gray-500">un.</span>
+            </div>
+          )}
+          
+          <button
+            onClick={handleSelect}
+            disabled={product.stock === 0}
+            className={`px-3 py-1 text-xs rounded transition-colors ${
+              product.stock === 0
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                : showQuantityInput
+                ? 'bg-purple-600 text-white hover:bg-purple-700'
+                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+            }`}
+          >
+            {product.stock === 0 ? 'Sem estoque' : 
+             showQuantityInput ? 'Confirmar' : 'Selecionar'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
