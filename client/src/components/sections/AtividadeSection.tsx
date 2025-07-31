@@ -449,28 +449,28 @@ const AtividadeSection = () => {
         ))}
       </div>
 
-      {/* Navegação por abas */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6">
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+      {/* Navegação por abas - Padrão EstoqueSection */}
+      <div className="main-card mb-6">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`${
+                  className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                     activeTab === tab.id
-                      ? 'border-purple-500 text-purple-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                      ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50 border border-transparent'
+                  }`}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="w-4 h-4" />
                   {tab.label}
                 </button>
               );
             })}
-          </nav>
+          </div>
         </div>
       </div>
 
