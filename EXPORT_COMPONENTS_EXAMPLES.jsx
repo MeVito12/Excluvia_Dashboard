@@ -1,243 +1,174 @@
-// === EXEMPLOS DE COMPONENTES PRONTOS PARA USAR ===
-// Copie estes componentes para seu novo projeto
+// EXEMPLOS PRÁTICOS DE COMPONENTES PARA REPLICAÇÃO EXATA
 
-import React, { useState } from 'react';
-import { Search, Plus, Package, ArrowRightLeft, Edit, Trash2, Eye } from 'lucide-react';
-
-// 1. COMPONENTE DE FILTROS PADRONIZADO
-const FilterBar = ({ 
-  searchTerm, 
-  setSearchTerm, 
-  filterCategory, 
-  setFilterCategory, 
-  statusFilter, 
-  setStatusFilter,
-  categoryOptions = [],
-  statusOptions = [],
-  searchPlaceholder = "Buscar...",
-  onClearFilters
-}) => {
-  const handleClearFilters = () => {
-    setSearchTerm('');
-    setFilterCategory('all');
-    setStatusFilter('all');
-    if (onClearFilters) onClearFilters();
-  };
-
-  return (
-    <div className="flex flex-wrap gap-4 items-center mb-6">
-      <div className="flex-1">
-        <input
-          type="text"
-          placeholder={searchPlaceholder}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+// ==================== 1. METRIC CARD PADRÃO ====================
+const MetricCard = ({ title, value, subtitle, icon: Icon, color }) => (
+  <div className="metric-card">
+    <div className="flex items-center justify-between">
+      <div>
+        <p className="text-sm font-medium text-gray-600">{title}</p>
+        <p className="text-2xl font-bold text-black mt-1">{value}</p>
+        <p className={`text-xs mt-1 text-${color}-600`}>{subtitle}</p>
       </div>
-      
-      {categoryOptions.length > 0 && (
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {categoryOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      )}
-      
-      {statusOptions.length > 0 && (
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {statusOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      )}
-      
-      <button
-        onClick={handleClearFilters}
-        className="btn btn-outline"
-      >
-        Limpar Filtros
-      </button>
+      <div className={`p-3 rounded-full bg-${color}-100`}>
+        <Icon className={`h-6 w-6 text-${color}-600`} />
+      </div>
     </div>
-  );
-};
+  </div>
+);
 
-// 2. COMPONENTE DE LISTA DE ITENS PADRONIZADO
-const ItemList = ({ 
-  items = [], 
-  onEdit, 
-  onDelete, 
-  onView,
-  renderStatus,
-  renderActions,
-  emptyStateConfig = {
-    icon: Package,
-    title: "Nenhum item encontrado",
-    description: "Os itens aparecerão aqui quando adicionados",
-    actionLabel: "Adicionar Item",
-    onAction: null
-  }
-}) => {
-  if (items.length === 0) {
-    const EmptyIcon = emptyStateConfig.icon;
-    return (
-      <div className="empty-state">
-        <EmptyIcon className="empty-state-icon" />
-        <h3 className="empty-state-title">{emptyStateConfig.title}</h3>
-        <p className="empty-state-description">{emptyStateConfig.description}</p>
-        {emptyStateConfig.onAction && (
-          <button 
-            onClick={emptyStateConfig.onAction}
-            className="btn btn-primary"
-          >
-            <Plus className="w-4 h-4" />
-            {emptyStateConfig.actionLabel}
-          </button>
-        )}
-      </div>
-    );
-  }
+// ==================== 2. LISTA PADRONIZADA ====================
+const StandardList = ({ items, title, onAdd }) => (
+  <div className="main-card p-6">
+    <div className="flex items-center justify-between mb-6">
+      <h3 className="text-lg font-semibold text-gray-900">
+        {title} ({items.length})
+      </h3>
+      {onAdd && (
+        <button className="btn btn-primary" onClick={onAdd}>
+          <Plus className="w-4 h-4" />
+          Adicionar
+        </button>
+      )}
+    </div>
 
-  return (
     <div className="standard-list-container">
       <div className="standard-list-content">
         {items.map((item) => (
           <div key={item.id} className="standard-list-item group">
             <div className="list-item-main">
-              <div className="list-item-title">{item.name || item.title}</div>
-              <div className="list-item-subtitle">{item.description || item.subtitle}</div>
-              {item.metadata && (
-                <div className="list-item-meta">{item.metadata}</div>
-              )}
+              <div className="list-item-title">{item.title}</div>
+              <div className="list-item-subtitle">{item.subtitle}</div>
+              <div className="list-item-meta">{item.meta}</div>
             </div>
             
             <div className="flex items-center gap-3">
-              {renderStatus && renderStatus(item)}
+              <span className={`list-status-badge ${getStatusClass(item.status)}`}>
+                {item.statusLabel}
+              </span>
               
-              <div className="flex gap-2">
-                {onView && (
-                  <button 
-                    onClick={() => onView(item)}
-                    className="list-action-button view"
-                    title="Visualizar"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                )}
-                
-                {onEdit && (
-                  <button 
-                    onClick={() => onEdit(item)}
-                    className="list-action-button edit"
-                    title="Editar"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                )}
-                
-                {onDelete && (
-                  <button 
-                    onClick={() => onDelete(item)}
-                    className="list-action-button delete"
-                    title="Excluir"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
-                
-                {renderActions && renderActions(item)}
+              <div className="list-item-actions">
+                <button className="list-action-button view" title="Visualizar">
+                  <Eye className="w-4 h-4" />
+                </button>
+                <button className="list-action-button edit" title="Editar">
+                  <Edit className="w-4 h-4" />
+                </button>
+                <button className="list-action-button delete" title="Excluir">
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
     </div>
-  );
-};
-
-// 3. COMPONENTE DE NAVEGAÇÃO POR ABAS
-const TabNavigation = ({ tabs, activeTab, onTabChange }) => (
-  <div className="tab-navigation">
-    {tabs.map((tab) => {
-      const IconComponent = tab.icon;
-      return (
-        <button
-          key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-        >
-          <IconComponent className="w-4 h-4" />
-          {tab.label}
-        </button>
-      );
-    })}
   </div>
 );
 
-// 4. COMPONENTE DE STATUS BADGE
-const StatusBadge = ({ status, variant = 'default' }) => {
-  const getStatusClass = () => {
-    switch (variant) {
-      case 'success': return 'status-success';
-      case 'warning': return 'status-warning';
-      case 'danger': return 'status-danger';
-      case 'info': return 'status-info';
-      case 'pending': return 'status-pending';
-      default: return 'status-info';
-    }
-  };
+// ==================== 3. SIDEBAR COMPLETA ====================
+const Sidebar = ({ activeSection, onSectionChange, userProfile }) => (
+  <div className="w-70 bg-gray-900 text-white fixed left-0 top-0 h-full overflow-y-auto">
+    {/* Logo área */}
+    <div className="p-6 border-b border-gray-800">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+          <Building2 className="w-6 h-6" />
+        </div>
+        <div>
+          <h1 className="font-bold text-lg">Sistema</h1>
+          <p className="text-xs text-gray-400">{userProfile.category}</p>
+        </div>
+      </div>
+    </div>
 
-  return (
-    <span className={`list-status-badge ${getStatusClass()}`}>
-      {status}
-    </span>
-  );
-};
+    {/* Menu Navigation */}
+    <nav className="py-4">
+      {menuItems.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => onSectionChange(item.id)}
+          className={`w-full flex items-center gap-3 px-6 py-3 text-left transition-colors ${
+            activeSection === item.id
+              ? 'bg-purple-600 text-white'
+              : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+          }`}
+        >
+          <item.icon className="w-5 h-5" />
+          <span>{item.label}</span>
+        </button>
+      ))}
+    </nav>
 
-// 5. COMPONENTE DE MODAL PADRÃO
-const StandardModal = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  children, 
-  onConfirm, 
-  confirmLabel = "Confirmar",
-  cancelLabel = "Cancelar",
-  confirmVariant = "primary",
-  maxWidth = "md" 
-}) => {
+    {/* User Profile Footer */}
+    <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-800">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
+          <User className="w-4 h-4" />
+        </div>
+        <div>
+          <p className="text-sm font-medium">{userProfile.name}</p>
+          <p className="text-xs text-gray-400">{userProfile.email}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// ==================== 4. HEADER DE SEÇÃO ====================
+const SectionHeader = ({ title, subtitle, children }) => (
+  <div className="app-section">
+    <div className="section-header">
+      <h1 className="section-title">{title}</h1>
+      <p className="section-subtitle">{subtitle}</p>
+    </div>
+    {children}
+  </div>
+);
+
+// ==================== 5. GRID DE MÉTRICAS ====================
+const MetricsGrid = ({ metrics }) => (
+  <div className="metrics-grid">
+    {metrics.map((metric, index) => (
+      <MetricCard
+        key={index}
+        title={metric.label}
+        value={metric.value}
+        subtitle={metric.change}
+        icon={metric.icon}
+        color={metric.color}
+      />
+    ))}
+  </div>
+);
+
+// ==================== 6. SISTEMA DE TABS ====================
+const TabNavigation = ({ tabs, activeTab, onTabChange }) => (
+  <div className="tab-navigation">
+    {tabs.map((tab) => (
+      <button
+        key={tab.id}
+        onClick={() => onTabChange(tab.id)}
+        className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+      >
+        <tab.icon className="w-4 h-4" />
+        {tab.label}
+      </button>
+    ))}
+  </div>
+);
+
+// ==================== 7. MODAL PADRÃO ====================
+const StandardModal = ({ isOpen, onClose, title, children, onConfirm, confirmText = "Confirmar" }) => {
   if (!isOpen) return null;
-
-  const getMaxWidthClass = () => {
-    switch (maxWidth) {
-      case 'sm': return 'max-w-sm';
-      case 'lg': return 'max-w-lg';
-      case 'xl': return 'max-w-xl';
-      case '2xl': return 'max-w-2xl';
-      default: return 'max-w-md';
-    }
-  };
 
   return (
     <div className="modal-overlay">
-      <div className={`modal-content ${getMaxWidthClass()}`}>
+      <div className="modal-content">
         <div className="modal-header">
-          <h3 className="modal-title">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
           <button 
             onClick={onClose}
-            className="modal-close"
+            className="text-gray-400 hover:text-gray-600"
           >
             ✕
           </button>
@@ -248,19 +179,17 @@ const StandardModal = ({
         </div>
         
         <div className="modal-footer">
-          {onConfirm && (
-            <button
-              onClick={onConfirm}
-              className={`flex-1 btn btn-${confirmVariant}`}
-            >
-              {confirmLabel}
-            </button>
-          )}
           <button
             onClick={onClose}
-            className="flex-1 btn btn-outline"
+            className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
           >
-            {cancelLabel}
+            Cancelar
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
+          >
+            {confirmText}
           </button>
         </div>
       </div>
@@ -268,283 +197,113 @@ const StandardModal = ({
   );
 };
 
-// 6. COMPONENTE DE MÉTRICAS
-const MetricCard = ({ 
-  label, 
-  value, 
-  description, 
-  icon: IconComponent, 
-  iconColor = "blue",
-  trend,
-  onClick 
-}) => {
-  const getIconColorClass = () => {
-    switch (iconColor) {
-      case 'green': return 'bg-green-100 text-green-600';
-      case 'red': return 'bg-red-100 text-red-600';
-      case 'yellow': return 'bg-yellow-100 text-yellow-600';
-      case 'purple': return 'bg-purple-100 text-purple-600';
-      default: return 'bg-blue-100 text-blue-600';
-    }
-  };
-
-  return (
-    <div 
-      className={`metric-card-standard ${onClick ? 'cursor-pointer' : ''}`}
-      onClick={onClick}
-    >
-      <div className="flex items-center justify-between">
-        <div className="metric-card-content">
-          <p className="metric-card-label">{label}</p>
-          <p className="metric-card-value">{value}</p>
-          {description && (
-            <p className={`metric-card-description ${
-              trend === 'up' ? 'text-green-600' : 
-              trend === 'down' ? 'text-red-600' : 
-              'text-gray-600'
-            }`}>
-              {description}
-            </p>
-          )}
-        </div>
-        {IconComponent && (
-          <div className={`metric-card-icon ${getIconColorClass()}`}>
-            <IconComponent className="h-6 w-6" />
-          </div>
-        )}
-      </div>
+// ==================== 8. FILTROS PADRONIZADOS ====================
+const FilterSection = ({ searchTerm, onSearchChange, dateFrom, dateTo, onDateFromChange, onDateToChange, onClearFilters }) => (
+  <div className="flex flex-wrap gap-4 items-center mb-6">
+    <div className="flex-1">
+      <input
+        type="text"
+        placeholder="Buscar..."
+        value={searchTerm}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="form-input"
+      />
     </div>
-  );
+    <input
+      type="date"
+      value={dateFrom}
+      onChange={(e) => onDateFromChange(e.target.value)}
+      className="form-input"
+      placeholder="Data inicial"
+    />
+    <input
+      type="date"
+      value={dateTo}
+      onChange={(e) => onDateToChange(e.target.value)}
+      className="form-input"
+      placeholder="Data final"
+    />
+    <button
+      onClick={onClearFilters}
+      className="btn btn-outline"
+    >
+      Limpar Filtros
+    </button>
+  </div>
+);
+
+// ==================== 9. HELPER FUNCTIONS ====================
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'success': case 'active': case 'completed': return 'status-success';
+    case 'warning': case 'pending': case 'low-stock': return 'status-warning';
+    case 'danger': case 'error': case 'expired': return 'status-danger';
+    case 'info': case 'scheduled': return 'status-info';
+    default: return 'status-pending';
+  }
 };
 
-// 7. HOOK PERSONALIZADO PARA FILTROS
-const useFilters = (initialData = [], searchFields = ['name']) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
-
-  const filteredData = initialData.filter(item => {
-    // Filtro de busca
-    const searchMatch = searchFields.some(field => 
-      item[field]?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    
-    // Filtro de categoria
-    const categoryMatch = filterCategory === 'all' || 
-      item.category?.toLowerCase().includes(filterCategory.toLowerCase());
-    
-    // Filtro de status
-    const statusMatch = statusFilter === 'all' || item.status === statusFilter;
-    
-    return searchMatch && categoryMatch && statusMatch;
-  });
-
-  const clearFilters = () => {
-    setSearchTerm('');
-    setFilterCategory('all');
-    setStatusFilter('all');
-  };
-
-  return {
-    searchTerm,
-    setSearchTerm,
-    filterCategory,
-    setFilterCategory,
-    statusFilter,
-    setStatusFilter,
-    filteredData,
-    clearFilters
-  };
-};
-
-// 8. EXEMPLO DE USO COMPLETO
+// ==================== 10. EXEMPLO DE PÁGINA COMPLETA ====================
 const ExampleSection = () => {
-  const [activeTab, setActiveTab] = useState('items');
+  const [activeTab, setActiveTab] = useState('lista');
+  const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
-  
-  // Dados de exemplo
-  const mockData = [
-    { 
-      id: 1, 
-      name: "Item 1", 
-      description: "Descrição do item 1", 
-      status: "active",
-      category: "categoria1",
-      metadata: "Informação adicional"
-    },
-    { 
-      id: 2, 
-      name: "Item 2", 
-      description: "Descrição do item 2", 
-      status: "inactive",
-      category: "categoria2",
-      metadata: "Outra informação"
-    }
+
+  const metrics = [
+    { label: 'Total Itens', value: '245', change: '+12% este mês', icon: Package, color: 'green' },
+    { label: 'Pendentes', value: '8', change: 'Requer atenção', icon: Clock, color: 'yellow' },
+    { label: 'Concluídos', value: '237', change: '96% taxa sucesso', icon: CheckCircle, color: 'blue' },
+    { label: 'Receita', value: 'R$ 15.240', change: '+8% vs mês anterior', icon: DollarSign, color: 'purple' }
   ];
-  
-  // Usando o hook de filtros
-  const {
-    searchTerm,
-    setSearchTerm,
-    filterCategory,
-    setFilterCategory,
-    statusFilter,
-    setStatusFilter,
-    filteredData,
-    clearFilters
-  } = useFilters(mockData, ['name', 'description']);
 
   const tabs = [
-    { id: 'items', label: 'Itens', icon: Package },
-    { id: 'transfers', label: 'Transferências', icon: ArrowRightLeft }
+    { id: 'lista', label: 'Lista', icon: List },
+    { id: 'graficos', label: 'Gráficos', icon: BarChart3 },
+    { id: 'relatorios', label: 'Relatórios', icon: FileText }
   ];
-
-  const categoryOptions = [
-    { value: 'all', label: 'Todas as categorias' },
-    { value: 'categoria1', label: 'Categoria 1' },
-    { value: 'categoria2', label: 'Categoria 2' }
-  ];
-
-  const statusOptions = [
-    { value: 'all', label: 'Todos os status' },
-    { value: 'active', label: 'Ativo' },
-    { value: 'inactive', label: 'Inativo' }
-  ];
-
-  const handleEdit = (item) => {
-    console.log('Editando:', item);
-    setShowModal(true);
-  };
-
-  const handleDelete = (item) => {
-    console.log('Excluindo:', item);
-  };
-
-  const renderStatus = (item) => (
-    <StatusBadge 
-      status={item.status === 'active' ? 'Ativo' : 'Inativo'}
-      variant={item.status === 'active' ? 'success' : 'warning'}
-    />
-  );
 
   return (
-    <div className="app-section">
-      <div className="section-header">
-        <h1 className="section-title">Exemplo de Seção</h1>
-        <p className="section-subtitle">
-          Demonstração do sistema de design padronizado
-        </p>
-      </div>
-
-      <div className="metrics-grid">
-        <MetricCard
-          label="Total de Itens"
-          value={mockData.length}
-          description="Itens cadastrados"
-          icon={Package}
-          iconColor="blue"
+    <SectionHeader 
+      title="Exemplo de Seção" 
+      subtitle="Demonstração do design padrão completo"
+    >
+      <MetricsGrid metrics={metrics} />
+      
+      <div className="main-card p-6">
+        <TabNavigation 
+          tabs={tabs} 
+          activeTab={activeTab} 
+          onTabChange={setActiveTab} 
         />
-        <MetricCard
-          label="Ativos"
-          value={mockData.filter(i => i.status === 'active').length}
-          description="Itens ativos"
-          icon={Package}
-          iconColor="green"
-        />
-      </div>
-
-      <TabNavigation
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-
-      <div className="main-card">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">
-            {activeTab === 'items' ? 'Lista de Itens' : 'Transferências'} ({filteredData.length})
-          </h3>
-          <button 
-            className="btn btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            <Plus className="w-4 h-4" />
-            Adicionar
-          </button>
-        </div>
-
-        <FilterBar
+        
+        <FilterSection
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          filterCategory={filterCategory}
-          setFilterCategory={setFilterCategory}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          categoryOptions={categoryOptions}
-          statusOptions={statusOptions}
-          searchPlaceholder="Buscar itens..."
-          onClearFilters={clearFilters}
+          onSearchChange={setSearchTerm}
+          dateFrom=""
+          dateTo=""
+          onDateFromChange={() => {}}
+          onDateToChange={() => {}}
+          onClearFilters={() => setSearchTerm('')}
         />
-
-        <ItemList
-          items={filteredData}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-          renderStatus={renderStatus}
-          emptyStateConfig={{
-            icon: Package,
-            title: "Nenhum item encontrado",
-            description: "Adicione itens para começar",
-            actionLabel: "Adicionar Primeiro Item",
-            onAction: () => setShowModal(true)
-          }}
-        />
+        
+        {/* Conteúdo da tab ativa */}
+        <div className="animate-fade-in">
+          {activeTab === 'lista' && <div>Conteúdo da lista...</div>}
+          {activeTab === 'graficos' && <div>Gráficos...</div>}
+          {activeTab === 'relatorios' && <div>Relatórios...</div>}
+        </div>
       </div>
 
       <StandardModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        title="Adicionar Item"
-        onConfirm={() => {
-          console.log('Item adicionado');
-          setShowModal(false);
-        }}
-        confirmLabel="Adicionar"
+        title="Modal de Exemplo"
+        onConfirm={() => setShowModal(false)}
       >
-        <div className="space-y-4">
-          <div className="form-group">
-            <label className="form-label">Nome do Item</label>
-            <input 
-              type="text" 
-              className="form-input" 
-              placeholder="Digite o nome"
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label">Descrição</label>
-            <textarea 
-              className="form-textarea" 
-              placeholder="Digite a descrição"
-            />
-          </div>
-        </div>
+        <p>Conteúdo do modal...</p>
       </StandardModal>
-    </div>
+    </SectionHeader>
   );
 };
 
 export default ExampleSection;
-
-// === INSTRUÇÕES DE USO ===
-/*
-1. Copie os componentes necessários para seu projeto
-2. Instale as dependências: npm install lucide-react
-3. Configure o Tailwind CSS com as classes do arquivo EXPORT_CSS_CLASSES.css
-4. Importe e use os componentes conforme o exemplo
-5. Customize os dados e funcionalidades conforme sua necessidade
-
-Exemplo de importação:
-import { FilterBar, ItemList, TabNavigation, StatusBadge } from './components/StandardComponents';
-
-O sistema é completamente modular e reutilizável!
-*/
