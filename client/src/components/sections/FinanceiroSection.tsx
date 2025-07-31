@@ -63,6 +63,12 @@ const FinanceiroSection = () => {
 
   const { branches = [] } = useBranches();
 
+  // Função auxiliar para obter nome da filial
+  const getBranchName = (branchId: number) => {
+    const branch = branches.find(b => b.id === branchId);
+    return branch ? branch.name : `Filial ${branchId}`;
+  };
+
   // Configurar datas automáticas (últimos 7 dias por padrão)
   const getDefaultDates = () => {
     const today = new Date();
@@ -88,6 +94,8 @@ const FinanceiroSection = () => {
   const [selectedTransfer, setSelectedTransfer] = useState<MoneyTransfer | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [transferSearchTerm, setTransferSearchTerm] = useState('');
+  const [transferStatusFilter, setTransferStatusFilter] = useState<string>('all');
   const [currentEntryType, setCurrentEntryType] = useState<'income' | 'expense'>('income');
 
   const [formData, setFormData] = useState({
@@ -134,6 +142,14 @@ const FinanceiroSection = () => {
     const matchesSearch = entry.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || entry.status === statusFilter;
     return matchesTab && matchesSearch && matchesStatus;
+  });
+
+  const filteredTransfers = moneyTransfers.filter((transfer: any) => {
+    const matchesSearch = transfer.description?.toLowerCase().includes(transferSearchTerm.toLowerCase()) ||
+                         getBranchName(transfer.fromBranchId).toLowerCase().includes(transferSearchTerm.toLowerCase()) ||
+                         getBranchName(transfer.toBranchId).toLowerCase().includes(transferSearchTerm.toLowerCase());
+    const matchesStatus = transferStatusFilter === 'all' || transfer.status === transferStatusFilter;
+    return matchesSearch && matchesStatus;
   });
 
   const handleCreateEntry = async () => {
@@ -313,10 +329,7 @@ const FinanceiroSection = () => {
     }
   };
 
-  const getBranchName = (branchId: number) => {
-    const branch = branches.find(b => b.id === branchId);
-    return branch?.name || `Filial ${branchId}`;
-  };
+
 
   const getStatusLabel = (status: string) => {
     switch (status) {
@@ -528,21 +541,68 @@ const FinanceiroSection = () => {
 
           {/* Lista de Entradas Financeiras */}
           {activeTab === 'transferencias' ? (
-            // Conteúdo da aba Transferências
-            isTransfersLoading && moneyTransfers.length === 0 ? (
-              <div className="text-center py-8">
-                <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">Carregando transferências...</p>
+            <div>
+              {/* Filtros para Transferências */}
+              <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
+                <div className="flex items-center gap-4 flex-wrap">
+                  {/* Campo de busca */}
+                  <div className="flex-1 min-w-[200px] relative">
+                    <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
+                    <input
+                      type="text"
+                      placeholder="Buscar transferências, filiais..."
+                      className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      value={transferSearchTerm}
+                      onChange={(e) => setTransferSearchTerm(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Filtro de Status */}
+                  <select
+                    value={transferStatusFilter}
+                    onChange={(e) => setTransferStatusFilter(e.target.value)}
+                    className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    <option value="all">Todos os status</option>
+                    <option value="pending">Pendente</option>
+                    <option value="approved">Aprovada</option>
+                    <option value="completed">Concluída</option>
+                    <option value="cancelled">Cancelada</option>
+                  </select>
+
+                  {/* Botão de limpar filtros */}
+                  <button
+                    onClick={() => {
+                      setTransferSearchTerm('');
+                      setTransferStatusFilter('all');
+                    }}
+                    className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+                  >
+                    Limpar Filtros
+                  </button>
+                </div>
               </div>
-            ) : moneyTransfers.length === 0 ? (
-              <div className="text-center py-8">
-                <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">Nenhuma transferência encontrada</p>
-              </div>
-            ) : (
-              <div className="standard-list-container">
-                <div className="standard-list-content">
-                  {moneyTransfers.map((transfer: MoneyTransfer) => (
+
+              {/* Conteúdo da aba Transferências */}
+              {isTransfersLoading && filteredTransfers.length === 0 ? (
+                <div className="text-center py-8">
+                  <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">Carregando transferências...</p>
+                </div>
+              ) : filteredTransfers.length === 0 ? (
+                <div className="text-center py-8">
+                  <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <p className="text-gray-600">
+                    {transferSearchTerm || transferStatusFilter !== 'all' 
+                      ? 'Nenhuma transferência encontrada com os filtros aplicados' 
+                      : 'Nenhuma transferência encontrada'
+                    }
+                  </p>
+                </div>
+              ) : (
+                <div className="standard-list-container">
+                  <div className="standard-list-content">
+                    {filteredTransfers.map((transfer: MoneyTransfer) => (
                     <div key={transfer.id} className="standard-list-item group">
                       <div className="list-item-main">
                         <div className="list-item-title">{transfer.description}</div>
@@ -607,10 +667,11 @@ const FinanceiroSection = () => {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )
+              )}
+            </div>
           ) : isLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
