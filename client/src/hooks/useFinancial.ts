@@ -14,9 +14,14 @@ export const useFinancial = () => {
   const query = useQuery({
     queryKey: ['financial', (user as any)?.id],
     queryFn: async () => {
-      return apiClient.get('/api/financial');
+      const result = await apiClient.get('/api/financial');
+      console.log('DEBUG useFinancial: Dados retornados da API:', result?.length, 'entradas');
+      console.log('DEBUG useFinancial: Receitas totais:', result?.filter((e: any) => e.type === 'income').reduce((total: number, entry: any) => total + Number(entry.amount || 0), 0));
+      return result;
     },
-    enabled: !!user
+    enabled: !!user,
+    staleTime: 0, // Força atualização
+    refetchOnMount: true
   });
 
   const createMutation = useMutation({
