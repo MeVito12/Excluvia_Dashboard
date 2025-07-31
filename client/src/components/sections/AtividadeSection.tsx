@@ -49,7 +49,39 @@ const AtividadeSection = () => {
 
   // Atividades do sistema simplificadas
   const systemActivities = [
-    { id: 'sys_1', action: 'Venda processada', description: 'Nova venda registrada', timestamp: new Date(), status: 'success', user: 'Sistema', type: 'sale', category: selectedCategory, time: '10:30' }
+    { 
+      id: 'sys_1',
+      action: 'Agendamento confirmado', 
+      description: 'Consulta veterinária para Luna agendada para hoje às 14:00',
+      timestamp: new Date('2024-12-26T08:00:00'),
+      status: 'success', 
+      user: 'Dr. Carlos Mendes',
+      type: 'appointment',
+      category: 'pet',
+      time: '08:00'
+    },
+    { 
+      id: 'sys_2',
+      action: 'Venda processada', 
+      description: 'Venda de R$ 45,90 - Combo Executivo processada com PIX',
+      timestamp: new Date('2024-12-26T07:45:00'),
+      status: 'success', 
+      user: 'Ana Costa',
+      type: 'sale',
+      category: 'vendas',
+      time: '07:45'
+    },
+    { 
+      id: 'sys_3',
+      action: 'Produto adicionado', 
+      description: 'Medicamento "Antibiótico Amoxicilina 500mg" cadastrado no estoque',
+      timestamp: new Date('2024-12-26T07:30:00'),
+      status: 'success', 
+      user: 'Farmacêutico',
+      type: 'product',
+      category: 'medico',
+      time: '07:30'
+    }
   ];
 
   const stats = {
@@ -79,7 +111,7 @@ const AtividadeSection = () => {
   const getTabMetrics = () => {
     if (activeTab === 'vendas') {
       return {
-        metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
+        metric1: { label: 'Vendas Hoje', value: `${sales.length}`, change: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, icon: DollarSign, color: 'green' },
         metric2: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
@@ -104,250 +136,272 @@ const AtividadeSection = () => {
 
   // Funções para renderizar o conteúdo de cada aba
   const renderActivities = () => (
-    <div className="main-card">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Logs ({stats.total})
-          </h2>
-          
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Buscar atividades..."
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                value={searchTerm || ''}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+    <div>
+      {/* Lista de atividades */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Logs ({stats.total})
+            </h2>
+            
+            {/* Filtros dentro do cabeçalho */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Buscar atividades..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={searchTerm || ''}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              >
+                Limpar Filtros
+              </button>
             </div>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
           </div>
         </div>
-      </div>
 
-      <div className="standard-list-container">
-        <div className="standard-list-content">
-          {filteredActivities.map((activity) => (
-            <div key={activity.id} className="standard-list-item group">
-              <div className="list-item-main">
-                <div className="list-item-title">{activity.action}</div>
-                <div className="list-item-subtitle">{activity.description}</div>
-                <div className="list-item-meta flex items-center gap-2">
-                  <span className={`list-status-badge ${
-                    activity.status === 'success' ? 'status-success' :
-                    activity.status === 'error' ? 'status-danger' :
-                    activity.status === 'warning' ? 'status-warning' :
-                    'status-info'
-                  }`}>
-                    {activity.status === 'success' ? 'Sucesso' :
-                     activity.status === 'error' ? 'Erro' :
-                     activity.status === 'warning' ? 'Aviso' : 'Info'}
-                  </span>
-                  <span className="text-xs text-gray-500">{activity.time}</span>
-                  <span>•</span>
-                  <span className="text-xs text-gray-500">Por: {activity.user}</span>
+        <div className="standard-list-container">
+          <div className="standard-list-content">
+            {filteredActivities.map((activity) => (
+              <div key={activity.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{activity.action}</div>
+                  <div className="list-item-subtitle">{activity.description}</div>
+                  <div className="list-item-meta flex items-center gap-2">
+                    <span className={`list-status-badge ${
+                      activity.status === 'success' ? 'status-success' :
+                      activity.status === 'error' ? 'status-danger' :
+                      activity.status === 'warning' ? 'status-warning' :
+                      'status-info'
+                    }`}>
+                      {activity.status === 'success' ? 'Sucesso' :
+                       activity.status === 'error' ? 'Erro' :
+                       activity.status === 'warning' ? 'Aviso' : 'Info'}
+                    </span>
+                    <span className="text-xs text-gray-500">{activity.time}</span>
+                    <span>•</span>
+                    <span className="text-xs text-gray-500">Por: {activity.user}</span>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="list-item-actions">
+                    <button
+                      onClick={() => {
+                        showAlert({
+                          title: "Detalhes da Atividade",
+                          description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nStatus: ${activity.status}\nUsuário: ${activity.user}`,
+                          variant: "default"
+                        });
+                      }}
+                      className="list-action-button view"
+                      title="Ver detalhes"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="list-item-actions">
-                  <button
-                    onClick={() => {
-                      showAlert({
-                        title: "Detalhes da Atividade",
-                        description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nStatus: ${activity.status}\nUsuário: ${activity.user}`,
-                        variant: "default"
-                      });
-                    }}
-                    className="list-action-button view"
-                    title="Ver detalhes"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 
   const renderSales = () => (
-    <div className="main-card">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Vendas ({sales.length})
-            </h2>
-            <p className="text-sm text-gray-600">
-              Total: R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Buscar vendas..."
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                value={searchTerm || ''}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+    <div>
+      {/* Lista de vendas */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Vendas ({sales.length})
+              </h2>
+              <div className="text-right ml-4">
+                <p className="text-sm text-gray-600">Total:</p>
+                <p className="text-lg font-bold text-green-600">
+                  R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
+            
+            {/* Filtros dentro do cabeçalho */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Buscar vendas..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={searchTerm || ''}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              >
+                Limpar Filtros
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="standard-list-container">
-        <div className="standard-list-content">
-          {sales.map((sale: any) => {
-            const client = clients.find((c: any) => c.id === sale.client_id);
-            const product = products.find((p: any) => p.id === sale.product_id);
-            
-            return (
-              <div key={sale.id} className="standard-list-item group">
-                <div className="list-item-main">
-                  <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
-                  <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
-                  <div className="list-item-meta">
-                    {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+        
+        <div className="standard-list-container">
+          <div className="standard-list-content">
+            {sales.map((sale: any) => {
+              const client = clients.find((c: any) => c.id === sale.client_id);
+              const product = products.find((p: any) => p.id === sale.product_id);
+              
+              return (
+                <div key={sale.id} className="standard-list-item group">
+                  <div className="list-item-main">
+                    <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
+                    <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
+                    <div className="list-item-meta">
+                      {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <span className="list-status-badge status-success">Concluída</span>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex items-center gap-3">
-                  <span className="list-status-badge status-success">Concluída</span>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
   );
 
   const renderClients = () => (
-    <div className="main-card">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              Clientes ({clients.length})
-            </h2>
-            <p className="text-sm text-gray-600">
-              Total gasto: R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Buscar clientes..."
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                value={searchTerm || ''}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+    <div>
+      {/* Lista de clientes */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Clientes ({clients.length})
+              </h2>
+              <div className="text-right ml-4">
+                <p className="text-sm text-gray-600">Total gasto:</p>
+                <p className="text-lg font-bold text-blue-600">
+                  R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </p>
+              </div>
             </div>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
+            
+            {/* Filtros dentro do cabeçalho */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Buscar clientes..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={searchTerm || ''}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              >
+                Limpar Filtros
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="standard-list-container">
-        <div className="standard-list-content">
-          {clients.map((client: any) => (
-            <div key={client.id} className="standard-list-item group">
-              <div className="list-item-main">
-                <div className="list-item-title">{client.name}</div>
-                <div className="list-item-subtitle">{client.email}</div>
-                <div className="list-item-meta">{client.phone}</div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <span className="list-status-badge status-success">Ativo</span>
-                <div className="text-right">
-                  <p className="font-semibold text-gray-900">R$ {Number(client.totalSpent || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+        
+        <div className="standard-list-container">
+          <div className="standard-list-content">
+            {clients.map((client: any) => (
+              <div key={client.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{client.name}</div>
+                  <div className="list-item-subtitle">{client.email}</div>
+                  <div className="list-item-meta">{client.phone}</div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <span className="list-status-badge status-success">Ativo</span>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {Number(client.totalSpent || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 
   const renderReports = () => (
-    <div className="main-card">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Relatórios
-          </h2>
-          
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="relative">
-              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Buscar relatórios..."
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                value={searchTerm || ''}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+    <div>
+      {/* Lista de relatórios */}
+      <div className="main-card">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Relatórios
+            </h2>
+            
+            {/* Filtros dentro do cabeçalho */}
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Buscar relatórios..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={searchTerm || ''}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setDateFrom('');
+                  setDateTo('');
+                }}
+                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              >
+                Limpar Filtros
+              </button>
             </div>
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
           </div>
         </div>
-      </div>
-      
-      <div className="p-6">
-        <p className="text-gray-600">Relatórios disponíveis em breve.</p>
+        
+        <div className="p-6">
+          <p className="text-gray-600">Relatórios disponíveis em breve.</p>
+        </div>
       </div>
     </div>
   );
@@ -378,8 +432,8 @@ const AtividadeSection = () => {
       </div>
 
       {/* Métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        {Object.entries(metrics).slice(0, 4).map(([key, metric]) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {Object.entries(metrics).slice(0, 2).map(([key, metric]) => (
           <div key={key} className="metric-card-standard">
             <div className="flex items-center justify-between">
               <div>
