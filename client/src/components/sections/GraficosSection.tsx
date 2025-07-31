@@ -362,8 +362,8 @@ const GraficosSection = () => {
         </div>
       </div>
 
-      {/* Gráficos com Dados Reais */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      {/* Gráficos com Dados Reais - Cada um em linha completa */}
+      <div className="space-y-6 mb-6">
         {/* Gráfico de Vendas por Período */}
         <Card className="main-card">
           <CardHeader>
@@ -381,16 +381,16 @@ const GraficosSection = () => {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={calculateMetrics.salesChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="day" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <YAxis 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                   label={{ value: 'Vendas', angle: -90, position: 'insideLeft' }}
                 />
@@ -429,19 +429,19 @@ const GraficosSection = () => {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={calculateMetrics.topProductsData} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   type="number" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <YAxis 
                   dataKey="produto" 
                   type="category" 
-                  width={100} 
-                  tick={{ fontSize: 11 }}
+                  width={120} 
+                  tick={{ fontSize: 12 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <Tooltip 
@@ -475,16 +475,16 @@ const GraficosSection = () => {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={calculateMetrics.categoryChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="categoria" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <YAxis 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                   label={{ value: 'Receita (R$)', angle: -90, position: 'insideLeft' }}
                 />
@@ -527,16 +527,16 @@ const GraficosSection = () => {
                 </div>
               </div>
             </div>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart data={calculateMetrics.performanceData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="mes" 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <YAxis 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                   label={{ value: 'Vendas', angle: -90, position: 'insideLeft' }}
                 />
