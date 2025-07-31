@@ -250,9 +250,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                R$ {filteredSales.reduce((sum, sale) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                {financialLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
-              <p className="text-xs text-green-600 mt-1">{filteredSales.length} vendas realizadas</p>
+              <p className="text-xs text-green-600 mt-1">{financialEntries.filter(e => e.type === 'income').length} entradas de receita</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />
