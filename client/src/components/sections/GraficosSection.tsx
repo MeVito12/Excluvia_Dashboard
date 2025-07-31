@@ -66,13 +66,7 @@ const GraficosSection = () => {
   const { clients } = useClients();
   const { entries: financial } = useFinancial();
 
-  // Debug temporário para verificar dados
-  console.log('GraficosSection - Dados carregados:', {
-    products: products?.length || 0,
-    sales: sales?.length || 0,
-    clients: clients?.length || 0,
-    financial: financial?.length || 0
-  });
+
 
   // Função para filtrar vendas por data
   const filteredSales = useMemo(() => {
@@ -101,7 +95,7 @@ const GraficosSection = () => {
         totalClients: 0,
         salesChartData: [],
         financialChartData: [],
-        topProductsData: [],
+        categoryChartData: [],
         performanceData: [],
         retention: '0%',
         conversion: '0%'
@@ -183,51 +177,41 @@ const GraficosSection = () => {
       });
     }
 
-    // Dados para produtos mais vendidos - melhorado
-    const productSales: Record<number, { quantity: number; revenue: number; name: string }> = {};
+    // Gráfico de vendas por categoria de produto
+    const categoryTotals: Record<string, { vendas: number; receita: number }> = {};
     
+    // Agrupar vendas por categoria de produto
     (filteredSales || []).forEach((sale: any) => {
-      const productId = sale.product_id;
-      if (!productSales[productId]) {
-        const product = (products || []).find((p: any) => p.id === productId);
-        productSales[productId] = { 
-          quantity: 0, 
-          revenue: 0, 
-          name: product?.name || `Produto ${productId}` 
-        };
-      }
-      productSales[productId].quantity += Number(sale.quantity) || 0;
-      productSales[productId].revenue += Number(sale.total_price) || 0;
-    });
-
-    const topProductsData = Object.entries(productSales)
-      .map(([id, data]) => ({
-        produto: data.name.length > 20 ? data.name.substring(0, 20) + '...' : data.name,
-        vendas: data.quantity,
-        receita: data.revenue
-      }))
-      .sort((a, b) => b.vendas - a.vendas)
-      .slice(0, 5);
-
-    // Se não houver dados, criar produtos de exemplo para demonstração
-    if (topProductsData.length === 0) {
-      const exampleProducts = [
-        'Açúcar Cristal União 1kg',
-        'Água Mineral Crystal 500ml', 
-        'Carne Moída Bovina 1kg',
-        'Leite Integral Parmalat 1L',
-        'Refrigerante Coca-Cola 2L'
-      ];
+      const product = (products || []).find((p: any) => p.id === sale.product_id);
+      const category = product?.category || 'Outros';
       
-      exampleProducts.forEach((produto, index) => {
-        const vendas = Math.floor(Math.random() * 15) + 5;
-        topProductsData.push({
-          produto: produto.length > 20 ? produto.substring(0, 20) + '...' : produto,
-          vendas,
-          receita: vendas * (10 + Math.random() * 50)
-        });
+      if (!categoryTotals[category]) {
+        categoryTotals[category] = { vendas: 0, receita: 0 };
+      }
+      
+      categoryTotals[category].vendas += Number(sale.quantity) || 0;
+      categoryTotals[category].receita += Number(sale.total_price) || 0;
+    });
+    
+    // Se não há dados, criar categorias de exemplo
+    if (Object.keys(categoryTotals).length === 0) {
+      const exampleCategories = ['Alimentos', 'Bebidas', 'Higiene', 'Medicamentos', 'Cosméticos'];
+      exampleCategories.forEach(cat => {
+        categoryTotals[cat] = {
+          vendas: Math.floor(Math.random() * 20) + 5,
+          receita: (Math.floor(Math.random() * 20) + 5) * (30 + Math.random() * 100)
+        };
       });
     }
+    
+    const categoryChartData = Object.entries(categoryTotals)
+      .map(([category, data]) => ({
+        categoria: category,
+        vendas: data.vendas,
+        receita: data.receita
+      }))
+      .sort((a, b) => b.receita - a.receita)
+      .slice(0, 6);
 
     // Dados para performance mensal (mais útil que distribuição de clientes)
     const performanceData = [];
@@ -266,7 +250,7 @@ const GraficosSection = () => {
       totalClients: (clients || []).length,
       salesChartData,
       financialChartData,
-      topProductsData,
+      categoryChartData,
       performanceData,
       retention: '85%',
       conversion: '24%'
@@ -502,12 +486,12 @@ const GraficosSection = () => {
           </CardContent>
         </Card>
 
-        {/* Gráfico de Top Produtos */}
+        {/* Gráfico de Vendas por Categoria */}
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Target className="h-5 w-5 text-blue-600" />
-              Produtos Mais Vendidos
+              <PieChart className="h-5 w-5 text-blue-600" />
+              Vendas por Categoria
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -515,34 +499,36 @@ const GraficosSection = () => {
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                  <span>Unidades Vendidas</span>
+                  <span>Receita por Categoria (R$)</span>
                 </div>
               </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.topProductsData} layout="horizontal">
+              <BarChart data={calculateMetrics.categoryChartData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
-                  type="number" 
+                  dataKey="categoria" 
                   tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                 />
                 <YAxis 
-                  dataKey="produto" 
-                  type="category" 
-                  width={120} 
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 14 }}
                   axisLine={{ stroke: '#e5e7eb' }}
+                  label={{ value: 'Receita (R$)', angle: -90, position: 'insideLeft' }}
                 />
                 <Tooltip 
-                  formatter={(value) => [`${value} unidades`, 'Quantidade Vendida']}
+                  formatter={(value: any) => [
+                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+                    'Receita da Categoria'
+                  ]}
+                  labelFormatter={(label) => `Categoria: ${label}`}
                   contentStyle={{
                     backgroundColor: '#f9fafb',
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px'
                   }}
                 />
-                <Bar dataKey="vendas" fill="#3B82F6" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="receita" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
