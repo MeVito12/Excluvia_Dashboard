@@ -101,14 +101,14 @@ const GraficosSection = () => {
         conversion: '0%'
       };
     }
-    const totalSales = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
-    const totalQuantity = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.quantity) || 0), 0);
-    const avgTicket = totalSales > 0 ? totalSales / filteredSales.length : 0;
+    const totalSales = (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+    const totalQuantity = (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.quantity) || 0), 0);
+    const avgTicket = totalSales > 0 ? totalSales / (filteredSales || []).length : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
     const today = new Date();
     const periodStart = dateFrom ? new Date(dateFrom) : new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const growthRate = filteredSales.length > 0 ? Math.min(25, Math.max(5, filteredSales.length * 2)) : 0;
+    const growthRate = (filteredSales || []).length > 0 ? Math.min(25, Math.max(5, (filteredSales || []).length * 2)) : 0;
 
     // Dados para gráfico de vendas por período (últimos 7 dias) - garantir dados mínimos
     const salesChartData = [];
@@ -158,7 +158,7 @@ const GraficosSection = () => {
         .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
       
       // Adicionar vendas como entrada adicional
-      const daySales = filteredSales.filter((sale: any) => 
+      const daySales = (filteredSales || []).filter((sale: any) => 
         sale.sale_date && sale.sale_date.split('T')[0] === dateStr
       );
       const vendasReceita = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
@@ -221,7 +221,7 @@ const GraficosSection = () => {
       const monthName = date.toLocaleDateString('pt-BR', { month: 'short' });
       
       // Calcular vendas do mês
-      const monthSales = filteredSales.filter((sale: any) => {
+      const monthSales = (filteredSales || []).filter((sale: any) => {
         const saleDate = new Date(sale.sale_date);
         return saleDate.getMonth() === date.getMonth() && saleDate.getFullYear() === date.getFullYear();
       });
@@ -243,7 +243,7 @@ const GraficosSection = () => {
 
     return {
       totalSales: totalSales.toFixed(2),
-      totalOrders: filteredSales.length,
+      totalOrders: (filteredSales || []).length,
       avgTicket: avgTicket.toFixed(2),
       growth: `+${growthRate}%`,
       period: dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual',
