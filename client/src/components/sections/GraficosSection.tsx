@@ -123,20 +123,28 @@ const GraficosSection = () => {
       });
     }
 
-    // Dados para gráfico de produtos mais vendidos
-    const productSales: Record<string, number> = {};
+    // Dados para gráfico de produtos mais vendidos com valores
+    const productSales: Record<string, { quantity: number, revenue: number }> = {};
     filteredSales.forEach((sale: any) => {
       const product = products.find((p: any) => p.id === sale.product_id);
       if (product) {
         const productName = product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name;
-        productSales[productName] = (productSales[productName] || 0) + sale.quantity;
+        if (!productSales[productName]) {
+          productSales[productName] = { quantity: 0, revenue: 0 };
+        }
+        productSales[productName].quantity += sale.quantity;
+        productSales[productName].revenue += Number(sale.total_price) || 0;
       }
     });
     
     const topProductsData = Object.entries(productSales)
-      .sort(([,a], [,b]) => (b as number) - (a as number))
+      .sort(([,a], [,b]) => b.quantity - a.quantity)
       .slice(0, 5)
-      .map(([name, quantity]) => ({ produto: name, vendas: quantity as number }));
+      .map(([name, data]) => ({ 
+        produto: name, 
+        vendas: data.quantity,
+        receita: data.revenue 
+      }));
 
     // Dados para gráfico de clientes (distribuição por tipo)
     const clientTypes: Record<string, number> = clients.reduce((acc: Record<string, number>, client: any) => {
@@ -419,24 +427,25 @@ const GraficosSection = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {filteredSales.slice(0, 5).map((sale: any, index: any) => {
-              const product = products.find((p: any) => p.id === sale.productId);
-              const productName = product ? product.name : `Produto ID: ${sale.productId}`;
-              
+            {calculateMetrics.topProductsData.map((productData: any, index: number) => {
               return (
-                <div key={sale.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
                       <span className="text-sm font-bold text-purple-600">#{index + 1}</span>
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{productName}</p>
-                      <p className="text-sm text-gray-500">{sale.quantity} vendas</p>
+                      <p className="font-medium text-gray-900">{productData.produto}</p>
+                      <p className="text-sm text-gray-500">{productData.vendas} vendas</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {Number(sale.totalPrice || 0).toFixed(2)}</p>
-                    <p className="text-sm text-gray-500">{new Date(sale.saleDate).toLocaleDateString()}</p>
+                    <p className="font-semibold text-gray-900">
+                      R$ {Number(productData.receita || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {calculateMetrics.period}
+                    </p>
                   </div>
                 </div>
               );
