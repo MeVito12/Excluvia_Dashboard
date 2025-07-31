@@ -7,6 +7,7 @@ import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
+import { useFinancial } from '@/hooks/useFinancial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -63,6 +64,7 @@ const GraficosSection = () => {
   const { products } = useProducts();
   const { sales } = useSales();
   const { clients } = useClients();
+  const { financial } = useFinancial();
 
   // Função para filtrar vendas por data
   const filteredSales = useMemo(() => {
@@ -114,42 +116,46 @@ const GraficosSection = () => {
       });
     }
 
-    // Gráfico de vendas por categoria de produto (mais útil que distribuição de clientes)
-    const categorySalesData = [];
-    const categoryTotals: Record<string, { vendas: number; receita: number }> = {};
-    
-    // Agrupar vendas por categoria de produto
-    filteredSales.forEach((sale: any) => {
-      const product = products.find((p: any) => p.id === sale.product_id);
-      const category = product?.category || 'Outros';
+    // Dados para gráfico financeiro (entradas vs despesas) por dia
+    const financialChartData = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      if (!categoryTotals[category]) {
-        categoryTotals[category] = { vendas: 0, receita: 0 };
-      }
+      // Filtrar movimentações financeiras do dia
+      const dayEntries = financial.filter((entry: any) => 
+        entry.date && entry.date.split('T')[0] === dateStr
+      );
       
-      categoryTotals[category].vendas += Number(sale.quantity) || 0;
-      categoryTotals[category].receita += Number(sale.total_price) || 0;
-    });
-    
-    // Se não há dados, criar categorias de exemplo
-    if (Object.keys(categoryTotals).length === 0) {
-      const exampleCategories = ['Alimentos', 'Bebidas', 'Higiene', 'Medicamentos', 'Cosméticos'];
-      exampleCategories.forEach(cat => {
-        categoryTotals[cat] = {
-          vendas: Math.floor(Math.random() * 20) + 5,
-          receita: (Math.floor(Math.random() * 20) + 5) * (30 + Math.random() * 100)
-        };
+      const entradas = dayEntries
+        .filter((entry: any) => entry.type === 'income')
+        .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
+        
+      const despesas = dayEntries
+        .filter((entry: any) => entry.type === 'expense')
+        .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
+      
+      // Adicionar vendas como entrada adicional
+      const daySales = filteredSales.filter((sale: any) => 
+        sale.sale_date && sale.sale_date.split('T')[0] === dateStr
+      );
+      const vendasReceita = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+      
+      const totalEntradas = entradas + vendasReceita;
+      
+      // Se não há dados reais, usar exemplos para demonstração
+      const finalEntradas = totalEntradas > 0 ? totalEntradas : Math.floor(Math.random() * 1500) + 500;
+      const finalDespesas = despesas > 0 ? despesas : Math.floor(Math.random() * 800) + 200;
+      
+      financialChartData.push({
+        dia: dayName,
+        entradas: finalEntradas,
+        despesas: finalDespesas,
+        saldo: finalEntradas - finalDespesas
       });
     }
-    
-    const categoryChartData = Object.entries(categoryTotals)
-      .map(([category, data]) => ({
-        categoria: category,
-        vendas: data.vendas,
-        receita: data.receita
-      }))
-      .sort((a, b) => b.receita - a.receita)
-      .slice(0, 6);
 
     // Dados para produtos mais vendidos - melhorado
     const productSales: Record<number, { quantity: number; revenue: number; name: string }> = {};
@@ -233,7 +239,7 @@ const GraficosSection = () => {
       period: dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual',
       totalClients: clients.length,
       salesChartData,
-      categoryChartData,
+      financialChartData,
       topProductsData,
       performanceData,
       retention: '85%',
@@ -412,12 +418,12 @@ const GraficosSection = () => {
           </CardContent>
         </Card>
 
-        {/* Gráfico de Produtos Mais Vendidos */}
+        {/* Gráfico de Entradas vs Despesas */}
         <Card className="main-card">
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-600" />
-              Top Produtos
+              <DollarSign className="h-5 w-5 text-green-600" />
+              Entradas vs Despesas
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -425,6 +431,64 @@ const GraficosSection = () => {
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-500 rounded"></div>
+                  <span>Entradas (R$)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-red-500 rounded"></div>
+                  <span>Despesas (R$)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                  <span>Saldo (R$)</span>
+                </div>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={calculateMetrics.financialChartData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="dia" 
+                  tick={{ fontSize: 14 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  tick={{ fontSize: 14 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  label={{ value: 'Valor (R$)', angle: -90, position: 'insideLeft' }}
+                />
+                <Tooltip 
+                  formatter={(value: any, name: any) => [
+                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+                    name === 'entradas' ? 'Entradas' : name === 'despesas' ? 'Despesas' : 'Saldo'
+                  ]}
+                  labelFormatter={(label) => `Data: ${label}`}
+                  contentStyle={{
+                    backgroundColor: '#f9fafb',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Bar dataKey="entradas" fill="#10B981" name="entradas" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="despesas" fill="#EF4444" name="despesas" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="saldo" fill="#3B82F6" name="saldo" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Gráfico de Top Produtos */}
+        <Card className="main-card">
+          <CardHeader>
+            <CardTitle className="text-gray-900 flex items-center gap-2">
+              <Target className="h-5 w-5 text-blue-600" />
+              Produtos Mais Vendidos
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4">
+              <div className="flex items-center gap-4 text-sm text-gray-600">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
                   <span>Unidades Vendidas</span>
                 </div>
               </div>
@@ -452,55 +516,7 @@ const GraficosSection = () => {
                     borderRadius: '8px'
                   }}
                 />
-                <Bar dataKey="vendas" fill="#06D6A0" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Gráfico de Vendas por Categoria */}
-        <Card className="main-card">
-          <CardHeader>
-            <CardTitle className="text-gray-900 flex items-center gap-2">
-              <PieChart className="h-5 w-5 text-blue-600" />
-              Vendas por Categoria
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="mb-4">
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                  <span>Receita Total (R$)</span>
-                </div>
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.categoryChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="categoria" 
-                  tick={{ fontSize: 14 }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                />
-                <YAxis 
-                  tick={{ fontSize: 14 }}
-                  axisLine={{ stroke: '#e5e7eb' }}
-                  label={{ value: 'Receita (R$)', angle: -90, position: 'insideLeft' }}
-                />
-                <Tooltip 
-                  formatter={(value: any) => [
-                    `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
-                    'Receita da Categoria'
-                  ]}
-                  labelFormatter={(label) => `Categoria: ${label}`}
-                  contentStyle={{
-                    backgroundColor: '#f9fafb',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Bar dataKey="receita" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="vendas" fill="#3B82F6" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
