@@ -633,30 +633,44 @@ const GraficosSection = () => {
         <CardHeader>
           <CardTitle className="text-gray-900 flex items-center gap-2">
             <Star className="h-5 w-5 text-yellow-600" />
-            Produtos Mais Vendidos
+            Produtos Mais Vendidos (por quantidade)
           </CardTitle>
+          <p className="text-sm text-gray-500 mt-1">Ranking baseado na quantidade total de produtos vendidos</p>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {(filteredSales || []).length > 0 ? (
               (() => {
-                // Calcular produtos mais vendidos
-                const productSales: { [key: string]: { vendas: number; receita: number; produto: string } } = {};
+                // Calcular produtos mais vendidos por QUANTIDADE total vendida
+                const productSales: { [key: string]: { 
+                  quantidade_total: number; 
+                  numero_vendas: number; 
+                  receita_total: number; 
+                  produto: string 
+                } } = {};
                 
                 (filteredSales || []).forEach((sale: any) => {
                   const product = (products || []).find((p: any) => p.id === sale.product_id);
                   const productName = product?.name || `Produto ${sale.product_id}`;
                   
                   if (!productSales[productName]) {
-                    productSales[productName] = { vendas: 0, receita: 0, produto: productName };
+                    productSales[productName] = { 
+                      quantidade_total: 0, 
+                      numero_vendas: 0, 
+                      receita_total: 0, 
+                      produto: productName 
+                    };
                   }
                   
-                  productSales[productName].vendas += Number(sale.quantity) || 0;
-                  productSales[productName].receita += Number(sale.total_price) || 0;
+                  // Somar quantidade vendida (quantos itens saíram do estoque)
+                  productSales[productName].quantidade_total += Number(sale.quantity) || 0;
+                  productSales[productName].numero_vendas += 1;
+                  productSales[productName].receita_total += Number(sale.total_price) || 0;
                 });
                 
+                // Ordenar por QUANTIDADE total vendida (não por receita)
                 const topProducts = Object.values(productSales)
-                  .sort((a, b) => b.receita - a.receita)
+                  .sort((a, b) => b.quantidade_total - a.quantidade_total)
                   .slice(0, 5);
                 
                 return topProducts.map((productData: any, index: number) => (
@@ -667,14 +681,17 @@ const GraficosSection = () => {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{productData.produto}</p>
-                        <p className="text-sm text-gray-500">{productData.vendas} vendas</p>
+                        <p className="text-sm text-gray-500">{productData.numero_vendas} transações</p>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-gray-900">
-                        R$ {Number(productData.receita || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <p className="font-semibold text-purple-600 text-lg">
+                        {productData.quantidade_total} unidades
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-900">
+                        R$ {Number(productData.receita_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                      <p className="text-xs text-gray-500">
                         Receita total
                       </p>
                     </div>
