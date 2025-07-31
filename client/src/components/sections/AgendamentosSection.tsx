@@ -84,70 +84,59 @@ const AgendamentosSection = () => {
   // Renderização da agenda
   const renderAgenda = () => (
     <div className="animate-fade-in">
-      {/* Lista de compromissos */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Compromissos ({appointments.length})
-            </h2>
-            
-            <div className="flex items-center gap-4 flex-wrap">
-              {/* Campo de busca */}
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Buscar compromissos..."
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div>
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Compromissos ({appointments.length})
+          </h3>
+          <button 
+            className="btn btn-primary"
+            onClick={openAddModal}
+          >
+            <Plus className="w-4 h-4" />
+            Adicionar Compromisso
+          </button>
+        </div>
 
-              {/* Filtro Data Inicial */}
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="dd/mm/aaaa"
-                />
-              </div>
-
-              {/* Filtro Data Final */}
-              <div className="flex items-center gap-2">
-                <CalendarIcon className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-                <input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  placeholder="dd/mm/aaaa"
-                />
-              </div>
-
-              {/* Botões de ação */}
-              <button
-                onClick={clearFilters}
-                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                Limpar Filtros
-              </button>
-              
-              <button 
-                onClick={openAddModal}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2 whitespace-nowrap"
-              >
-                <Plus className="h-4 w-4" />
-                Adicionar Compromisso
-              </button>
-            </div>
+        {/* Filtros abaixo do cabeçalho */}
+        <div className="flex flex-wrap gap-4 items-center mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Buscar compromissos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
+          <button
+            onClick={clearFilters}
+            className="btn btn-outline"
+          >
+            Limpar Filtros
+          </button>
         </div>
         
         <div className="standard-list-container">
