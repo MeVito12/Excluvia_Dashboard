@@ -53,8 +53,8 @@ const GraficosSection = () => {
   const filteredSales = useMemo(() => {
     if (!dateFrom && !dateTo) return sales;
     
-    return sales.filter(sale => {
-      const saleDate = new Date(sale.saleDate);
+    return sales.filter((sale: any) => {
+      const saleDate = new Date(sale.sale_date);
       const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
       const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
       
@@ -64,8 +64,8 @@ const GraficosSection = () => {
 
   // Calcular métricas e dados para gráficos
   const calculateMetrics = useMemo(() => {
-    const totalSales = filteredSales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0);
-    const totalQuantity = filteredSales.reduce((sum, sale) => sum + (Number(sale.quantity) || 0), 0);
+    const totalSales = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+    const totalQuantity = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.quantity) || 0), 0);
     const avgTicket = totalSales > 0 ? totalSales / filteredSales.length : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
@@ -81,14 +81,14 @@ const GraficosSection = () => {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = date.toLocaleDateString('pt-BR', { weekday: 'short' });
       
-      const daySales = filteredSales.filter(sale => 
-        sale.saleDate && sale.saleDate.split('T')[0] === dateStr
+      const daySales = filteredSales.filter((sale: any) => 
+        sale.sale_date && sale.sale_date.split('T')[0] === dateStr
       );
       
       salesChartData.push({
         day: dayName,
         vendas: daySales.length,
-        receita: daySales.reduce((sum, sale) => sum + (Number(sale.totalPrice) || 0), 0)
+        receita: daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0)
       });
     }
 
@@ -112,7 +112,7 @@ const GraficosSection = () => {
     // Dados para gráfico de produtos mais vendidos
     const productSales: Record<string, number> = {};
     filteredSales.forEach((sale: any) => {
-      const product = products.find((p: any) => p.id === sale.productId);
+      const product = products.find((p: any) => p.id === sale.product_id);
       if (product) {
         const productName = product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name;
         productSales[productName] = (productSales[productName] || 0) + sale.quantity;
@@ -126,7 +126,7 @@ const GraficosSection = () => {
 
     // Dados para gráfico de clientes (distribuição por tipo)
     const clientTypes: Record<string, number> = clients.reduce((acc: Record<string, number>, client: any) => {
-      const type = client.clientType === 'company' ? 'Empresas' : 'Pessoas Físicas';
+      const type = client.client_type === 'company' ? 'Empresas' : 'Pessoas Físicas';
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {});
