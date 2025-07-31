@@ -59,6 +59,7 @@ const EstoqueSection = () => {
   const [stockControlProduct, setStockControlProduct] = useState<Product | null>(null);
   const [stockAdjustment, setStockAdjustment] = useState(0);
   const [adjustmentReason, setAdjustmentReason] = useState('');
+  const [productSearchTerm, setProductSearchTerm] = useState('');
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -792,12 +793,38 @@ const EstoqueSection = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
+                
+                {/* Campo de pesquisa */}
+                <div className="relative mb-2">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Pesquisar produto..."
+                    value={productSearchTerm}
+                    onChange={(e) => setProductSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                  />
+                </div>
+                
+                {/* Select com produtos filtrados */}
                 <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
                   <option value="">Selecione um produto</option>
-                  {products.map((product: any) => (
-                    <option key={product.id} value={product.id}>{product.name}</option>
-                  ))}
+                  {products
+                    .filter((product: any) => 
+                      product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                    )
+                    .map((product: any) => (
+                      <option key={product.id} value={product.id}>
+                        {product.name} (Estoque: {product.stock})
+                      </option>
+                    ))}
                 </select>
+                
+                {productSearchTerm && products.filter((product: any) => 
+                  product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                ).length === 0 && (
+                  <p className="text-sm text-gray-500 mt-1">Nenhum produto encontrado</p>
+                )}
               </div>
               
               <div>
