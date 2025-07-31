@@ -23,6 +23,8 @@ const AtividadeSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
+  const [activeTab, setActiveTab] = useState('vendas');
+  const [showExportModal, setShowExportModal] = useState(false);
   
   // Configurar datas automáticas (últimos 7 dias por padrão)
   const getDefaultDates = () => {
@@ -45,161 +47,27 @@ const AtividadeSection = () => {
   const { clients } = useClients();
   const { products } = useProducts();
 
-  // Logs de integração em tempo real - usando dados reais vázios por enquanto
-  const integrationLogs: any[] = [];
-
-  // Atividades tradicionais do sistema
+  // Atividades do sistema simplificadas
   const systemActivities = [
-    { 
-      id: 'sys_1',
-      action: 'Agendamento confirmado', 
-      description: 'Consulta veterinária para Luna agendada para hoje às 14:00',
-      timestamp: new Date('2024-12-26T08:00:00'),
-      status: 'success', 
-      user: 'Dr. Carlos Mendes',
-      type: 'appointment',
-      category: 'pet'
-    },
-    { 
-      id: 'sys_2',
-      action: 'Venda processada', 
-      description: 'Venda de R$ 45,90 - Combo Executivo processada com PIX',
-      timestamp: new Date('2024-12-26T07:45:00'),
-      status: 'success', 
-      user: 'Ana Costa',
-      type: 'sale',
-      category: 'vendas'
-    },
-    { 
-      id: 'sys_3',
-      action: 'Produto adicionado', 
-      description: 'Medicamento "Antibiótico Amoxicilina 500mg" cadastrado no estoque',
-      timestamp: new Date('2024-12-26T07:30:00'),
-      status: 'success', 
-      user: 'Farmacêutico',
-      type: 'product',
-      category: 'medico'
-    }
+    { id: 'sys_1', action: 'Venda processada', description: 'Nova venda registrada', timestamp: new Date(), status: 'success', user: 'Sistema', type: 'sale', category: selectedCategory, time: '10:30' }
   ];
 
-  // Tipos de atividade
-  const activityTypes = [
-    { value: 'all', label: 'Todos os Tipos' },
-    { value: 'email', label: 'Email' },
-    { value: 'whatsapp', label: 'WhatsApp' },
-    { value: 'telegram', label: 'Telegram' },
-    { value: 'calendar', label: 'Calendário' },
-    { value: 'payment', label: 'Pagamentos' },
-    { value: 'integration', label: 'Integrações' },
-    { value: 'system', label: 'Sistema' },
-    { value: 'appointment', label: 'Agendamentos' },
-    { value: 'sale', label: 'Vendas' },
-    { value: 'stock', label: 'Estoque' },
-    { value: 'product', label: 'Produtos' },
-    { value: 'client', label: 'Clientes' },
-    { value: 'order', label: 'Pedidos' }
-  ];
-
-  // Função para obter ícone baseado no tipo
-  const getActivityTypeIcon = (type: string) => {
-    switch (type) {
-      case 'email': return Mail;
-      case 'whatsapp': return MessageCircle;
-      case 'telegram': return Send;
-      case 'calendar': return CalendarIcon;
-      case 'payment': return CreditCard;
-      case 'integration': return Settings;
-      case 'system': return Zap;
-      default: return CheckCircle;
-    }
+  const stats = {
+    total: systemActivities.length + sales.length,
+    success: systemActivities.filter(a => a.status === 'success').length + sales.length,
+    error: systemActivities.filter(a => a.status === 'error').length,
+    pending: systemActivities.filter(a => a.status === 'pending').length,
+    integrations: 5
   };
 
-  // Combinar todas as atividades
-  const allActivities = [...integrationLogs, ...systemActivities]
-    .filter(activity => selectedCategory === 'all' || activity.category === selectedCategory)
-    .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-    .map(activity => ({
-      ...activity,
-      time: format(activity.timestamp, 'HH:mm - dd/MM', { locale: ptBR })
-    }));
-
-  // Filtrar atividades
-  const filteredActivities = allActivities.filter(activity => {
-    const matchesSearch = searchTerm === '' || 
-      activity.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      activity.action.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = selectedStatus === 'all' || activity.status === selectedStatus;
-    const matchesType = selectedType === 'all' || activity.type === selectedType;
-    
-    // Filtro de data funcional
-    const activityDate = activity.timestamp;
-    const matchesDateFrom = !dateFrom || activityDate >= dateFrom;
-    const matchesDateTo = !dateTo || activityDate <= dateTo;
-    const matchesDate = matchesDateFrom && matchesDateTo;
-    
-    return matchesSearch && matchesStatus && matchesType && matchesDate;
+  const filteredActivities = systemActivities.filter(activity => {
+    const matchesSearch = !searchTerm || 
+      activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      activity.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
-  // Estatísticas
-  const stats = {
-    total: filteredActivities.length,
-    success: filteredActivities.filter(a => a.status === 'success').length,
-    error: filteredActivities.filter(a => a.status === 'error').length,
-    pending: filteredActivities.filter(a => a.status === 'warning' || a.status === 'info').length,
-    integrations: filteredActivities.filter(a => integrationLogs.some(log => log.id === a.id)).length
-  };
-
-  // Função para mostrar modal de exportação
-  const [showExportModal, setShowExportModal] = useState(false);
-  
-  // Estado para controlar a aba ativa
-  const [activeTab, setActiveTab] = useState('vendas');
-  
-  // Função para exportar dados com formatação profissional
-  const handleExport = () => {
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString('pt-BR');
-    const formattedTime = currentDate.toLocaleTimeString('pt-BR');
-    const categoryName = categories.find(c => c.value === selectedCategory)?.label || 'Sistema';
-    
-    // Cabeçalho profissional
-    const header = [
-      `"RELATÓRIO DE ATIVIDADES - ${categoryName.toUpperCase()}"`,
-      `"Data de Geração: ${formattedDate} às ${formattedTime}"`,
-      `"Total de Registros: ${stats.total}"`,
-      `"Período: ${filteredActivities.length > 0 ? filteredActivities[filteredActivities.length - 1].time : 'N/A'} até ${filteredActivities.length > 0 ? filteredActivities[0].time : 'N/A'}"`,
-      '""',
-      '"=== RESUMO EXECUTIVO ==="',
-      `"Atividades com Sucesso: ${stats.success}"`,
-      `"Atividades com Erro: ${stats.error}"`,
-      `"Atividades Pendentes: ${stats.pending}"`,
-      '""',
-      '"=== DETALHAMENTO DAS ATIVIDADES ==="',
-      '"Data/Hora","Tipo","Ação","Descrição Completa","Status","Responsável","Categoria"'
-    ].join('\n');
-    
-    // Dados formatados
-    const csvData = filteredActivities.map(activity => {
-      const statusFormatted = activity.status === 'success' ? 'SUCESSO' : 
-                             activity.status === 'error' ? 'ERRO' : 'PENDENTE';
-      return `"${activity.time}","${activity.type.toUpperCase()}","${activity.action}","${activity.description}","${statusFormatted}","${activity.user}","${activity.category}"`;
-    }).join('\n');
-    
-    const csvContent = header + '\n' + csvData;
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `relatorio_atividades_${selectedCategory}_${currentDate.toISOString().split('T')[0]}.csv`;
-    link.click();
-    
-    // Modal de confirmação personalizado
-    setShowExportModal(true);
-    setTimeout(() => setShowExportModal(false), 3000);
-  };
-
-  // Tabs da seção com as abas movidas do Estoque
+  // Tabs da seção
   const tabs = [
     { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
     { id: 'clientes', label: 'Clientes', icon: Users },
@@ -209,33 +77,25 @@ const AtividadeSection = () => {
 
   // Métricas específicas da aba ativa
   const getTabMetrics = () => {
-    if (activeTab === 'atividades') {
-      return {
-        metric1: { label: 'Total de Atividades', value: stats.total, change: 'Últimas 24h', icon: CheckCircle, color: 'blue' },
-        metric2: { label: 'Integrações Ativas', value: stats.integrations, change: 'Funcionando normalmente', icon: Settings, color: 'green' },
-        metric3: { label: 'Sucessos', value: stats.success, change: `Taxa: ${Math.round((stats.success / stats.total) * 100)}%`, icon: CheckCircle, color: 'emerald' },
-        metric4: { label: 'Erros', value: stats.error, change: 'Requer atenção', icon: Zap, color: 'red' }
-      };
-    } else if (activeTab === 'vendas') {
+    if (activeTab === 'vendas') {
       return {
         metric1: { label: 'Vendas Hoje', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: DollarSign, color: 'green' },
-        metric2: { label: 'Receita Total', value: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, change: `${sales.length} vendas`, icon: ShoppingCart, color: 'blue' },
-        metric3: { label: 'Ticket Médio', value: `R$ ${sales.length > 0 ? (sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0) / sales.length).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: 'Por transação', icon: TrendingUp, color: 'purple' },
-        metric4: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
+        metric2: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
       return {
-        metric1: { label: 'Clientes Ativos', value: clients.length, change: '+12 este mês', icon: Users, color: 'purple' },
-        metric2: { label: 'Novos Clientes', value: '23', change: 'Esta semana', icon: Users, color: 'green' },
-        metric3: { label: 'Taxa de Retenção', value: '85%', change: '+3% vs mês anterior', icon: TrendingUp, color: 'blue' },
-        metric4: { label: 'Satisfação', value: '4.8', change: 'Média de avaliações', icon: CheckCircle, color: 'emerald' }
+        metric1: { label: 'Clientes Ativos', value: clients.length, change: 'Total cadastrados', icon: Users, color: 'purple' },
+        metric2: { label: 'Taxa de Retenção', value: '85%', change: 'Média mensal', icon: TrendingUp, color: 'blue' }
+      };
+    } else if (activeTab === 'atividades') {
+      return {
+        metric1: { label: 'Total de Atividades', value: stats.total, change: 'Últimas 24h', icon: CheckCircle, color: 'blue' },
+        metric2: { label: 'Sucessos', value: stats.success, change: `Taxa: ${Math.round((stats.success / stats.total) * 100)}%`, icon: CheckCircle, color: 'emerald' }
       };
     } else {
       return {
         metric1: { label: 'Relatórios Gerados', value: '47', change: 'Este mês', icon: BarChart3, color: 'blue' },
-        metric2: { label: 'Exportações', value: '12', change: 'Esta semana', icon: Download, color: 'green' },
-        metric3: { label: 'Crescimento', value: '+22%', change: 'Vs mês anterior', icon: TrendingUp, color: 'purple' },
-        metric4: { label: 'Automações', value: '8', change: 'Relatórios automáticos', icon: Settings, color: 'orange' }
+        metric2: { label: 'Exportações', value: '12', change: 'Esta semana', icon: Download, color: 'green' }
       };
     }
   };
@@ -252,7 +112,6 @@ const AtividadeSection = () => {
           </h2>
           
           <div className="flex items-center gap-4 flex-wrap">
-            {/* Campo de busca */}
             <div className="relative">
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
@@ -263,34 +122,6 @@ const AtividadeSection = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-
-            {/* Filtro Data Inicial */}
-            <div className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-              <input
-                type="date"
-                value={dateFrom || ''}
-                onChange={(e) => setDateFrom(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="dd/mm/aaaa"
-              />
-            </div>
-
-            {/* Filtro Data Final */}
-            <div className="flex items-center gap-2">
-              <CalendarIcon className="h-4 w-4 text-gray-500" />
-              <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-              <input
-                type="date"
-                value={dateTo || ''}
-                onChange={(e) => setDateTo(e.target.value)}
-                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="dd/mm/aaaa"
-              />
-            </div>
-
-            {/* Botão de limpar filtros */}
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -305,49 +136,112 @@ const AtividadeSection = () => {
         </div>
       </div>
 
-      {/* Lista de atividades */}
       <div className="standard-list-container">
         <div className="standard-list-content">
-          {filteredActivities.map((activity) => {
-            const Icon = getActivityTypeIcon(activity.type);
+          {filteredActivities.map((activity) => (
+            <div key={activity.id} className="standard-list-item group">
+              <div className="list-item-main">
+                <div className="list-item-title">{activity.action}</div>
+                <div className="list-item-subtitle">{activity.description}</div>
+                <div className="list-item-meta flex items-center gap-2">
+                  <span className={`list-status-badge ${
+                    activity.status === 'success' ? 'status-success' :
+                    activity.status === 'error' ? 'status-danger' :
+                    activity.status === 'warning' ? 'status-warning' :
+                    'status-info'
+                  }`}>
+                    {activity.status === 'success' ? 'Sucesso' :
+                     activity.status === 'error' ? 'Erro' :
+                     activity.status === 'warning' ? 'Aviso' : 'Info'}
+                  </span>
+                  <span className="text-xs text-gray-500">{activity.time}</span>
+                  <span>•</span>
+                  <span className="text-xs text-gray-500">Por: {activity.user}</span>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="list-item-actions">
+                  <button
+                    onClick={() => {
+                      showAlert({
+                        title: "Detalhes da Atividade",
+                        description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nStatus: ${activity.status}\nUsuário: ${activity.user}`,
+                        variant: "default"
+                      });
+                    }}
+                    className="list-action-button view"
+                    title="Ver detalhes"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSales = () => (
+    <div className="main-card">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Vendas ({sales.length})
+            </h2>
+            <p className="text-sm text-gray-600">
+              Total: R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Buscar vendas..."
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm || ''}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setDateFrom('');
+                setDateTo('');
+              }}
+              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Limpar Filtros
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="standard-list-container">
+        <div className="standard-list-content">
+          {sales.map((sale: any) => {
+            const client = clients.find((c: any) => c.id === sale.client_id);
+            const product = products.find((p: any) => p.id === sale.product_id);
             
             return (
-              <div key={activity.id} className="standard-list-item group">
+              <div key={sale.id} className="standard-list-item group">
                 <div className="list-item-main">
-                  <div className="list-item-title">{activity.action}</div>
-                  <div className="list-item-subtitle">{activity.description}</div>
-                  <div className="list-item-meta flex items-center gap-2">
-                    <span className={`list-status-badge ${
-                      activity.status === 'success' ? 'status-success' :
-                      activity.status === 'error' ? 'status-danger' :
-                      activity.status === 'warning' ? 'status-warning' :
-                      'status-info'
-                    }`}>
-                      {activity.status === 'success' ? 'Sucesso' :
-                       activity.status === 'error' ? 'Erro' :
-                       activity.status === 'warning' ? 'Aviso' : 'Info'}
-                    </span>
-                    <span className="text-xs text-gray-500">{activity.time}</span>
-                    <span>•</span>
-                    <span className="text-xs text-gray-500">Por: {activity.user}</span>
+                  <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
+                  <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
+                  <div className="list-item-meta">
+                    {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
                   </div>
                 </div>
                 
                 <div className="flex items-center gap-3">
-                  <div className="list-item-actions">
-                    <button
-                      onClick={() => {
-                        showAlert({
-                          title: "Detalhes da Atividade",
-                          description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`,
-                          variant: "default"
-                        });
-                      }}
-                      className="list-action-button view"
-                      title="Ver detalhes"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
+                  <span className="list-status-badge status-success">Concluída</span>
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                   </div>
                 </div>
               </div>
@@ -358,278 +252,86 @@ const AtividadeSection = () => {
     </div>
   );
 
-  const renderSales = () => (
-    <div>
-      {/* Barra de busca e filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Campo de busca */}
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar vendas..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm || ''}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Filtro Data Inicial */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-            <input
-              type="date"
-              value={dateFrom || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateFrom(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Filtro Data Final */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-            <input
-              type="date"
-              value={dateTo || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateTo(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Botão de limpar filtros */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista de vendas */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Vendas ({sales.length})
-            </h2>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Total:</p>
-              <p className="text-lg font-bold text-green-600">
-                R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="standard-list-container">
-          <div className="standard-list-content">
-            {sales.map((sale: any) => {
-              const client = clients.find((c: any) => c.id === sale.client_id);
-              const product = products.find((p: any) => p.id === sale.product_id);
-              
-              return (
-                <div key={sale.id} className="standard-list-item group">
-                  <div className="list-item-main">
-                    <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
-                    <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
-                    <div className="list-item-meta">
-                      {sale.sale_date ? format(new Date(sale.sale_date), 'dd/MM/yyyy HH:mm', { locale: ptBR }) : 'Data não disponível'}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3">
-                    <span className="list-status-badge status-success">Concluída</span>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const renderClients = () => (
-    <div>
-      {/* Barra de busca e filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Campo de busca */}
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar clientes..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm || ''}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Filtro Data Inicial */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-            <input
-              type="date"
-              value={dateFrom || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateFrom(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Filtro Data Final */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-            <input
-              type="date"
-              value={dateTo || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateTo(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Botão de limpar filtros */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setDateFrom('');
-                setDateTo('');
-              }}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Lista de clientes */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex items-center justify-between">
+    <div className="main-card">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
             <h2 className="text-lg font-semibold text-gray-900">
               Clientes ({clients.length})
             </h2>
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Total gasto:</p>
-              <p className="text-lg font-bold text-blue-600">
-                R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-              </p>
+            <p className="text-sm text-gray-600">
+              Total gasto: R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Buscar clientes..."
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm || ''}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setDateFrom('');
+                setDateTo('');
+              }}
+              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Limpar Filtros
+            </button>
           </div>
         </div>
-        
-        <div className="standard-list-container">
-          <div className="standard-list-content">
-            {clients.map((client: any) => (
-              <div key={client.id} className="standard-list-item group">
-                <div className="list-item-main">
-                  <div className="list-item-title">{client.name}</div>
-                  <div className="list-item-subtitle">{client.email}</div>
-                  <div className="list-item-meta">{client.phone}</div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <span className={`list-status-badge ${
-                    client.status === 'active' ? 'status-success' : 'status-warning'
-                  }`}>
-                    {client.status === 'active' ? 'Ativo' : 'Inativo'}
-                  </span>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {client.totalSpent?.toFixed(2) || '0.00'}</p>
-                  </div>
+      </div>
+      
+      <div className="standard-list-container">
+        <div className="standard-list-content">
+          {clients.map((client: any) => (
+            <div key={client.id} className="standard-list-item group">
+              <div className="list-item-main">
+                <div className="list-item-title">{client.name}</div>
+                <div className="list-item-subtitle">{client.email}</div>
+                <div className="list-item-meta">{client.phone}</div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <span className="list-status-badge status-success">Ativo</span>
+                <div className="text-right">
+                  <p className="font-semibold text-gray-900">R$ {Number(client.totalSpent || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
   );
 
   const renderReports = () => (
-    <div>
-      {/* Barra de busca e filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Campo de busca */}
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar relatórios..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm || ''}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Filtro Data Inicial */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-            <input
-              type="date"
-              value={dateFrom || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateFrom(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Filtro Data Final */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-            <input
-              type="date"
-              value={dateTo || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateTo(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Botão de limpar filtros */}
-          <div className="flex items-center gap-2">
+    <div className="main-card">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Relatórios
+          </h2>
+          
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Buscar relatórios..."
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm || ''}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -643,114 +345,24 @@ const AtividadeSection = () => {
           </div>
         </div>
       </div>
-
-      {/* Lista de relatórios */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Relatórios Disponíveis
-          </h2>
-        </div>
-        
-        <div className="divide-y divide-gray-200">
-          <div className="p-6 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-800">Relatório Diário</h4>
-                <p className="text-sm text-gray-600">Vendas e atividades do dia</p>
-                <p className="text-xs text-gray-500">Gerado diariamente às 23:59</p>
-              </div>
-              <div className="text-right">
-                <Button 
-                  onClick={() => {
-                    const csvContent = `"Relatório","Relatório Diário"\n"Período","${new Date().toLocaleDateString('pt-BR')}"\n"Total de Vendas","R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.totalPrice) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}"\n"Transações","${sales.length} vendas"`;
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `daily_report_${new Date().toISOString().split('T')[0]}.csv`;
-                    link.click();
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-800">Relatório Semanal</h4>
-                <p className="text-sm text-gray-600">Resumo semanal de vendas e clientes</p>
-                <p className="text-xs text-gray-500">Gerado toda segunda-feira</p>
-              </div>
-              <div className="text-right">
-                <Button 
-                  onClick={() => {
-                    const csvContent = `"Relatório","Relatório Semanal"\n"Período","Última semana"\n"Total de Vendas","R$ 15.299,95"\n"Transações","127 vendas"`;
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `weekly_report_${new Date().toISOString().split('T')[0]}.csv`;
-                    link.click();
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 hover:bg-gray-50 transition-colors">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-medium text-gray-800">Relatório Mensal</h4>
-                <p className="text-sm text-gray-600">Análise completa do mês</p>
-                <p className="text-xs text-gray-500">Gerado no primeiro dia do mês</p>
-              </div>
-              <div className="text-right">
-                <Button 
-                  onClick={() => {
-                    const csvContent = `"Relatório","Relatório Mensal"\n"Período","Este mês"\n"Total de Vendas","R$ 45.899,20"\n"Transações","389 vendas"`;
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `monthly_report_${new Date().toISOString().split('T')[0]}.csv`;
-                    link.click();
-                  }}
-                  variant="outline"
-                  size="sm"
-                  className="border-purple-200 text-purple-700 hover:bg-purple-50"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Exportar
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+      
+      <div className="p-6">
+        <p className="text-gray-600">Relatórios disponíveis em breve.</p>
       </div>
     </div>
   );
 
+  // Função para renderizar o conteúdo da aba selecionada
   const renderTabContent = () => {
     switch (activeTab) {
-      case 'atividades':
-        return renderActivities();
       case 'vendas':
         return renderSales();
       case 'clientes':
         return renderClients();
       case 'relatorios':
         return renderReports();
+      case 'atividades':
+        return renderActivities();
       default:
         return renderSales();
     }
@@ -759,117 +371,57 @@ const AtividadeSection = () => {
   return (
     <div className="app-section">
       <div className="section-header">
-        <h1 className="section-title">Atividades e Negócios</h1>
+        <h1 className="section-title">Atividade</h1>
         <p className="section-subtitle">
           Monitore atividades, vendas, clientes e relatórios do seu negócio
         </p>
       </div>
 
-      {/* Métricas Dinâmicas por Aba */}
-      <div className="metrics-grid">
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{metrics.metric1.label}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{metrics.metric1.value}</p>
-              <p className={`text-xs mt-1 ${metrics.metric1.color === 'green' ? 'text-green-600' : metrics.metric1.color === 'blue' ? 'text-blue-600' : metrics.metric1.color === 'red' ? 'text-red-600' : 'text-purple-600'}`}>
-                {metrics.metric1.change}
-              </p>
-            </div>
-            <div className={`p-3 rounded-full ${metrics.metric1.color === 'green' ? 'bg-green-100' : metrics.metric1.color === 'blue' ? 'bg-blue-100' : metrics.metric1.color === 'red' ? 'bg-red-100' : 'bg-purple-100'}`}>
-              <metrics.metric1.icon className={`h-6 w-6 ${metrics.metric1.color === 'green' ? 'text-green-600' : metrics.metric1.color === 'blue' ? 'text-blue-600' : metrics.metric1.color === 'red' ? 'text-red-600' : 'text-purple-600'}`} />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{metrics.metric2.label}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{metrics.metric2.value}</p>
-              <p className={`text-xs mt-1 ${metrics.metric2.color === 'green' ? 'text-green-600' : metrics.metric2.color === 'blue' ? 'text-blue-600' : metrics.metric2.color === 'red' ? 'text-red-600' : 'text-purple-600'}`}>
-                {metrics.metric2.change}
-              </p>
-            </div>
-            <div className={`p-3 rounded-full ${metrics.metric2.color === 'green' ? 'bg-green-100' : metrics.metric2.color === 'blue' ? 'bg-blue-100' : metrics.metric2.color === 'red' ? 'bg-red-100' : 'bg-purple-100'}`}>
-              <metrics.metric2.icon className={`h-6 w-6 ${metrics.metric2.color === 'green' ? 'text-green-600' : metrics.metric2.color === 'blue' ? 'text-blue-600' : metrics.metric2.color === 'red' ? 'text-red-600' : 'text-purple-600'}`} />
+      {/* Métricas principais */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        {Object.entries(metrics).slice(0, 4).map(([key, metric]) => (
+          <div key={key} className="metric-card-standard">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">{metric.label}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-1">{metric.value}</p>
+                <p className={`text-xs mt-1 text-${metric.color}-600`}>{metric.change}</p>
+              </div>
+              <div className={`p-3 rounded-full bg-${metric.color}-100`}>
+                <metric.icon className={`h-6 w-6 text-${metric.color}-600`} />
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{metrics.metric3.label}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{metrics.metric3.value}</p>
-              <p className={`text-xs mt-1 ${metrics.metric3.color === 'green' ? 'text-green-600' : metrics.metric3.color === 'blue' ? 'text-blue-600' : metrics.metric3.color === 'red' ? 'text-red-600' : metrics.metric3.color === 'purple' ? 'text-purple-600' : metrics.metric3.color === 'emerald' ? 'text-emerald-600' : 'text-orange-600'}`}>
-                {metrics.metric3.change}
-              </p>
-            </div>
-            <div className={`p-3 rounded-full ${metrics.metric3.color === 'green' ? 'bg-green-100' : metrics.metric3.color === 'blue' ? 'bg-blue-100' : metrics.metric3.color === 'red' ? 'bg-red-100' : metrics.metric3.color === 'purple' ? 'bg-purple-100' : metrics.metric3.color === 'emerald' ? 'bg-emerald-100' : 'bg-orange-100'}`}>
-              <metrics.metric3.icon className={`h-6 w-6 ${metrics.metric3.color === 'green' ? 'text-green-600' : metrics.metric3.color === 'blue' ? 'text-blue-600' : metrics.metric3.color === 'red' ? 'text-red-600' : metrics.metric3.color === 'purple' ? 'text-purple-600' : metrics.metric3.color === 'emerald' ? 'text-emerald-600' : 'text-orange-600'}`} />
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">{metrics.metric4.label}</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{metrics.metric4.value}</p>
-              <p className={`text-xs mt-1 ${metrics.metric4.color === 'green' ? 'text-green-600' : metrics.metric4.color === 'blue' ? 'text-blue-600' : metrics.metric4.color === 'red' ? 'text-red-600' : metrics.metric4.color === 'purple' ? 'text-purple-600' : metrics.metric4.color === 'emerald' ? 'text-emerald-600' : 'text-orange-600'}`}>
-                {metrics.metric4.change}
-              </p>
-            </div>
-            <div className={`p-3 rounded-full ${metrics.metric4.color === 'green' ? 'bg-green-100' : metrics.metric4.color === 'blue' ? 'bg-blue-100' : metrics.metric4.color === 'red' ? 'bg-red-100' : metrics.metric4.color === 'purple' ? 'bg-purple-100' : metrics.metric4.color === 'emerald' ? 'bg-emerald-100' : 'bg-orange-100'}`}>
-              <metrics.metric4.icon className={`h-6 w-6 ${metrics.metric4.color === 'green' ? 'text-green-600' : metrics.metric4.color === 'blue' ? 'text-blue-600' : metrics.metric4.color === 'red' ? 'text-red-600' : metrics.metric4.color === 'purple' ? 'text-purple-600' : metrics.metric4.color === 'emerald' ? 'text-emerald-600' : 'text-orange-600'}`} />
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Navegação por Tabs */}
-      <div className="tab-navigation">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-          >
-            <tab.icon className="w-5 h-5" />
-            {tab.label}
-          </button>
-        ))}
+      {/* Navegação por abas */}
+      <div className="bg-white rounded-lg border border-gray-200 mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="flex space-x-8 px-6" aria-label="Tabs">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`${
+                    activeTab === tab.id
+                      ? 'border-purple-500 text-purple-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </div>
 
       {/* Conteúdo da aba selecionada */}
       {renderTabContent()}
-
-      {/* Modal de Confirmação de Exportação */}
-      {showExportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 transform animate-bounce">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Download className="w-8 h-8 text-green-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Exportação Concluída!
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Relatório de atividades exportado com sucesso.
-                <br />
-                <span className="font-medium">{stats.total} registros</span> processados
-              </p>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-sm text-gray-700">
-                  📄 Arquivo: <span className="font-mono">relatorio_atividades_{selectedCategory}_{new Date().toISOString().split('T')[0]}.csv</span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
       
       <CustomAlert
         isOpen={isOpen}
