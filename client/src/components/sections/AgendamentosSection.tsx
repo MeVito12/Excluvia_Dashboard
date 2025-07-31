@@ -107,7 +107,7 @@ const AgendamentosSection = () => {
 
               {/* Filtro Data Inicial */}
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
+                <CalendarIcon className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
                 <input
                   type="date"
@@ -120,7 +120,7 @@ const AgendamentosSection = () => {
 
               {/* Filtro Data Final */}
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-gray-500" />
+                <CalendarIcon className="h-4 w-4 text-gray-500" />
                 <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
                 <input
                   type="date"
@@ -229,7 +229,7 @@ const AgendamentosSection = () => {
               <p className="text-xs text-blue-600 mt-1">{appointments?.filter((a: any) => a.status === 'scheduled').length || 0} pendentes</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
-              <Calendar className="h-6 w-6 text-blue-600" />
+              <CalendarIcon className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
