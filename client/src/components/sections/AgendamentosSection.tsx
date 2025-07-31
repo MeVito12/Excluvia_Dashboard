@@ -4,7 +4,7 @@ import { useCustomAlert } from '@/hooks/use-custom-alert';
 import { CustomAlert } from '@/components/ui/custom-alert';
 import { useAppointments } from '@/hooks/useAppointments';
 import { 
-  Calendar, 
+  Calendar as CalendarIcon, 
   Clock, 
   Settings, 
   Plus,
@@ -84,73 +84,70 @@ const AgendamentosSection = () => {
   // Renderização da agenda
   const renderAgenda = () => (
     <div className="animate-fade-in">
-      {/* Barra de busca e filtros com botão adicionar */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Campo de busca */}
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar compromissos..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-
-          {/* Filtro Data Inicial */}
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Filtro Data Final */}
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
-
-          {/* Botões de ação */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={clearFilters}
-              className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
-            >
-              Limpar Filtros
-            </button>
-            
-            <button 
-              onClick={openAddModal}
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2 whitespace-nowrap"
-            >
-              <Plus className="h-4 w-4" />
-              Adicionar Compromisso
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Lista de compromissos */}
       <div className="main-card">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Compromissos ({appointments.length})
-          </h2>
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              Compromissos ({appointments.length})
+            </h2>
+            
+            <div className="flex items-center gap-4 flex-wrap">
+              {/* Campo de busca */}
+              <div className="relative">
+                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Buscar compromissos..."
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+
+              {/* Filtro Data Inicial */}
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="dd/mm/aaaa"
+                />
+              </div>
+
+              {/* Filtro Data Final */}
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="dd/mm/aaaa"
+                />
+              </div>
+
+              {/* Botões de ação */}
+              <button
+                onClick={clearFilters}
+                className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+              >
+                Limpar Filtros
+              </button>
+              
+              <button 
+                onClick={openAddModal}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2 whitespace-nowrap"
+              >
+                <Plus className="h-4 w-4" />
+                Adicionar Compromisso
+              </button>
+            </div>
+          </div>
         </div>
         
         <div className="standard-list-container">

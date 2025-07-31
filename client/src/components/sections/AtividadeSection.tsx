@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Settings, CreditCard, CheckCircle, Zap, Activity as ActivityIcon, ShoppingCart, Users, BarChart3, TrendingUp, DollarSign, Plus } from 'lucide-react';
+import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Settings, CreditCard, CheckCircle, Zap, Activity as ActivityIcon, ShoppingCart, Users, BarChart3, TrendingUp, DollarSign, Plus, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
@@ -244,56 +244,53 @@ const AtividadeSection = () => {
 
   // Funções para renderizar o conteúdo de cada aba
   const renderActivities = () => (
-    <div>
-      {/* Barra de busca e filtros */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-4 flex-wrap">
-          {/* Campo de busca */}
-          <div className="flex-1 min-w-[200px] relative">
-            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-            <input
-              type="text"
-              placeholder="Buscar atividades..."
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              value={searchTerm || ''}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+    <div className="main-card">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Logs ({stats.total})
+          </h2>
+          
+          <div className="flex items-center gap-4 flex-wrap">
+            {/* Campo de busca */}
+            <div className="relative">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                placeholder="Buscar atividades..."
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                value={searchTerm || ''}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
 
-          {/* Filtro Data Inicial */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
-            <input
-              type="date"
-              value={dateFrom || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateFrom(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
+            {/* Filtro Data Inicial */}
+            <div className="flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4 text-gray-500" />
+              <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+              <input
+                type="date"
+                value={dateFrom || ''}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="dd/mm/aaaa"
+              />
+            </div>
 
-          {/* Filtro Data Final */}
-          <div className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4 text-gray-500" />
-            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
-            <input
-              type="date"
-              value={dateTo || ''}
-              onChange={(e) => {
-                // Simplificando para trabalhar com strings
-                setDateTo(e.target.value);
-              }}
-              className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              placeholder="dd/mm/aaaa"
-            />
-          </div>
+            {/* Filtro Data Final */}
+            <div className="flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4 text-gray-500" />
+              <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+              <input
+                type="date"
+                value={dateTo || ''}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                placeholder="dd/mm/aaaa"
+              />
+            </div>
 
-          {/* Botão de limpar filtros */}
-          <div className="flex items-center gap-2">
+            {/* Botão de limpar filtros */}
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -308,66 +305,49 @@ const AtividadeSection = () => {
         </div>
       </div>
 
-      {/* Lista de Atividades */}
-      <div className="main-card">
-        <div className="p-6 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Logs de Atividade ({filteredActivities.length})
-          </h2>
-        </div>
-        
-        <div className="divide-y divide-gray-200">
+      {/* Lista de atividades */}
+      <div className="standard-list-container">
+        <div className="standard-list-content">
           {filteredActivities.map((activity) => {
             const Icon = getActivityTypeIcon(activity.type);
             
             return (
-              <div 
-                key={activity.id} 
-                className="p-6 hover:bg-gray-50 transition-colors cursor-pointer border-l-4 border-transparent hover:border-purple-500"
-                onClick={() => {
-                  showAlert({
-                    title: "Detalhes da Atividade",
-                    description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`,
-                    variant: "default"
-                  });
-                }}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="p-2 rounded-lg bg-gray-100">
-                    <Icon className="h-5 w-5 text-gray-600" />
+              <div key={activity.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{activity.action}</div>
+                  <div className="list-item-subtitle">{activity.description}</div>
+                  <div className="list-item-meta flex items-center gap-2">
+                    <span className={`list-status-badge ${
+                      activity.status === 'success' ? 'status-success' :
+                      activity.status === 'error' ? 'status-danger' :
+                      activity.status === 'warning' ? 'status-warning' :
+                      'status-info'
+                    }`}>
+                      {activity.status === 'success' ? 'Sucesso' :
+                       activity.status === 'error' ? 'Erro' :
+                       activity.status === 'warning' ? 'Aviso' : 'Info'}
+                    </span>
+                    <span className="text-xs text-gray-500">{activity.time}</span>
+                    <span>•</span>
+                    <span className="text-xs text-gray-500">Por: {activity.user}</span>
                   </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {activity.action}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <Badge 
-                          className={`${
-                            activity.status === 'success' ? 'bg-green-100 text-green-800' :
-                            activity.status === 'error' ? 'bg-red-100 text-red-800' :
-                            activity.status === 'warning' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-blue-100 text-blue-800'
-                          }`}
-                        >
-                          {activity.status === 'success' ? 'Sucesso' :
-                           activity.status === 'error' ? 'Erro' :
-                           activity.status === 'warning' ? 'Aviso' : 'Info'}
-                        </Badge>
-                        <span className="text-xs text-gray-500">{activity.time}</span>
-                      </div>
-                    </div>
-                    
-                    <p className="text-sm text-gray-600 mb-2">
-                      {activity.description}
-                    </p>
-                    
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>Usuário: {activity.user}</span>
-                      <span>Categoria: {activity.category}</span>
-                      <span>Tipo: {activity.type}</span>
-                    </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <div className="list-item-actions">
+                    <button
+                      onClick={() => {
+                        showAlert({
+                          title: "Detalhes da Atividade",
+                          description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nData/Hora: ${activity.time}\nStatus: ${activity.status === 'success' ? 'Sucesso' : activity.status === 'error' ? 'Erro' : activity.status === 'warning' ? 'Aviso' : 'Info'}\nUsuário: ${activity.user}\nTipo: ${activity.type}`,
+                          variant: "default"
+                        });
+                      }}
+                      className="list-action-button view"
+                      title="Ver detalhes"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
