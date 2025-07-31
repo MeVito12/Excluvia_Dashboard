@@ -113,8 +113,20 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   // Dados filtrados por período
   const filteredSales = useMemo(() => filterByDateRange(sales, 'sale_date'), [sales, dateFrom, dateTo]);
   const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
-  const filteredAppointments = useMemo(() => filterByDateRange(appointments, 'appointment_date'), [appointments, dateFrom, dateTo]);
   const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'created_at'), [transfers, dateFrom, dateTo]);
+  
+  // Próximos compromissos (não filtrar por período, mostrar futuros)
+  const upcomingAppointments = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    return appointments
+      .filter((appointment: any) => {
+        const appointmentDate = new Date(appointment.appointment_date);
+        return appointmentDate >= today;
+      })
+      .sort((a: any, b: any) => new Date(a.appointment_date).getTime() - new Date(b.appointment_date).getTime());
+  }, [appointments]);
 
   // Análise de produtos críticos
   const criticalProducts = useMemo(() => {
@@ -259,7 +271,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{filteredAppointments.length}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{upcomingAppointments.length}</p>
               <p className="text-xs text-blue-600 mt-1">No período</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
@@ -368,7 +380,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           </div>
           
           <div className="space-y-3">
-            {filteredAppointments.slice(0, 3).map((appointment) => (
+            {upcomingAppointments.slice(0, 3).map((appointment: any) => (
               <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
                   <p className="font-medium text-gray-800">{appointment.title}</p>
@@ -376,7 +388,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
                 <div className="text-right">
                   <p className="text-sm text-gray-500">
-                    {new Date(appointment.appointment_date).toLocaleDateString()}
+                    {new Date(appointment.appointment_date).toLocaleDateString('pt-BR')}
                   </p>
                   <p className="text-sm text-gray-500">
                     {appointment.start_time}
@@ -384,8 +396,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 </div>
               </div>
             ))}
-            {filteredAppointments.length === 0 && (
-              <p className="text-gray-500 text-center py-4">Nenhum agendamento no período selecionado</p>
+            {upcomingAppointments.length === 0 && (
+              <p className="text-gray-500 text-center py-4">Nenhum compromisso agendado</p>
             )}
           </div>
         </div>
