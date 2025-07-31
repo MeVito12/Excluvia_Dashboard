@@ -5,16 +5,26 @@ import { useCategory } from '@/contexts/CategoryContext';
 
 import type { FinancialEntry, NewFinancialEntry } from '@shared/schema';
 
-export const useFinancial = () => {
+export const useFinancial = (dateFrom?: string, dateTo?: string) => {
   const apiClient = useApiClient();
   const queryClient = useQueryClient();
   const { user } = useAuth();
   const { selectedCategory } = useCategory();
 
   const query = useQuery({
-    queryKey: ['financial', (user as any)?.id],
+    queryKey: ['financial', (user as any)?.id, dateFrom, dateTo],
     queryFn: async () => {
-      return apiClient.get('/api/financial');
+      let url = '/api/financial';
+      const params = new URLSearchParams();
+      
+      if (dateFrom) params.append('dateFrom', dateFrom);
+      if (dateTo) params.append('dateTo', dateTo);
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+      
+      return apiClient.get(url);
     },
     enabled: !!user,
     staleTime: 0,
@@ -27,7 +37,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id] 
+        queryKey: ['financial'] 
       });
     }
   });
@@ -38,7 +48,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id] 
+        queryKey: ['financial'] 
       });
     }
   });
@@ -49,7 +59,7 @@ export const useFinancial = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: ['financial', (user as any)?.id] 
+        queryKey: ['financial'] 
       });
     }
   });

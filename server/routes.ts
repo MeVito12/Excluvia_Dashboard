@@ -995,10 +995,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
-  // Rotas financeiras
+  // Rotas financeiras com filtros de data
   app.get("/api/financial", async (req, res) => {
     try {
       const userId = getUserIdFromRequest(req);
+      const { dateFrom, dateTo } = req.query;
       
       const { getDatabase } = await import('./db/database');
       const { sql } = await import('drizzle-orm');
@@ -1008,11 +1009,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         throw new Error('Database not available');
       }
       
-      const entries = await db.execute(sql`
-        SELECT * FROM financial_entries 
-        WHERE created_by = ${userId}
-        ORDER BY created_at DESC
-      `);
+      let query;
+      
+      // Aplicar filtros de data se fornecidos
+      if (dateFrom && dateTo) {
+        query = sql`
+          SELECT * FROM financial_entries 
+          WHERE created_by = ${userId}
+          AND DATE(created_at) BETWEEN ${dateFrom} AND ${dateTo}
+          ORDER BY created_at DESC
+        `;
+      } else if (dateFrom) {
+        query = sql`
+          SELECT * FROM financial_entries 
+          WHERE created_by = ${userId}
+          AND DATE(created_at) >= ${dateFrom}
+          ORDER BY created_at DESC
+        `;
+      } else if (dateTo) {
+        query = sql`
+          SELECT * FROM financial_entries 
+          WHERE created_by = ${userId}
+          AND DATE(created_at) <= ${dateTo}
+          ORDER BY created_at DESC
+        `;
+      } else {
+        query = sql`
+          SELECT * FROM financial_entries 
+          WHERE created_by = ${userId}
+          ORDER BY created_at DESC
+        `;
+      }
+      
+      const entries = await db.execute(query);
+      
+      // Log para debug dos filtros
+      console.log(`[FINANCIAL] Filtros aplicados - De: ${dateFrom || 'N/A'}, Até: ${dateTo || 'N/A'}, Entradas encontradas: ${entries.length}`);
       
       res.json(entries);
     } catch (error) {

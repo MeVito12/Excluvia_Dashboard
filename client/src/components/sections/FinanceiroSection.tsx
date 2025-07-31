@@ -46,13 +46,29 @@ const FinanceiroSection = () => {
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const userId = (user as any)?.id || 1;
 
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState(defaultDates.from);
+  const [dateTo, setDateTo] = useState(defaultDates.to);
+
   const { 
     entries: financialEntries = [], 
     isLoading, 
     createEntry: createFinancialEntry, 
     updateEntry: updateFinancialEntry, 
     deleteEntry: deleteFinancialEntry
-  } = useFinancial();
+  } = useFinancial(dateFrom, dateTo);
 
   const {
     moneyTransfers = [],
@@ -70,22 +86,6 @@ const FinanceiroSection = () => {
     const branch = branches.find(b => b.id === branchId);
     return branch ? branch.name : `Filial ${branchId}`;
   };
-
-  // Configurar datas automáticas (últimos 7 dias por padrão)
-  const getDefaultDates = () => {
-    const today = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 7);
-    
-    return {
-      from: sevenDaysAgo.toISOString().split('T')[0],
-      to: today.toISOString().split('T')[0]
-    };
-  };
-  
-  const defaultDates = getDefaultDates();
-  const [dateFrom, setDateFrom] = useState(defaultDates.from);
-  const [dateTo, setDateTo] = useState(defaultDates.to);
 
   const [activeTab, setActiveTab] = useState('entradas');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -382,6 +382,93 @@ const FinanceiroSection = () => {
 
       </div>
 
+      {/* Filtros de Data */}
+      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-4 flex-wrap">
+          <div className="flex items-center space-x-2">
+            <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Período:</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="dateFrom" className="text-sm font-medium text-gray-700 dark:text-gray-300">De:</Label>
+            <Input
+              id="dateFrom"
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="w-36 h-8 text-xs"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Label htmlFor="dateTo" className="text-sm font-medium text-gray-700 dark:text-gray-300">Até:</Label>
+            <Input
+              id="dateTo"
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="w-36 h-8 text-xs"
+            />
+          </div>
+          {/* Botões de período rápido */}
+          <div className="flex space-x-2 ml-4 border-l pl-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const today = new Date();
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(today.getDate() - 7);
+                setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
+                setDateTo(today.toISOString().split('T')[0]);
+              }}
+              className="text-xs h-7 px-2"
+            >
+              7 dias
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const today = new Date();
+                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                setDateFrom(firstDayOfMonth.toISOString().split('T')[0]);
+                setDateTo(today.toISOString().split('T')[0]);
+              }}
+              className="text-xs h-7 px-2"
+            >
+              Este mês
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const today = new Date();
+                const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+                setDateFrom(firstDayOfYear.toISOString().split('T')[0]);
+                setDateTo(today.toISOString().split('T')[0]);
+              }}
+              className="text-xs h-7 px-2"
+            >
+              Este ano
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const today = new Date();
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(today.getDate() - 30);
+                setDateFrom(thirtyDaysAgo.toISOString().split('T')[0]);
+                setDateTo(today.toISOString().split('T')[0]);
+              }}
+              className="text-xs h-7 px-2"
+            >
+              30 dias
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Métricas Financeiras */}
       <div className="metrics-grid">
         <div className="metric-card">
@@ -391,7 +478,7 @@ const FinanceiroSection = () => {
               <p className="text-2xl font-bold text-gray-900 mt-1">
                 {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
-              <p className="text-xs text-green-600 mt-1">Total de entradas</p>
+              <p className="text-xs text-green-600 mt-1">Período selecionado</p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -406,7 +493,7 @@ const FinanceiroSection = () => {
               <p className="text-2xl font-bold text-gray-900 mt-1">
                 {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
-              <p className="text-xs text-red-600 mt-1">Total de saídas</p>
+              <p className="text-xs text-red-600 mt-1">Período selecionado</p>
             </div>
             <div className="p-3 rounded-full bg-red-100">
               <TrendingDown className="h-6 w-6 text-red-600" />
