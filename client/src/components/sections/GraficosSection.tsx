@@ -64,7 +64,15 @@ const GraficosSection = () => {
   const { products } = useProducts();
   const { sales } = useSales();
   const { clients } = useClients();
-  const { financial } = useFinancial();
+  const { entries: financial } = useFinancial();
+
+  // Debug temporário para verificar dados
+  console.log('GraficosSection - Dados carregados:', {
+    products: products?.length || 0,
+    sales: sales?.length || 0,
+    clients: clients?.length || 0,
+    financial: financial?.length || 0
+  });
 
   // Função para filtrar vendas por data
   const filteredSales = useMemo(() => {
@@ -263,7 +271,7 @@ const GraficosSection = () => {
       retention: '85%',
       conversion: '24%'
     };
-  }, [filteredSales, clients, dateFrom, dateTo, products, sales]);
+  }, [filteredSales, clients, dateFrom, dateTo, products, sales, financial]);
 
   const clearFilters = () => {
     const defaultDates = getDefaultDates();
