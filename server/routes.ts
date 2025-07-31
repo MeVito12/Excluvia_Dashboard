@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const users = await db.execute(sql`
-        SELECT id, name, email, role, company_id, branch_id, phone, created_at, updated_at, password
+        SELECT id, name, email, role, company_id, branch_id, phone, business_category, created_at, updated_at, password
         FROM users 
         WHERE email = ${email}
         LIMIT 1
@@ -90,10 +90,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
 
-      // Return user data without password
+      // Return user data without password and include businessCategory
       const { password: _, ...userWithoutPassword } = user;
       res.json({ 
-        user: userWithoutPassword,
+        user: {
+          ...userWithoutPassword,
+          businessCategory: user.business_category
+        },
         message: "Login realizado com sucesso" 
       });
     } catch (error) {

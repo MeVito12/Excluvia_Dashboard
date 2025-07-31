@@ -162,6 +162,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
       'farmacia': { email: 'demo.farmacia@sistema.com', password: 'demo123' },
       'pet': { email: 'demo.pet@sistema.com', password: 'demo123' },
       'medico': { email: 'demo.medico@sistema.com', password: 'demo123' },
+      'alimenticio': { email: 'demo.alimenticio@sistema.com', password: 'rest2025' },
       'vendas': { email: 'demo.vendas@sistema.com', password: 'demo123' },
       'design': { email: 'demo.design@sistema.com', password: 'demo123' },
       'sites': { email: 'demo.sites@sistema.com', password: 'demo123' }
