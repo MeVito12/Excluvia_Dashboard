@@ -34,7 +34,8 @@ import {
   Building2,
   DollarSign,
   Clock,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 import { FinancialEntry, NewFinancialEntry, MoneyTransfer, NewMoneyTransfer } from '@shared/schema';
 
