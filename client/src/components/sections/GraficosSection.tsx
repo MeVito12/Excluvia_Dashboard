@@ -84,14 +84,43 @@ const GraficosSection = () => {
 
   // Calcular métricas e dados para gráficos
   const calculateMetrics = useMemo(() => {
-    // Verificar se os dados existem antes de processar
-    if (!sales || !products || !clients || !financial) {
+    // Verificação mais robusta dos dados
+    try {
+      console.log('Debug - Dados recebidos:', { 
+        sales: sales?.length, 
+        products: products?.length, 
+        clients: clients?.length, 
+        financial: financial?.length,
+        filteredSales: filteredSales?.length 
+      });
+      
+      if (!sales || !Array.isArray(sales) || !products || !Array.isArray(products) || 
+          !clients || !Array.isArray(clients) || !financial || !Array.isArray(financial) ||
+          !filteredSales || !Array.isArray(filteredSales)) {
+        console.log('Debug - Dados inválidos, retornando defaults');
+        return {
+          totalSales: '0.00',
+          totalOrders: 0,
+          avgTicket: '0.00',
+          growth: '+0%',
+          period: 'carregando...',
+          totalClients: 0,
+          salesChartData: [],
+          financialChartData: [],
+          categoryChartData: [],
+          performanceData: [],
+          retention: '0%',
+          conversion: '0%'
+        };
+      }
+    } catch (error) {
+      console.error('Erro no calculateMetrics:', error);
       return {
         totalSales: '0.00',
         totalOrders: 0,
         avgTicket: '0.00',
         growth: '+0%',
-        period: 'carregando...',
+        period: 'erro',
         totalClients: 0,
         salesChartData: [],
         financialChartData: [],
@@ -256,6 +285,11 @@ const GraficosSection = () => {
       conversion: '24%'
     };
   }, [filteredSales, clients, dateFrom, dateTo, products, sales, financial]);
+
+  // Verificação de segurança adicional
+  if (!calculateMetrics) {
+    return <div className="p-4">Carregando dados dos gráficos...</div>;
+  }
 
   const clearFilters = () => {
     const defaultDates = getDefaultDates();
