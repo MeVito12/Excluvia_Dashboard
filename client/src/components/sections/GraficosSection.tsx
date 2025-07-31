@@ -312,7 +312,7 @@ const GraficosSection = () => {
             onClick={() => {
               showAlert({
                 title: "Filtros Aplicados",
-                description: `Gráficos atualizados para o período: ${calculateMetrics.period}`,
+                description: `Gráficos atualizados para o período: ${calculateMetrics?.period || 'atual'}`,
                 variant: "success"
               });
             }}
@@ -329,8 +329,8 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Receita Total</p>
-              <p className="metric-card-value">R$ {Number(calculateMetrics.totalSales).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-              <p className="metric-card-description text-green-600">{calculateMetrics.growth} vs período anterior</p>
+              <p className="metric-card-value">R$ {Number(calculateMetrics?.totalSales || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              <p className="metric-card-description text-green-600">{calculateMetrics?.growth || '+0%'} vs período anterior</p>
             </div>
             <div className="metric-card-icon bg-green-100">
               <DollarSign className="h-4 w-4 md:h-6 md:w-6 text-green-600" />
@@ -342,7 +342,7 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Total de Vendas</p>
-              <p className="metric-card-value">{calculateMetrics.totalOrders}</p>
+              <p className="metric-card-value">{calculateMetrics?.totalOrders || 0}</p>
               <p className="metric-card-description text-blue-600">Transações realizadas</p>
             </div>
             <div className="metric-card-icon bg-blue-100">
@@ -355,7 +355,7 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Ticket Médio</p>
-              <p className="metric-card-value">R$ {Number(calculateMetrics.avgTicket).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              <p className="metric-card-value">R$ {Number(calculateMetrics?.avgTicket || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p className="metric-card-description text-purple-600">Por transação</p>
             </div>
             <div className="metric-card-icon bg-purple-100">
@@ -368,7 +368,7 @@ const GraficosSection = () => {
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
               <p className="metric-card-label">Clientes Ativos</p>
-              <p className="metric-card-value">{calculateMetrics.totalClients}</p>
+              <p className="metric-card-value">{calculateMetrics?.totalClients || 0}</p>
               <p className="metric-card-description text-orange-600">Base total</p>
             </div>
             <div className="metric-card-icon bg-orange-100">
@@ -398,7 +398,7 @@ const GraficosSection = () => {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.salesChartData}>
+              <BarChart data={calculateMetrics?.salesChartData || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="day" 
@@ -454,7 +454,7 @@ const GraficosSection = () => {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.financialChartData}>
+              <BarChart data={calculateMetrics?.financialChartData || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="dia" 
@@ -504,7 +504,7 @@ const GraficosSection = () => {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.categoryChartData}>
+              <BarChart data={calculateMetrics?.categoryChartData || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="categoria" 
@@ -556,7 +556,7 @@ const GraficosSection = () => {
               </div>
             </div>
             <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={calculateMetrics.performanceData}>
+              <BarChart data={calculateMetrics?.performanceData || []}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
                   dataKey="mes" 
