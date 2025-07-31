@@ -266,10 +266,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              value={dateFrom || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateFrom(date);
+                // Simplificando para trabalhar com strings
+                setDateFrom(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -282,10 +282,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              value={dateTo || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateTo(date);
+                // Simplificando para trabalhar com strings
+                setDateTo(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -297,8 +297,8 @@ const AtividadeSection = () => {
             <button
               onClick={() => {
                 setSearchTerm('');
-                setDateFrom(undefined);
-                setDateTo(undefined);
+                setDateFrom('');
+                setDateTo('');
               }}
               className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
             >
@@ -401,10 +401,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              value={dateFrom || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateFrom(date);
+                // Simplificando para trabalhar com strings
+                setDateFrom(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -417,10 +417,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              value={dateTo || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateTo(date);
+                // Simplificando para trabalhar com strings
+                setDateTo(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -432,8 +432,8 @@ const AtividadeSection = () => {
             <button
               onClick={() => {
                 setSearchTerm('');
-                setDateFrom(undefined);
-                setDateTo(undefined);
+                setDateFrom('');
+                setDateTo('');
               }}
               className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
             >
@@ -513,10 +513,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              value={dateFrom || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateFrom(date);
+                // Simplificando para trabalhar com strings
+                setDateFrom(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -529,10 +529,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              value={dateTo || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateTo(date);
+                // Simplificando para trabalhar com strings
+                setDateTo(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -544,8 +544,8 @@ const AtividadeSection = () => {
             <button
               onClick={() => {
                 setSearchTerm('');
-                setDateFrom(undefined);
-                setDateTo(undefined);
+                setDateFrom('');
+                setDateTo('');
               }}
               className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
             >
@@ -622,10 +622,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              value={dateFrom ? dateFrom.toISOString().split('T')[0] : ''}
+              value={dateFrom || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateFrom(date);
+                // Simplificando para trabalhar com strings
+                setDateFrom(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -638,10 +638,10 @@ const AtividadeSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              value={dateTo ? dateTo.toISOString().split('T')[0] : ''}
+              value={dateTo || ''}
               onChange={(e) => {
-                const date = e.target.value ? new Date(e.target.value) : undefined;
-                setDateTo(date);
+                // Simplificando para trabalhar com strings
+                setDateTo(e.target.value);
               }}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
@@ -653,8 +653,8 @@ const AtividadeSection = () => {
             <button
               onClick={() => {
                 setSearchTerm('');
-                setDateFrom(undefined);
-                setDateTo(undefined);
+                setDateFrom('');
+                setDateTo('');
               }}
               className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
             >
