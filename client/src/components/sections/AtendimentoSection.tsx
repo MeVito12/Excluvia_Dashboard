@@ -72,8 +72,10 @@ const AtendimentoSection = () => {
     category: selectedCategory === 'design' ? 'branding' : 'website'
   });
   const [showAddSpecialistModal, setShowAddSpecialistModal] = useState(false);
-  const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<{id: number, quantity: number, unit: string}[]>([]);
   const [newItemImage, setNewItemImage] = useState('');
+  const [showIngredientsModal, setShowIngredientsModal] = useState(false);
+  const [searchIngredientTerm, setSearchIngredientTerm] = useState('');
   const [newSpecialist, setNewSpecialist] = useState({
     name: '',
     specialty: '',
@@ -89,6 +91,48 @@ const AtendimentoSection = () => {
     const categorySlug = selectedCategory;
     const menuType = selectedCategory === 'vendas' ? 'cardapio' : 'catalogo';
     return `${baseUrl}/${menuType}/${categorySlug}`;
+  };
+
+  // Função para processar venda de prato e deduzir ingredientes do estoque
+  const processDishSale = (dish: any, quantity: number = 1) => {
+    if (!dish.ingredients || dish.ingredients.length === 0) {
+      showWarning('Aviso', 'Este prato não possui ingredientes cadastrados.');
+      return;
+    }
+
+    // Verificar se há estoque suficiente para todos os ingredientes
+    const stockItems = getCurrentCategoryItems();
+    const insufficientIngredients: string[] = [];
+
+    dish.ingredients.forEach((ingredient: any) => {
+      const stockItem = stockItems.find((item: any) => item.id === ingredient.id);
+      const requiredQuantity = ingredient.usedQuantity * quantity;
+      
+      if (!stockItem || stockItem.stock < requiredQuantity) {
+        insufficientIngredients.push(`${ingredient.name} (precisa: ${requiredQuantity}${ingredient.unit}, tem: ${stockItem?.stock || 0})`);
+      }
+    });
+
+    if (insufficientIngredients.length > 0) {
+      showError('Estoque Insuficiente', `Não há estoque suficiente para:\n${insufficientIngredients.join('\n')}`);
+      return false;
+    }
+
+    // Deduzir ingredientes do estoque
+    setCategoryItems(prev => ({
+      ...prev,
+      [selectedCategory]: prev[selectedCategory as keyof typeof prev]?.map((item: any) => {
+        const ingredient = dish.ingredients.find((ing: any) => ing.id === item.id);
+        if (ingredient) {
+          const deduction = ingredient.usedQuantity * quantity;
+          return { ...item, stock: Math.max(0, item.stock - deduction) };
+        }
+        return item;
+      }) || []
+    }));
+
+    showSuccess('Venda Processada', `${dish.name} vendido! Estoque dos ingredientes atualizado automaticamente.`);
+    return true;
   };
 
   // Estado para gerenciar itens de todas as categorias usando dados reais
@@ -202,6 +246,8 @@ const AtendimentoSection = () => {
     setNewItem({ name: '', description: '', price: '', category: 'produtos' });
     setSelectedIngredients([]);
     setNewItemImage('');
+    setShowIngredientsModal(false);
+    setSearchIngredientTerm('');
   };
 
   const deleteItem = (itemId: number) => {
@@ -343,16 +389,21 @@ const AtendimentoSection = () => {
     }
 
     const stockItems = getCurrentCategoryItems();
-    const ingredients = selectedIngredients.map(id => 
-      stockItems.find((item: any) => item.id === id)
-    ).filter(Boolean);
+    const ingredientsWithDetails = selectedIngredients.map(ing => {
+      const stockItem = stockItems.find((item: any) => item.id === ing.id);
+      return {
+        ...stockItem,
+        usedQuantity: ing.quantity,
+        unit: ing.unit
+      };
+    }).filter(Boolean);
 
     const menuItem = {
       id: Date.now(),
       name: newItem.name,
       price: newItem.price ? `R$ ${Number(newItem.price.replace(/[^\d,]/g, '').replace(',', '.')).toFixed(2).replace('.', ',')}` : 'Sob consulta',
-      ingredients: ingredients,
-      description: `Ingredientes: ${ingredients.map((ing: any) => ing.name).join(', ')}`,
+      ingredients: ingredientsWithDetails,
+      description: `Ingredientes: ${ingredientsWithDetails.map((ing: any) => `${ing.name} (${ing.usedQuantity}${ing.unit})`).join(', ')}`,
       imageUrl: newItemImage || '',
       category: newItem.category,
       available: true,
@@ -370,6 +421,122 @@ const AtendimentoSection = () => {
     setNewItemImage('');
     setShowAddItemModal(false);
     showSuccess('PRATO ADICIONADO', `"${newItem.name}" foi adicionado ao cardápio com sucesso!`);
+  };
+
+  // Função para adicionar ingrediente com quantidade
+  const addIngredientWithQuantity = (ingredient: any, quantity: number, unit: string) => {
+    const existingIndex = selectedIngredients.findIndex(ing => ing.id === ingredient.id);
+    
+    if (existingIndex >= 0) {
+      // Atualizar quantidade se já existe
+      setSelectedIngredients(prev => 
+        prev.map((ing, index) => 
+          index === existingIndex 
+            ? { ...ing, quantity, unit }
+            : ing
+        )
+      );
+    } else {
+      // Adicionar novo ingrediente
+      setSelectedIngredients(prev => [...prev, { id: ingredient.id, quantity, unit }]);
+    }
+  };
+
+  // Função para remover ingrediente
+  const removeIngredient = (ingredientId: number) => {
+    setSelectedIngredients(prev => prev.filter(ing => ing.id !== ingredientId));
+  };
+
+  // Componente para card de ingrediente
+  const IngredientCard = ({ ingredient, isSelected, selectedQuantity, selectedUnit, onSelect, onRemove }: {
+    ingredient: any;
+    isSelected: boolean;
+    selectedQuantity: number;
+    selectedUnit: string;
+    onSelect: (ingredient: any, quantity: number, unit: string) => void;
+    onRemove: (ingredientId: number) => void;
+  }) => {
+    const [quantity, setQuantity] = useState(selectedQuantity || 1);
+    const [unit, setUnit] = useState(selectedUnit || 'g');
+    const [showQuantityInput, setShowQuantityInput] = useState(isSelected);
+
+    const handleSelect = () => {
+      if (isSelected) {
+        onRemove(ingredient.id);
+        setShowQuantityInput(false);
+      } else {
+        setShowQuantityInput(true);
+      }
+    };
+
+    const handleConfirmQuantity = () => {
+      if (quantity > 0) {
+        onSelect(ingredient, quantity, unit);
+        setShowQuantityInput(false);
+      }
+    };
+
+    return (
+      <div className={`border rounded-lg p-3 transition-all ${isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleSelect}
+                className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                  isSelected 
+                    ? 'border-purple-500 bg-purple-500 text-white' 
+                    : 'border-gray-300 hover:border-purple-400'
+                }`}
+              >
+                {isSelected && <span className="text-xs">✓</span>}
+              </button>
+              <div>
+                <h4 className="font-medium text-gray-800">{ingredient.name}</h4>
+                <p className="text-sm text-gray-600">Estoque: {ingredient.stock} unidades</p>
+              </div>
+            </div>
+            
+            {showQuantityInput && !isSelected && (
+              <div className="mt-3 flex items-center gap-2">
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  min="0.1"
+                  step="0.1"
+                  className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Qtd"
+                />
+                <select
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                  className="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option value="g">gramas</option>
+                  <option value="kg">quilos</option>
+                  <option value="ml">ml</option>
+                  <option value="l">litros</option>
+                  <option value="un">unidades</option>
+                </select>
+                <button
+                  onClick={handleConfirmQuantity}
+                  className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition-colors"
+                >
+                  Confirmar
+                </button>
+              </div>
+            )}
+            
+            {isSelected && (
+              <div className="mt-2 text-sm text-purple-700 font-medium">
+                Quantidade: {selectedQuantity}{selectedUnit}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Função para buscar dados do portfólio (legacy - pode ser removida)
@@ -997,6 +1164,16 @@ const AtendimentoSection = () => {
                 </div>
               )}
               <div className="flex gap-2">
+                {/* Botão de venda para pratos com ingredientes */}
+                {selectedCategory === 'alimenticio' && item.isCustom && item.ingredients?.length > 0 && (
+                  <button 
+                    onClick={() => processDishSale(item, 1)}
+                    className="p-2 border border-green-300 rounded-md text-green-600 hover:bg-green-50 hover:text-green-700 transition-colors"
+                    title="Processar venda (deduzir ingredientes)"
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                  </button>
+                )}
                 <button 
                   onClick={() => editItem(item)}
                   className="p-2 border border-gray-300 rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-800 transition-colors"
@@ -1458,6 +1635,8 @@ const AtendimentoSection = () => {
                   setNewItem({ name: '', description: '', price: '', category: 'produtos' });
                   setSelectedIngredients([]);
                   setNewItemImage('');
+                  setShowIngredientsModal(false);
+                  setSearchIngredientTerm('');
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
@@ -1499,28 +1678,40 @@ const AtendimentoSection = () => {
               {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ingredientes *
+                    Ingredientes * ({selectedIngredients.length} selecionados)
                   </label>
-                  <div className="border border-gray-300 rounded-md p-3 max-h-40 overflow-y-auto">
-                    {getStockIngredients().map((ingredient: any) => (
-                      <label key={ingredient.id} className="flex items-center space-x-2 py-1">
-                        <input
-                          type="checkbox"
-                          checked={selectedIngredients.includes(ingredient.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedIngredients([...selectedIngredients, ingredient.id]);
-                            } else {
-                              setSelectedIngredients(selectedIngredients.filter(id => id !== ingredient.id));
-                            }
-                          }}
-                          className="rounded border-gray-300"
-                        />
-                        <span className="text-sm">{ingredient.name}</span>
-                        <span className="text-xs text-gray-500">(Estoque: {ingredient.stock})</span>
-                      </label>
-                    ))}
-                  </div>
+                  
+                  {/* Lista dos ingredientes selecionados */}
+                  {selectedIngredients.length > 0 && (
+                    <div className="mb-3 space-y-2">
+                      {selectedIngredients.map((ing) => {
+                        const ingredient = getStockIngredients().find((item: any) => item.id === ing.id);
+                        return ingredient ? (
+                          <div key={ing.id} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                            <span className="text-sm font-medium">{ingredient.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-600">{ing.quantity}{ing.unit}</span>
+                              <button
+                                onClick={() => removeIngredient(ing.id)}
+                                className="text-red-500 hover:text-red-700 text-sm"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+                  
+                  <button
+                    type="button"
+                    onClick={() => setShowIngredientsModal(true)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm"
+                  >
+                    {selectedIngredients.length === 0 ? '+ Selecionar Ingredientes' : '+ Adicionar Mais Ingredientes'}
+                  </button>
+                  
                   {getStockIngredients().length === 0 && (
                     <p className="text-sm text-gray-500 mt-2">Nenhum ingrediente disponível no estoque</p>
                   )}
@@ -1831,6 +2022,92 @@ const AtendimentoSection = () => {
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
                 Adicionar Especialista
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal de Seleção de Ingredientes */}
+      {showIngredientsModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[99999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Ingredientes</h3>
+              <button 
+                onClick={() => {
+                  setShowIngredientsModal(false);
+                  setSearchIngredientTerm('');
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Campo de pesquisa */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Pesquisar ingredientes..."
+                  value={searchIngredientTerm}
+                  onChange={(e) => setSearchIngredientTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </div>
+            
+            {/* Lista de ingredientes */}
+            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
+              {getStockIngredients()
+                .filter((ingredient: any) => 
+                  ingredient.name.toLowerCase().includes(searchIngredientTerm.toLowerCase()) ||
+                  ingredient.description?.toLowerCase().includes(searchIngredientTerm.toLowerCase())
+                )
+                .map((ingredient: any) => {
+                  const isSelected = selectedIngredients.find(ing => ing.id === ingredient.id);
+                  return (
+                    <IngredientCard 
+                      key={ingredient.id}
+                      ingredient={ingredient}
+                      isSelected={!!isSelected}
+                      selectedQuantity={isSelected?.quantity || 0}
+                      selectedUnit={isSelected?.unit || 'g'}
+                      onSelect={addIngredientWithQuantity}
+                      onRemove={removeIngredient}
+                    />
+                  );
+                })}
+            </div>
+            
+            {getStockIngredients().length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>Nenhum ingrediente disponível no estoque</p>
+                <p className="text-sm mt-1">Adicione produtos no estoque primeiro</p>
+              </div>
+            )}
+            
+            <div className="flex gap-3 pt-4 border-t">
+              <button
+                onClick={() => {
+                  setShowIngredientsModal(false);
+                  setSearchIngredientTerm('');
+                }}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  setShowIngredientsModal(false);
+                  setSearchIngredientTerm('');
+                }}
+                className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
+              >
+                Confirmar ({selectedIngredients.length} selecionados)
               </button>
             </div>
           </div>
