@@ -118,7 +118,7 @@ const GraficosSection = () => {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      const daySales = filteredSales.filter((sale: any) => 
+      const daySales = (filteredSales || []).filter((sale: any) => 
         sale.sale_date && sale.sale_date.split('T')[0] === dateStr
       );
       
