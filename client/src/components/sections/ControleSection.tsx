@@ -29,11 +29,20 @@ interface UserData {
   id: number;
   name: string;
   email: string;
-  businessCategory: string;
-  userType: string;
+  role?: string;
+  businessCategory?: string;
+  userType?: string;
   allowedSections?: string[];
   companyId?: number;
+  company_id?: number;
+  is_active?: boolean;
   isActive?: boolean;
+  phone?: string;
+  last_login?: string;
+  created_at?: string;
+  updated_at?: string;
+  company_name?: string;
+  branch_name?: string;
 }
 
 interface Company {
@@ -122,9 +131,9 @@ const ControleSection = () => {
   
   // Filtra usuários baseado na pesquisa
   const filteredUsers = companyUsers.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.businessCategory.toLowerCase().includes(searchTerm.toLowerCase())
+    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.businessCategory || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -273,10 +282,10 @@ const ControleSection = () => {
                       <p className="text-sm text-gray-600">{userData.email}</p>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge variant="outline" className="text-xs capitalize">
-                          {userData.businessCategory.replace('_', ' ')}
+                          {(userData.company_name || 'Sem empresa').replace('_', ' ')}
                         </Badge>
-                        <Badge variant={userData.userType === 'master' ? 'default' : 'secondary'} className="text-xs">
-                          {userData.userType === 'master' ? 'Master' : 'Regular'}
+                        <Badge variant={(userData.userType || userData.role) === 'master' ? 'default' : 'secondary'} className="text-xs">
+                          {(userData.userType || userData.role) === 'master' ? 'Master' : 'Regular'}
                         </Badge>
                       </div>
                     </div>
