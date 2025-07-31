@@ -510,120 +510,62 @@ const FinanceiroSection = () => {
           
           {/* Filtros e Busca */}
           {activeTab !== 'transferencias' && (
-            <div className="bg-white rounded-lg p-4 mb-6">
-              <div className="flex items-center gap-4 flex-wrap">
-                {/* Campo de busca */}
-                <div className="flex-1 min-w-[200px] relative">
-                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none z-10" />
-                  <input
-                    type="text"
-                    placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-
-                {/* Filtro de Status */}
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="all">Todos os status</option>
-                  <option value="pending">Pendente</option>
-                  <option value="near_due">Próximo ao vencimento</option>
-                  <option value="overdue">Vencido</option>
-                  <option value="paid">Pago</option>
-                </select>
-
-                {/* Filtros de Data */}
-                <div className="flex items-center space-x-2 border-l pl-4">
-                  <Calendar className="w-4 h-4 text-gray-600" />
-                  <div className="flex items-center space-x-1">
-                    <Label htmlFor="dateFrom" className="text-xs font-medium text-gray-700">De:</Label>
-                    <Input
-                      id="dateFrom"
-                      type="date"
-                      value={dateFrom}
-                      onChange={(e) => setDateFrom(e.target.value)}
-                      className="w-32 h-8 text-xs"
-                    />
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <Label htmlFor="dateTo" className="text-xs font-medium text-gray-700">Até:</Label>
-                    <Input
-                      id="dateTo"
-                      type="date"
-                      value={dateTo}
-                      onChange={(e) => setDateTo(e.target.value)}
-                      className="w-32 h-8 text-xs"
-                    />
-                  </div>
-                </div>
-
-                {/* Botões de período rápido */}
-                <div className="flex space-x-1">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const today = new Date();
-                      const sevenDaysAgo = new Date();
-                      sevenDaysAgo.setDate(today.getDate() - 7);
-                      setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
-                      setDateTo(today.toISOString().split('T')[0]);
-                    }}
-                    className="text-xs h-7 px-2"
-                  >
-                    7d
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const today = new Date();
-                      const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                      setDateFrom(firstDayOfMonth.toISOString().split('T')[0]);
-                      setDateTo(today.toISOString().split('T')[0]);
-                    }}
-                    className="text-xs h-7 px-2"
-                  >
-                    Mês
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const today = new Date();
-                      const thirtyDaysAgo = new Date();
-                      thirtyDaysAgo.setDate(today.getDate() - 30);
-                      setDateFrom(thirtyDaysAgo.toISOString().split('T')[0]);
-                      setDateTo(today.toISOString().split('T')[0]);
-                    }}
-                    className="text-xs h-7 px-2"
-                  >
-                    30d
-                  </Button>
-                </div>
-
-                {/* Botão de limpar filtros */}
-                <button
-                  onClick={() => {
-                    setSearchTerm('');
-                    setStatusFilter('all');
-                    const today = new Date();
-                    const sevenDaysAgo = new Date();
-                    sevenDaysAgo.setDate(today.getDate() - 7);
-                    setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
-                    setDateTo(today.toISOString().split('T')[0]);
-                  }}
-                  className="btn btn-outline text-xs h-8 px-3"
-                >
-                  <X className="w-3 h-3 mr-1" />
-                  Limpar
-                </button>
+            <div className="flex flex-wrap gap-4 items-center mb-6">
+              <div className="flex-1">
+                <input
+                  type="text"
+                  placeholder={`Buscar ${activeTab === 'entradas' ? 'entradas' : 'saídas'}...`}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
               </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">Todos os status</option>
+                <option value="pending">Pendente</option>
+                <option value="near_due">Próximo ao vencimento</option>
+                <option value="overdue">Vencido</option>
+                <option value="paid">Pago</option>
+              </select>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="dd/mm/aaaa"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="dd/mm/aaaa"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setStatusFilter('all');
+                  const today = new Date();
+                  const sevenDaysAgo = new Date();
+                  sevenDaysAgo.setDate(today.getDate() - 7);
+                  setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
+                  setDateTo(today.toISOString().split('T')[0]);
+                }}
+                className="btn btn-outline"
+              >
+                Limpar Filtros
+              </button>
             </div>
           )}
 
@@ -659,73 +601,26 @@ const FinanceiroSection = () => {
                   </select>
 
                   {/* Filtros de Data para Transferências */}
-                  <div className="flex items-center space-x-2 border-l pl-4">
-                    <Calendar className="w-4 h-4 text-gray-600" />
-                    <div className="flex items-center space-x-1">
-                      <Label htmlFor="transferDateFrom" className="text-xs font-medium text-gray-700">De:</Label>
-                      <Input
-                        id="transferDateFrom"
-                        type="date"
-                        value={dateFrom}
-                        onChange={(e) => setDateFrom(e.target.value)}
-                        className="w-32 h-8 text-xs"
-                      />
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Label htmlFor="transferDateTo" className="text-xs font-medium text-gray-700">Até:</Label>
-                      <Input
-                        id="transferDateTo"
-                        type="date"
-                        value={dateTo}
-                        onChange={(e) => setDateTo(e.target.value)}
-                        className="w-32 h-8 text-xs"
-                      />
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+                    <input
+                      type="date"
+                      value={dateFrom}
+                      onChange={(e) => setDateFrom(e.target.value)}
+                      className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="dd/mm/aaaa"
+                    />
                   </div>
-
-                  {/* Botões de período rápido */}
-                  <div className="flex space-x-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const today = new Date();
-                        const sevenDaysAgo = new Date();
-                        sevenDaysAgo.setDate(today.getDate() - 7);
-                        setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
-                        setDateTo(today.toISOString().split('T')[0]);
-                      }}
-                      className="text-xs h-7 px-2"
-                    >
-                      7d
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const today = new Date();
-                        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                        setDateFrom(firstDayOfMonth.toISOString().split('T')[0]);
-                        setDateTo(today.toISOString().split('T')[0]);
-                      }}
-                      className="text-xs h-7 px-2"
-                    >
-                      Mês
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const today = new Date();
-                        const thirtyDaysAgo = new Date();
-                        thirtyDaysAgo.setDate(today.getDate() - 30);
-                        setDateFrom(thirtyDaysAgo.toISOString().split('T')[0]);
-                        setDateTo(today.toISOString().split('T')[0]);
-                      }}
-                      className="text-xs h-7 px-2"
-                    >
-                      30d
-                    </Button>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+                    <input
+                      type="date"
+                      value={dateTo}
+                      onChange={(e) => setDateTo(e.target.value)}
+                      className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="dd/mm/aaaa"
+                    />
                   </div>
 
                   {/* Botão de limpar filtros */}
@@ -733,8 +628,13 @@ const FinanceiroSection = () => {
                     onClick={() => {
                       setTransferSearchTerm('');
                       setTransferStatusFilter('all');
+                      const today = new Date();
+                      const sevenDaysAgo = new Date();
+                      sevenDaysAgo.setDate(today.getDate() - 7);
+                      setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
+                      setDateTo(today.toISOString().split('T')[0]);
                     }}
-                    className="px-4 py-2 text-gray-600 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors whitespace-nowrap"
+                    className="btn btn-outline"
                   >
                     Limpar Filtros
                   </button>
