@@ -22,7 +22,8 @@ import {
   Trash2,
   CheckCircle,
   XCircle,
-  CheckCircle2
+  CheckCircle2,
+  Calendar
 } from 'lucide-react';
 
 // Função para obter status do produto baseado no estoque e validade
@@ -66,6 +67,22 @@ const EstoqueSection = () => {
   const [showProductSelectionModal, setShowProductSelectionModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [transferQuantity, setTransferQuantity] = useState(1);
+
+  // Estados para filtros de data
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState(defaultDates.from);
+  const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -385,10 +402,36 @@ const EstoqueSection = () => {
             <option value="completed">Concluído</option>
             <option value="rejected">Rejeitado</option>
           </select>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-gray-500" />
+            <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="dd/mm/aaaa"
+            />
+          </div>
           <button
             onClick={() => {
               setSearchTerm('');
               setStatusFilter('all');
+              const today = new Date();
+              const sevenDaysAgo = new Date();
+              sevenDaysAgo.setDate(today.getDate() - 7);
+              setDateFrom(sevenDaysAgo.toISOString().split('T')[0]);
+              setDateTo(today.toISOString().split('T')[0]);
             }}
             className="btn btn-outline"
           >
@@ -404,7 +447,24 @@ const EstoqueSection = () => {
                 const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
                 const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
                   (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
-                return searchMatch && statusMatch;
+                
+                // Filtro de data
+                let dateMatch = true;
+                if (dateFrom || dateTo) {
+                  const transferDate = new Date(transfer.transfer_date || transfer.created_at);
+                  const fromDate = dateFrom ? new Date(dateFrom) : null;
+                  const toDate = dateTo ? new Date(dateTo) : null;
+                  
+                  if (fromDate && toDate) {
+                    dateMatch = transferDate >= fromDate && transferDate <= toDate;
+                  } else if (fromDate) {
+                    dateMatch = transferDate >= fromDate;
+                  } else if (toDate) {
+                    dateMatch = transferDate <= toDate;
+                  }
+                }
+                
+                return searchMatch && statusMatch && dateMatch;
               })
               .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
