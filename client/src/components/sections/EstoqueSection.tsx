@@ -60,6 +60,8 @@ const EstoqueSection = () => {
   const [stockAdjustment, setStockAdjustment] = useState(0);
   const [adjustmentReason, setAdjustmentReason] = useState('');
   const [productSearchTerm, setProductSearchTerm] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState('');
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
 
   // Hooks para dados
   const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
@@ -794,37 +796,65 @@ const EstoqueSection = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Produto</label>
                 
-                {/* Campo de pesquisa */}
-                <div className="relative mb-2">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <input
-                    type="text"
-                    placeholder="Pesquisar produto..."
-                    value={productSearchTerm}
-                    onChange={(e) => setProductSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
-                  />
+                {/* Combobox integrado */}
+                <div className="relative">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <input
+                      type="text"
+                      placeholder="Digite para pesquisar ou selecionar produto..."
+                      value={productSearchTerm}
+                      onChange={(e) => {
+                        setProductSearchTerm(e.target.value);
+                        setShowProductDropdown(true);
+                        setSelectedProductId('');
+                      }}
+                      onFocus={() => setShowProductDropdown(true)}
+                      className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowProductDropdown(!showProductDropdown)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+                  
+                  {/* Dropdown com produtos filtrados */}
+                  {showProductDropdown && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                      {products
+                        .filter((product: any) => 
+                          product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                        )
+                        .map((product: any) => (
+                          <div
+                            key={product.id}
+                            onClick={() => {
+                              setSelectedProductId(product.id.toString());
+                              setProductSearchTerm(product.name);
+                              setShowProductDropdown(false);
+                            }}
+                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                          >
+                            <div className="font-medium text-gray-900">{product.name}</div>
+                            <div className="text-sm text-gray-500">Estoque: {product.stock} unidades</div>
+                          </div>
+                        ))}
+                      
+                      {products.filter((product: any) => 
+                        product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
+                      ).length === 0 && (
+                        <div className="px-3 py-2 text-gray-500 text-sm">
+                          Nenhum produto encontrado
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                
-                {/* Select com produtos filtrados */}
-                <select className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500">
-                  <option value="">Selecione um produto</option>
-                  {products
-                    .filter((product: any) => 
-                      product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                    )
-                    .map((product: any) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name} (Estoque: {product.stock})
-                      </option>
-                    ))}
-                </select>
-                
-                {productSearchTerm && products.filter((product: any) => 
-                  product.name.toLowerCase().includes(productSearchTerm.toLowerCase())
-                ).length === 0 && (
-                  <p className="text-sm text-gray-500 mt-1">Nenhum produto encontrado</p>
-                )}
               </div>
               
               <div>
@@ -858,19 +888,35 @@ const EstoqueSection = () => {
               
               <div className="flex gap-3 pt-4">
                 <button
-                  onClick={() => setShowAddTransferModal(false)}
+                  onClick={() => {
+                    setShowAddTransferModal(false);
+                    setProductSearchTerm('');
+                    setSelectedProductId('');
+                    setShowProductDropdown(false);
+                  }}
                   className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={() => {
+                    if (!selectedProductId) {
+                      showAlert({
+                        title: "Erro",
+                        description: "Por favor, selecione um produto válido.",
+                        variant: "destructive"
+                      });
+                      return;
+                    }
                     showAlert({
                       title: "Transferência Criada",
                       description: "A transferência foi criada e está pendente de aprovação!",
                       variant: "default"
                     });
                     setShowAddTransferModal(false);
+                    setProductSearchTerm('');
+                    setSelectedProductId('');
+                    setShowProductDropdown(false);
                   }}
                   className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors"
                 >
