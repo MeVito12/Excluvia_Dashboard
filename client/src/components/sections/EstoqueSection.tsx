@@ -839,9 +839,9 @@ const EstoqueSection = () => {
                 <button
                   type="button"
                   onClick={() => setShowProductSelectionModal(true)}
-                  className="w-full px-3 py-2 border border-purple-300 rounded-md text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors text-sm font-medium"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm"
                 >
-                  {selectedProduct ? '⚡ Alterar Produto' : '⚡ Selecionar Produto'}
+                  {selectedProduct ? '+ Alterar Produto' : '+ Selecionar Produto'}
                 </button>
               </div>
               
@@ -1141,9 +1141,12 @@ const EstoqueSection = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Selecionar Produto para Transferência</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Produtos</h3>
               <button 
-                onClick={() => setShowProductSelectionModal(false)}
+                onClick={() => {
+                  setShowProductSelectionModal(false);
+                  setProductSearchTerm('');
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✕
@@ -1180,10 +1183,15 @@ const EstoqueSection = () => {
                 ))}
             </div>
             
-            {products.length === 0 && (
+            {products
+              .filter((product: any) => 
+                product.name.toLowerCase().includes(productSearchTerm.toLowerCase()) ||
+                product.description?.toLowerCase().includes(productSearchTerm.toLowerCase())
+              ).length === 0 && (
               <div className="text-center py-8 text-gray-500">
                 <Package className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Nenhum produto disponível no estoque</p>
+                <p>Nenhum produto encontrado</p>
+                <p className="text-sm mt-1">Tente pesquisar por outro termo</p>
               </div>
             )}
             
@@ -1219,65 +1227,63 @@ const ProductTransferCard = ({ product, onSelect }: { product: any; onSelect: (p
   const [showQuantityInput, setShowQuantityInput] = useState(false);
 
   const handleSelect = () => {
-    if (showQuantityInput) {
-      if (quantity > product.stock) {
-        alert(`Quantidade não pode ser maior que o estoque disponível (${product.stock})`);
-        return;
-      }
+    setShowQuantityInput(true);
+  };
+
+  const handleConfirmQuantity = () => {
+    if (quantity > 0 && quantity <= product.stock) {
       onSelect(product, quantity);
-    } else {
-      setShowQuantityInput(true);
+      setShowQuantityInput(false);
     }
   };
 
   return (
-    <div className="border border-gray-200 rounded-lg p-3 hover:border-purple-300 transition-colors bg-white">
+    <div className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <div className="font-medium text-gray-800 text-sm">{product.name}</div>
-          {product.description && (
-            <div className="text-xs text-gray-500 mt-1">{product.description}</div>
-          )}
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-xs bg-gray-100 px-2 py-1 rounded">{product.category}</span>
-            <span className={`text-xs px-2 py-1 rounded ${
-              product.stock > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-            }`}>
-              Estoque: {product.stock}
-            </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleSelect}
+              disabled={product.stock === 0}
+              className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                product.stock === 0
+                  ? 'border-gray-300 bg-gray-100 cursor-not-allowed'
+                  : 'border-gray-300 hover:border-purple-400'
+              }`}
+            >
+            </button>
+            <div>
+              <h4 className="font-medium text-gray-800">{product.name}</h4>
+              <p className="text-sm text-gray-600">Estoque: {product.stock} unidades</p>
+            </div>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
+          
           {showQuantityInput && (
-            <div className="flex items-center gap-1">
+            <div className="mt-3 flex items-center gap-2">
               <input
                 type="number"
                 value={quantity}
-                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                onChange={(e) => setQuantity(Number(e.target.value))}
                 min="1"
                 max={product.stock}
-                className="w-16 px-2 py-1 text-xs border border-gray-300 rounded"
+                className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                 placeholder="1"
               />
-              <span className="text-xs text-gray-500">un.</span>
+              <select
+                value="unidades"
+                className="px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="unidades">unidades</option>
+              </select>
+              <button
+                onClick={handleConfirmQuantity}
+                disabled={quantity > product.stock || quantity <= 0}
+                className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Confirmar
+              </button>
             </div>
           )}
-          
-          <button
-            onClick={handleSelect}
-            disabled={product.stock === 0}
-            className={`px-3 py-1 text-xs rounded transition-colors ${
-              product.stock === 0
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : showQuantityInput
-                ? 'bg-purple-600 text-white hover:bg-purple-700'
-                : 'bg-purple-100 text-purple-700 hover:bg-purple-200'
-            }`}
-          >
-            {product.stock === 0 ? 'Sem estoque' : 
-             showQuantityInput ? 'Confirmar' : 'Selecionar'}
-          </button>
         </div>
       </div>
     </div>
