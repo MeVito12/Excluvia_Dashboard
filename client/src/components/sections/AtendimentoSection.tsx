@@ -73,6 +73,7 @@ const AtendimentoSection = () => {
   });
   const [showAddSpecialistModal, setShowAddSpecialistModal] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
+  const [newItemImage, setNewItemImage] = useState('');
   const [newSpecialist, setNewSpecialist] = useState({
     name: '',
     specialty: '',
@@ -185,7 +186,7 @@ const AtendimentoSection = () => {
       );
     } else {
       // Criar novo item
-      if (selectedCategory === 'vendas') {
+      if (selectedCategory === 'vendas' || selectedCategory === 'alimenticio') {
         saveMenuItemWithIngredients();
         return;
       } else {
@@ -199,6 +200,8 @@ const AtendimentoSection = () => {
     setIsEditingItem(false);
     setEditingItemId(null);
     setNewItem({ name: '', description: '', price: '', category: 'produtos' });
+    setSelectedIngredients([]);
+    setNewItemImage('');
   };
 
   const deleteItem = (itemId: number) => {
@@ -334,8 +337,8 @@ const AtendimentoSection = () => {
 
   // Função para salvar item alimentício com ingredientes
   const saveMenuItemWithIngredients = () => {
-    if (!newItem.name || selectedIngredients.length === 0) {
-      showError('Campos obrigatórios', 'Por favor, preencha o nome do prato e selecione pelo menos um ingrediente.');
+    if (!newItem.name || !newItem.price || selectedIngredients.length === 0) {
+      showError('Campos obrigatórios', 'Por favor, preencha o nome do prato, preço e selecione pelo menos um ingrediente.');
       return;
     }
 
@@ -347,10 +350,13 @@ const AtendimentoSection = () => {
     const menuItem = {
       id: Date.now(),
       name: newItem.name,
+      price: newItem.price ? `R$ ${Number(newItem.price.replace(/[^\d,]/g, '').replace(',', '.')).toFixed(2).replace('.', ',')}` : 'Sob consulta',
       ingredients: ingredients,
       description: `Ingredientes: ${ingredients.map((ing: any) => ing.name).join(', ')}`,
+      imageUrl: newItemImage || '',
       category: newItem.category,
-      available: true
+      available: true,
+      isCustom: true // Marca como item personalizado do cardápio
     };
 
     setCategoryItems(prev => ({
@@ -358,8 +364,10 @@ const AtendimentoSection = () => {
       [selectedCategory]: [...(prev[selectedCategory as keyof typeof prev] || []), menuItem]
     }));
 
+    // Reset dos campos
     setNewItem({ name: '', description: '', price: '', category: 'pratos' });
     setSelectedIngredients([]);
+    setNewItemImage('');
     setShowAddItemModal(false);
     showSuccess('PRATO ADICIONADO', `"${newItem.name}" foi adicionado ao cardápio com sucesso!`);
   };
@@ -616,15 +624,14 @@ const AtendimentoSection = () => {
 
   // Catálogos usando apenas dados reais do banco
   const getCatalogs = () => {
-    // Para todas as categorias, puxar automaticamente do estoque
-    const stockProducts = getCurrentCategoryItems();
+    // Para categoria alimenticia, usar itens personalizados do cardápio
+    if (selectedCategory === 'alimenticio') {
+      return getCurrentCategoryItems();
+    }
     
-    // Para categoria alimenticia, filtrar apenas produtos marcados como "à venda"
-    const filteredProducts = selectedCategory === 'alimenticio' 
-      ? stockProducts.filter((product: any) => product.forSale === true)
-      : stockProducts;
-      
-    return filteredProducts.map((product: any) => ({
+    // Para outras categorias, puxar automaticamente do estoque
+    const stockProducts = getCurrentCategoryItems();
+    return stockProducts.map((product: any) => ({
       id: product.id,
       name: product.name || product.title,
       price: product.price ? `R$ ${Number(product.price).toFixed(2).replace('.', ',')}` : 'Sob consulta',
@@ -632,7 +639,7 @@ const AtendimentoSection = () => {
       category: product.category,
       stock: product.stock,
       isFromStock: true,
-      available: product.forSale !== false // Produto disponível se não for explicitamente false
+      available: product.forSale !== false
     }));
   };
 
@@ -897,7 +904,7 @@ const AtendimentoSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-gray-800">
-            {selectedCategory === 'vendas' ? 'Cardápio Digital' : 'Catálogo de Produtos'}
+            {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') ? 'Cardápio Digital' : 'Catálogo de Produtos'}
           </h3>
           <div className="flex items-center gap-3">
             <button 
@@ -914,35 +921,42 @@ const AtendimentoSection = () => {
               <QrCode className="w-4 h-4" />
               QR Code
             </button>
-            {selectedCategory === 'vendas' && (
+            {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') && (
               <button 
                 onClick={handleAddItem}
                 className="btn btn-primary"
               >
                 <ShoppingCart className="w-4 h-4" />
-                Adicionar Item
+                {selectedCategory === 'alimenticio' ? 'Adicionar Prato' : 'Adicionar Item'}
               </button>
             )}
           </div>
         </div>
 
         {/* Aviso de integração automática */}
-        {selectedCategory !== 'vendas' && (
+        {selectedCategory !== 'vendas' && selectedCategory !== 'alimenticio' && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 text-blue-700">
               <CheckCircle className="w-5 h-5" />
-              <span className="font-medium">
-                {selectedCategory === 'alimenticio' 
-                  ? 'Cardápio Automático do Estoque' 
-                  : 'Sincronização Automática com Estoque'
-                }
-              </span>
+              <span className="font-medium">Sincronização Automática com Estoque</span>
             </div>
             <p className="text-sm text-blue-600 mt-1">
-              {selectedCategory === 'alimenticio' 
-                ? 'Apenas produtos marcados como "à venda" no estoque aparecem no cardápio. Para adicionar itens, vá para a seção Estoque e marque produtos como "à venda".'
-                : 'Os produtos abaixo são carregados automaticamente do seu estoque. Para gerenciar produtos, vá para a seção Estoque.'
-              }
+              Os produtos abaixo são carregados automaticamente do seu estoque. 
+              Para gerenciar produtos, vá para a seção Estoque.
+            </p>
+          </div>
+        )}
+        
+        {/* Aviso para categoria alimenticia */}
+        {selectedCategory === 'alimenticio' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 text-green-700">
+              <CheckCircle className="w-5 h-5" />
+              <span className="font-medium">Cardápio Personalizado</span>
+            </div>
+            <p className="text-sm text-green-600 mt-1">
+              Cadastre pratos personalizados com ingredientes do estoque. Use o botão "Adicionar Prato" 
+              para criar itens do cardápio com imagem e ingredientes específicos.
             </p>
           </div>
         )}
@@ -950,6 +964,20 @@ const AtendimentoSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {getCatalogs().map((item: any) => (
             <div key={item.id} className="content-card hover:shadow-xl transition-all duration-300">
+              {/* Imagem do prato para categoria alimenticia */}
+              {selectedCategory === 'alimenticio' && item.imageUrl && (
+                <div className="mb-4">
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.name}
+                    className="w-full h-48 object-cover rounded-lg"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+              
               <div className="flex justify-between items-start mb-3">
                 <span className="badge badge-primary">{item.category}</span>
                 <div className="text-right">
@@ -1420,7 +1448,7 @@ const AtendimentoSection = () => {
           <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">
-                {isEditingItem ? 'Editar' : 'Adicionar'} {selectedCategory === 'vendas' ? 'Prato' : 'Produto'}
+                {isEditingItem ? 'Editar' : 'Adicionar'} {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') ? 'Prato' : 'Produto'}
               </h3>
               <button 
                 onClick={() => {
@@ -1428,6 +1456,8 @@ const AtendimentoSection = () => {
                   setIsEditingItem(false);
                   setEditingItemId(null);
                   setNewItem({ name: '', description: '', price: '', category: 'produtos' });
+                  setSelectedIngredients([]);
+                  setNewItemImage('');
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
@@ -1438,18 +1468,35 @@ const AtendimentoSection = () => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nome *
+                  Nome do {selectedCategory === 'vendas' || selectedCategory === 'alimenticio' ? 'Prato' : 'Item'} *
                 </label>
                 <input
                   type="text"
                   value={newItem.name}
                   onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                  placeholder={selectedCategory === 'vendas' ? 'Ex: Pizza Margherita' : 'Ex: Smartphone XYZ'}
+                  placeholder={selectedCategory === 'vendas' || selectedCategory === 'alimenticio' ? 'Ex: Pizza Margherita' : 'Ex: Smartphone XYZ'}
                 />
               </div>
               
-              {selectedCategory === 'vendas' ? (
+              {/* Campo de imagem para categoria alimenticia */}
+              {selectedCategory === 'alimenticio' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    URL da Imagem
+                  </label>
+                  <input
+                    type="url"
+                    value={newItemImage}
+                    onChange={(e) => setNewItemImage(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="https://exemplo.com/imagem-do-prato.jpg"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Adicione uma imagem para mostrar o prato no cardápio</p>
+                </div>
+              )}
+              
+              {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Ingredientes *
@@ -1515,7 +1562,7 @@ const AtendimentoSection = () => {
                   onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  {selectedCategory === 'vendas' ? (
+                  {(selectedCategory === 'vendas' || selectedCategory === 'alimenticio') ? (
                     <>
                       <option value="pratos">Pratos Principais</option>
                       <option value="bebidas">Bebidas</option>
