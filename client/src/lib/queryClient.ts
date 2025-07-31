@@ -4,8 +4,13 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
+        const userId = getCurrentUserId();
         const url = Array.isArray(queryKey) ? queryKey.join('/') : queryKey;
-        const response = await fetch(url as string);
+        const response = await fetch(url as string, {
+          headers: {
+            'x-user-id': userId || ''
+          }
+        });
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -19,10 +24,27 @@ export const queryClient = new QueryClient({
   },
 });
 
+// Função para obter userId atual
+function getCurrentUserId(): string | null {
+  try {
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      const user = JSON.parse(userData);
+      return user.id?.toString();
+    }
+  } catch (error) {
+    console.error('Error getting current user:', error);
+  }
+  return null;
+}
+
 export const apiRequest = async (url: string, options: RequestInit = {}) => {
+  const userId = getCurrentUserId();
+  
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
+      'x-user-id': userId || '',
       ...options.headers,
     },
     ...options,
