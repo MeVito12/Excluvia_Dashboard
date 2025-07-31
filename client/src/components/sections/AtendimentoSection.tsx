@@ -110,7 +110,7 @@ const AtendimentoSection = () => {
   }, [selectedCategory, products]);
 
   // Estado para especialistas - usando dados vazios por enquanto
-  const [specialists, setSpecialists] = useState(() => {
+  const [specialists, setSpecialists] = useState<Record<string, any[]>>(() => {
     return { [selectedCategory]: [] };
   });
 
@@ -307,7 +307,7 @@ const AtendimentoSection = () => {
 
     setSpecialists(prev => ({
       ...prev,
-      [selectedCategory]: [...(prev[selectedCategory as keyof typeof prev] || []), specialist]
+      [selectedCategory]: [...(prev[selectedCategory] || []), specialist]
     }));
 
     setNewSpecialist({
@@ -323,7 +323,7 @@ const AtendimentoSection = () => {
   };
 
   const getCurrentSpecialists = () => {
-    return specialists[selectedCategory as keyof typeof specialists] || [];
+    return specialists[selectedCategory] || [];
   };
 
   // Função para buscar ingredientes do estoque (para categoria alimentícia)
@@ -551,6 +551,8 @@ const AtendimentoSection = () => {
     let catalogLabel = 'Catálogos';
     if (selectedCategory === 'design' || selectedCategory === 'sites') {
       catalogLabel = 'Portfólio';
+    } else if (selectedCategory === 'alimenticio') {
+      catalogLabel = 'Cardápios';
     }
     
     const baseTabs = [
@@ -567,9 +569,49 @@ const AtendimentoSection = () => {
     return baseTabs;
   };
 
-  // Mensagens agora vazias - usando dados reais do banco
+  // Mensagens com dados adequados para cada categoria 
   const getMessages = () => {
-    return [];
+    const messages: Record<string, Array<{id: number, name: string, time: string, message: string, status: string}>> = {
+      farmacia: [
+        { id: 1, name: 'Maria Silva', time: '14:30', message: 'Olá! Vocês têm dipirona em estoque?', status: 'pending' },
+        { id: 2, name: 'João Santos', time: '13:45', message: 'Preciso renovar minha receita de pressão alta', status: 'responded' },
+        { id: 3, name: 'Ana Costa', time: '12:20', message: 'Quanto custa o teste de glicemia?', status: 'bot' }
+      ],
+      alimenticio: [
+        { id: 1, name: 'Carlos Eduardo', time: '19:45', message: 'Boa noite! Vocês fazem delivery? Quero pedir uma pizza margherita', status: 'pending' },
+        { id: 2, name: 'Fernanda Lima', time: '19:20', message: 'Qual o tempo de entrega para o bairro Centro?', status: 'responded' },
+        { id: 3, name: 'Roberto Silva', time: '18:55', message: 'Vocês têm promoção hoje? Vi no Instagram mas não consegui ver direito', status: 'bot' },
+        { id: 4, name: 'Juliana Santos', time: '18:30', message: 'Podem fazer um hambúrguer sem cebola? Sou alérgica', status: 'responded' },
+        { id: 5, name: 'Pedro Oliveira', time: '18:10', message: 'Quero fazer um pedido grande para uma reunião. Quantas pessoas serve a pizza família?', status: 'pending' }
+      ],
+      pet: [
+        { id: 1, name: 'Luciana Rocha', time: '16:20', message: 'Meu cachorro está com carrapato. Vocês têm shampoo medicado?', status: 'pending' },
+        { id: 2, name: 'Marcos Ferreira', time: '15:10', message: 'Preciso agendar vacina para minha gata', status: 'responded' },
+        { id: 3, name: 'Camila Torres', time: '14:30', message: 'Quanto custa uma consulta veterinária?', status: 'bot' }
+      ],
+      medico: [
+        { id: 1, name: 'Sandra Oliveira', time: '10:30', message: 'Gostaria de agendar consulta com cardiologista', status: 'pending' },
+        { id: 2, name: 'Ricardo Lima', time: '09:45', message: 'Vocês atendem pelo convênio Unimed?', status: 'responded' },
+        { id: 3, name: 'Patricia Santos', time: '09:15', message: 'Preciso de exames de rotina. Quais vocês fazem?', status: 'bot' }
+      ],
+      vendas: [
+        { id: 1, name: 'Empresa ABC Ltda', time: '14:20', message: 'Preciso de orçamento para 50 notebooks para escritório', status: 'pending' },
+        { id: 2, name: 'Loja TechMais', time: '13:30', message: 'Vocês fazem revenda? Interesse em parceria', status: 'responded' },
+        { id: 3, name: 'João Distribuidor', time: '12:45', message: 'Qual o prazo de entrega para pedidos grandes?', status: 'bot' }
+      ],
+      design: [
+        { id: 1, name: 'Café Aroma', time: '11:30', message: 'Preciso de identidade visual completa para minha cafeteria', status: 'pending' },
+        { id: 2, name: 'Clínica Vida', time: '10:45', message: 'Vocês fazem material gráfico para clínicas?', status: 'responded' },
+        { id: 3, name: 'Startup Inovação', time: '10:20', message: 'Quero um logo moderno para minha empresa de tech', status: 'bot' }
+      ],
+      sites: [
+        { id: 1, name: 'Advocacia Silva', time: '15:40', message: 'Preciso de site institucional para meu escritório', status: 'pending' },
+        { id: 2, name: 'Loja Fashion', time: '14:25', message: 'Quero fazer um e-commerce. Vocês desenvolvem?', status: 'responded' },
+        { id: 3, name: 'Curso Online', time: '13:50', message: 'Preciso de landing page para conversão', status: 'bot' }
+      ]
+    };
+    
+    return messages[selectedCategory] || [];
   };
 
   // Catálogos usando apenas dados reais do banco

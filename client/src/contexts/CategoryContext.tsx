@@ -11,11 +11,7 @@ export const categories = [
   { value: 'farmacia', label: 'Farmácia', icon: '💊', description: 'Farmácias, drogarias e serviços farmacêuticos' },
   { value: 'pet', label: 'Pet & Veterinário', icon: '🐕', description: 'Clínicas veterinárias, pet shops e cuidados animais' },
   { value: 'medico', label: 'Médico & Saúde', icon: '⚕️', description: 'Clínicas médicas, consultórios e serviços de saúde' },
-  { value: 'estetica', label: 'Estética & Beleza', icon: '💅', description: 'Clínicas de estética, salões e tratamentos de beleza' },
-
-  { value: 'tecnologia', label: 'Tecnologia', icon: '💻', description: 'Empresas de tecnologia e serviços digitais' },
-  { value: 'educacao', label: 'Educação', icon: '📚', description: 'Escolas, cursos e instituições de ensino' },
-  { value: 'beleza', label: 'Beleza & Cosméticos', icon: '💄', description: 'Lojas de cosméticos e produtos de beleza' },
+  { value: 'alimenticio', label: 'Alimentício', icon: '🍽️', description: 'Restaurantes, lanchonetes e estabelecimentos alimentícios' },
   { value: 'vendas', label: 'Vendas', icon: '💼', description: 'Empresas de vendas, comércio e representações' },
   { value: 'design', label: 'Design Gráfico', icon: '🎨', description: 'Estúdios de design e agências criativas' },
   { value: 'sites', label: 'Criação de Sites', icon: '🌐', description: 'Desenvolvimento web e marketing digital' }

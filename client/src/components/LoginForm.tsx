@@ -57,6 +57,13 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
       features: ['Agendamentos médicos', 'Prontuários eletrônicos', 'Controle financeiro', 'Equipamentos médicos']
     },
     {
+      category: 'alimenticio',
+      name: 'Restaurante Bella Vista',
+      business: 'Demo Restaurante Bella Vista',
+      description: 'Sistema completo para restaurantes com cardápio digital, pedidos online e controle de estoque',
+      features: ['Cardápio digital', 'Pedidos WhatsApp', 'Controle de ingredientes', 'Delivery automático']
+    },
+    {
       category: 'vendas',
       name: 'Comercial Tech',
       business: 'Demo Comercial Tech',
@@ -436,6 +443,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                       {profile.category === 'farmacia' ? '💊' :
                        profile.category === 'pet' ? '🐕' :
                        profile.category === 'medico' ? '🏥' :
+                       profile.category === 'alimenticio' ? '🍽️' :
                        profile.category === 'vendas' ? '💼' :
                        profile.category === 'design' ? '🎨' : '💻'}
                     </div>
