@@ -107,45 +107,60 @@ const GraficosSection = () => {
       });
     }
 
-    // Dados para gráfico de crescimento (tendência)
+    // Dados para gráfico de crescimento (tendência) - baseado em vendas reais
     const growthChartData = [];
-    for (let i = 5; i >= 0; i--) {
+    for (let i = 6; i >= 0; i--) {
       const date = new Date();
-      date.setDate(date.getDate() - i * 5); // Intervalos de 5 dias
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
       const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      // Simular tendência de crescimento baseada nos dados reais
-      const baseValue = Math.max(0, totalSales / 6);
-      const variation = (Math.random() - 0.5) * baseValue * 0.3;
+      // Calcular receita real para cada dia
+      const daySales = filteredSales.filter((sale: any) => 
+        sale.sale_date && sale.sale_date.split('T')[0] === dateStr
+      );
+      const dayRevenue = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
       
       growthChartData.push({
         periodo: dayName,
-        receita: baseValue + variation
+        receita: dayRevenue
       });
     }
 
-    // Dados para gráfico de produtos mais vendidos com valores
-    const productSales: Record<string, { quantity: number, revenue: number }> = {};
-    filteredSales.forEach((sale: any) => {
-      const product = products.find((p: any) => p.id === sale.product_id);
-      if (product) {
-        const productName = product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name;
-        if (!productSales[productName]) {
-          productSales[productName] = { quantity: 0, revenue: 0 };
-        }
-        productSales[productName].quantity += sale.quantity;
-        productSales[productName].revenue += Number(sale.total_price) || 0;
-      }
-    });
+    // Dados para produtos mais vendidos - melhorado
+    const productSales: Record<number, { quantity: number; revenue: number; name: string }> = {};
     
+    filteredSales.forEach((sale: any) => {
+      const productId = sale.product_id;
+      if (!productSales[productId]) {
+        const product = products.find((p: any) => p.id === productId);
+        productSales[productId] = { 
+          quantity: 0, 
+          revenue: 0, 
+          name: product?.name || `Produto ${productId}` 
+        };
+      }
+      productSales[productId].quantity += Number(sale.quantity) || 0;
+      productSales[productId].revenue += Number(sale.total_price) || 0;
+    });
+
     const topProductsData = Object.entries(productSales)
-      .sort(([,a], [,b]) => b.quantity - a.quantity)
-      .slice(0, 5)
-      .map(([name, data]) => ({ 
-        produto: name, 
+      .map(([id, data]) => ({
+        produto: data.name.length > 20 ? data.name.substring(0, 20) + '...' : data.name,
         vendas: data.quantity,
-        receita: data.revenue 
-      }));
+        receita: data.revenue
+      }))
+      .sort((a, b) => b.vendas - a.vendas)
+      .slice(0, 5);
+
+    // Se não houver dados, mostrar mensagem apropriada
+    if (topProductsData.length === 0 && products.length > 0) {
+      topProductsData.push({
+        produto: 'Nenhuma venda registrada',
+        vendas: 0,
+        receita: 0
+      });
+    }
 
     // Dados para gráfico de clientes (distribuição por tipo)
     const clientTypes: Record<string, number> = clients.reduce((acc: Record<string, number>, client: any) => {
@@ -305,7 +320,7 @@ const GraficosSection = () => {
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-purple-600" />
-              Vendas por Período ({calculateMetrics.period})
+              Vendas Diárias
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -316,7 +331,7 @@ const GraficosSection = () => {
                 <YAxis />
                 <Tooltip 
                   formatter={(value: any, name: any) => [
-                    name === 'vendas' ? `${value} vendas` : `R$ ${Number(value).toFixed(2)}`,
+                    name === 'vendas' ? `${value} vendas` : `R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
                     name === 'vendas' ? 'Vendas' : 'Receita'
                   ]}
                 />
@@ -331,7 +346,7 @@ const GraficosSection = () => {
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <Target className="h-5 w-5 text-green-600" />
-              Produtos Mais Vendidos ({calculateMetrics.period})
+              Top Produtos
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -352,7 +367,7 @@ const GraficosSection = () => {
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <TrendingUp className="h-5 w-5 text-blue-600" />
-              Tendência de Crescimento ({calculateMetrics.period})
+              Tendência de Receita
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -361,7 +376,7 @@ const GraficosSection = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="periodo" />
                 <YAxis />
-                <Tooltip formatter={(value: any) => [`R$ ${Number(value).toFixed(2)}`, 'Receita']} />
+                <Tooltip formatter={(value: any) => [`R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Receita']} />
                 <Area 
                   type="monotone" 
                   dataKey="receita" 
@@ -379,7 +394,7 @@ const GraficosSection = () => {
           <CardHeader>
             <CardTitle className="text-gray-900 flex items-center gap-2">
               <Users className="h-5 w-5 text-orange-600" />
-              Análise de Clientes ({calculateMetrics.period})
+              Distribuição de Clientes
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -423,7 +438,7 @@ const GraficosSection = () => {
         <CardHeader>
           <CardTitle className="text-gray-900 flex items-center gap-2">
             <Star className="h-5 w-5 text-yellow-600" />
-            Top Produtos no Período ({calculateMetrics.period})
+            Produtos Mais Vendidos
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -445,14 +460,18 @@ const GraficosSection = () => {
                       R$ {Number(productData.receita || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {calculateMetrics.period}
+                      Receita total
                     </p>
                   </div>
                 </div>
               );
             })}
-            {filteredSales.length === 0 && (
-              <p className="text-gray-500 text-center py-8">Nenhuma venda encontrada no período selecionado</p>
+            {calculateMetrics.topProductsData.length === 0 && (
+              <div className="text-center py-8">
+                <Target className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">Nenhuma venda encontrada</p>
+                <p className="text-gray-400 text-sm">Ajuste o período ou registre novas vendas</p>
+              </div>
             )}
           </div>
         </CardContent>
