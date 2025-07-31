@@ -68,6 +68,7 @@ const GraficosSection = () => {
 
   // Função para filtrar vendas por data
   const filteredSales = useMemo(() => {
+    if (!sales) return [];
     if (!dateFrom && !dateTo) return sales;
     
     return sales.filter((sale: any) => {
@@ -81,6 +82,23 @@ const GraficosSection = () => {
 
   // Calcular métricas e dados para gráficos
   const calculateMetrics = useMemo(() => {
+    // Verificar se os dados existem antes de processar
+    if (!sales || !products || !clients || !financial) {
+      return {
+        totalSales: '0.00',
+        totalOrders: 0,
+        avgTicket: '0.00',
+        growth: '+0%',
+        period: 'carregando...',
+        totalClients: 0,
+        salesChartData: [],
+        financialChartData: [],
+        topProductsData: [],
+        performanceData: [],
+        retention: '0%',
+        conversion: '0%'
+      };
+    }
     const totalSales = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
     const totalQuantity = filteredSales.reduce((sum: number, sale: any) => sum + (Number(sale.quantity) || 0), 0);
     const avgTicket = totalSales > 0 ? totalSales / filteredSales.length : 0;
@@ -124,8 +142,8 @@ const GraficosSection = () => {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      // Filtrar movimentações financeiras do dia
-      const dayEntries = financial.filter((entry: any) => 
+      // Filtrar movimentações financeiras do dia (verificar se financial existe)
+      const dayEntries = (financial || []).filter((entry: any) => 
         entry.date && entry.date.split('T')[0] === dateStr
       );
       
@@ -160,10 +178,10 @@ const GraficosSection = () => {
     // Dados para produtos mais vendidos - melhorado
     const productSales: Record<number, { quantity: number; revenue: number; name: string }> = {};
     
-    filteredSales.forEach((sale: any) => {
+    (filteredSales || []).forEach((sale: any) => {
       const productId = sale.product_id;
       if (!productSales[productId]) {
-        const product = products.find((p: any) => p.id === productId);
+        const product = (products || []).find((p: any) => p.id === productId);
         productSales[productId] = { 
           quantity: 0, 
           revenue: 0, 
@@ -237,7 +255,7 @@ const GraficosSection = () => {
       avgTicket: avgTicket.toFixed(2),
       growth: `+${growthRate}%`,
       period: dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual',
-      totalClients: clients.length,
+      totalClients: (clients || []).length,
       salesChartData,
       financialChartData,
       topProductsData,
