@@ -1,0 +1,146 @@
+_app-65d43da6a577f856.js:13 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-65d43da6a577f856.js:13 [LaunchDarkly] LaunchDarkly client initialized
+/~:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+m.stripe.com/6:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+64Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'battery'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+framework-201589a1b233ae54.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-201589a1b233ae54.js:1Understand this warning
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+gravatar.com/avatar/20bcca04264527ad428267177396c41f?d=404:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+attached_assets/image_1753966037352.png:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+attached_assets/image_1753965920731.png:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+graphql:1  Failed to load resource: net::ERR_CONNECTION_CLOSEDUnderstand this error
+3635-6c62dcd40de4287c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSTMvbXR4QVlTQmdqK2xhN0VCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...HUm10NWJEY2xNa0pTZDIxdVEwZ3hWbGh2UTIwek5tb2xNa1pFUzJwVk1ubHViWFkwVTBJMlp6RlRVekpvTUZoeWRHSTRUWFJZTjFkWFYybE5jVlUwYWsxVk9GSTFWMDlQT1hKaU4ydE9WV2MzSlRKQ2JUQlBZbXhFT1ZGMGVVNDFjVXBFTjNwdWREQnhXbXMwSlRKQ2RVbERWVlYyV1c0M2JsVlhjMkZJUlRGdmFXZHlKVEpHV0U1UmJYQXhhME5NWlhwU1dsUnhSek5WWW5kQlptWTFKVEpHYjB0VFRFWlhPRVphV0hCdGJtbzNkR3RUTVZSQlFUZDRZbGRSZG5wM1prd3pSemRQUlhGclppVXlSblU0TTJSUkpUTkVKVE5FppIJU_oyhVVOcB4UE3enCe96VOxv6RCAbotGCTQpr1UdbUODdv5LAkXeYAtZ8ECvTP1v6qwCAZX3NMNcSGJQDQ.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6c62dcd40de4287c.js:1Understand this error
+9397-a7051be432d94e68.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSTZJcXV4QVlTQmdpSHA2N0VCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...RU9HSmFjR05hU1RGRldtdGtTME00VmxGeE9UQklXRmRKYVVwR1lrVWxNa0pqWVV0c01FMVNlVzAxYkhKelEzUnVXVVpGZUZsSmRIWlpRbkpzUzNobmJHZFNkVkl6UzJFeFNUUkpRMWRuYlVWTFJsaG5kR055YXpRMGVsaDRiWHBMYm1JbE1rSkNla1pCV0hBNU1VcGlSR0pQVVRKWWVEQTJWMHgyYlhReVIwcFZOR0l5ZFhoS1ptMTRXR3BMUWxwVU4yUnVSakI0U0ZaamVHMXhXakZGSlRKR1ltUjZXRWhETmtOVVVHUmlaMk50ZFV4aE9YVlRVVU5WZFVSb1dITk9OV2czYUdaM0pUSkdOelJZU3pob1JsRWxNMFFsTTBRPY3JcRyf0GkqHIYsMCOtFkIge8lv5Xwtwv5oh1zIj32AwdlgWxtRNyTqEcgQnVR7gYXLPr0aF99c55yd2CclMgc.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+(anonymous) @ 9397-a7051be432d94e68.js:1Understand this error
+_app-65d43da6a577f856.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-65d43da6a577f856.js:40Understand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3Aff7dacab&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=7e35c3b9-4a66-448d-b90a-2afab4c5e44f:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Axhr%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3Aff7dacab&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=e706f363-93d2-4512-86a4-ade5a5f1342f:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+3635-6c62dcd40de4287c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSTMvbXR4QVlTQmdqK2xhN0VCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...HUm10NWJEY2xNa0pTZDIxdVEwZ3hWbGh2UTIwek5tb2xNa1pFUzJwVk1ubHViWFkwVTBJMlp6RlRVekpvTUZoeWRHSTRUWFJZTjFkWFYybE5jVlUwYWsxVk9GSTFWMDlQT1hKaU4ydE9WV2MzSlRKQ2JUQlBZbXhFT1ZGMGVVNDFjVXBFTjNwdWREQnhXbXMwSlRKQ2RVbERWVlYyV1c0M2JsVlhjMkZJUlRGdmFXZHlKVEpHV0U1UmJYQXhhME5NWlhwU1dsUnhSek5WWW5kQlptWTFKVEpHYjB0VFRFWlhPRVphV0hCdGJtbzNkR3RUTVZSQlFUZDRZbGRSZG5wM1prd3pSemRQUlhGclppVXlSblU0TTJSUkpUTkVKVE5FppIJU_oyhVVOcB4UE3enCe96VOxv6RCAbotGCTQpr1UdbUODdv5LAkXeYAtZ8ECvTP1v6qwCAZX3NMNcSGJQDQ.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6c62dcd40de4287c.js:1Understand this error
+graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+_app-65d43da6a577f856.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-65d43da6a577f856.js:40Understand this error
+ExcluviaDashboard:1 Uncaught (in promise) TimeoutUnderstand this error
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+Console.js:61 Debug - Dados recebidos: Object
+Console.js:61 Debug - Dados recebidos: Object
+GraficosSection.tsx:637 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at GraficosSection (GraficosSection.tsx:637:47)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=2005210f:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=2005210f:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=2005210f:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=2005210f:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=2005210f:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=2005210f:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=2005210f:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=2005210f:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=2005210f:19137:13)Understand this error
+Console.js:61 Debug - Dados recebidos: Object
+Console.js:61 Debug - Dados recebidos: Object
+GraficosSection.tsx:637 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at GraficosSection (GraficosSection.tsx:637:47)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=2005210f:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=2005210f:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=2005210f:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=2005210f:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=2005210f:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=2005210f:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=2005210f:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=2005210f:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=2005210f:19137:13)Understand this error
+Console.js:61 The above error occurred in the <GraficosSection> component:
+
+    at GraficosSection (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/components/sections/GraficosSection.tsx:51:32)
+    at div
+    at main
+    at div
+    at Index (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/pages/Index.tsx:31:45)
+    at NotificationProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/contexts/NotificationContext.tsx:21:3)
+    at AppContent (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/App.tsx?v=BwxrT-fkhfSmhR-m9i0X4:33:38)
+    at Provider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-XKNQWAH5.js?v=2005210f:58:15)
+    at TooltipProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=2005210f:56:5)
+    at PermissionsProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/contexts/PermissionsContext.tsx:79:39)
+    at AuthProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/contexts/AuthContext.tsx:20:32)
+    at CategoryProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/src/contexts/CategoryContext.tsx:29:36)
+    at QueryClientProvider (https://a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=2005210f:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+Mt.forEach.n.<computed> @ Console.js:61Understand this error
+chunk-RPCDYKBN.js?v=2005210f:9129 Uncaught TypeError: Cannot read properties of undefined (reading 'map')
+    at GraficosSection (GraficosSection.tsx:637:47)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=2005210f:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=2005210f:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=2005210f:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=2005210f:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=2005210f:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=2005210f:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=2005210f:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=2005210f:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=2005210f:18879:28)
