@@ -628,6 +628,70 @@ const GraficosSection = () => {
 
 
 
+      {/* Top Produtos do Período - Lista */}
+      <Card className="main-card mb-6">
+        <CardHeader>
+          <CardTitle className="text-gray-900 flex items-center gap-2">
+            <Star className="h-5 w-5 text-yellow-600" />
+            Produtos Mais Vendidos
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {(filteredSales || []).length > 0 ? (
+              (() => {
+                // Calcular produtos mais vendidos
+                const productSales: { [key: string]: { vendas: number; receita: number; produto: string } } = {};
+                
+                (filteredSales || []).forEach((sale: any) => {
+                  const product = (products || []).find((p: any) => p.id === sale.product_id);
+                  const productName = product?.name || `Produto ${sale.product_id}`;
+                  
+                  if (!productSales[productName]) {
+                    productSales[productName] = { vendas: 0, receita: 0, produto: productName };
+                  }
+                  
+                  productSales[productName].vendas += Number(sale.quantity) || 0;
+                  productSales[productName].receita += Number(sale.total_price) || 0;
+                });
+                
+                const topProducts = Object.values(productSales)
+                  .sort((a, b) => b.receita - a.receita)
+                  .slice(0, 5);
+                
+                return topProducts.map((productData: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                        <span className="text-sm font-bold text-purple-600">#{index + 1}</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">{productData.produto}</p>
+                        <p className="text-sm text-gray-500">{productData.vendas} vendas</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">
+                        R$ {Number(productData.receita || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        Receita total
+                      </p>
+                    </div>
+                  </div>
+                ));
+              })()
+            ) : (
+              <div className="text-center py-8">
+                <Star className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 text-lg">Nenhuma venda encontrada</p>
+                <p className="text-gray-400 text-sm">Registre vendas para ver os produtos mais populares</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       <CustomAlert 
         isOpen={isOpen}
         onClose={closeAlert}
