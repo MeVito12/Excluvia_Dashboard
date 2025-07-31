@@ -25,6 +25,7 @@ import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useTransfers } from '@/hooks/useTransfers';
 import { useAppointments } from '@/hooks/useAppointments';
+import { useFinancial } from '@/hooks/useFinancial';
 import { formatDateBR } from '@/utils/dateFormat';
 
 interface DashboardSectionProps {
@@ -59,6 +60,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { clients, isLoading: clientsLoading } = useClients();
   const { transfers, isLoading: transfersLoading } = useTransfers();
   const { appointments, isLoading: appointmentsLoading } = useAppointments();
+  const { entries: financialEntries, isLoading: financialLoading } = useFinancial();
 
   // Gerar atividades baseadas em dados reais
   const activities = useMemo(() => {
