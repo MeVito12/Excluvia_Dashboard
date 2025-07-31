@@ -10,7 +10,7 @@ Preferred communication style: Simple, everyday language.
 Never modify components or features that weren't explicitly requested.
 Product registration should include: name, minimum stock, current stock, for sale checkbox (with price field), perishable checkbox (with manufacturing and expiry date fields).
 
-## Database Error Handling
+## Database Error Handling & Security
 
 Common database errors encountered and solutions implemented:
 - **client_type constraint**: Only accepts 'individual' or 'company' (default: 'individual')
@@ -18,6 +18,14 @@ Common database errors encountered and solutions implemented:
 - **Required fields**: appointments need 'type' field, financial entries need proper status values
 - **Data validation**: Implemented comprehensive validation schemas to prevent constraint violations
 - **Error recovery**: Created robust error handling with detailed error messages and validation hints
+
+**Row Level Security (RLS) Implementation:**
+- RLS enabled on all tables (users, companies, products, sales, clients, appointments, financial_entries)
+- Unified policies for optimal performance (one policy per table instead of multiple)
+- Company-based data isolation using auth.email() and user lookup
+- Service role bypass for development operations
+- Performance optimized with proper indexing on foreign keys
+- Automatic data filtering ensures users only see their company's data
 
 ## System Architecture
 
