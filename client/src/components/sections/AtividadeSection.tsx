@@ -23,8 +23,22 @@ const AtividadeSection = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
-  const [dateFrom, setDateFrom] = useState<Date | undefined>();
-  const [dateTo, setDateTo] = useState<Date | undefined>();
+  
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
+  const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
   // Dados das abas usando hooks reais
   const { sales } = useSales();

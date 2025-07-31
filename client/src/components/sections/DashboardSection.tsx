@@ -35,8 +35,21 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { user } = useAuth();
   const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   
-  const [dateFrom, setDateFrom] = useState<string>('');
-  const [dateTo, setDateTo] = useState<string>('');
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
+  const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
@@ -146,8 +159,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Limpar filtros
   const clearFilters = () => {
-    setDateFrom('');
-    setDateTo('');
+    const defaultDates = getDefaultDates();
+    setDateFrom(defaultDates.from);
+    setDateTo(defaultDates.to);
   };
 
   return (

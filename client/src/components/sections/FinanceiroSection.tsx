@@ -63,6 +63,22 @@ const FinanceiroSection = () => {
 
   const { branches = [] } = useBranches();
 
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState(defaultDates.from);
+  const [dateTo, setDateTo] = useState(defaultDates.to);
+
   const [activeTab, setActiveTab] = useState('entradas');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

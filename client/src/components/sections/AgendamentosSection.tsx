@@ -56,15 +56,29 @@ const AgendamentosSection = () => {
     setShowAddModal(true);
   };
 
-  // Estados para filtros de data
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
+    const today = new Date();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
+    
+    return {
+      from: sevenDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState(defaultDates.from);
+  const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Função para limpar filtros
   const clearFilters = () => {
     setSearchTerm('');
-    setStartDate('');
-    setEndDate('');
+    const defaultDates = getDefaultDates();
+    setDateFrom(defaultDates.from);
+    setDateTo(defaultDates.to);
+
   };
 
   // Renderização da agenda
@@ -91,8 +105,8 @@ const AgendamentosSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">De:</span>
             <input
               type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
             />
@@ -104,8 +118,8 @@ const AgendamentosSection = () => {
             <span className="text-sm text-gray-600 whitespace-nowrap">Até:</span>
             <input
               type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
               className="px-3 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               placeholder="dd/mm/aaaa"
             />
