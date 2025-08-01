@@ -326,7 +326,7 @@ export default function VendasSection() {
                       <div className="flex-1">
                         <p className="font-medium">{item.productName}</p>
                         <p className="text-sm text-gray-500">
-                          R$ {item.unitPrice.toFixed(2)} cada
+                          R$ {Number(item.unitPrice || 0).toFixed(2)} cada
                         </p>
                       </div>
                       
@@ -350,7 +350,7 @@ export default function VendasSection() {
                         </Button>
                         
                         <div className="w-20 text-right font-medium">
-                          R$ {item.totalPrice.toFixed(2)}
+                          R$ {Number(item.totalPrice || 0).toFixed(2)}
                         </div>
                         
                         <Button
