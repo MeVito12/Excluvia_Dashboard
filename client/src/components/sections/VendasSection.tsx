@@ -211,14 +211,9 @@ export default function VendasSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Sistema de Vendas</h1>
-          <p className="text-gray-300">Gerenciamento de vendas e carrinho</p>
-        </div>
-        <Badge variant="outline" className="text-lg px-3 py-1">
-          {cart.length} {cart.length === 1 ? 'item' : 'itens'}
-        </Badge>
+      <div>
+        <h1 className="text-3xl font-bold text-white mb-2">Sistema de Vendas</h1>
+        <p className="text-gray-300">Gerenciamento de vendas e carrinho</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
