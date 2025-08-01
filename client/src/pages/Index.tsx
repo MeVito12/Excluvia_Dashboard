@@ -9,6 +9,7 @@ import AtendimentoSection from '@/components/sections/AtendimentoSection';
 import ControleSection from '@/components/sections/ControleSection';
 import FinanceiroSection from '@/components/sections/FinanceiroSection';
 import CadastroSection from '@/components/sections/CadastroSection';
+import VendasSection from '@/components/sections/VendasSection';
 
 
 const Index = () => {
@@ -27,6 +28,8 @@ const Index = () => {
         return <AgendamentosSection />;
       case 'estoque':
         return <EstoqueSection />;
+      case 'vendas':
+        return <VendasSection />;
       case 'atendimento':
         return <AtendimentoSection />;
       case 'financeiro':

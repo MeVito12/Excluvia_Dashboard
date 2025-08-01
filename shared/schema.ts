@@ -272,6 +272,27 @@ export const SaleSchema = z.object({
   notes: z.string().optional(),
 });
 
+// Schema para carrinho de compras (múltiplos itens)
+export const CartItemSchema = z.object({
+  productId: z.number().positive("Produto é obrigatório"),
+  productName: z.string().min(1, "Nome do produto é obrigatório"),
+  quantity: z.number().positive("Quantidade deve ser positiva"),
+  unitPrice: z.number().positive("Preço unitário deve ser positivo"),
+  totalPrice: z.number().positive("Preço total deve ser positivo"),
+  barcode: z.string().optional(),
+});
+
+export const SaleCartSchema = z.object({
+  items: z.array(CartItemSchema).min(1, "Carrinho deve ter pelo menos um item"),
+  clientId: z.number().positive("Cliente é obrigatório").optional(),
+  clientName: z.string().optional(),
+  subtotal: z.number().positive("Subtotal deve ser positivo"),
+  discount: z.number().min(0, "Desconto não pode ser negativo").default(0),
+  totalAmount: z.number().positive("Total deve ser positivo"),
+  paymentMethod: z.enum(['dinheiro', 'pix', 'cartao_credito', 'cartao_debito', 'boleto']),
+  notes: z.string().optional(),
+});
+
 export const ClientSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido").optional(),
@@ -337,6 +358,8 @@ export type NewAppointment = z.infer<typeof AppointmentSchema>;
 export type NewFinancialEntry = z.infer<typeof FinancialEntrySchema>;
 export type NewTransfer = z.infer<typeof TransferSchema>;
 export type NewMoneyTransfer = z.infer<typeof MoneyTransferSchema>;
+export type CartItem = z.infer<typeof CartItemSchema>;
+export type SaleCart = z.infer<typeof SaleCartSchema>;
 
 // ====================================
 // CONSTANTES

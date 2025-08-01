@@ -13,6 +13,7 @@ import {
   Activity, 
   Calendar,
   Package,
+  ShoppingCart,
   MessageCircle,
   Settings,
   LogOut,
@@ -76,7 +77,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       id: 'estoque',
       label: 'Estoque',
       icon: Package,
-      description: 'Estoque, vendas e clientes'
+      description: 'Gestão de produtos e estoque'
+    },
+    {
+      id: 'vendas',
+      label: 'Vendas',
+      icon: ShoppingCart,
+      description: 'Sistema de vendas e carrinho'
     },
     {
       id: 'atendimento',

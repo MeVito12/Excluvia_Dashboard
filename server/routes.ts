@@ -690,6 +690,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Nova rota para vendas de carrinho
+  app.post("/api/sales/cart", async (req, res) => {
+    try {
+      const userId = getUserIdFromRequest(req);
+      const { getDatabase } = await import('./db/database');
+      const { sql } = await import('drizzle-orm');
+      
+      const db = getDatabase();
+      if (!db) {
+        throw new Error('Database not available');
+      }
+
+      const { items, clientId, subtotal, discount, totalAmount, paymentMethod, notes } = req.body;
+      
+      // Validação básica
+      if (!items || !Array.isArray(items) || items.length === 0) {
+        return res.status(400).json({ error: "Carrinho deve ter pelo menos um item" });
+      }
+      
+      if (!paymentMethod) {
+        return res.status(400).json({ error: "Método de pagamento é obrigatório" });
+      }
+
+      // Buscar dados do usuário para obter company_id e branch_id
+      const userResult = await db.execute(sql`
+        SELECT company_id, branch_id FROM users WHERE id = ${userId}
+      `);
+      
+      if (!userResult || userResult.length === 0) {
+        return res.status(400).json({ error: "Usuário não encontrado" });
+      }
+      
+      const { company_id: companyId, branch_id: branchId } = userResult[0];
+      
+      const saleResults = [];
+      
+      // Processar cada item do carrinho como uma venda separada
+      for (const item of items) {
+        const { productId, quantity, unitPrice } = item;
+        const itemTotal = quantity * unitPrice;
+        
+        // Verificar se o produto existe e tem estoque suficiente
+        const productResult = await db.execute(sql`
+          SELECT id, name, stock FROM products 
+          WHERE id = ${productId} AND company_id = ${companyId}
+        `);
+        
+        if (!productResult || productResult.length === 0) {
+          return res.status(400).json({ error: `Produto ${productId} não encontrado` });
+        }
+        
+        const product = productResult[0];
+        if (product.stock < quantity) {
+          return res.status(400).json({ 
+            error: `Estoque insuficiente para ${product.name}. Disponível: ${product.stock}, Solicitado: ${quantity}` 
+          });
+        }
+        
+        // Inserir venda
+        const saleResult = await db.execute(sql`
+          INSERT INTO sales (
+            product_id, client_id, quantity, unit_price, total_price,
+            payment_method, notes, company_id, branch_id, created_by
+          ) VALUES (
+            ${productId}, ${clientId || null}, ${quantity}, ${unitPrice}, ${itemTotal},
+            ${paymentMethod}, ${notes || null}, ${companyId}, ${branchId}, ${userId}
+          ) RETURNING *
+        `);
+        
+        // Atualizar estoque
+        await db.execute(sql`
+          UPDATE products 
+          SET stock = stock - ${quantity}
+          WHERE id = ${productId}
+        `);
+        
+        saleResults.push(saleResult[0]);
+      }
+      
+      // Criar entrada financeira para a venda total
+      await db.execute(sql`
+        INSERT INTO financial_entries (
+          type, amount, description, category, payment_method, status,
+          company_id, branch_id, created_by
+        ) VALUES (
+          'income', ${totalAmount}, 
+          ${`Venda carrinho ${items.length} itens${notes ? ` - ${notes}` : ''}`},
+          'Vendas', ${paymentMethod}, 'paid',
+          ${companyId}, ${branchId}, ${userId}
+        )
+      `);
+      
+      res.json({ 
+        success: true, 
+        message: `${items.length} ${items.length === 1 ? 'item vendido' : 'itens vendidos'} com sucesso`,
+        totalAmount,
+        salesCount: saleResults.length
+      });
+      
+    } catch (error) {
+      console.error("Error processing cart sale:", error);
+      res.status(500).json({ error: "Erro ao processar venda do carrinho" });
+    }
+  });
+
   // Rotas de clientes
   app.get("/api/clients", async (req, res) => {
     try {
