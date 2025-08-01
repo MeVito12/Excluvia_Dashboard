@@ -36,7 +36,6 @@ export default function VendasSection() {
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [discount, setDiscount] = useState<number>(0);
-  const [notes, setNotes] = useState<string>("");
   
   // Estados de busca de produtos
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -156,7 +155,6 @@ export default function VendasSection() {
     setSelectedClient(null);
     setPaymentMethod("");
     setDiscount(0);
-    setNotes("");
   };
 
   // Calcular totais
@@ -192,7 +190,6 @@ export default function VendasSection() {
       discount,
       totalAmount,
       paymentMethod: paymentMethod as any,
-      notes: notes || undefined,
     };
 
     processSaleMutation.mutate(saleData);
@@ -429,18 +426,6 @@ export default function VendasSection() {
                   max="100"
                   value={discount}
                   onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                />
-              </div>
-
-              {/* Observações */}
-              <div>
-                <Label htmlFor="notes">Observações</Label>
-                <Textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Observações sobre a venda..."
-                  rows={3}
                 />
               </div>
 
