@@ -170,7 +170,7 @@ const FinanceiroSection = () => {
 
       await createFinancialEntry(entryData);
       
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
         variant: "success"
@@ -179,7 +179,7 @@ const FinanceiroSection = () => {
       setIsCreateModalOpen(false);
       resetForm();
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
         variant: "destructive"
@@ -200,7 +200,7 @@ const FinanceiroSection = () => {
         }
       });
 
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: "Pagamento registrado com sucesso",
         variant: "success"
@@ -209,7 +209,7 @@ const FinanceiroSection = () => {
       setIsPayModalOpen(false);
       setSelectedEntry(null);
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao registrar pagamento",
         variant: "destructive"
@@ -228,13 +228,13 @@ const FinanceiroSection = () => {
         }
       });
       
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: "Pagamento revertido com sucesso",
         variant: "success"
       });
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao reverter pagamento",
         variant: "destructive"
@@ -246,13 +246,13 @@ const FinanceiroSection = () => {
     try {
       await deleteFinancialEntry(entryId);
       
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: "Registro excluído com sucesso",
         variant: "success"
       });
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao excluir registro",
         variant: "destructive"
@@ -274,7 +274,7 @@ const FinanceiroSection = () => {
 
       await createMoneyTransfer(transferFormData);
       
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: "Transferência criada com sucesso",
         variant: "success"
@@ -290,7 +290,7 @@ const FinanceiroSection = () => {
         notes: ''
       });
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao criar transferência",
         variant: "destructive"
@@ -305,13 +305,13 @@ const FinanceiroSection = () => {
         transfer: { status: newStatus }
       });
       
-      showAlert({
+console.log("Action performed");
         title: "Sucesso",
         description: `Transferência ${newStatus === 'approved' ? 'aprovada' : newStatus === 'completed' ? 'concluída' : 'rejeitada'} com sucesso`,
         variant: "success"
       });
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao atualizar transferência",
         variant: "destructive"
@@ -794,7 +794,7 @@ const FinanceiroSection = () => {
                             if (entry.paymentProof) {
                               window.open(entry.paymentProof, '_blank');
                             } else {
-                              showAlert({
+console.log("Action performed");
                                 title: "Comprovante",
                                 description: "Nenhum comprovante anexado para este registro",
                                 variant: "warning"

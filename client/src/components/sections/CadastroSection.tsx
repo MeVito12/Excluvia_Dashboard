@@ -200,14 +200,14 @@ const CadastroSection = () => {
       }
       
       setCurrentStep('master');
-      showAlert({
+console.log("Action performed");
         title: "Empresa Cadastrada",
         description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
         variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao cadastrar empresa. Tente novamente.",
         variant: "destructive"
@@ -235,7 +235,7 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-      showAlert({
+console.log("Action performed");
         title: "Usuário Master Criado",
         description: `${masterUserData.name} foi cadastrado com sucesso!`,
         variant: "success"
@@ -245,7 +245,7 @@ const CadastroSection = () => {
       setCurrentStep('branches');
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao criar usuário master. Tente novamente.",
         variant: "destructive"
@@ -278,14 +278,14 @@ const CadastroSection = () => {
         email: '',
         isMain: false
       });
-      showAlert({
+console.log("Action performed");
         title: "Filial Criada",
         description: `${branch.name} foi cadastrada com sucesso!`,
         variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao criar filial. Tente novamente.",
         variant: "destructive"
@@ -317,14 +317,14 @@ const CadastroSection = () => {
         password: '',
         role: 'user'
       });
-      showAlert({
+console.log("Action performed");
         title: "Usuário Criado",
         description: `${newUser.name} foi cadastrado com sucesso!`,
         variant: "success"
       });
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao criar usuário. Tente novamente.",
         variant: "destructive"
@@ -336,7 +336,7 @@ const CadastroSection = () => {
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory || !companyData.address.trim()) {
-      showAlert({
+console.log("Action performed");
         title: "Campos Obrigatórios",
         description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
         variant: "destructive"
@@ -384,7 +384,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newBranch.name.trim()) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Nome da filial é obrigatório.",
         variant: "destructive"
@@ -400,7 +400,7 @@ const CadastroSection = () => {
     setBranches(prev => [...prev, branchToCreate]);
     setNewBranch({ name: '', address: '', phone: '', email: '', isMain: false });
     
-    showAlert({
+console.log("Action performed");
       title: "Sucesso",
       description: "Filial adicionada com sucesso!",
       variant: "default"
@@ -412,7 +412,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!newCommonUser.name.trim() || !newCommonUser.email.trim()) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Nome e e-mail são obrigatórios.",
         variant: "destructive"
@@ -421,7 +421,7 @@ const CadastroSection = () => {
     }
 
     if (!validateEmail(newCommonUser.email)) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "E-mail inválido.",
         variant: "destructive"
@@ -437,7 +437,7 @@ const CadastroSection = () => {
     setCommonUsers(prev => [...prev, userToCreate]);
     setNewCommonUser({ name: '', email: '', password: '', role: 'user' });
     
-    showAlert({
+console.log("Action performed");
       title: "Sucesso",
       description: "Usuário adicionado com sucesso!",
       variant: "default"
@@ -449,7 +449,7 @@ const CadastroSection = () => {
     e.preventDefault();
     
     if (!companyCreated) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Empresa não encontrada. Tente novamente.",
         variant: "destructive"
@@ -458,7 +458,7 @@ const CadastroSection = () => {
     }
 
     if (masterUserData.password !== masterUserData.confirmPassword) {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "As senhas não coincidem.",
         variant: "destructive"
@@ -503,7 +503,7 @@ const CadastroSection = () => {
     // Voltar ao início do fluxo
     setCurrentStep('company');
     
-    showAlert({
+console.log("Action performed");
       title: "Sucesso",
       description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
       variant: "success"
@@ -562,7 +562,7 @@ const CadastroSection = () => {
       return response.json();
     },
     onSuccess: () => {
-      showAlert({
+console.log("Action performed");
         title: "Role Atualizada",
         description: "Role do usuário foi atualizada com sucesso!",
         variant: "success"
@@ -572,7 +572,7 @@ const CadastroSection = () => {
       setNewRole('');
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao atualizar role do usuário.",
         variant: "destructive"

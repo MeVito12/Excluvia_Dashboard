@@ -34,7 +34,7 @@ const AgendamentosSection = () => {
 
   // Função para marcar compromisso como concluído
   const markAsCompleted = (appointmentId: number) => {
-    showAlert({
+console.log("Action performed");
       title: "Compromisso Concluído",
       description: "O agendamento foi marcado como concluído com sucesso",
       variant: "success"
@@ -43,7 +43,7 @@ const AgendamentosSection = () => {
 
   // Função para editar compromisso
   const editAppointment = (appointmentId: number) => {
-    showAlert({
+console.log("Action performed");
       title: "Editar Compromisso",
       description: "Funcionalidade de edição será implementada em breve",
       variant: "default"
@@ -164,7 +164,7 @@ const AgendamentosSection = () => {
                   <div className="list-item-actions">
                     <button 
                       onClick={() => {
-                        showAlert({
+console.log("Action performed");
                           title: `Visualizando Compromisso`,
                           description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${formatDateBR(appointment.appointment_date)} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
                           variant: "default"
@@ -346,7 +346,7 @@ const AgendamentosSection = () => {
               <button 
                 onClick={() => {
                   if (newAppointment.title && newAppointment.client && newAppointment.date && newAppointment.time) {
-                    showAlert({
+console.log("Action performed");
                       title: "Compromisso Agendado",
                       description: `O compromisso "${newAppointment.title}" foi agendado com sucesso para ${newAppointment.date} às ${newAppointment.time}`,
                       variant: "success"
@@ -354,7 +354,7 @@ const AgendamentosSection = () => {
                     setNewAppointment({ title: '', client: '', date: '', time: '', type: 'consulta', notes: '' });
                     setShowAddModal(false);
                   } else {
-                    showAlert({
+console.log("Action performed");
                       title: "Campos Obrigatórios",
                       description: "Por favor, preencha todos os campos obrigatórios (título, cliente, data e horário)",
                       variant: "destructive"

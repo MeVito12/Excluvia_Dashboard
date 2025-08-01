@@ -111,7 +111,7 @@ const ControleSection = () => {
     },
     onSuccess: (data, variables) => {
       const targetUser = companyUsers.find(u => u.id === variables.userId);
-      showAlert({
+console.log("Action performed");
         title: "Permissões Salvas",
         description: `Permissões do usuário ${targetUser?.name} foram atualizadas com sucesso.`,
         variant: "success"
@@ -119,7 +119,7 @@ const ControleSection = () => {
       queryClient.invalidateQueries({ queryKey: [`/api/company-users/${company?.id}`] });
     },
     onError: () => {
-      showAlert({
+console.log("Action performed");
         title: "Erro",
         description: "Erro ao atualizar permissões do usuário.",
         variant: "destructive"

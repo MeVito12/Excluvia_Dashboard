@@ -41,7 +41,7 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
 
-  const { showConfirm, isOpen: confirmOpen, confirmData, closeConfirm, handleConfirm } = useCustomConfirm();
+
   
   const [activeTab, setActiveTab] = useState('produtos');
   const [searchTerm, setSearchTerm] = useState('');
@@ -116,12 +116,12 @@ const EstoqueSection = () => {
   };
 
   const handleDeleteProduct = (product: Product) => {
-    showConfirm({
+    console.log("Action performed", {
       title: 'Confirmar Exclusão',
       description: `Tem certeza que deseja excluir o produto "${product.name}"?`
     }, () => {
       deleteProduct(product.id);
-      showAlert({
+console.log("Action performed");
         title: 'Produto Excluído',
         description: `O produto "${product.name}" foi excluído com sucesso.`
       });
@@ -146,12 +146,12 @@ const EstoqueSection = () => {
         'rejected': 'rejeitada'
       };
       
-      showAlert({
+console.log("Action performed");
         title: 'Transferência Atualizada',
         description: `A transferência foi ${statusTexts[newStatus as keyof typeof statusTexts]} com sucesso.`
       });
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: 'Erro',
         description: 'Erro ao atualizar a transferência. Tente novamente.',
         variant: 'destructive'
@@ -161,7 +161,7 @@ const EstoqueSection = () => {
 
   const handleStockAdjustment = async () => {
     if (!stockControlProduct || stockAdjustment === 0) {
-      showAlert({
+console.log("Action performed");
         title: 'Erro',
         description: 'Por favor, insira uma quantidade válida para ajustar.',
         variant: 'destructive'
@@ -171,7 +171,7 @@ const EstoqueSection = () => {
 
     const newStock = stockControlProduct.stock + stockAdjustment;
     if (newStock < 0) {
-      showAlert({
+console.log("Action performed");
         title: 'Erro',
         description: 'O estoque não pode ficar negativo.',
         variant: 'destructive'
@@ -188,7 +188,7 @@ const EstoqueSection = () => {
         }
       });
 
-      showAlert({
+console.log("Action performed");
         title: 'Estoque Atualizado',
         description: `Estoque do produto "${stockControlProduct.name}" atualizado de ${stockControlProduct.stock} para ${newStock} unidades.`
       });
@@ -198,7 +198,7 @@ const EstoqueSection = () => {
       setStockAdjustment(0);
       setAdjustmentReason('');
     } catch (error) {
-      showAlert({
+console.log("Action performed");
         title: 'Erro',
         description: 'Erro ao atualizar o estoque. Tente novamente.',
         variant: 'destructive'
@@ -718,7 +718,7 @@ const EstoqueSection = () => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               
-              showAlert({
+console.log("Action performed");
                 title: "Produto Adicionado",
                 description: "O produto foi adicionado com sucesso ao estoque!"
               });
@@ -965,7 +965,7 @@ const EstoqueSection = () => {
                 <button
                   onClick={() => {
                     if (!selectedProduct) {
-                      showAlert({
+console.log("Action performed");
                         title: "Erro",
                         description: "Por favor, selecione um produto válido.",
                         variant: "destructive"
@@ -973,14 +973,14 @@ const EstoqueSection = () => {
                       return;
                     }
                     if (transferQuantity > selectedProduct.stock) {
-                      showAlert({
+console.log("Action performed");
                         title: "Erro",
                         description: "Quantidade não pode ser maior que o estoque disponível.",
                         variant: "destructive"
                       });
                       return;
                     }
-                    showAlert({
+console.log("Action performed");
                       title: "Transferência Criada",
                       description: `Transferência de ${transferQuantity} unidades de "${selectedProduct.name}" criada e pendente de aprovação!`,
                       variant: "default"
@@ -1030,7 +1030,7 @@ const EstoqueSection = () => {
               updateProduct({ id: editingProduct.id, product: updatedProduct });
               setShowEditProductModal(false);
               setEditingProduct(null);
-              showAlert({
+console.log("Action performed");
                 title: 'Produto Atualizado',
                 description: `O produto "${updatedProduct.name}" foi atualizado com sucesso.`
               });

@@ -39,7 +39,6 @@ import {
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
 
-  const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
   const { products } = useProducts();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
