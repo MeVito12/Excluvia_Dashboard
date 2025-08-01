@@ -44,6 +44,7 @@ export default function VendasSection() {
   const [showProductSearch, setShowProductSearch] = useState<boolean>(false);
   const [showClientModal, setShowClientModal] = useState<boolean>(false);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
+  const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
 
   // Buscar produtos
   const { data: products = [] } = useQuery<Product[]>({
@@ -484,40 +485,87 @@ export default function VendasSection() {
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
               <button 
-                onClick={() => setShowClientModal(false)}
+                onClick={() => {
+                  setShowClientModal(false);
+                  setClientSearchTerm("");
+                }}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✕
               </button>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-4">
+              {/* Campo de Busca */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Buscar por CPF/CNPJ ou Nome
+                </label>
+                <input
+                  type="text"
+                  value={clientSearchTerm}
+                  onChange={(e) => setClientSearchTerm(e.target.value)}
+                  placeholder="Digite CPF, CNPJ ou nome do cliente..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              {/* Opção sem cliente */}
               <button
                 onClick={() => {
                   setSelectedClient(null);
                   setShowClientModal(false);
+                  setClientSearchTerm("");
                 }}
                 className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
               >
-                Venda sem cliente
+                <div className="font-medium">Venda sem cliente</div>
+                <div className="text-xs text-gray-500">Venda avulsa</div>
               </button>
               
-              {clients.map((client) => (
-                <button
-                  key={client.id}
-                  onClick={() => {
-                    setSelectedClient(client.id!);
-                    setShowClientModal(false);
-                  }}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
-                >
-                  {client.name}
-                </button>
-              ))}
+              {/* Lista de clientes filtrados */}
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {clients
+                  .filter(client => 
+                    !clientSearchTerm || 
+                    client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
+                    (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
+                    (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
+                  )
+                  .map((client) => (
+                    <button
+                      key={client.id}
+                      onClick={() => {
+                        setSelectedClient(client.id!);
+                        setShowClientModal(false);
+                        setClientSearchTerm("");
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
+                    >
+                      <div className="font-medium">{client.name}</div>
+                      <div className="text-xs text-gray-500">
+                        {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
+                        {client.email && ` • ${client.email}`}
+                      </div>
+                    </button>
+                  ))}
+              </div>
+
+              {/* Mensagem quando não há resultados */}
+              {clientSearchTerm && clients.filter(client => 
+                client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
+                (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
+                (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
+              ).length === 0 && (
+                <div className="text-center py-4 text-gray-500">
+                  <p>Nenhum cliente encontrado</p>
+                  <p className="text-xs">Tente buscar por nome, CPF ou CNPJ</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
