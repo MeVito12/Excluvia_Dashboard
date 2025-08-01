@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign } from "lucide-react";
+import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
@@ -485,10 +485,9 @@ export default function VendasSection() {
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-hidden relative">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Selecionar Cliente</h3>
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
               <button 
                 onClick={() => {
                   setShowClientModal(false);
@@ -500,98 +499,100 @@ export default function VendasSection() {
               </button>
             </div>
             
-            {/* Content */}
-            <div className="p-6">
-              {/* Campo de Busca */}
-              <div className="mb-4">
-                <input
-                  type="text"
-                  value={clientSearchTerm}
-                  onChange={(e) => setClientSearchTerm(e.target.value)}
-                  placeholder="Pesquisar clientes..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-600"
-                />
-              </div>
-
-              {/* Lista de clientes */}
-              <div className="space-y-1 max-h-80 overflow-y-auto">
-                {/* Opção sem cliente */}
-                <div 
-                  onClick={() => {
-                    setSelectedClient(null);
-                    setShowClientModal(false);
-                    setClientSearchTerm("");
-                  }}
-                  className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedClient === null}
-                    onChange={() => {}}
-                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
-                  />
-                  <div>
-                    <div className="font-medium text-gray-900">Venda sem cliente</div>
-                    <div className="text-sm text-gray-500">Venda avulsa</div>
+            {/* Campo de pesquisa */}
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Pesquisar clientes..."
+                value={clientSearchTerm}
+                onChange={(e) => setClientSearchTerm(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              />
+            </div>
+            
+            {/* Lista de clientes */}
+            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
+              {/* Opção sem cliente */}
+              <div className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => {
+                          setSelectedClient(null);
+                          setShowClientModal(false);
+                          setClientSearchTerm("");
+                        }}
+                        className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                      >
+                        {selectedClient === null && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
+                      </button>
+                      <div>
+                        <h4 className="font-medium text-gray-800">Venda sem cliente</h4>
+                        <p className="text-sm text-gray-600">Venda avulsa</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                
-                {/* Clientes filtrados */}
-                {clients
-                  .filter(client => 
-                    !clientSearchTerm || 
-                    client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
-                    (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
-                    (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
-                  )
-                  .map((client) => (
-                    <div
-                      key={client.id}
-                      onClick={() => {
-                        setSelectedClient(client.id!);
-                        setShowClientModal(false);
-                        setClientSearchTerm("");
-                      }}
-                      className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedClient === client.id}
-                        onChange={() => {}}
-                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
-                      />
-                      <div>
-                        <div className="font-medium text-gray-900">{client.name}</div>
-                        <div className="text-sm text-gray-500">
-                          {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
-                          {client.email && ` • ${client.email}`}
+              </div>
+              
+              {/* Clientes filtrados */}
+              {clients
+                .filter(client => 
+                  !clientSearchTerm || 
+                  client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
+                  (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
+                  (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
+                )
+                .map((client) => (
+                  <div key={client.id} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              setSelectedClient(client.id!);
+                              setShowClientModal(false);
+                              setClientSearchTerm("");
+                            }}
+                            className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                          >
+                            {selectedClient === client.id && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
+                          </button>
+                          <div>
+                            <h4 className="font-medium text-gray-800">{client.name}</h4>
+                            <p className="text-sm text-gray-600">
+                              {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
+                              {client.email && ` • ${client.email}`}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-              </div>
-
-              {/* Mensagem quando não há resultados */}
-              {clientSearchTerm && clients.filter(client => 
-                client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
-                (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
-                (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
-              ).length === 0 && (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Nenhum cliente encontrado</p>
-                  <p className="text-sm">Tente buscar por nome, CPF ou CNPJ</p>
-                </div>
-              )}
+                  </div>
+                ))}
             </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-gray-200">
+            
+            {/* Mensagem quando não há resultados */}
+            {clientSearchTerm && clients.filter(client => 
+              client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
+              (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
+              (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
+            ).length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p>Nenhum cliente encontrado</p>
+                <p className="text-sm mt-1">Tente pesquisar por outro termo</p>
+              </div>
+            )}
+            
+            <div className="flex gap-3 pt-4 border-t">
               <button
                 onClick={() => {
                   setShowClientModal(false);
                   setClientSearchTerm("");
                 }}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Cancelar
               </button>
@@ -603,10 +604,9 @@ export default function VendasSection() {
       {/* Modal de Seleção de Método de Pagamento */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-hidden relative">
-            {/* Header */}
-            <div className="flex justify-between items-center p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Método de Pagamento</h3>
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
               <button 
                 onClick={() => setShowPaymentModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -615,44 +615,43 @@ export default function VendasSection() {
               </button>
             </div>
             
-            {/* Content */}
-            <div className="p-6">
-              <div className="space-y-1">
-                {[
-                  { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
-                  { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
-                  { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
-                  { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
-                  { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
-                ].map((method) => (
-                  <div
-                    key={method.value}
-                    onClick={() => {
-                      setPaymentMethod(method.value);
-                      setShowPaymentModal(false);
-                    }}
-                    className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={paymentMethod === method.value}
-                      onChange={() => {}}
-                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
-                    />
-                    <div>
-                      <div className="font-medium text-gray-900">{method.label}</div>
-                      <div className="text-sm text-gray-500">{method.description}</div>
+            {/* Lista de métodos */}
+            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
+              {[
+                { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
+                { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
+                { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
+                { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
+                { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
+              ].map((method) => (
+                <div key={method.value} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            setPaymentMethod(method.value);
+                            setShowPaymentModal(false);
+                          }}
+                          className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                        >
+                          {paymentMethod === method.value && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
+                        </button>
+                        <div>
+                          <h4 className="font-medium text-gray-800">{method.label}</h4>
+                          <p className="text-sm text-gray-600">{method.description}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-
-            {/* Footer */}
-            <div className="p-6 border-t border-gray-200">
+            
+            <div className="flex gap-3 pt-4 border-t">
               <button
                 onClick={() => setShowPaymentModal(false)}
-                className="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Cancelar
               </button>
