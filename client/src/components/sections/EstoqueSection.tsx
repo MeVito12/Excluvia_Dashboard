@@ -26,8 +26,26 @@ import {
   Calendar
 } from 'lucide-react';
 
-// Função para obter status do produto baseado no estoque e validade
-const getProductStatus = (stock: number, minStock: number, expiryDate?: string) => {
+// Função para obter status do produto baseado no estoque e validade - específico para farmácias
+const getProductStatus = (product: any) => {
+  const { stock, minStock, expiryDate, status } = product;
+  
+  // Se já tem status definido no banco, usar ele
+  if (status) {
+    const statusMap = {
+      'available': 'Disponível',
+      'low_stock': 'Estoque Baixo', 
+      'out_of_stock': 'Sem Estoque',
+      'expiring_soon': 'Vencendo em Breve',
+      'expiring_medium': 'Próximo ao Vencimento',
+      'expired': 'Vencido',
+      'recalled': 'Recolhido',
+      'discontinued': 'Descontinuado'
+    };
+    return statusMap[status] || status;
+  }
+  
+  // Fallback para cálculo manual
   if (stock === 0) return 'Sem Estoque';
   if (expiryDate) {
     const today = new Date();
@@ -36,10 +54,33 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) return 'Vencido';
-    if (diffDays <= 3) return 'Próximo ao Vencimento';
+    if (diffDays <= 7) return 'Vencendo em Breve';
+    if (diffDays <= 30) return 'Próximo ao Vencimento';
   }
   if (stock <= minStock) return 'Estoque Baixo';
-  return 'Em Estoque';
+  return 'Disponível';
+};
+
+// Função para obter cor do status
+const getStatusColor = (product: any) => {
+  const statusText = getProductStatus(product);
+  switch (statusText) {
+    case 'Vencido':
+    case 'Recolhido':
+      return 'text-red-600 bg-red-50';
+    case 'Vencendo em Breve':
+    case 'Sem Estoque':
+      return 'text-orange-600 bg-orange-50';
+    case 'Próximo ao Vencimento':
+    case 'Estoque Baixo':
+      return 'text-yellow-600 bg-yellow-50';
+    case 'Descontinuado':
+      return 'text-gray-600 bg-gray-50';
+    case 'Disponível':
+      return 'text-green-600 bg-green-50';
+    default:
+      return 'text-blue-600 bg-blue-50';
+  }
 };
 
 const EstoqueSection = () => {
