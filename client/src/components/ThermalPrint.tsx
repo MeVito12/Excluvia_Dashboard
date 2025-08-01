@@ -33,19 +33,139 @@ interface ThermalPrintProps {
     phone?: string;
   };
   includeClient?: boolean;
+  printerType?: 'thermal' | 'conventional';
 }
 
 const ThermalPrint: React.FC<ThermalPrintProps> = ({ 
   sale, 
   company, 
   branch, 
-  includeClient = false 
+  includeClient = false,
+  printerType = 'thermal'
 }) => {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
     }).format(value);
+  };
+
+  const getStylesForPrinterType = () => {
+    if (printerType === 'conventional') {
+      return `
+        @page {
+          size: A4;
+          margin: 20mm;
+        }
+        @media print {
+          body { margin: 0; }
+          .no-print { display: none; }
+        }
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          line-height: 1.4;
+          margin: 0;
+          padding: 20px;
+          max-width: 210mm;
+          color: #000;
+        }
+        .header {
+          text-align: center;
+          border-bottom: 2px solid #000;
+          padding-bottom: 15px;
+          margin-bottom: 20px;
+        }
+        .company-name { 
+          font-weight: bold; 
+          font-size: 18px; 
+          margin-bottom: 5px;
+        }
+        .separator { 
+          border-top: 1px solid #000; 
+          margin: 15px 0; 
+        }
+        .item-line { 
+          display: flex; 
+          justify-content: space-between; 
+          margin: 8px 0;
+          padding: 4px 0;
+        }
+        .total-line { 
+          font-weight: bold; 
+          border-top: 2px solid #000; 
+          padding-top: 10px; 
+          margin-top: 15px;
+          font-size: 16px;
+        }
+        .footer {
+          text-align: center;
+          border-top: 1px solid #000;
+          padding-top: 15px;
+          margin-top: 20px;
+          font-size: 12px;
+        }
+        .product-item {
+          margin-bottom: 10px;
+          padding: 5px 0;
+        }
+        .client-section {
+          background-color: #f5f5f5;
+          padding: 15px;
+          border-radius: 5px;
+          margin: 15px 0;
+        }
+      `;
+    } else {
+      // Thermal printer styles (original)
+      return `
+        @media print {
+          body { margin: 0; }
+          .no-print { display: none; }
+        }
+        body {
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          line-height: 1.2;
+          margin: 0;
+          padding: 10px;
+          width: 80mm;
+          max-width: 300px;
+        }
+        .header {
+          text-align: center;
+          border-bottom: 1px dashed #000;
+          padding-bottom: 5px;
+          margin-bottom: 10px;
+        }
+        .company-name { font-weight: bold; font-size: 14px; }
+        .separator { border-top: 1px dashed #000; margin: 5px 0; }
+        .item-line { 
+          display: flex; 
+          justify-content: space-between; 
+          margin: 2px 0;
+        }
+        .total-line { 
+          font-weight: bold; 
+          border-top: 1px dashed #000; 
+          padding-top: 5px; 
+          margin-top: 5px;
+        }
+        .footer {
+          text-align: center;
+          border-top: 1px dashed #000;
+          padding-top: 5px;
+          margin-top: 10px;
+          font-size: 10px;
+        }
+        .product-item {
+          margin-bottom: 5px;
+        }
+        .client-section {
+          margin: 10px 0;
+        }
+      `;
+    }
   };
 
   const printContent = () => {
@@ -59,46 +179,9 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
       <html>
       <head>
         <title>Comprovante de Venda #${sale.id}</title>
+        <meta charset="UTF-8">
         <style>
-          @media print {
-            body { margin: 0; }
-            .no-print { display: none; }
-          }
-          body {
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.2;
-            margin: 0;
-            padding: 10px;
-            width: 80mm;
-            max-width: 300px;
-          }
-          .header {
-            text-align: center;
-            border-bottom: 1px dashed #000;
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-          }
-          .company-name { font-weight: bold; font-size: 14px; }
-          .separator { border-top: 1px dashed #000; margin: 5px 0; }
-          .item-line { 
-            display: flex; 
-            justify-content: space-between; 
-            margin: 2px 0;
-          }
-          .total-line { 
-            font-weight: bold; 
-            border-top: 1px dashed #000; 
-            padding-top: 5px; 
-            margin-top: 5px;
-          }
-          .footer {
-            text-align: center;
-            border-top: 1px dashed #000;
-            padding-top: 5px;
-            margin-top: 10px;
-            font-size: 10px;
-          }
+          ${getStylesForPrinterType()}
         </style>
       </head>
       <body>
@@ -142,10 +225,12 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
         <div className="separator"></div>
 
         <div>
-          <div style={{ fontWeight: 'bold' }}>ITENS:</div>
+          <div style={{ fontWeight: 'bold', marginBottom: printerType === 'conventional' ? '10px' : '5px' }}>ITENS:</div>
           {sale.products.map((product, index) => (
-            <div key={index}>
-              <div>{product.name}</div>
+            <div key={index} className="product-item">
+              <div style={{ fontWeight: printerType === 'conventional' ? 'bold' : 'normal' }}>
+                {product.name}
+              </div>
               <div className="item-line">
                 <span>{product.quantity}x {formatCurrency(product.price)}</span>
                 <span>{formatCurrency(product.total)}</span>
@@ -170,13 +255,15 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
         {includeClient && sale.client && (
           <>
             <div className="separator"></div>
-            <div>
-              <div style={{ fontWeight: 'bold' }}>DADOS DO CLIENTE:</div>
-              <div>Nome: {sale.client.name}</div>
-              {sale.client.cpf && <div>CPF: {sale.client.cpf}</div>}
-              {sale.client.cnpj && <div>CNPJ: {sale.client.cnpj}</div>}
-              {sale.client.phone && <div>Tel: {sale.client.phone}</div>}
-              {sale.client.address && <div>End: {sale.client.address}</div>}
+            <div className="client-section">
+              <div style={{ fontWeight: 'bold', marginBottom: printerType === 'conventional' ? '8px' : '3px' }}>
+                DADOS DO CLIENTE:
+              </div>
+              <div style={{ marginBottom: '3px' }}>Nome: {sale.client.name}</div>
+              {sale.client.cpf && <div style={{ marginBottom: '3px' }}>CPF: {sale.client.cpf}</div>}
+              {sale.client.cnpj && <div style={{ marginBottom: '3px' }}>CNPJ: {sale.client.cnpj}</div>}
+              {sale.client.phone && <div style={{ marginBottom: '3px' }}>Tel: {sale.client.phone}</div>}
+              {sale.client.address && <div style={{ marginBottom: '3px' }}>End: {sale.client.address}</div>}
             </div>
           </>
         )}
@@ -187,12 +274,14 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
         </div>
       </div>
       
-      <button 
-        onClick={printContent}
-        className="no-print bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-      >
-        🖨️ Imprimir Comprovante
-      </button>
+      <div className="no-print flex gap-2">
+        <button 
+          onClick={() => printContent()}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm flex items-center gap-1"
+        >
+          🖨️ {printerType === 'thermal' ? 'Impressora Térmica' : 'Impressora Convencional'}
+        </button>
+      </div>
     </div>
   );
 };

@@ -62,6 +62,7 @@ Common database errors encountered and solutions implemented:
 - **Product Management**: Full product registration, intelligent stock control, ingredient-based recipe system for food category, and comprehensive dish management with ingredient selection and automatic stock deduction.
 - **Portfolio System**: For creative categories (Design, Sites), manual project addition with images, links, descriptions, and categorization.
 - **Access Control**: Master user system with permissions management (ControleSection) to configure regular user access to sections.
+- **Flexible Printing System**: Dual-mode printing support for both thermal (80mm) and conventional (A4) printers with optimized layouts for each format, automatic printer detection, and user-selectable printing options.
 
 ## External Dependencies
 

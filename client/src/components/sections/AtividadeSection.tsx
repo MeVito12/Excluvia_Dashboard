@@ -13,7 +13,7 @@ import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useProducts } from '@/hooks/useProducts';
-import ThermalPrint from '@/components/ThermalPrint';
+import PrintOptions from '@/components/PrintOptions';
 
 import React from 'react';
 
@@ -550,8 +550,8 @@ const AtividadeSection = () => {
             <div className="space-y-4">
               <p className="text-gray-600">Comprovante da venda #{printSaleData.id}</p>
               
-              <div className="border rounded-lg p-3 bg-gray-50">
-                <ThermalPrint
+              <div className="border rounded-lg p-4 bg-gray-50">
+                <PrintOptions
                   sale={printSaleData}
                   company={{
                     name: "Demo Restaurante Bella Vista",
