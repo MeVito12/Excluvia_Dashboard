@@ -80,13 +80,6 @@ export interface Product {
   expiryDate?: string;
   isPerishable: boolean;
   forSale: boolean; // Se está à venda (aparece no cardápio) ou é apenas ingrediente
-  // Campos específicos para farmácias
-  batchNumber?: string; // Número do lote
-  supplier?: string; // Fornecedor
-  status: 'available' | 'low_stock' | 'out_of_stock' | 'expiring_soon' | 'expiring_medium' | 'expired' | 'recalled' | 'discontinued';
-  requiresPrescription?: boolean; // Necessita receita médica
-  controlledSubstance?: boolean; // Medicamento controlado
-  storageTemperature?: 'ambiente_15_25' | 'ambiente_15_30' | 'refrigerado_2_8' | 'congelado_minus_20'; // Condições de armazenamento
   companyId: number;
   branchId: number;
   createdBy: number;

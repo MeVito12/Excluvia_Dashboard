@@ -26,26 +26,8 @@ import {
   Calendar
 } from 'lucide-react';
 
-// Função para obter status do produto baseado no estoque e validade - específico para farmácias
-const getProductStatus = (product: any) => {
-  const { stock, minStock, expiryDate, status } = product;
-  
-  // Se já tem status definido no banco, usar ele
-  if (status) {
-    const statusMap = {
-      'available': 'Disponível',
-      'low_stock': 'Estoque Baixo', 
-      'out_of_stock': 'Sem Estoque',
-      'expiring_soon': 'Vencendo em Breve',
-      'expiring_medium': 'Próximo ao Vencimento',
-      'expired': 'Vencido',
-      'recalled': 'Recolhido',
-      'discontinued': 'Descontinuado'
-    };
-    return statusMap[status] || status;
-  }
-  
-  // Fallback para cálculo manual
+// Função para obter status do produto baseado no estoque e validade
+const getProductStatus = (stock: number, minStock: number, expiryDate?: string) => {
   if (stock === 0) return 'Sem Estoque';
   if (expiryDate) {
     const today = new Date();
@@ -54,33 +36,10 @@ const getProductStatus = (product: any) => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 0) return 'Vencido';
-    if (diffDays <= 7) return 'Vencendo em Breve';
-    if (diffDays <= 30) return 'Próximo ao Vencimento';
+    if (diffDays <= 3) return 'Próximo ao Vencimento';
   }
   if (stock <= minStock) return 'Estoque Baixo';
-  return 'Disponível';
-};
-
-// Função para obter cor do status
-const getStatusColor = (product: any) => {
-  const statusText = getProductStatus(product);
-  switch (statusText) {
-    case 'Vencido':
-    case 'Recolhido':
-      return 'text-red-600 bg-red-50';
-    case 'Vencendo em Breve':
-    case 'Sem Estoque':
-      return 'text-orange-600 bg-orange-50';
-    case 'Próximo ao Vencimento':
-    case 'Estoque Baixo':
-      return 'text-yellow-600 bg-yellow-50';
-    case 'Descontinuado':
-      return 'text-gray-600 bg-gray-50';
-    case 'Disponível':
-      return 'text-green-600 bg-green-50';
-    default:
-      return 'text-blue-600 bg-blue-50';
-  }
+  return 'Em Estoque';
 };
 
 const EstoqueSection = () => {
@@ -299,14 +258,10 @@ const EstoqueSection = () => {
               className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Todos os status</option>
-              <option value="Disponível">Disponível</option>
+              <option value="Em Estoque">Em Estoque</option>
               <option value="Estoque Baixo">Estoque Baixo</option>
-              <option value="Sem Estoque">Sem Estoque</option>
-              <option value="Vencendo em Breve">Vencendo em Breve</option>
-              <option value="Próximo ao Vencimento">Próximo ao Vencimento</option>
               <option value="Vencido">Vencido</option>
-              <option value="Recolhido">Recolhido</option>
-              <option value="Descontinuado">Descontinuado</option>
+              <option value="Próximo ao Vencimento">Próximo ao Vencimento</option>
             </select>
             <button
               onClick={() => {
@@ -327,13 +282,12 @@ const EstoqueSection = () => {
                 const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
-                const status = getProductStatus(product);
+                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
                 const statusMatch = statusFilter === 'all' || status === statusFilter;
                 return searchMatch && categoryMatch && statusMatch;
               })
               .map((product: any) => {
-                const status = getProductStatus(product);
-                const statusColor = getStatusColor(product);
+                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
                 
                 return (
                   <div key={product.id} className="standard-list-item group">
@@ -346,19 +300,16 @@ const EstoqueSection = () => {
                     </div>
                     
                     <div className="flex items-center gap-3">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor}`}>
+                      <span className={`list-status-badge ${
+                        status === 'Em Estoque' ? 'status-success' :
+                        status === 'Estoque Baixo' ? 'status-warning' :
+                        status === 'Sem Estoque' ? 'status-danger' :
+                        status === 'Vencido' ? 'status-danger' :
+                        status === 'Próximo ao Vencimento' ? 'status-pending' :
+                        'status-info'
+                      }`}>
                         {status}
                       </span>
-                      
-                      {/* Mostrar informações específicas da farmácia */}
-                      {selectedCategory === 'farmacia' && (
-                        <div className="flex flex-col text-xs text-gray-500">
-                          {product.batchNumber && <span>Lote: {product.batchNumber}</span>}
-                          {product.expiryDate && <span>Venc: {formatDateBR(product.expiryDate)}</span>}
-                          {product.requiresPrescription && <span className="text-orange-600">Receita</span>}
-                          {product.controlledSubstance && <span className="text-red-600">Controlado</span>}
-                        </div>
-                      )}
                       
                       <div className="list-item-actions">
                         <button 
