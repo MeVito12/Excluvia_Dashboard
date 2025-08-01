@@ -40,7 +40,7 @@ const getProductStatus = (stock: number, minStock: number, expiryDate?: string) 
 
 const EstoqueSection = () => {
   const { selectedCategory } = useCategory();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const { showConfirm, isOpen: confirmOpen, confirmData, closeConfirm, handleConfirm } = useCustomConfirm();
   
   const [activeTab, setActiveTab] = useState('produtos');
@@ -1281,16 +1281,9 @@ const EstoqueSection = () => {
         </div>
       )}
 
-      <CustomAlert isOpen={isOpen} onClose={closeAlert} {...alertData} />
-      <CustomConfirm 
-        isOpen={confirmOpen} 
-        onClose={closeConfirm} 
-        onConfirm={handleConfirm} 
-        {...confirmData} 
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 // Componente para card de produto na transferência
 const ProductTransferCard = ({ product, onSelect }: { product: any; onSelect: (product: any, quantity: number) => void }) => {

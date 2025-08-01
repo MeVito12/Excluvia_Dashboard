@@ -38,7 +38,7 @@ import {
 
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const { isOpen: confirmOpen, confirmData, showConfirm, closeConfirm, handleConfirm } = useCustomConfirm();
   const { products } = useProducts();
   const { showSuccess, showError, showWarning } = useNotificationContext();
@@ -2110,25 +2110,8 @@ const AtendimentoSection = () => {
         </div>
       )}
       
-      <CustomAlert
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-      
-      <CustomConfirm
-        isOpen={confirmOpen}
-        onClose={closeConfirm}
-        onConfirm={handleConfirm}
-        title={confirmData.title}
-        description={confirmData.description}
-        confirmText={confirmData.confirmText}
-        cancelText={confirmData.cancelText}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default AtendimentoSection;

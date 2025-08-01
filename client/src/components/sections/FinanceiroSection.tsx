@@ -41,7 +41,7 @@ import { FinancialEntry, NewFinancialEntry, MoneyTransfer, NewMoneyTransfer } fr
 const FinanceiroSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const userId = (user as any)?.id || 1;
 
   // Configurar datas automáticas (últimos 7 dias por padrão)
@@ -1219,15 +1219,8 @@ const FinanceiroSection = () => {
       )}
 
       {/* Alerta customizado */}
-      <CustomAlert
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default FinanceiroSection;

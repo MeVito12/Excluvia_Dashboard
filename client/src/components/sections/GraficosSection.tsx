@@ -39,7 +39,6 @@ import {
 const GraficosSection = () => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   
   // Configurar datas automáticas (últimos 7 dias por padrão)
   const getDefaultDates = () => {
@@ -342,11 +341,7 @@ const GraficosSection = () => {
 
           <Button 
             onClick={() => {
-              showAlert({
-                title: "Filtros Aplicados",
-                description: `Gráficos atualizados para o período: ${calculateMetrics?.period || 'atual'}`,
-                variant: "success"
-              });
+              console.log("Filtros aplicados:", { dateFrom, dateTo });
             }}
             className="system-btn-primary"
           >
@@ -707,15 +702,8 @@ const GraficosSection = () => {
         </CardContent>
       </Card>
 
-      <CustomAlert 
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default GraficosSection;

@@ -17,7 +17,7 @@ import {
 
 const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -370,15 +370,8 @@ const AgendamentosSection = () => {
         </div>
       )}
 
-      <CustomAlert 
-        isOpen={isOpen} 
-        onClose={closeAlert} 
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default AgendamentosSection;

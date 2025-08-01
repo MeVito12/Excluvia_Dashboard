@@ -59,7 +59,7 @@ const businessCategories = [
 
 const CadastroSection = () => {
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const queryClient = useQueryClient();
 
   // Estados principais
@@ -1447,15 +1447,8 @@ const CadastroSection = () => {
         </div>
       )}
 
-      <CustomAlert
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default CadastroSection;

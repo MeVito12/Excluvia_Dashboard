@@ -56,7 +56,7 @@ interface Company {
 const ControleSection = () => {
   const { user } = useAuth();
   const { updateUserPermissions, getAllUserPermissions, isMasterUser, isCeoUser, isGestaoUser } = usePermissions();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
+
   const queryClient = useQueryClient();
   
   const [userPermissions, setUserPermissions] = useState<Record<number, string[]>>({});
@@ -382,15 +382,8 @@ const ControleSection = () => {
         )}
       </div>
 
-      <CustomAlert 
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
-    </div>
-  );
-};
+      </div>
+    );
+  };
 
 export default ControleSection;
