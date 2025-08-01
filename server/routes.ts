@@ -2,28 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { databaseManager } from "./db/database-manager";
 // Removido import incorreto - usar implementação PostgreSQL direta
-import { 
-  insertCompanySchema,
-  insertBranchSchema,
-  insertUserSchema,
-  insertProductSchema,
-  insertSaleSchema,
-  insertClientSchema,
-  insertAppointmentSchema,
-  insertFinancialEntrySchema
-} from "./db/schema";
+// Schemas de validação removidos - usando validação direta
 import { 
   MoneyTransferSchema 
 } from "@shared/schema";
-import { 
-  validateForeignKeys, 
-  sanitizeInsertData,
-  convertBrazilianDate,
-  clientInsertSchema as validatedClientSchema,
-  appointmentInsertSchema as validatedAppointmentSchema,
-  saleInsertSchema as validatedSaleSchema,
-  financialEntryInsertSchema as validatedFinancialSchema
-} from "./database-validator";
+// Validadores removidos - usando validação direta no banco
 
 
 export async function registerRoutes(app: Express): Promise<Server> {

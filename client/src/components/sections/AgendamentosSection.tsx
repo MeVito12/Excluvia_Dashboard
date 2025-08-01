@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { useAppointments } from '@/hooks/useAppointments';
 import { formatDateBR } from '@/utils/dateFormat';
 import { 

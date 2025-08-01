@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

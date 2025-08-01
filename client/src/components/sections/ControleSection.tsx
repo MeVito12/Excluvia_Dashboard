@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions, availableSections } from '@/contexts/PermissionsContext';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -18,8 +18,6 @@ import {
 } from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';

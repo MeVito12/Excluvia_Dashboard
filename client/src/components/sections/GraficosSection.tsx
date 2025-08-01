@@ -2,8 +2,6 @@ import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { useProducts } from '@/hooks/useProducts';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';

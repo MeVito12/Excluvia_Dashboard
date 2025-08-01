@@ -111,7 +111,7 @@ export class SupabaseStorage implements Storage {
       'Content-Type': 'application/json',
       'apikey': this.apiKey,
       'Authorization': `Bearer ${this.apiKey}`,
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     // Se companyId fornecido, definir contexto RLS

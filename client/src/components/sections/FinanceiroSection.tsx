@@ -5,8 +5,6 @@ import { formatDateBR } from '@/utils/dateFormat';
 import { useFinancial } from '@/hooks/useFinancial';
 import { useMoneyTransfers } from '@/hooks/useMoneyTransfers';
 import { useBranches } from '@/hooks/useBranches';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';

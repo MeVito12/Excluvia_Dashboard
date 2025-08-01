@@ -8,7 +8,6 @@ import { CategoryProvider } from "@/contexts/CategoryContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { PermissionsProvider } from "@/contexts/PermissionsContext";
 import NotificationSystem, { useNotifications } from "@/components/NotificationSystem";
-import FloatingAIChat from "@/components/FloatingAIChat";
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
 
@@ -28,7 +27,6 @@ const AppContent = () => {
         notifications={notifications} 
         onRemove={removeNotification} 
       />
-      <FloatingAIChat />
     </NotificationProvider>
   );
 };

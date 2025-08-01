@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import { useCustomAlert } from '@/hooks/use-custom-alert';
-import { CustomAlert } from '@/components/ui/custom-alert';
-import { useCustomConfirm } from '@/hooks/use-custom-confirm';
-import { CustomConfirm } from '@/components/ui/custom-confirm';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
 import { useProducts } from '@/hooks/useProducts';
