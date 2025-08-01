@@ -299,10 +299,14 @@ const EstoqueSection = () => {
               className="px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">Todos os status</option>
-              <option value="Em Estoque">Em Estoque</option>
+              <option value="Disponível">Disponível</option>
               <option value="Estoque Baixo">Estoque Baixo</option>
-              <option value="Vencido">Vencido</option>
+              <option value="Sem Estoque">Sem Estoque</option>
+              <option value="Vencendo em Breve">Vencendo em Breve</option>
               <option value="Próximo ao Vencimento">Próximo ao Vencimento</option>
+              <option value="Vencido">Vencido</option>
+              <option value="Recolhido">Recolhido</option>
+              <option value="Descontinuado">Descontinuado</option>
             </select>
             <button
               onClick={() => {
@@ -323,12 +327,13 @@ const EstoqueSection = () => {
                 const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
-                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
+                const status = getProductStatus(product);
                 const statusMatch = statusFilter === 'all' || status === statusFilter;
                 return searchMatch && categoryMatch && statusMatch;
               })
               .map((product: any) => {
-                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
+                const status = getProductStatus(product);
+                const statusColor = getStatusColor(product);
                 
                 return (
                   <div key={product.id} className="standard-list-item group">
@@ -341,16 +346,19 @@ const EstoqueSection = () => {
                     </div>
                     
                     <div className="flex items-center gap-3">
-                      <span className={`list-status-badge ${
-                        status === 'Em Estoque' ? 'status-success' :
-                        status === 'Estoque Baixo' ? 'status-warning' :
-                        status === 'Sem Estoque' ? 'status-danger' :
-                        status === 'Vencido' ? 'status-danger' :
-                        status === 'Próximo ao Vencimento' ? 'status-pending' :
-                        'status-info'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor}`}>
                         {status}
                       </span>
+                      
+                      {/* Mostrar informações específicas da farmácia */}
+                      {selectedCategory === 'farmacia' && (
+                        <div className="flex flex-col text-xs text-gray-500">
+                          {product.batchNumber && <span>Lote: {product.batchNumber}</span>}
+                          {product.expiryDate && <span>Venc: {formatDateBR(product.expiryDate)}</span>}
+                          {product.requiresPrescription && <span className="text-orange-600">Receita</span>}
+                          {product.controlledSubstance && <span className="text-red-600">Controlado</span>}
+                        </div>
+                      )}
                       
                       <div className="list-item-actions">
                         <button 
