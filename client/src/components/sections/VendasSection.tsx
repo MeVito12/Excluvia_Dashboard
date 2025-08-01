@@ -383,7 +383,7 @@ export default function VendasSection() {
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar cliente..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="no-client">Venda sem cliente</SelectItem>
                     {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id!.toString()}>
@@ -401,7 +401,7 @@ export default function VendasSection() {
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[9999]">
                     <SelectItem value="dinheiro">💵 Dinheiro</SelectItem>
                     <SelectItem value="pix">📱 PIX</SelectItem>
                     <SelectItem value="cartao_credito">💳 Cartão de Crédito</SelectItem>
