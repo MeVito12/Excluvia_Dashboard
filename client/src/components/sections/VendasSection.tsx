@@ -426,6 +426,12 @@ export default function VendasSection() {
                   max="100"
                   value={discount}
                   onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
+                  onFocus={(e) => {
+                    if (discount === 0) {
+                      e.target.select();
+                    }
+                  }}
+                  placeholder="0"
                 />
               </div>
 
