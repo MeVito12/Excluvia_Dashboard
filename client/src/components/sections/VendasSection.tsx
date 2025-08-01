@@ -18,6 +18,18 @@ export default function VendasSection() {
   const { toast } = useToast();
   // Usando toast para notificações
   const queryClient = useQueryClient();
+
+  // Função para obter o label do método de pagamento
+  const getPaymentMethodLabel = (method: string) => {
+    const methods = {
+      dinheiro: "💵 Dinheiro",
+      pix: "📱 PIX",
+      cartao_credito: "💳 Cartão de Crédito",
+      cartao_debito: "💳 Cartão de Débito",
+      boleto: "📄 Boleto"
+    };
+    return methods[method as keyof typeof methods] || method;
+  };
   
   // Estados do carrinho
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -30,6 +42,8 @@ export default function VendasSection() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [barcodeInput, setBarcodeInput] = useState<string>("");
   const [showProductSearch, setShowProductSearch] = useState<boolean>(false);
+  const [showClientModal, setShowClientModal] = useState<boolean>(false);
+  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
 
   // Buscar produtos
   const { data: products = [] } = useQuery<Product[]>({
@@ -379,36 +393,28 @@ export default function VendasSection() {
               {/* Cliente */}
               <div>
                 <Label htmlFor="client">Cliente (Opcional)</Label>
-                <Select value={selectedClient?.toString() || "no-client"} onValueChange={(value) => setSelectedClient(value && value !== "no-client" ? parseInt(value) : null)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar cliente..." />
-                  </SelectTrigger>
-                  <SelectContent className="z-[9999]">
-                    <SelectItem value="no-client">Venda sem cliente</SelectItem>
-                    {clients.map((client) => (
-                      <SelectItem key={client.id} value={client.id!.toString()}>
-                        {client.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => setShowClientModal(true)}
+                >
+                  {selectedClient 
+                    ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
+                    : "Venda sem cliente"
+                  }
+                </Button>
               </div>
 
               {/* Método de Pagamento */}
               <div>
                 <Label htmlFor="payment">Método de Pagamento *</Label>
-                <Select value={paymentMethod} onValueChange={setPaymentMethod}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar..." />
-                  </SelectTrigger>
-                  <SelectContent className="z-[9999]">
-                    <SelectItem value="dinheiro">💵 Dinheiro</SelectItem>
-                    <SelectItem value="pix">📱 PIX</SelectItem>
-                    <SelectItem value="cartao_credito">💳 Cartão de Crédito</SelectItem>
-                    <SelectItem value="cartao_debito">💳 Cartão de Débito</SelectItem>
-                    <SelectItem value="boleto">📄 Boleto</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  onClick={() => setShowPaymentModal(true)}
+                >
+                  {paymentMethod ? getPaymentMethodLabel(paymentMethod) : "Selecionar método..."}
+                </Button>
               </div>
 
               {/* Desconto */}
@@ -474,6 +480,86 @@ export default function VendasSection() {
           </Card>
         </div>
       </div>
+
+      {/* Modal de Seleção de Cliente */}
+      {showClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
+              <button 
+                onClick={() => setShowClientModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  setSelectedClient(null);
+                  setShowClientModal(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
+              >
+                Venda sem cliente
+              </button>
+              
+              {clients.map((client) => (
+                <button
+                  key={client.id}
+                  onClick={() => {
+                    setSelectedClient(client.id!);
+                    setShowClientModal(false);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
+                >
+                  {client.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Seleção de Método de Pagamento */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-2">
+              {[
+                { value: "dinheiro", label: "💵 Dinheiro" },
+                { value: "pix", label: "📱 PIX" },
+                { value: "cartao_credito", label: "💳 Cartão de Crédito" },
+                { value: "cartao_debito", label: "💳 Cartão de Débito" },
+                { value: "boleto", label: "📄 Boleto" }
+              ].map((method) => (
+                <button
+                  key={method.value}
+                  onClick={() => {
+                    setPaymentMethod(method.value);
+                    setShowPaymentModal(false);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
+                >
+                  {method.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
