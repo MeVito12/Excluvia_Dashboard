@@ -485,9 +485,10 @@ export default function VendasSection() {
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
+          <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-hidden relative">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Selecionar Cliente</h3>
               <button 
                 onClick={() => {
                   setShowClientModal(false);
@@ -499,36 +500,43 @@ export default function VendasSection() {
               </button>
             </div>
             
-            <div className="space-y-4">
+            {/* Content */}
+            <div className="p-6">
               {/* Campo de Busca */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Buscar por CPF/CNPJ ou Nome
-                </label>
+              <div className="mb-4">
                 <input
                   type="text"
                   value={clientSearchTerm}
                   onChange={(e) => setClientSearchTerm(e.target.value)}
-                  placeholder="Digite CPF, CNPJ ou nome do cliente..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Pesquisar clientes..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-600"
                 />
               </div>
 
-              {/* Opção sem cliente */}
-              <button
-                onClick={() => {
-                  setSelectedClient(null);
-                  setShowClientModal(false);
-                  setClientSearchTerm("");
-                }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
-              >
-                <div className="font-medium">Venda sem cliente</div>
-                <div className="text-xs text-gray-500">Venda avulsa</div>
-              </button>
-              
-              {/* Lista de clientes filtrados */}
-              <div className="space-y-2 max-h-60 overflow-y-auto">
+              {/* Lista de clientes */}
+              <div className="space-y-1 max-h-80 overflow-y-auto">
+                {/* Opção sem cliente */}
+                <div 
+                  onClick={() => {
+                    setSelectedClient(null);
+                    setShowClientModal(false);
+                    setClientSearchTerm("");
+                  }}
+                  className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedClient === null}
+                    onChange={() => {}}
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-900">Venda sem cliente</div>
+                    <div className="text-sm text-gray-500">Venda avulsa</div>
+                  </div>
+                </div>
+                
+                {/* Clientes filtrados */}
                 {clients
                   .filter(client => 
                     !clientSearchTerm || 
@@ -537,21 +545,29 @@ export default function VendasSection() {
                     (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
                   )
                   .map((client) => (
-                    <button
+                    <div
                       key={client.id}
                       onClick={() => {
                         setSelectedClient(client.id!);
                         setShowClientModal(false);
                         setClientSearchTerm("");
                       }}
-                      className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
+                      className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
                     >
-                      <div className="font-medium">{client.name}</div>
-                      <div className="text-xs text-gray-500">
-                        {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
-                        {client.email && ` • ${client.email}`}
+                      <input
+                        type="checkbox"
+                        checked={selectedClient === client.id}
+                        onChange={() => {}}
+                        className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
+                      />
+                      <div>
+                        <div className="font-medium text-gray-900">{client.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
+                          {client.email && ` • ${client.email}`}
+                        </div>
                       </div>
-                    </button>
+                    </div>
                   ))}
               </div>
 
@@ -561,11 +577,24 @@ export default function VendasSection() {
                 (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
                 (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
               ).length === 0 && (
-                <div className="text-center py-4 text-gray-500">
+                <div className="text-center py-8 text-gray-500">
                   <p>Nenhum cliente encontrado</p>
-                  <p className="text-xs">Tente buscar por nome, CPF ou CNPJ</p>
+                  <p className="text-sm">Tente buscar por nome, CPF ou CNPJ</p>
                 </div>
               )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setShowClientModal(false);
+                  setClientSearchTerm("");
+                }}
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
@@ -574,9 +603,10 @@ export default function VendasSection() {
       {/* Modal de Seleção de Método de Pagamento */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
+          <div className="bg-white rounded-lg w-full max-w-lg max-h-[90vh] overflow-hidden relative">
+            {/* Header */}
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Método de Pagamento</h3>
               <button 
                 onClick={() => setShowPaymentModal(false)}
                 className="text-gray-400 hover:text-gray-600"
@@ -585,25 +615,47 @@ export default function VendasSection() {
               </button>
             </div>
             
-            <div className="space-y-2">
-              {[
-                { value: "dinheiro", label: "💵 Dinheiro" },
-                { value: "pix", label: "📱 PIX" },
-                { value: "cartao_credito", label: "💳 Cartão de Crédito" },
-                { value: "cartao_debito", label: "💳 Cartão de Débito" },
-                { value: "boleto", label: "📄 Boleto" }
-              ].map((method) => (
-                <button
-                  key={method.value}
-                  onClick={() => {
-                    setPaymentMethod(method.value);
-                    setShowPaymentModal(false);
-                  }}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-gray-100 border border-gray-200"
-                >
-                  {method.label}
-                </button>
-              ))}
+            {/* Content */}
+            <div className="p-6">
+              <div className="space-y-1">
+                {[
+                  { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
+                  { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
+                  { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
+                  { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
+                  { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
+                ].map((method) => (
+                  <div
+                    key={method.value}
+                    onClick={() => {
+                      setPaymentMethod(method.value);
+                      setShowPaymentModal(false);
+                    }}
+                    className="flex items-center p-3 rounded-md hover:bg-gray-50 cursor-pointer border border-gray-200"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={paymentMethod === method.value}
+                      onChange={() => {}}
+                      className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mr-3"
+                    />
+                    <div>
+                      <div className="font-medium text-gray-900">{method.label}</div>
+                      <div className="text-sm text-gray-500">{method.description}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="w-full py-3 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
             </div>
           </div>
         </div>
