@@ -392,29 +392,29 @@ export default function VendasSection() {
             <CardContent className="space-y-4">
               {/* Cliente */}
               <div>
-                <Label htmlFor="client">Cliente (Opcional)</Label>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cliente (Opcional)</label>
+                <button
+                  type="button"
                   onClick={() => setShowClientModal(true)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
                 >
                   {selectedClient 
                     ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
-                    : "Venda sem cliente"
+                    : "+ Selecionar Cliente"
                   }
-                </Button>
+                </button>
               </div>
 
               {/* Método de Pagamento */}
               <div>
-                <Label htmlFor="payment">Método de Pagamento *</Label>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
+                <label className="block text-sm font-medium text-gray-700 mb-1">Método de Pagamento *</label>
+                <button
+                  type="button"
                   onClick={() => setShowPaymentModal(true)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
                 >
-                  {paymentMethod ? getPaymentMethodLabel(paymentMethod) : "Selecionar método..."}
-                </Button>
+                  {paymentMethod ? getPaymentMethodLabel(paymentMethod) : "+ Selecionar Método"}
+                </button>
               </div>
 
               {/* Desconto */}
