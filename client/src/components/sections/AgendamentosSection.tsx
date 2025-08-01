@@ -34,20 +34,22 @@ const AgendamentosSection = () => {
 
   // Função para marcar compromisso como concluído
   const markAsCompleted = (appointmentId: number) => {
-console.log("Action performed");
-      title: "Compromisso Concluído",
-      description: "O agendamento foi marcado como concluído com sucesso",
-      variant: "success"
-    });
+    console.log("Action performed");
+    // toast({
+    //   title: "Compromisso Concluído",
+    //   description: "O agendamento foi marcado como concluído com sucesso",
+    //   variant: "success"
+    // });
   };
 
   // Função para editar compromisso
   const editAppointment = (appointmentId: number) => {
-console.log("Action performed");
-      title: "Editar Compromisso",
-      description: "Funcionalidade de edição será implementada em breve",
-      variant: "default"
-    });
+    console.log("Action performed");
+    // toast({
+    //   title: "Editar Compromisso",
+    //   description: "Funcionalidade de edição será implementada em breve",
+    //   variant: "default"
+    // });
   };
 
   // Função para abrir modal de adicionar
@@ -164,11 +166,12 @@ console.log("Action performed");
                   <div className="list-item-actions">
                     <button 
                       onClick={() => {
-console.log("Action performed");
-                          title: `Visualizando Compromisso`,
-                          description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${formatDateBR(appointment.appointment_date)} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
-                          variant: "default"
-                        });
+                        console.log("Action performed");
+                        // toast({
+                        //   title: `Visualizando Compromisso`,
+                        //   description: `${appointment.title}\nCliente: ${appointment.client_name}\nData: ${formatDateBR(appointment.appointment_date)} às ${appointment.start_time}\nStatus: ${appointment.status === 'scheduled' ? 'Agendado' : 'Concluído'}`,
+                        //   variant: "default"
+                        // });
                       }}
                       className="list-action-button view"
                       title="Visualizar"
@@ -346,19 +349,21 @@ console.log("Action performed");
               <button 
                 onClick={() => {
                   if (newAppointment.title && newAppointment.client && newAppointment.date && newAppointment.time) {
-console.log("Action performed");
-                      title: "Compromisso Agendado",
-                      description: `O compromisso "${newAppointment.title}" foi agendado com sucesso para ${newAppointment.date} às ${newAppointment.time}`,
-                      variant: "success"
-                    });
+                    console.log("Action performed");
+                    // toast({
+                    //   title: "Compromisso Agendado",
+                    //   description: `O compromisso "${newAppointment.title}" foi agendado com sucesso para ${newAppointment.date} às ${newAppointment.time}`,
+                    //   variant: "success"
+                    // });
                     setNewAppointment({ title: '', client: '', date: '', time: '', type: 'consulta', notes: '' });
                     setShowAddModal(false);
                   } else {
-console.log("Action performed");
-                      title: "Campos Obrigatórios",
-                      description: "Por favor, preencha todos os campos obrigatórios (título, cliente, data e horário)",
-                      variant: "destructive"
-                    });
+                    console.log("Action performed");
+                    // toast({
+                    //   title: "Campos Obrigatórios",
+                    //   description: "Por favor, preencha todos os campos obrigatórios (título, cliente, data e horário)",
+                    //   variant: "destructive"
+                    // });
                   }
                 }}
                 className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"

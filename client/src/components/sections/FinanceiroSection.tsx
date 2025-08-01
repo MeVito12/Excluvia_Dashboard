@@ -170,20 +170,22 @@ const FinanceiroSection = () => {
 
       await createFinancialEntry(entryData);
       
-console.log("Action performed");
-        title: "Sucesso",
-        description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: `${currentEntryType === 'income' ? 'Entrada' : 'Saída'} financeira criada com sucesso`,
+      //   variant: "success"
+      // });
       
       setIsCreateModalOpen(false);
       resetForm();
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: `Erro ao criar ${currentEntryType === 'income' ? 'entrada' : 'saída'} financeira`,
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -200,20 +202,22 @@ console.log("Action performed");
         }
       });
 
-console.log("Action performed");
-        title: "Sucesso",
-        description: "Pagamento registrado com sucesso",
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Pagamento registrado com sucesso",
+      //   variant: "success"
+      // });
 
       setIsPayModalOpen(false);
       setSelectedEntry(null);
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao registrar pagamento",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao registrar pagamento",
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -228,17 +232,19 @@ console.log("Action performed");
         }
       });
       
-console.log("Action performed");
-        title: "Sucesso",
-        description: "Pagamento revertido com sucesso",
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Pagamento revertido com sucesso",
+      //   variant: "success"
+      // });
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao reverter pagamento",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao reverter pagamento",
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -246,17 +252,19 @@ console.log("Action performed");
     try {
       await deleteFinancialEntry(entryId);
       
-console.log("Action performed");
-        title: "Sucesso",
-        description: "Registro excluído com sucesso",
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Registro excluído com sucesso",
+      //   variant: "success"
+      // });
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao excluir registro",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao excluir registro",
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -274,11 +282,12 @@ console.log("Action performed");
 
       await createMoneyTransfer(transferFormData);
       
-console.log("Action performed");
-        title: "Sucesso",
-        description: "Transferência criada com sucesso",
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: "Transferência criada com sucesso",
+      //   variant: "success"
+      // });
       
       setIsTransferModalOpen(false);
       setTransferData({
@@ -290,11 +299,12 @@ console.log("Action performed");
         notes: ''
       });
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao criar transferência",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao criar transferência",
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -305,17 +315,19 @@ console.log("Action performed");
         transfer: { status: newStatus }
       });
       
-console.log("Action performed");
-        title: "Sucesso",
-        description: `Transferência ${newStatus === 'approved' ? 'aprovada' : newStatus === 'completed' ? 'concluída' : 'rejeitada'} com sucesso`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Sucesso",
+      //   description: `Transferência ${newStatus === 'approved' ? 'aprovada' : newStatus === 'completed' ? 'concluída' : 'rejeitada'} com sucesso`,
+      //   variant: "success"
+      // });
     } catch (error) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao atualizar transferência",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao atualizar transferência",
+      //   variant: "destructive"
+      // });
     }
   };
 
@@ -794,11 +806,12 @@ console.log("Action performed");
                             if (entry.paymentProof) {
                               window.open(entry.paymentProof, '_blank');
                             } else {
-console.log("Action performed");
-                                title: "Comprovante",
-                                description: "Nenhum comprovante anexado para este registro",
-                                variant: "warning"
-                              });
+                              console.log("Action performed");
+                              // toast({
+                              //   title: "Comprovante",
+                              //   description: "Nenhum comprovante anexado para este registro",
+                              //   variant: "warning"
+                              // });
                             }
                           }}
                           className="list-action-button view"

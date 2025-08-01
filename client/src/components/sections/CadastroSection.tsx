@@ -200,18 +200,20 @@ const CadastroSection = () => {
       }
       
       setCurrentStep('master');
-console.log("Action performed");
-        title: "Empresa Cadastrada",
-        description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Empresa Cadastrada",
+      //   description: `${company.fantasyName} foi cadastrada com sucesso!${companyData.isMainOffice ? ' Matriz adicionada automaticamente como filial.' : ''}`,
+      //   variant: "success"
+      // });
     },
     onError: () => {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao cadastrar empresa. Tente novamente.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao cadastrar empresa. Tente novamente.",
+      //   variant: "destructive"
+      // });
     }
   });
 
@@ -235,21 +237,23 @@ console.log("Action performed");
       return response.json();
     },
     onSuccess: () => {
-console.log("Action performed");
-        title: "Usuário Master Criado",
-        description: `${masterUserData.name} foi cadastrado com sucesso!`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Usuário Master Criado",
+      //   description: `${masterUserData.name} foi cadastrado com sucesso!`,
+      //   variant: "success"
+      // });
       
       // Ir para etapa de pergunta sobre filiais
       setCurrentStep('branches');
     },
     onError: () => {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao criar usuário master. Tente novamente.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao criar usuário master. Tente novamente.",
+      //   variant: "destructive"
+      // });
     }
   });
 
@@ -278,18 +282,20 @@ console.log("Action performed");
         email: '',
         isMain: false
       });
-console.log("Action performed");
-        title: "Filial Criada",
-        description: `${branch.name} foi cadastrada com sucesso!`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Filial Criada",
+      //   description: `${branch.name} foi cadastrada com sucesso!`,
+      //   variant: "success"
+      // });
     },
     onError: () => {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao criar filial. Tente novamente.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao criar filial. Tente novamente.",
+      //   variant: "destructive"
+      // });
     }
   });
 
@@ -317,18 +323,20 @@ console.log("Action performed");
         password: '',
         role: 'user'
       });
-console.log("Action performed");
-        title: "Usuário Criado",
-        description: `${newUser.name} foi cadastrado com sucesso!`,
-        variant: "success"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Usuário Criado",
+      //   description: `${newUser.name} foi cadastrado com sucesso!`,
+      //   variant: "success"
+      // });
     },
     onError: () => {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao criar usuário. Tente novamente.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Erro ao criar usuário. Tente novamente.",
+      //   variant: "destructive"
+      // });
     }
   });
 
@@ -336,11 +344,12 @@ console.log("Action performed");
   const handleCompanySubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!cnpjValid || !companyData.fantasyName || !companyData.corporateName || !companyData.businessCategory || !companyData.address.trim()) {
-console.log("Action performed");
-        title: "Campos Obrigatórios",
-        description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Campos Obrigatórios",
+      //   description: "Preencha todos os campos obrigatórios com dados válidos, incluindo o endereço.",
+      //   variant: "destructive"
+      // });
       return;
     }
     createCompanyMutation.mutate(companyData);
@@ -384,11 +393,12 @@ console.log("Action performed");
     e.preventDefault();
     
     if (!newBranch.name.trim()) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Nome da filial é obrigatório.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Nome da filial é obrigatório.",
+      //   variant: "destructive"
+      // });
       return;
     }
 
@@ -400,11 +410,12 @@ console.log("Action performed");
     setBranches(prev => [...prev, branchToCreate]);
     setNewBranch({ name: '', address: '', phone: '', email: '', isMain: false });
     
-console.log("Action performed");
-      title: "Sucesso",
-      description: "Filial adicionada com sucesso!",
-      variant: "default"
-    });
+    console.log("Action performed");
+    // toast({
+    //   title: "Sucesso",
+    //   description: "Filial adicionada com sucesso!",
+    //   variant: "default"
+    // });
   };
 
   // Handler para envio de usuário comum
@@ -412,20 +423,22 @@ console.log("Action performed");
     e.preventDefault();
     
     if (!newCommonUser.name.trim() || !newCommonUser.email.trim()) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Nome e e-mail são obrigatórios.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Nome e e-mail são obrigatórios.",
+      //   variant: "destructive"
+      // });
       return;
     }
 
     if (!validateEmail(newCommonUser.email)) {
-console.log("Action performed");
-        title: "Erro",
-        description: "E-mail inválido.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "E-mail inválido.",
+      //   variant: "destructive"
+      // });
       return;
     }
 
@@ -437,11 +450,7 @@ console.log("Action performed");
     setCommonUsers(prev => [...prev, userToCreate]);
     setNewCommonUser({ name: '', email: '', password: '', role: 'user' });
     
-console.log("Action performed");
-      title: "Sucesso",
-      description: "Usuário adicionado com sucesso!",
-      variant: "default"
-    });
+    console.log("Action performed");
   };
 
   // Handler para envio do usuário master
@@ -449,20 +458,22 @@ console.log("Action performed");
     e.preventDefault();
     
     if (!companyCreated) {
-console.log("Action performed");
-        title: "Erro",
-        description: "Empresa não encontrada. Tente novamente.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "Empresa não encontrada. Tente novamente.",
+      //   variant: "destructive"
+      // });
       return;
     }
 
     if (masterUserData.password !== masterUserData.confirmPassword) {
-console.log("Action performed");
-        title: "Erro",
-        description: "As senhas não coincidem.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
+      // toast({
+      //   title: "Erro",
+      //   description: "As senhas não coincidem.",
+      //   variant: "destructive"
+      // });
       return;
     }
 
@@ -503,11 +514,12 @@ console.log("Action performed");
     // Voltar ao início do fluxo
     setCurrentStep('company');
     
-console.log("Action performed");
-      title: "Sucesso",
-      description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
-      variant: "success"
-    });
+    console.log("Action performed");
+    // toast({
+    //   title: "Sucesso",
+    //   description: "Cadastro finalizado! Você pode iniciar um novo cadastro.",
+    //   variant: "success"
+    // });
   };
 
   // Estados para gerenciamento
@@ -562,21 +574,13 @@ console.log("Action performed");
       return response.json();
     },
     onSuccess: () => {
-console.log("Action performed");
-        title: "Role Atualizada",
-        description: "Role do usuário foi atualizada com sucesso!",
-        variant: "success"
-      });
+      console.log("Action performed");
       fetchExistingUsers();
       setSelectedUser(null);
       setNewRole('');
     },
     onError: () => {
-console.log("Action performed");
-        title: "Erro",
-        description: "Erro ao atualizar role do usuário.",
-        variant: "destructive"
-      });
+      console.log("Action performed");
     }
   });
 
