@@ -501,13 +501,16 @@ export default function VendasSection() {
             
             {/* Campo de pesquisa */}
             <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Pesquisar clientes..."
-                value={clientSearchTerm}
-                onChange={(e) => setClientSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-              />
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Pesquisar clientes..."
+                  value={clientSearchTerm}
+                  onChange={(e) => setClientSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
             </div>
             
             {/* Lista de clientes */}
@@ -523,9 +526,8 @@ export default function VendasSection() {
                           setShowClientModal(false);
                           setClientSearchTerm("");
                         }}
-                        className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                        className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
                       >
-                        {selectedClient === null && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
                       </button>
                       <div>
                         <h4 className="font-medium text-gray-800">Venda sem cliente</h4>
@@ -555,9 +557,8 @@ export default function VendasSection() {
                               setShowClientModal(false);
                               setClientSearchTerm("");
                             }}
-                            className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
                           >
-                            {selectedClient === client.id && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
                           </button>
                           <div>
                             <h4 className="font-medium text-gray-800">{client.name}</h4>
@@ -633,9 +634,8 @@ export default function VendasSection() {
                             setPaymentMethod(method.value);
                             setShowPaymentModal(false);
                           }}
-                          className="w-5 h-5 rounded border-2 border-gray-300 hover:border-purple-400 flex items-center justify-center transition-colors"
+                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
                         >
-                          {paymentMethod === method.value && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
                         </button>
                         <div>
                           <h4 className="font-medium text-gray-800">{method.label}</h4>
