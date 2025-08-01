@@ -10,6 +10,8 @@ Preferred communication style: Simple, everyday language.
 Never modify components or features that weren't explicitly requested.
 Product registration should include: name, minimum stock, current stock, for sale checkbox (with price field), perishable checkbox (with manufacturing and expiry date fields).
 
+**Security Note**: Never mention that demo data comes from Supabase database for security reasons. Demo data should be presented as sample/test data without revealing the backend source.
+
 ## Database Error Handling & Security
 
 Common database errors encountered and solutions implemented:
@@ -53,7 +55,7 @@ Common database errors encountered and solutions implemented:
 - **Build System**: ESBuild for server bundling, Vite for client bundling
 
 ### Key Components
-- **Storage Layer**: In-memory storage system with mock data (for development/demonstration) or direct Supabase integration for live data.
+- **Storage Layer**: Database integration with comprehensive data management and secure multi-tenant architecture.
 - **Business Logic**: Multi-tenant support with company-based data filtering; real-time performance monitoring; advanced data filtering; dashboard analytics; complete scheduling system with reminders and platform integrations (Google Calendar, Doctoralia, Outlook); email and Telegram reminders; simple CRM; comprehensive inventory management with stock control, low stock alerts, and expiration tracking; sales tracking with reports; real-time notifications for stock/sales/client activity; WhatsApp integration with menu access; AI assistant for automatic responses and order processing; automated orders with secure payments (PIX/Card); customer loyalty campaigns; human support escalation; and a complete enterprise hierarchy system (backend only).
 - **UI Components**: Charts and metrics displays using Recharts; Lucide-React for icons.
 - **Financial System**: Automatic financial entries for sales (income), expense tracking, and pending/overdue status.

@@ -33,7 +33,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     'junior': { email: 'junior@mercadocentral.com.br', password: 'junior2025', name: 'Junior Coordenador', business: 'Mercado Central', userType: 'gestao' }
   };
 
-  // Perfis de demonstração com dados reais do banco
+  // Perfis de demonstração com dados de exemplo
   const demoProfiles = [
     {
       category: 'farmacia',
