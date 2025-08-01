@@ -45,6 +45,7 @@ export default function VendasSection() {
   const [showClientModal, setShowClientModal] = useState<boolean>(false);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
+  const [foundClient, setFoundClient] = useState<Client | null>(null);
 
   // Buscar produtos
   const { data: products = [] } = useQuery<Product[]>({
@@ -499,23 +500,39 @@ export default function VendasSection() {
               </button>
             </div>
             
-            {/* Campo de pesquisa */}
+            {/* Campo de pesquisa por CPF/CNPJ */}
             <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Digite o CPF ou CNPJ do cliente
+              </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder="Pesquisar clientes..."
+                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
                   value={clientSearchTerm}
-                  onChange={(e) => setClientSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setClientSearchTerm(value);
+                    
+                    // Limpar números apenas
+                    const cleanValue = value.replace(/\D/g, '');
+                    
+                    // Buscar cliente por CPF/CNPJ
+                    if (cleanValue.length >= 11) {
+                      const client = clients.find(c => c.document && c.document.replace(/\D/g, '') === cleanValue);
+                      setFoundClient(client || null);
+                    } else {
+                      setFoundClient(null);
+                    }
+                  }}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
-            
-            {/* Lista de clientes */}
-            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
-              {/* Opção sem cliente */}
+
+            {/* Opção venda sem cliente */}
+            <div className="mb-4">
               <div className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -525,9 +542,11 @@ export default function VendasSection() {
                           setSelectedClient(null);
                           setShowClientModal(false);
                           setClientSearchTerm("");
+                          setFoundClient(null);
                         }}
                         className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
                       >
+                        {selectedClient === null && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
                       </button>
                       <div>
                         <h4 className="font-medium text-gray-800">Venda sem cliente</h4>
@@ -537,53 +556,48 @@ export default function VendasSection() {
                   </div>
                 </div>
               </div>
-              
-              {/* Clientes filtrados */}
-              {clients
-                .filter(client => 
-                  !clientSearchTerm || 
-                  client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
-                  (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
-                  (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
-                )
-                .map((client) => (
-                  <div key={client.id} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              setSelectedClient(client.id!);
-                              setShowClientModal(false);
-                              setClientSearchTerm("");
-                            }}
-                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                          >
-                          </button>
-                          <div>
-                            <h4 className="font-medium text-gray-800">{client.name}</h4>
-                            <p className="text-sm text-gray-600">
-                              {client.document && `${client.document.length === 11 ? 'CPF' : 'CNPJ'}: ${client.document}`}
-                              {client.email && ` • ${client.email}`}
-                            </p>
-                          </div>
+            </div>
+            
+            {/* Cliente encontrado */}
+            {foundClient && (
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Cliente encontrado:</h4>
+                <div className="border rounded-lg p-3 bg-green-50 border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            setSelectedClient(foundClient.id!);
+                            setShowClientModal(false);
+                            setClientSearchTerm("");
+                            setFoundClient(null);
+                          }}
+                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-green-400 hover:border-green-500"
+                        >
+                          <div className="w-3 h-3 bg-green-600 rounded"></div>
+                        </button>
+                        <div>
+                          <h4 className="font-medium text-gray-800">{foundClient.name}</h4>
+                          <p className="text-sm text-gray-600">
+                            {foundClient.document && `${foundClient.document.length === 11 ? 'CPF' : 'CNPJ'}: ${foundClient.document}`}
+                            {foundClient.email && ` • ${foundClient.email}`}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                ))}
-            </div>
-            
-            {/* Mensagem quando não há resultados */}
-            {clientSearchTerm && clients.filter(client => 
-              client.name.toLowerCase().includes(clientSearchTerm.toLowerCase()) ||
-              (client.document && client.document.includes(clientSearchTerm.replace(/\D/g, ''))) ||
-              (client.email && client.email.toLowerCase().includes(clientSearchTerm.toLowerCase()))
-            ).length === 0 && (
+                </div>
+                <p className="text-sm text-green-600 mt-2">Clique no cliente para confirmar a seleção</p>
+              </div>
+            )}
+
+            {/* Mensagem quando não encontra cliente */}
+            {clientSearchTerm && clientSearchTerm.replace(/\D/g, '').length >= 11 && !foundClient && (
               <div className="text-center py-8 text-gray-500">
                 <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Nenhum cliente encontrado</p>
-                <p className="text-sm mt-1">Tente pesquisar por outro termo</p>
+                <p>Cliente não encontrado</p>
+                <p className="text-sm mt-1">Verifique o CPF/CNPJ digitado</p>
               </div>
             )}
             
@@ -592,6 +606,7 @@ export default function VendasSection() {
                 onClick={() => {
                   setShowClientModal(false);
                   setClientSearchTerm("");
+                  setFoundClient(null);
                 }}
                 className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
