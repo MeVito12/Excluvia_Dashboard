@@ -291,7 +291,7 @@ export default function VendasSection() {
                             <div>
                               <p className="font-medium">{product.name}</p>
                               <p className="text-sm text-gray-500">
-                                R$ {product.price.toFixed(2)} • Estoque: {product.stock}
+                                R$ {Number(product.price || 0).toFixed(2)} • Estoque: {product.stock}
                               </p>
                             </div>
                             <Plus className="h-4 w-4 text-emerald-600" />
