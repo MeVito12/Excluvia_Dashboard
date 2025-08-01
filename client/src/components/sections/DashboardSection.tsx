@@ -33,7 +33,6 @@ interface DashboardSectionProps {
 const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   
   // Configurar datas automáticas (últimos 7 dias por padrão)
   const getDefaultDates = () => {

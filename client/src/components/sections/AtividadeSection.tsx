@@ -6,24 +6,28 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Settings, CreditCard, CheckCircle, Zap, Activity as ActivityIcon, ShoppingCart, Users, BarChart3, TrendingUp, DollarSign, Plus, Eye } from 'lucide-react';
+import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Settings, CreditCard, CheckCircle, Zap, Activity as ActivityIcon, ShoppingCart, Users, BarChart3, TrendingUp, DollarSign, Plus, Eye, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useSales } from '@/hooks/useSales';
 import { useClients } from '@/hooks/useClients';
 import { useProducts } from '@/hooks/useProducts';
+import ThermalPrint from '@/components/ThermalPrint';
 
 import React from 'react';
 
 const AtividadeSection = () => {
   const { selectedCategory } = useCategory();
-  const { showAlert, isOpen, alertData, closeAlert } = useCustomAlert();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedType, setSelectedType] = useState('all');
   const [activeTab, setActiveTab] = useState('vendas');
   const [showExportModal, setShowExportModal] = useState(false);
+  
+  // Estados para impressão térmica
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [printSaleData, setPrintSaleData] = useState<any>(null);
   
   // Configurar datas automáticas (últimos 7 dias por padrão)
   const getDefaultDates = () => {
@@ -208,11 +212,7 @@ const AtividadeSection = () => {
                   <div className="list-item-actions">
                     <button
                       onClick={() => {
-                        showAlert({
-                          title: "Detalhes da Atividade",
-                          description: `Ação: ${activity.action}\nDescrição: ${activity.description}\nStatus: ${activity.status}\nUsuário: ${activity.user}`,
-                          variant: "default"
-                        });
+                        console.log("Ver detalhes:", activity);
                       }}
                       className="list-action-button view"
                       title="Ver detalhes"
@@ -299,6 +299,34 @@ const AtividadeSection = () => {
                   
                   <div className="flex items-center gap-3">
                     <span className="list-status-badge status-success">Concluída</span>
+                    
+                    {/* Botão de impressão térmica - aparece no hover */}
+                    <div className="list-item-actions">
+                      <button
+                        onClick={() => {
+                          const saleForPrint = {
+                            id: sale.id,
+                            products: [{
+                              name: product?.name || `Produto #${sale.product_id}`,
+                              quantity: sale.quantity || 1,
+                              price: Number(sale.unit_price || 0),
+                              total: Number(sale.total_price || 0)
+                            }],
+                            total: Number(sale.total_price || 0),
+                            paymentMethod: sale.payment_method || 'Não informado',
+                            saleDate: sale.sale_date || new Date().toISOString(),
+                            client: client
+                          };
+                          setPrintSaleData(saleForPrint);
+                          setShowPrintModal(true);
+                        }}
+                        className="list-action-button print"
+                        title="Imprimir comprovante"
+                      >
+                        <Printer className="w-4 h-4" />
+                      </button>
+                    </div>
+                    
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">R$ {Number(sale.total_price || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                     </div>
@@ -504,14 +532,54 @@ const AtividadeSection = () => {
 
       {/* Conteúdo da aba selecionada */}
       {renderTabContent()}
-      
-      <CustomAlert
-        isOpen={isOpen}
-        onClose={closeAlert}
-        title={alertData.title}
-        description={alertData.description}
-        variant={alertData.variant}
-      />
+
+      {/* Modal de Impressão Térmica */}
+      {showPrintModal && printSaleData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Imprimir Comprovante</h3>
+              <button 
+                onClick={() => setShowPrintModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600">Comprovante da venda #{printSaleData.id}</p>
+              
+              <div className="border rounded-lg p-3 bg-gray-50">
+                <ThermalPrint
+                  sale={printSaleData}
+                  company={{
+                    name: "Demo Restaurante Bella Vista",
+                    cnpj: "12.345.678/0001-90",
+                    address: "Rua das Flores, 123 - Centro",
+                    phone: "(11) 99999-9999"
+                  }}
+                  branch={{
+                    name: "Filial Centro",
+                    address: "Rua das Flores, 123 - Centro",
+                    phone: "(11) 99999-9999"
+                  }}
+                  includeClient={!!printSaleData.client}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t mt-4">
+              <button
+                onClick={() => setShowPrintModal(false)}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -11,6 +11,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import ThermalPrint from "@/components/ThermalPrint";
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -45,6 +46,11 @@ export default function VendasSection() {
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
   const [foundClient, setFoundClient] = useState<Client | null>(null);
+  
+  // Estados para impressão térmica
+  const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
+  const [lastSaleData, setLastSaleData] = useState<any>(null);
+  const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
 
   // Buscar produtos
   const { data: products = [] } = useQuery<Product[]>({
@@ -84,11 +90,30 @@ export default function VendasSection() {
       
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Sucesso!",
         description: "Venda processada com sucesso!",
       });
+      
+      // Preparar dados para impressão térmica
+      const saleForPrint = {
+        id: data.sale.id,
+        products: cart.map(item => ({
+          name: item.productName,
+          quantity: item.quantity,
+          price: item.unitPrice,
+          total: item.totalPrice
+        })),
+        total: calculateCartTotal() - discount,
+        paymentMethod: getPaymentMethodLabel(paymentMethod),
+        saleDate: new Date().toISOString(),
+        client: foundClient
+      };
+      
+      setLastSaleData(saleForPrint);
+      setShowPrintModal(true);
+      
       clearCart();
       queryClient.invalidateQueries({ queryKey: ['/api/sales'] });
       queryClient.invalidateQueries({ queryKey: ['/api/products'] });
@@ -660,6 +685,69 @@ export default function VendasSection() {
                 className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Impressão Térmica */}
+      {showPrintModal && lastSaleData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Impressão Térmica</h3>
+              <button 
+                onClick={() => setShowPrintModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600">Venda processada com sucesso! Deseja imprimir o comprovante?</p>
+              
+              {lastSaleData.client && (
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="includeClient"
+                    checked={includeClientInPrint}
+                    onChange={(e) => setIncludeClientInPrint(e.target.checked)}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor="includeClient" className="text-sm text-gray-700">
+                    Incluir dados do cliente no comprovante
+                  </label>
+                </div>
+              )}
+              
+              <div className="border rounded-lg p-3 bg-gray-50">
+                <ThermalPrint
+                  sale={lastSaleData}
+                  company={{
+                    name: "Demo Restaurante Bella Vista",
+                    cnpj: "12.345.678/0001-90",
+                    address: "Rua das Flores, 123 - Centro",
+                    phone: "(11) 99999-9999"
+                  }}
+                  branch={{
+                    name: "Filial Centro",
+                    address: "Rua das Flores, 123 - Centro",
+                    phone: "(11) 99999-9999"
+                  }}
+                  includeClient={includeClientInPrint}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t mt-4">
+              <button
+                onClick={() => setShowPrintModal(false)}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Fechar
               </button>
             </div>
           </div>

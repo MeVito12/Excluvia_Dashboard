@@ -505,6 +505,10 @@ All colors MUST be HSL.
     @apply hover:bg-purple-500;
   }
 
+  .list-action-button.print {
+    @apply hover:bg-purple-500;
+  }
+
   .list-status-badge {
     @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium;
   }
