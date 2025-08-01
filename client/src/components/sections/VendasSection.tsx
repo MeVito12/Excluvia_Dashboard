@@ -211,21 +211,14 @@ export default function VendasSection() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-lg">
-              <ShoppingCart className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Sistema de Vendas</h1>
-              <p className="text-sm text-gray-500 dark:text-gray-400">Gerenciamento de vendas e carrinho</p>
-            </div>
-          </div>
-          <Badge variant="outline" className="text-lg px-3 py-1">
-            {cart.length} {cart.length === 1 ? 'item' : 'itens'}
-          </Badge>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Sistema de Vendas</h1>
+          <p className="text-gray-300">Gerenciamento de vendas e carrinho</p>
         </div>
+        <Badge variant="outline" className="text-lg px-3 py-1">
+          {cart.length} {cart.length === 1 ? 'item' : 'itens'}
+        </Badge>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
