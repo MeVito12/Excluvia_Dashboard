@@ -383,12 +383,12 @@ export default function VendasSection() {
               {/* Cliente */}
               <div>
                 <Label htmlFor="client">Cliente (Opcional)</Label>
-                <Select value={selectedClient?.toString() || ""} onValueChange={(value) => setSelectedClient(value ? parseInt(value) : null)}>
+                <Select value={selectedClient?.toString() || "no-client"} onValueChange={(value) => setSelectedClient(value && value !== "no-client" ? parseInt(value) : null)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar cliente..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Venda sem cliente</SelectItem>
+                    <SelectItem value="no-client">Venda sem cliente</SelectItem>
                     {clients.map((client) => (
                       <SelectItem key={client.id} value={client.id!.toString()}>
                         {client.name}

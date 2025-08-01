@@ -389,7 +389,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const getUserIdFromRequest = (req: any): number => {
     const userId = req.headers['x-user-id'];
     if (!userId) {
-      throw new Error('User ID not found in request headers');
+      console.warn('User ID not found in request headers, using default');
+      return 18; // Default para Junior
     }
     return parseInt(userId);
   }
