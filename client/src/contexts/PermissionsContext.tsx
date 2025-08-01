@@ -41,8 +41,15 @@ export const availableSections: SectionPermission[] = [
   {
     id: 'estoque',
     label: 'Estoque',
-    description: 'Produtos e vendas',
+    description: 'Gestão de produtos e estoque',
     icon: 'Package',
+    defaultEnabled: true
+  },
+  {
+    id: 'vendas',
+    label: 'Vendas',
+    description: 'Sistema de vendas e carrinho',
+    icon: 'ShoppingCart',
     defaultEnabled: true
   },
   {

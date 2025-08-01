@@ -123,8 +123,8 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       return (user as any)?.role === 'ceo' || (user as any)?.email === 'ceo@sistema.com';
     }
     
-    // Estoque não aparece para design e sites
-    if (item.id === 'estoque' && (selectedCategory === 'design' || selectedCategory === 'sites')) {
+    // Estoque e vendas não aparecem para design e sites
+    if ((item.id === 'estoque' || item.id === 'vendas') && (selectedCategory === 'design' || selectedCategory === 'sites')) {
       return false;
     }
     
