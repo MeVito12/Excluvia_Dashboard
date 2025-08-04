@@ -64,13 +64,13 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     if (sales && Array.isArray(sales)) {
       sales.forEach((sale: any) => {
         const product = products?.find((p: any) => p.id === sale.product_id);
-        const client = clients?.find((c: any) => c.id === sale.client_id);
-        const clientName = client?.name || 'Cliente avulso';
+        const client = sale.client_id ? clients?.find((c: any) => c.id === sale.client_id) : null;
+        const clientName = client ? client.name : 'Cliente avulso';
         
         activitiesList.push({
           id: `sale-${sale.id}`,
           action: `Venda: ${product?.name || 'Produto'} - ${clientName} - R$ ${Number(sale.total_price || 0).toFixed(2)}`,
-          timestamp: sale.sale_date,
+          timestamp: sale.sale_date || sale.created_at,
           type: 'sale'
         });
       });
@@ -114,9 +114,18 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       });
     }
     
+    // Debug das atividades
+    console.log('Debug - ATIVIDADES GERADAS:', {
+      total: activitiesList.length,
+      vendas: activitiesList.filter(a => a.type === 'sale').length,
+      vendasManuais: activitiesList.filter(a => a.type === 'manual-sale').length,
+      agendamentos: activitiesList.filter(a => a.type === 'appointment').length,
+      lista: activitiesList.map(a => ({ id: a.id, type: a.type, action: a.action.substring(0, 50) }))
+    });
+    
     // Ordenar por data mais recente
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }, [sales, appointments, transfers, financialEntries]);
+  }, [sales, appointments, transfers, financialEntries, products, clients]);
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {
@@ -134,7 +143,16 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Dados filtrados por período
   const filteredSales = useMemo(() => filterByDateRange(sales || [], 'sale_date'), [sales, dateFrom, dateTo]);
-  const filteredActivities = useMemo(() => filterByDateRange(activities || [], 'timestamp'), [activities, dateFrom, dateTo]);
+  const filteredActivities = useMemo(() => {
+    const filtered = filterByDateRange(activities || [], 'timestamp');
+    console.log('Debug - ATIVIDADES FILTRADAS:', {
+      antes: activities?.length || 0,
+      depois: filtered.length,
+      periodo: `${dateFrom} até ${dateTo}`,
+      filtradas: filtered.map(a => ({ id: a.id, type: a.type, timestamp: a.timestamp }))
+    });
+    return filtered;
+  }, [activities, dateFrom, dateTo]);
   const filteredTransfers = useMemo(() => filterByDateRange(transfers || [], 'created_at'), [transfers, dateFrom, dateTo]);
   
   // Compromissos recentes e próximos (últimos 30 dias e próximos 30 dias)
@@ -433,13 +451,21 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           </div>
           
           <div className="space-y-3">
-            {filteredActivities.slice(0, 3).map((activity) => (
+            {filteredActivities.slice(0, 5).map((activity) => (
               <div key={activity.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                <Activity className="w-4 h-4 text-purple-500 mt-1" />
+                <div className={`w-4 h-4 mt-1 ${
+                  activity.type === 'sale' ? 'text-green-500' :
+                  activity.type === 'manual-sale' ? 'text-blue-500' :
+                  activity.type === 'appointment' ? 'text-purple-500' :
+                  'text-gray-500'
+                }`}>
+                  {activity.type === 'sale' || activity.type === 'manual-sale' ? '💰' : 
+                   activity.type === 'appointment' ? '📅' : '📋'}
+                </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{activity.action}</p>
                   <p className="text-xs text-gray-500">
-                    {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'Data não disponível'}
+                    {activity.timestamp ? new Date(activity.timestamp).toLocaleString('pt-BR') : 'Data não disponível'}
                   </p>
                 </div>
               </div>
