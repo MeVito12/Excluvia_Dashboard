@@ -232,24 +232,35 @@ const AtividadeSection = () => {
     </div>
   );
 
-  const renderSales = () => (
-    <div className="animate-fade-in">
-      <div className="main-card p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Vendas ({(sales || []).length + (financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || []).length})
-          </h3>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">Total:</p>
-            <p className="text-lg font-bold text-green-600">
-              R$ {(
-                (sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0) +
-                (financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || [])
-                  .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0)
-              ).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </p>
+  const renderSales = () => {
+    // Debug - calcular totais separadamente
+    const manualSales = financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || [];
+    const salesTotal = (sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_amount) || 0), 0);
+    const manualSalesTotal = manualSales.reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
+    const grandTotal = salesTotal + manualSalesTotal;
+    
+    console.log('DEBUG ATIVIDADE VENDAS:', {
+      vendas: (sales || []).length,
+      vendasManuais: manualSales.length,
+      totalVendas: salesTotal,
+      totalVendasManuais: manualSalesTotal,
+      totalGeral: grandTotal
+    });
+
+    return (
+      <div className="animate-fade-in">
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Vendas ({(sales || []).length + manualSales.length})
+            </h3>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total:</p>
+              <p className="text-lg font-bold text-green-600">
+                R$ {grandTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
           </div>
-        </div>
 
         {/* Filtros abaixo do cabeçalho */}
         <div className="flex flex-wrap gap-4 items-center mb-6">
@@ -345,7 +356,8 @@ const AtividadeSection = () => {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   const renderClients = () => (
     <div className="animate-fade-in">
