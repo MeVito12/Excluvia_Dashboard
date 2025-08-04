@@ -1,6 +1,6 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { useAppointments } from '@/hooks/useAppointments';
 import { formatDateBR } from '@/utils/dateFormat';
 import { 
   Calendar as CalendarIcon, 

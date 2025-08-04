@@ -1,7 +1,7 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
 import { useNotificationContext } from '@/contexts/NotificationContext';
-import { useProducts } from '@/hooks/useProducts';
 import { 
   MessageCircle, 
   Bot, 

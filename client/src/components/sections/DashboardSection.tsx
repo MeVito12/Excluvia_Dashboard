@@ -1,3 +1,4 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState, useMemo } from 'react';
 import { 
   Database, 
@@ -18,12 +19,6 @@ import {
 } from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useProducts } from '@/hooks/useProducts';
-import { useSales } from '@/hooks/useSales';
-import { useClients } from '@/hooks/useClients';
-import { useTransfers } from '@/hooks/useTransfers';
-import { useAppointments } from '@/hooks/useAppointments';
-import { useFinancial } from '@/hooks/useFinancial';
 import { formatDateBR } from '@/utils/dateFormat';
 import DatabaseChart from '@/components/DatabaseChart';
 

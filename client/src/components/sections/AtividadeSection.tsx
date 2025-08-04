@@ -1,3 +1,4 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState } from 'react';
 import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +11,6 @@ import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Sett
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { useSales } from '@/hooks/useSales';
-import { useClients } from '@/hooks/useClients';
-import { useProducts } from '@/hooks/useProducts';
 import PrintOptions from '@/components/PrintOptions';
 
 import React from 'react';
