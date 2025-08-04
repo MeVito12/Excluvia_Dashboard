@@ -81,8 +81,14 @@ const EstoqueSection = () => {
   const { user } = useAuth();
   const companyId = user?.company_id;
   
-  const { data: products = [] } = useProducts(undefined, companyId);
-  const { data: transfers = [] } = useTransfers(undefined, companyId);
+  const { data: products = [], isLoading } = useProducts(undefined, companyId);
+  const { data: transfers = [], isLoading: isTransfersLoading } = useTransfers(undefined, companyId);
+  const createProduct = useCreateProduct();
+  const createTransfer = useCreateTransfer();
+  
+  // Para corrigir variáveis undefined
+  const isUpdating = false;
+  const isCreatingTransfer = false;
 
   // Função para buscar nome do produto
   const getProductName = (productId: number): string => {

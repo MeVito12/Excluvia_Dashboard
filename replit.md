@@ -42,6 +42,8 @@ Common database errors encountered and solutions implemented:
 - **Required fields**: appointments need 'type' field, financial entries need proper status values
 - **Data validation**: Implemented comprehensive validation schemas to prevent constraint violations
 - **Error recovery**: Created robust error handling with detailed error messages and validation hints
+- **Schema Consistency (Aug 2025)**: Fixed critical inconsistency between database (snake_case) and TypeScript (camelCase), ensuring all interfaces use snake_case matching database field names
+- **Multi-tenant Data Isolation**: Eliminated data mixing between companies by removing fallback to company_id=1, ensuring strict data separation by actual user company_id
 
 **Row Level Security (RLS) Implementation:**
 - RLS enabled on all tables (users, companies, products, sales, clients, appointments, financial_entries)
