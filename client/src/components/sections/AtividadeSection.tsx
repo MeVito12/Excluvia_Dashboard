@@ -302,12 +302,13 @@ const AtividadeSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
+            {/* Vendas automáticas */}
             {(sales || []).map((sale: any) => {
               const client = (clients || []).find((c: any) => c.id === sale.client_id);
               const product = (products || []).find((p: any) => p.id === sale.product_id);
               
               return (
-                <div key={sale.id} className="standard-list-item group">
+                <div key={`sale-${sale.id}`} className="standard-list-item group">
                   <div className="list-item-main">
                     <div className="list-item-title">{client?.name || (sale.client_id ? `Cliente #${sale.client_id}` : 'Cliente avulso')}</div>
                     <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
@@ -353,6 +354,27 @@ const AtividadeSection = () => {
                 </div>
               );
             })}
+            
+            {/* Vendas manuais (entradas financeiras) */}
+            {manualSales.map((entry: any) => (
+              <div key={`manual-${entry.id}`} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">Cliente avulso</div>
+                  <div className="list-item-subtitle">{entry.description}</div>
+                  <div className="list-item-meta">
+                    {entry.created_at ? formatDateBR(entry.created_at) : 'Data não disponível'}
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                  <span className="list-status-badge status-success">Concluída</span>
+                  
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
