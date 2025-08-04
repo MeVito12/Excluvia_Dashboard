@@ -39,7 +39,7 @@ import {
 const AtendimentoSection = () => {
   const { selectedCategory } = useCategory();
 
-  const { products } = useProducts();
+  const { data: products = [] } = useProducts();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
   const [loyaltyTab, setLoyaltyTab] = useState('overview'); // overview, coupons, campaigns
@@ -250,14 +250,7 @@ const AtendimentoSection = () => {
     const item: any = getCurrentCategoryItems().find((item: any) => item.id === itemId);
     const itemName = item?.name || item?.title || 'Item';
     
-    showConfirm(
-      {
-        title: "Confirmar Exclusão",
-        description: `Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`,
-        confirmText: "Excluir",
-        cancelText: "Cancelar"
-      },
-      () => {
+    if (window.confirm(`Tem certeza que deseja excluir "${itemName}"? Esta ação não pode ser desfeita.`)) {
         // Remove do catálogo/cardápio/portfólio
         setCategoryItems(prev => ({
           ...prev,
@@ -272,8 +265,7 @@ const AtendimentoSection = () => {
         } else {
           showError('PRODUTO EXCLUÍDO', `"${itemName}" foi removido do catálogo. Estoque sincronizado automaticamente.`);
         }
-      }
-    );
+    }
   };
 
   // Função para desativar/ativar item e sincronizar com estoque
@@ -1380,47 +1372,47 @@ const AtendimentoSection = () => {
           </div>
         </div>
 
+        {/* Métricas de Fidelização - Sempre visíveis */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-6 h-6 text-purple-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
+            <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
+            <p className="text-xs text-green-600 mt-1">+15% este mês</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Target className="w-6 h-6 text-green-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
+            <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
+            <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Retenção</h4>
+            <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
+            <p className="text-xs text-purple-600 mt-1">90 dias</p>
+          </div>
+
+          <div className="content-card text-center">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Gift className="w-6 h-6 text-yellow-600" />
+            </div>
+            <h4 className="font-medium text-gray-800">Cupons Ativos</h4>
+            <p className="text-2xl font-bold text-yellow-600 mt-1">12</p>
+            <p className="text-xs text-gray-600 mt-1">6 campanhas</p>
+          </div>
+        </div>
+
         {loyaltyTab === 'overview' && (
           <>
-            {/* Métricas de Fidelização */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-              <div className="content-card text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Users className="w-6 h-6 text-purple-600" />
-                </div>
-                <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
-                <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
-                <p className="text-xs text-green-600 mt-1">+15% este mês</p>
-              </div>
-
-              <div className="content-card text-center">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Target className="w-6 h-6 text-green-600" />
-                </div>
-                <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
-                <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
-                <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
-              </div>
-
-              <div className="content-card text-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
-                </div>
-                <h4 className="font-medium text-gray-800">Retenção</h4>
-                <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
-                <p className="text-xs text-purple-600 mt-1">90 dias</p>
-              </div>
-
-              <div className="content-card text-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Gift className="w-6 h-6 text-yellow-600" />
-                </div>
-                <h4 className="font-medium text-gray-800">Cupons Ativos</h4>
-                <p className="text-2xl font-bold text-yellow-600 mt-1">12</p>
-                <p className="text-xs text-gray-600 mt-1">6 campanhas</p>
-              </div>
-            </div>
-
             {/* Campanhas Ativas */}
             <div className="mb-6">
               <h4 className="font-medium text-gray-800 mb-4">Campanhas Recentes</h4>
