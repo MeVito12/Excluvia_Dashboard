@@ -1,6 +1,4 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,6 +10,9 @@ import { CalendarIcon, Filter, Search, Download, Mail, MessageCircle, Send, Sett
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useCategory, categories } from '@/contexts/CategoryContext';
+import { useSales } from '@/hooks/useSales';
+import { useClients } from '@/hooks/useClients';
+import { useProducts } from '@/hooks/useProducts';
 import PrintOptions from '@/components/PrintOptions';
 
 import React from 'react';
@@ -44,13 +45,10 @@ const AtividadeSection = () => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
-  const { user } = useAuth();
-  const companyId = user?.company_id || 1;
-  
   // Dados das abas usando hooks reais
-  const { data: sales = [] } = useSales(undefined, companyId);
-  const { data: clients = [] } = useClients(undefined, companyId);
-  const { data: products = [] } = useProducts(undefined, companyId);
+  const { sales } = useSales();
+  const { clients } = useClients();
+  const { products } = useProducts();
 
   // Atividades do sistema simplificadas
   const systemActivities = [
@@ -90,8 +88,8 @@ const AtividadeSection = () => {
   ];
 
   const stats = {
-    total: systemActivities.length + (sales || []).length,
-    success: systemActivities.filter(a => a.status === 'success').length + (sales || []).length,
+    total: systemActivities.length + sales.length,
+    success: systemActivities.filter(a => a.status === 'success').length + sales.length,
     error: systemActivities.filter(a => a.status === 'error').length,
     pending: systemActivities.filter(a => a.status === 'pending').length,
     integrations: 5
@@ -116,12 +114,12 @@ const AtividadeSection = () => {
   const getTabMetrics = () => {
     if (activeTab === 'vendas') {
       return {
-        metric1: { label: 'Vendas Hoje', value: `${(sales || []).length}`, change: `R$ ${(sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, icon: DollarSign, color: 'green' },
-        metric2: { label: 'Total Vendas', value: (sales || []).length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
+        metric1: { label: 'Vendas Hoje', value: `${sales.length}`, change: `R$ ${sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, icon: DollarSign, color: 'green' },
+        metric2: { label: 'Total Vendas', value: sales.length.toString(), change: 'Transações realizadas', icon: BarChart3, color: 'orange' }
       };
     } else if (activeTab === 'clientes') {
       return {
-        metric1: { label: 'Clientes Ativos', value: (clients || []).length, change: 'Total cadastrados', icon: Users, color: 'purple' },
+        metric1: { label: 'Clientes Ativos', value: clients.length, change: 'Total cadastrados', icon: Users, color: 'purple' },
         metric2: { label: 'Taxa de Retenção', value: '85%', change: 'Média mensal', icon: TrendingUp, color: 'blue' }
       };
     } else if (activeTab === 'atividades') {
@@ -236,12 +234,12 @@ const AtividadeSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">
-            Vendas ({(sales || []).length})
+            Vendas ({sales.length})
           </h3>
           <div className="text-right">
             <p className="text-sm text-gray-600">Total:</p>
             <p className="text-lg font-bold text-green-600">
-              R$ {(sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {sales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
         </div>
@@ -285,9 +283,9 @@ const AtividadeSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {(sales || []).map((sale: any) => {
-              const client = (clients || []).find((c: any) => c.id === sale.client_id);
-              const product = (products || []).find((p: any) => p.id === sale.product_id);
+            {sales.map((sale: any) => {
+              const client = clients.find((c: any) => c.id === sale.client_id);
+              const product = products.find((p: any) => p.id === sale.product_id);
               
               return (
                 <div key={sale.id} className="standard-list-item group">
@@ -347,12 +345,12 @@ const AtividadeSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">
-            Clientes ({(clients || []).length})
+            Clientes ({clients.length})
           </h3>
           <div className="text-right">
             <p className="text-sm text-gray-600">Total gasto:</p>
             <p className="text-lg font-bold text-blue-600">
-              R$ {(clients || []).reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {clients.reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
         </div>
@@ -396,7 +394,7 @@ const AtividadeSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {(clients || []).map((client: any) => (
+            {clients.map((client: any) => (
               <div key={client.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{client.name}</div>

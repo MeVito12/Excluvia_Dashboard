@@ -101,13 +101,9 @@ export class SupabaseStorage implements Storage {
   private apiKey: string;
 
   constructor() {
-    this.baseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL!;
+    this.baseUrl = process.env.VITE_SUPABASE_URL!;
     // Use service role key for backend operations (full access)
-    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!;
-    
-    console.log('🔧 SupabaseStorage configurado:');
-    console.log('  - URL:', this.baseUrl ? 'Configurada' : 'FALTANDO');
-    console.log('  - API Key:', this.apiKey ? 'Configurada' : 'FALTANDO');
+    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
   }
 
   private async request(path: string, options: RequestInit = {}, companyId?: number): Promise<any> {
@@ -154,13 +150,8 @@ export class SupabaseStorage implements Storage {
   // ====================================
 
   async getUserByEmail(email: string): Promise<User | null> {
-    try {
-      const users = await this.request(`users?email=eq.${email}&select=*`);
-      return users[0] || null;
-    } catch (error: any) {
-      console.error('Erro ao buscar usuário por email:', error);
-      throw new Error(`Erro na autenticação: ${error.message}`);
-    }
+    const users = await this.request(`users?email=eq.${email}&select=*`);
+    return users[0] || null;
   }
 
   async createUser(user: NewUser): Promise<User> {
@@ -316,8 +307,8 @@ export class SupabaseStorage implements Storage {
 
   async getProducts(branchId?: number, companyId?: number): Promise<Product[]> {
     let filter = '';
-    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
+    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`products?${filter}select=*&order=name.asc`);
   }
@@ -349,8 +340,8 @@ export class SupabaseStorage implements Storage {
 
   async getSales(branchId?: number, companyId?: number): Promise<Sale[]> {
     let filter = '';
-    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
+    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`sales?${filter}select=*&order=sale_date.desc`);
   }
@@ -369,8 +360,8 @@ export class SupabaseStorage implements Storage {
 
   async getClients(branchId?: number, companyId?: number): Promise<Client[]> {
     let filter = '';
-    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
+    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`clients?${filter}select=*&order=name.asc`);
   }
@@ -402,8 +393,8 @@ export class SupabaseStorage implements Storage {
 
   async getAppointments(branchId?: number, companyId?: number): Promise<Appointment[]> {
     let filter = '';
-    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
+    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`appointments?${filter}select=*&order=appointment_date.asc`);
   }
@@ -435,8 +426,8 @@ export class SupabaseStorage implements Storage {
 
   async getFinancialEntries(branchId?: number, companyId?: number): Promise<FinancialEntry[]> {
     let filter = '';
-    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
+    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`financial_entries?${filter}select=*&order=created_at.desc`);
   }

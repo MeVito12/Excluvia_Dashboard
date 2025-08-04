@@ -6,7 +6,7 @@ import UserAvatar from '@/components/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCategory } from '@/contexts/CategoryContext';
 import { usePermissions } from '@/contexts/PermissionsContext';
-// ModernIcon removido - usando Lucide icons diretamente
+import ModernIcon from '@/components/ui/modern-icon';
 import { 
   BarChart3, 
   Database, 
@@ -183,7 +183,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                       } as React.CSSProperties}
                       onClick={() => handleMenuClick(item.id)}
                     >
-                      <Icon className="mr-3 flex-shrink-0 w-5 h-5 text-white" />
+                      <ModernIcon 
+                        icon={Icon}
+                        variant="default"
+                        size="md"
+                        animated={true}
+                        className="mr-3 flex-shrink-0 !text-white"
+                      />
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm leading-tight">{item.label}</div>
                         <div className={cn(
@@ -207,7 +213,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
               onClick={logout}
               className="w-full justify-start text-white hover:text-white hover:bg-red-600/20 transition-all duration-300 p-3"
             >
-              <LogOut className="mr-3 flex-shrink-0 w-5 h-5 text-red-400" />
+              <ModernIcon 
+                icon={LogOut}
+                variant="danger"
+                size="md"
+                animated={true}
+                className="mr-3 flex-shrink-0 !text-red-400"
+              />
               <span className="font-medium text-sm">Sair do Sistema</span>
             </Button>
           </div>
@@ -225,7 +237,13 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
           onClick={handleToggle}
           className="h-12 w-6 p-0 bg-[hsl(220_100%_12%)] border border-[hsl(220_100%_8%)] hover:bg-[hsl(220_100%_8%)] text-white shadow-lg rounded-r-md rounded-l-none"
         >
-          {isCollapsed ? <ChevronRight className="w-4 h-4 text-white" /> : <ChevronLeft className="w-4 h-4 text-white" />}
+          <ModernIcon 
+            icon={isCollapsed ? ChevronRight : ChevronLeft}
+            variant="default"
+            size="sm"
+            animated={true}
+            className="!text-white"
+          />
         </Button>
       </div>
     </>

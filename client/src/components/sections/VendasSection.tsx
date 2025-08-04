@@ -1,4 +1,3 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,11 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-// import ThermalPrint from "@/components/ThermalPrint"; // Comentado temporariamente
+import ThermalPrint from "@/components/ThermalPrint";
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -53,31 +52,81 @@ export default function VendasSection() {
   const [lastSaleData, setLastSaleData] = useState<any>(null);
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
 
-  // Buscar produtos e clientes usando hooks consolidados
-  const companyId = user?.company_id || 1;
-  
-  const { data: products = [] } = useProducts(undefined, companyId);
-  const { data: clients = [] } = useClients(undefined, companyId);
+  // Buscar produtos
+  const { data: products = [] } = useQuery<Product[]>({
+    queryKey: ['/api/products'],
+    enabled: !!user,
+  });
+
+  // Buscar clientes
+  const { data: clients = [] } = useQuery<Client[]>({
+    queryKey: ['/api/clients'],
+    enabled: !!user,
+  });
 
   // Filtrar produtos por busca ou código de barras
-  const filteredProducts = products.filter((product: Product) => 
+  const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.barcode?.includes(barcodeInput) ||
     product.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Processar venda do carrinho usando hook consolidado
-  const processSaleMutation = useCreateCartSale();
-
-  // Funções auxiliares
-  const calculateCartTotal = () => cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  
-  const clearCart = () => {
-    setCart([]);
-    setSelectedClient(null);
-    setPaymentMethod("");
-    setDiscount(0);
-  };
+  // Processar venda do carrinho
+  const processSaleMutation = useMutation({
+    mutationFn: async (saleData: SaleCart) => {
+      const response = await fetch('/api/sales/cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': user?.id.toString() || '18',
+        },
+        body: JSON.stringify(saleData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao processar venda');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Sucesso!",
+        description: "Venda processada com sucesso!",
+      });
+      
+      // Preparar dados para impressão térmica
+      const saleForPrint = {
+        id: data.sale.id,
+        products: cart.map(item => ({
+          name: item.productName,
+          quantity: item.quantity,
+          price: item.unitPrice,
+          total: item.totalPrice
+        })),
+        total: calculateCartTotal() - discount,
+        paymentMethod: getPaymentMethodLabel(paymentMethod),
+        saleDate: new Date().toISOString(),
+        client: foundClient
+      };
+      
+      setLastSaleData(saleForPrint);
+      setShowPrintModal(true);
+      
+      clearCart();
+      queryClient.invalidateQueries({ queryKey: ['/api/sales'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/products'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/financial'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Erro",
+        description: error.message || 'Erro ao processar venda',
+        variant: "destructive",
+      });
+    },
+  });
 
   // Adicionar produto ao carrinho
   const addToCart = (product: Product, quantity: number = 1) => {
@@ -125,9 +174,18 @@ export default function VendasSection() {
     ));
   };
 
+  // Limpar carrinho
+  const clearCart = () => {
+    setCart([]);
+    setSelectedClient(null);
+    setPaymentMethod("");
+    setDiscount(0);
+  };
+
   // Calcular totais
   const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  const totalAmount = subtotal - discount;
+  const discountAmount = (subtotal * discount) / 100;
+  const totalAmount = subtotal - discountAmount;
 
   // Processar venda
   const handleProcessSale = () => {
@@ -152,7 +210,7 @@ export default function VendasSection() {
     const saleData: SaleCart = {
       items: cart,
       clientId: selectedClient || undefined,
-      clientName: selectedClient ? clients.find((c: Client) => c.id === selectedClient)?.name : undefined,
+      clientName: selectedClient ? clients.find(c => c.id === selectedClient)?.name : undefined,
       subtotal,
       discount,
       totalAmount,
@@ -164,7 +222,7 @@ export default function VendasSection() {
 
   // Processar código de barras (simular "bip")
   const handleBarcodeScanned = (barcode: string) => {
-    const product = products.find((p: Product) => p.barcode === barcode);
+    const product = products.find(p => p.barcode === barcode);
     if (product) {
       addToCart(product);
       toast({

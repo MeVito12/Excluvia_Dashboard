@@ -1,4 +1,3 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePermissions, availableSections } from '@/contexts/PermissionsContext';
@@ -22,7 +21,7 @@ import {
   UserCheck,
   Loader2
 } from 'lucide-react';
-// ModernIcon removido - usando Lucide icons diretamente
+import ModernIcon from '@/components/ui/modern-icon';
 
 interface UserData {
   id: number;

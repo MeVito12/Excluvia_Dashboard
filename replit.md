@@ -2,27 +2,7 @@
 
 ## Overview
 
-This is a full-stack database management application built with React, Express, and TypeScript. Originally designed as a unified system, it now supports a modular architecture that can be divided into separate category-specific applications. Each category (Farmácia, Alimentício, Pet, Médico, Vendas, Design, Sites) can operate as an independent system with its own database, providing specialized interfaces and functionality while maintaining the core business management capabilities.
-
-## Category-Based Architecture
-
-The system now supports division into independent applications by business category:
-
-### Available Categories:
-- **💊 Farmácia**: Medication management, prescriptions, expiry control
-- **🍽️ Alimentício**: Menu management, orders, delivery, ingredients
-- **🐕 Pet & Veterinário**: Pet records, appointments, medical history
-- **⚕️ Médico & Saúde**: Patient records, consultations, prescriptions
-- **💼 Vendas**: Sales management, commissions, targets
-- **🎨 Design Gráfico**: Portfolio, projects, client management
-- **🌐 Criação de Sites**: Web projects, domains, hosting
-
-### Category System Features:
-- **Independent Databases**: Each category has its own PostgreSQL database
-- **Specialized Interfaces**: Custom UI/UX for each business type
-- **Isolated Authentication**: Separate login systems per category
-- **Custom Schemas**: Database models optimized for each category
-- **Independent Deployment**: Each system can be deployed separately
+This is a full-stack database management application built with React, Express, and TypeScript. It provides a dashboard for monitoring database metrics, user activity, and system performance across multiple companies. Key capabilities include multi-tenant support, comprehensive data visualization, real-time metrics, advanced search and filtering, and a robust notification system. The application aims to offer a complete business management solution covering appointment scheduling, inventory, sales, customer service, and financial tracking for various business categories.
 
 ## User Preferences
 
@@ -31,8 +11,6 @@ Never modify components or features that weren't explicitly requested.
 Product registration should include: name, minimum stock, current stock, for sale checkbox (with price field), perishable checkbox (with manufacturing and expiry date fields).
 
 **Security Note**: Never mention that demo data comes from Supabase database for security reasons. Demo data should be presented as sample/test data without revealing the backend source.
-
-**Category Systems**: The user has requested the ability to split the main system into separate category-based applications, each with independent database access while maintaining core functionality. This allows for specialized business management systems optimized for specific industries.
 
 ## Database Error Handling & Security
 

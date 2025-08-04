@@ -38,8 +38,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize database connection
-  await initializeDatabase();
+  // Initialize database manager
+  const { databaseManager } = await import("./db/database-manager");
+  await databaseManager.initialize();
   
   const server = await registerRoutes(app);
 

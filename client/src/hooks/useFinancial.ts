@@ -1,0 +1,78 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useApiClient } from '@/lib/apiClient';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCategory } from '@/contexts/CategoryContext';
+
+import type { FinancialEntry, NewFinancialEntry } from '@shared/schema';
+
+export const useFinancial = (dateFrom?: string, dateTo?: string) => {
+  const apiClient = useApiClient();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const { selectedCategory } = useCategory();
+
+  const query = useQuery({
+    queryKey: ['financial', (user as any)?.id, dateFrom, dateTo],
+    queryFn: async () => {
+      let url = '/api/financial';
+      const params = new URLSearchParams();
+      
+      if (dateFrom) params.append('dateFrom', dateFrom);
+      if (dateTo) params.append('dateTo', dateTo);
+      
+      if (params.toString()) {
+        url += `?${params.toString()}`;
+      }
+      
+      return apiClient.get(url);
+    },
+    enabled: !!user,
+    staleTime: 0,
+    refetchOnMount: true
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (entry: NewFinancialEntry) => {
+      return apiClient.post('/api/financial', entry);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial'] 
+      });
+    }
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async ({ id, entry }: { id: number, entry: Partial<NewFinancialEntry> }) => {
+      return apiClient.put(`/api/financial/${id}`, entry);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial'] 
+      });
+    }
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiClient.delete(`/api/financial/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ 
+        queryKey: ['financial'] 
+      });
+    }
+  });
+
+  return {
+    entries: query.data || [],
+    isLoading: query.isLoading,
+    error: query.error,
+    createEntry: createMutation.mutate,
+    updateEntry: updateMutation.mutate,
+    deleteEntry: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending
+  };
+};

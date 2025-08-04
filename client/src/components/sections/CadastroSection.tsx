@@ -1,4 +1,3 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,7 +19,7 @@ import {
   X,
   Shield
 } from 'lucide-react';
-// ModernIcon removido - usando Lucide icons diretamente
+import ModernIcon from '@/components/ui/modern-icon';
 
 interface CompanyData {
   fantasyName: string;
@@ -682,7 +681,7 @@ const CadastroSection = () => {
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
-              <Building2 className="w-5 h-5"/>
+              <ModernIcon icon={Building2} className="w-5 h-5" />
               <span>Dados da Empresa Principal</span>
             </div>
           </div>
@@ -831,7 +830,7 @@ const CadastroSection = () => {
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
-              <User className="w-5 h-5"/>
+              <ModernIcon icon={User} className="w-5 h-5" />
               <span>Usuário Master - {companyCreated?.fantasyName}</span>
             </div>
           </div>
@@ -965,7 +964,7 @@ const CadastroSection = () => {
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
-              <Building2 className="w-5 h-5"/>
+              <ModernIcon icon={Building2} className="w-5 h-5" />
               <span>Configuração de Filiais - {companyCreated?.fantasyName}</span>
             </div>
           </div>
@@ -1004,7 +1003,7 @@ const CadastroSection = () => {
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
-              <Building2 className="w-5 h-5"/>
+              <ModernIcon icon={Building2} className="w-5 h-5" />
               <span>Cadastrar Filiais - {companyCreated?.fantasyName}</span>
             </div>
           </div>
@@ -1114,7 +1113,7 @@ const CadastroSection = () => {
         <div className="main-card">
           <div className="card-header">
             <div className="card-title">
-              <Users className="w-5 h-5"/>
+              <ModernIcon icon={Users} className="w-5 h-5" />
               <span>Cadastrar Usuários Comuns - {companyCreated?.fantasyName}</span>
             </div>
           </div>
@@ -1252,7 +1251,7 @@ const CadastroSection = () => {
           <div className="main-card">
             <div className="card-header">
               <div className="card-title">
-                <Users className="w-5 h-5"/>
+                <ModernIcon icon={Users} className="w-5 h-5" />
                 <span>Gerenciar Usuários Existentes</span>
               </div>
             </div>
@@ -1367,7 +1366,7 @@ const CadastroSection = () => {
           <div className="main-card">
             <div className="card-header">
               <div className="card-title">
-                <Building2 className="w-5 h-5"/>
+                <ModernIcon icon={Building2} className="w-5 h-5" />
                 <span>Gerenciar Empresas Existentes</span>
               </div>
             </div>

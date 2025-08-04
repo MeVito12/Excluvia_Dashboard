@@ -22,17 +22,17 @@ export interface Company {
 
 export interface Branch {
   id: number;
-  company_id: number;
+  companyId: number;
   name: string;
   code: string;
   address?: string;
   phone?: string;
   email?: string;
-  is_main: boolean;
-  is_active: boolean;
-  manager_id?: number;
-  created_at: string;
-  updated_at: string;
+  isMain: boolean;
+  isActive: boolean;
+  managerId?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface User {
@@ -41,15 +41,15 @@ export interface User {
   password?: string;
   name: string;
   phone?: string;
-  company_id?: number;
-  branch_id?: number;
+  companyId?: number;
+  branchId?: number;
   role: 'ceo' | 'master' | 'user';
-  business_category?: string;
-  is_active: boolean;
-  created_by?: number;
-  last_login?: string;
-  created_at: string;
-  updated_at: string;
+  businessCategory?: string;
+  isActive: boolean;
+  createdBy?: number;
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface UserPermission {
@@ -74,17 +74,17 @@ export interface Product {
   category: string;
   price: number;
   stock: number;
-  min_stock: number;
+  minStock: number;
   barcode?: string;
-  manufacturing_date?: string;
-  expiry_date?: string;
-  is_perishable: boolean;
-  for_sale: boolean; // Se está à venda (aparece no cardápio) ou é apenas ingrediente
-  company_id: number;
-  branch_id: number;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
+  manufacturingDate?: string;
+  expiryDate?: string;
+  isPerishable: boolean;
+  forSale: boolean; // Se está à venda (aparece no cardápio) ou é apenas ingrediente
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // Para categoria alimenticia: produtos do cardápio que usam ingredientes do estoque
@@ -115,18 +115,18 @@ export interface MenuIngredient {
 
 export interface Sale {
   id: number;
-  product_id: number;
-  client_id?: number;
+  productId: number;
+  clientId?: number;
   quantity: number;
-  unit_price: number;
-  total_price: number;
-  payment_method: string;
-  sale_date: string;
+  unitPrice: number;
+  totalPrice: number;
+  paymentMethod: string;
+  saleDate: string;
   notes?: string;
-  company_id: number;
-  branch_id: number;
-  created_by: number;
-  created_at: string;
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
 }
 
 export interface Client {
@@ -136,12 +136,12 @@ export interface Client {
   phone?: string;
   document?: string;
   address?: string;
-  client_type: 'individual' | 'company';
-  company_id: number;
-  branch_id: number;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
+  clientType: 'individual' | 'company';
+  companyId: number;
+  branchId: number;
+  createdBy: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Appointment {
