@@ -60,10 +60,11 @@ const FinanceiroSection = () => {
 
   const companyId = user?.company_id || 1;
   
-  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
-  const { data: moneyTransfers = [] } = useMoneyTransfers(undefined, companyId);
-
-  const { branches = [] } = useBranches();
+  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
+  const { data: moneyTransfers = [], isLoading: transfersLoading } = useMoneyTransfers(undefined, companyId);
+  const { data: branches = [] } = useBranches(companyId);
+  const createFinancialEntry = useCreateFinancial();
+  const createMoneyTransfer = useCreateMoneyTransfer();
 
   // Função auxiliar para obter nome da filial
   const getBranchName = (branchId: number) => {
