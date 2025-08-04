@@ -1,4 +1,5 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useUnifiedMetrics } from "@/hooks/useUnifiedMetrics";
 import { useState, useMemo } from 'react';
 import { 
   Database, 
@@ -216,16 +217,11 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
 
   
+  // Usar hook unificado para garantir consistência entre seções
+  const unifiedMetrics = useUnifiedMetrics({ companyId, dateFrom, dateTo });
+  
   // Debug dos dados para verificar consistência entre seções
-  console.log("Debug - DASHBOARD - Dados alinhados:", {
-    totalVendas: (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
-    totalReceitas: (financialEntries || []).filter((f: any) => f.type === 'income').reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
-    vendas: (filteredSales || []).length,
-    receitas: (financialEntries || []).filter((f: any) => f.type === 'income').length,
-    companyId: companyId,
-    user: user,
-    filtroData: `${dateFrom} até ${dateTo}`
-  });
+  console.log("Debug - DASHBOARD - Dados alinhados:", unifiedMetrics.debug);
 
   return (
     <div className="app-section">
@@ -290,9 +286,11 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {financialLoading ? '...' : `R$ ${financialEntries.filter((e: any) => e.type === 'income').reduce((total: number, entry: any) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                R$ {unifiedMetrics.totalCombinado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-green-600 mt-1">{financialEntries.filter((e: any) => e.type === 'income').length} entradas de receita</p>
+              <p className="text-xs text-green-600 mt-1">
+                {unifiedMetrics.vendasCount} vendas + {unifiedMetrics.receitasCount} receitas
+              </p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />

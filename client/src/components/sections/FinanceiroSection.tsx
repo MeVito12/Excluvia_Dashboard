@@ -1,4 +1,5 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useUnifiedMetrics } from "@/hooks/useUnifiedMetrics";
 import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,6 +60,9 @@ const FinanceiroSection = () => {
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
   const companyId = (user as any)?.companyId;
+  
+  // Hook unificado para garantir consistência entre seções
+  const unifiedMetrics = useUnifiedMetrics({ companyId, dateFrom, dateTo });
   
   const { data: allFinancialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
   

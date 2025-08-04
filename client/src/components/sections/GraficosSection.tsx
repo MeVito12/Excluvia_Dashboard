@@ -1,4 +1,5 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useUnifiedMetrics } from "@/hooks/useUnifiedMetrics";
 import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -54,7 +55,10 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
-  const companyId = user?.company_id || 1;
+  const companyId = (user as any)?.companyId;
+  
+  // Hook unificado para garantir consistência entre seções
+  const unifiedMetrics = useUnifiedMetrics({ companyId, dateFrom, dateTo });
   
   // Hooks para dados reais da API
   const { data: products = [] } = useProducts(undefined, companyId);
@@ -81,14 +85,7 @@ const GraficosSection = () => {
   const calculateMetrics = useMemo(() => {
     // Verificação mais robusta dos dados
     try {
-      console.log('Debug - GRÁFICOS - Dados alinhados:', { 
-        totalVendas: filteredSales?.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
-        totalReceitas: financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
-        vendas: filteredSales?.length,
-        receitas: financial?.filter((f: any) => f.type === 'income')?.length,
-        companyId: user?.company_id,
-        filtroData: `${dateFrom} até ${dateTo}`
-      });
+      console.log('Debug - GRÁFICOS - Dados alinhados:', unifiedMetrics.debug);
       
       if (!sales || !Array.isArray(sales) || !products || !Array.isArray(products) || 
           !clients || !Array.isArray(clients) || !financial || !Array.isArray(financial) ||
