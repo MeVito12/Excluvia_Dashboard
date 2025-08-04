@@ -83,7 +83,7 @@ const EstoqueSection = () => {
   
   const { data: products = [], isLoading } = useProducts(undefined, companyId);
   const { data: transfers = [], isLoading: isTransfersLoading } = useTransfers(undefined, companyId);
-  const createProduct = useCreateProduct();
+  const { mutateAsync: createProduct } = useCreateProduct();
   const createTransfer = useCreateTransfer();
   
   // Para corrigir variáveis undefined
@@ -732,16 +732,41 @@ const EstoqueSection = () => {
               </button>
             </div>
             
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
               
-              console.log("Action performed");
-              // toast({
-              //   title: "Produto Adicionado",
-              //   description: "O produto foi adicionado com sucesso ao estoque!"
-              // });
-              setShowAddProductModal(false);
+              try {
+                const productData = {
+                  name: formData.get('name') as string,
+                  description: formData.get('description') as string || '',
+                  category: formData.get('category') as string,
+                  subcategory: formData.get('subcategory') as string || '',
+                  price: formData.get('forSale') ? parseFloat(formData.get('price') as string || '0') : 0,
+                  stock: parseInt(formData.get('stock') as string || '0'),
+                  min_stock: parseInt(formData.get('minStock') as string || '0'),
+                  barcode: formData.get('barcode') as string || '',
+                  manufacturing_date: formData.get('manufacturingDate') as string || null,
+                  expiry_date: formData.get('expiryDate') as string || null,
+                  is_perishable: !!formData.get('isPerishable'),
+                  for_sale: !!formData.get('forSale'),
+                  company_id: companyId,
+                  branch_id: 1, // Default branch
+                  created_by: (user as any)?.id || 1
+                };
+
+                await createProduct(productData);
+                
+                // Notificação de sucesso
+                console.log("Produto adicionado com sucesso!");
+                setShowAddProductModal(false);
+                
+                // Reset form states
+                setShowForSalePrice(false);
+                setShowPerishableDates(false);
+              } catch (error) {
+                console.error('Erro ao adicionar produto:', error);
+              }
             }}>
               <div className="space-y-4">
                 <div>
@@ -753,6 +778,51 @@ const EstoqueSection = () => {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     placeholder="Ex: Paracetamol 500mg"
                   />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                  <input
+                    name="description"
+                    type="text"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    placeholder="Descrição detalhada do produto"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+                    <select
+                      name="category"
+                      required
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    >
+                      <option value="">Selecionar categoria</option>
+                      <option value="medicamentos">Medicamentos</option>
+                      <option value="cosmeticos">Cosméticos</option>
+                      <option value="higiene">Higiene</option>
+                      <option value="alimentos">Alimentos</option>
+                      <option value="equipamentos">Equipamentos</option>
+                      <option value="suplementos">Suplementos</option>
+                      <option value="brinquedos">Brinquedos</option>
+                      <option value="acessorios">Acessórios</option>
+                      <option value="tecnologia">Tecnologia</option>
+                      <option value="roupas">Roupas</option>
+                      <option value="servicos">Serviços</option>
+                      <option value="outros">Outros</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Subcategoria</label>
+                    <input
+                      name="subcategory"
+                      type="text"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Ex: Analgésicos, Vitaminas..."
+                    />
+                  </div>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3">

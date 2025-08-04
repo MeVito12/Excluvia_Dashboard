@@ -72,6 +72,7 @@ export interface Product {
   name: string;
   description?: string;
   category: string;
+  subcategory?: string;
   price: number;
   stock: number;
   min_stock: number;
