@@ -357,7 +357,7 @@ const FinanceiroSection = () => {
     );
   };
 
-  if (isLoading && financialEntries.length === 0) {
+  if (financialLoading && financialEntries.length === 0) {
     return (
       <div className="flex items-center justify-center py-8">
         <div className="text-center">
@@ -388,7 +388,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {financialLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
               <p className="text-xs text-green-600 mt-1">Período selecionado</p>
             </div>
@@ -403,7 +403,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Despesas Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                {financialLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
               </p>
               <p className="text-xs text-red-600 mt-1">Período selecionado</p>
             </div>
@@ -418,7 +418,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Saldo Atual</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : (() => {
+                {financialLoading ? '...' : (() => {
                   const receitas = financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0);
                   const despesas = financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0);
                   const saldo = receitas - despesas;
@@ -438,7 +438,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Pendências</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : financialEntries.filter(e => e.type === 'expense' && (e.status === 'pending' || e.status === 'near_due' || e.status === 'overdue')).length}
+                {financialLoading ? '...' : financialEntries.filter(e => e.type === 'expense' && (e.status === 'pending' || e.status === 'near_due' || e.status === 'overdue')).length}
               </p>
               <p className="text-xs text-yellow-600 mt-1">
                 {financialEntries.filter(e => e.type === 'expense' && e.status === 'overdue').length > 0 ? 'Tem vencidas' : 'Em dia'}
@@ -727,7 +727,7 @@ const FinanceiroSection = () => {
                 </div>
               )}
             </div>
-          ) : isLoading ? (
+          ) : financialLoading ? (
             <div className="flex items-center justify-center py-8">
               <div className="text-center">
                 <CreditCard className="w-8 h-8 text-gray-400 mx-auto mb-2" />
