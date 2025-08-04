@@ -46,14 +46,15 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
+  const companyId = 1; // Forçar empresa 1 onde estão os dados
 
-  // Hooks para dados reais da API
-  const { data: products = [], isLoading: productsLoading } = useProducts();
-  const { data: sales = [], isLoading: salesLoading } = useSales();
-  const { data: clients = [], isLoading: clientsLoading } = useClients();
-  const { data: transfers = [], isLoading: transfersLoading } = useTransfers();
-  const { data: appointments = [], isLoading: appointmentsLoading } = useAppointments();
-  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial();
+  // Hooks para dados reais da API com filtros forçados
+  const { data: products = [], isLoading: productsLoading } = useProducts(undefined, companyId);
+  const { data: sales = [], isLoading: salesLoading } = useSales(undefined, companyId);
+  const { data: clients = [], isLoading: clientsLoading } = useClients(undefined, companyId);
+  const { data: transfers = [], isLoading: transfersLoading } = useTransfers(undefined, companyId);
+  const { data: appointments = [], isLoading: appointmentsLoading } = useAppointments(undefined, companyId);
+  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
 
   // Gerar atividades baseadas em dados reais
   const activities = useMemo(() => {
@@ -244,7 +245,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     financial: (financialEntries || []).length,
     filteredSales: (filteredSales || []).length,
     userId: user?.id,
-    companyId: user?.companyId || user?.company_id
+    companyId: companyId
   });
 
   return (
