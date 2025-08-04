@@ -60,7 +60,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const activities = useMemo(() => {
     const activitiesList: any[] = [];
     
-    // Adicionar vendas como atividades
+    // Adicionar vendas automáticas como atividades
     if (sales && Array.isArray(sales)) {
       sales.forEach((sale: any) => {
         activitiesList.push({
@@ -69,6 +69,20 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
           timestamp: sale.sale_date,
           type: 'sale'
         });
+      });
+    }
+
+    // Adicionar vendas manuais (entradas financeiras de receita não vinculadas) 
+    if (financialEntries && Array.isArray(financialEntries)) {
+      financialEntries.forEach((entry: any) => {
+        if (entry.type === 'income' && (!entry.reference_type || entry.reference_type !== 'sale')) {
+          activitiesList.push({
+            id: `manual-sale-${entry.id}`,
+            action: `Venda manual: ${entry.description} - R$ ${Number(entry.amount || 0).toFixed(2)}`,
+            timestamp: entry.created_at,
+            type: 'manual-sale'
+          });
+        }
       });
     }
     
@@ -98,7 +112,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     
     // Ordenar por data mais recente
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }, [sales, appointments, transfers]);
+  }, [sales, appointments, transfers, financialEntries]);
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {

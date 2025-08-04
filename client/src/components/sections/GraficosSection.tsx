@@ -126,9 +126,10 @@ const GraficosSection = () => {
         conversion: '0%'
       };
     }
-    const totalSales = (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
-    const totalQuantity = (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.quantity) || 0), 0);
-    const avgTicket = totalSales > 0 ? totalSales / (filteredSales || []).length : 0;
+    // Calcular totais de TODAS as receitas (vendas automáticas + manuais)
+    const totalSales = financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0) || 0;
+    const totalSalesCount = (filteredSales || []).length + (financial?.filter((f: any) => f.type === 'income' && (!f.reference_type || f.reference_type !== 'sale'))?.length || 0);
+    const avgTicket = totalSalesCount > 0 ? totalSales / totalSalesCount : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
     const today = new Date();
@@ -245,7 +246,7 @@ const GraficosSection = () => {
 
     return {
       totalSales: totalSales.toFixed(2),
-      totalOrders: (filteredSales || []).length,
+      totalOrders: totalSalesCount,
       avgTicket: avgTicket.toFixed(2),
       growth: `+${growthRate}%`,
       period: dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual',
