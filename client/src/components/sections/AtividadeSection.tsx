@@ -51,6 +51,7 @@ const AtividadeSection = () => {
   const { data: sales = [] } = useSales(undefined, companyId);
   const { data: clients = [] } = useClients(undefined, companyId);
   const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
 
   // Atividades do sistema simplificadas
   const systemActivities = [
@@ -236,12 +237,16 @@ const AtividadeSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">
-            Vendas ({(sales || []).length})
+            Vendas ({(sales || []).length + (financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || []).length})
           </h3>
           <div className="text-right">
             <p className="text-sm text-gray-600">Total:</p>
             <p className="text-lg font-bold text-green-600">
-              R$ {(sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              R$ {(
+                (sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0) +
+                (financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || [])
+                  .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0)
+              ).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
         </div>
