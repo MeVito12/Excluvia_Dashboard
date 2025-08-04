@@ -655,7 +655,7 @@ const FinanceiroSection = () => {
               </div>
 
               {/* Conteúdo da aba Transferências */}
-              {isTransfersLoading && filteredTransfers.length === 0 ? (
+              {transfersLoading && filteredTransfers.length === 0 ? (
                 <div className="text-center py-8">
                   <ArrowLeftRight className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-600">Carregando transferências...</p>
