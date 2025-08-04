@@ -214,19 +214,28 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       return acc;
     }, {});
 
-    // Dados para gráfico de receitas vs despesas - usando dados financeiros que já incluem vendas
-    const financialSummary = (financialEntries || []).reduce((acc: any, entry: any) => {
-      const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
-      if (!acc[date]) {
-        acc[date] = { name: date, receitas: 0, despesas: 0 };
+    // Dados para gráfico de receitas vs despesas - usar apenas vendas para receitas
+    const financialSummary = {};
+    
+    // Adicionar receitas das vendas
+    filteredSales.forEach((sale: any) => {
+      const date = new Date(sale.sale_date).toLocaleDateString('pt-BR');
+      if (!financialSummary[date]) {
+        financialSummary[date] = { name: date, receitas: 0, despesas: 0 };
       }
-      if (entry.type === 'income') {
-        acc[date].receitas += Number(entry.amount || 0);
-      } else {
-        acc[date].despesas += Math.abs(Number(entry.amount || 0));
+      financialSummary[date].receitas += Number(sale.total_price || 0);
+    });
+    
+    // Adicionar despesas das entradas financeiras
+    (financialEntries || []).forEach((entry: any) => {
+      if (entry.type === 'expense') {
+        const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
+        if (!financialSummary[date]) {
+          financialSummary[date] = { name: date, receitas: 0, despesas: 0 };
+        }
+        financialSummary[date].despesas += Math.abs(Number(entry.amount || 0));
       }
-      return acc;
-    }, {});
+    });
 
     return {
       salesByDay: Object.values(salesByDay).slice(-7), // Últimos 7 dias
