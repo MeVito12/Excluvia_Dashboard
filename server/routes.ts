@@ -104,14 +104,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Produtos
   app.get("/api/products", async (req, res) => {
     try {
-      // Dados de desenvolvimento para produtos
-      const products = [
-        { id: 1, name: 'Paracetamol 500mg', stock: 100, min_stock: 20, price: 5.50, for_sale: true, company_id: 1, branch_id: 1, category: 'Medicamento', created_at: new Date().toISOString() },
-        { id: 2, name: 'Ibuprofeno 600mg', stock: 75, min_stock: 15, price: 8.90, for_sale: true, company_id: 1, branch_id: 1, category: 'Medicamento', created_at: new Date().toISOString() },
-        { id: 3, name: 'Vitamina C', stock: 50, min_stock: 10, price: 12.00, for_sale: true, company_id: 1, branch_id: 1, category: 'Suplemento', created_at: new Date().toISOString() },
-        { id: 4, name: 'Ração Golden Cães', stock: 25, min_stock: 5, price: 89.90, for_sale: true, company_id: 1, branch_id: 1, category: 'Pet', created_at: new Date().toISOString() },
-        { id: 5, name: 'Shampoo Antipulgas', stock: 15, min_stock: 3, price: 24.50, for_sale: true, company_id: 1, branch_id: 1, category: 'Pet', created_at: new Date().toISOString() }
-      ];
+      const products = await storage.getProducts();
       res.json(products);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -130,17 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      // Dados de desenvolvimento para vendas
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-      
-      const sales = [
-        { id: 1, product_id: 1, client_id: 1, quantity: 2, unit_price: 5.50, total_price: 11.00, sale_date: today.toISOString(), company_id: 1, branch_id: 1, created_at: today.toISOString() },
-        { id: 2, product_id: 2, client_id: 2, quantity: 1, unit_price: 8.90, total_price: 8.90, sale_date: yesterday.toISOString(), company_id: 1, branch_id: 1, created_at: yesterday.toISOString() },
-        { id: 3, product_id: 4, client_id: 1, quantity: 1, unit_price: 89.90, total_price: 89.90, sale_date: today.toISOString(), company_id: 1, branch_id: 1, created_at: today.toISOString() },
-        { id: 4, product_id: 3, client_id: 3, quantity: 3, unit_price: 12.00, total_price: 36.00, sale_date: yesterday.toISOString(), company_id: 1, branch_id: 1, created_at: yesterday.toISOString() }
-      ];
+      const sales = await storage.getSales();
       res.json(sales);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -159,13 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      // Dados de desenvolvimento para clientes
-      const clients = [
-        { id: 1, name: 'Maria Silva', email: 'maria@email.com', phone: '(11) 99999-1111', client_type: 'individual', company_id: 1, branch_id: 1, created_at: new Date().toISOString() },
-        { id: 2, name: 'João Santos', email: 'joao@email.com', phone: '(11) 99999-2222', client_type: 'individual', company_id: 1, branch_id: 1, created_at: new Date().toISOString() },
-        { id: 3, name: 'Ana Costa', email: 'ana@email.com', phone: '(11) 99999-3333', client_type: 'individual', company_id: 1, branch_id: 1, created_at: new Date().toISOString() },
-        { id: 4, name: 'Empresa ABC Ltda', email: 'contato@abc.com', phone: '(11) 3333-4444', client_type: 'company', company_id: 1, branch_id: 1, created_at: new Date().toISOString() }
-      ];
+      const clients = await storage.getClients();
       res.json(clients);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -184,17 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Agendamentos
   app.get("/api/appointments", async (req, res) => {
     try {
-      // Dados de desenvolvimento para agendamentos
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const nextWeek = new Date();
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const appointments = [
-        { id: 1, title: 'Consulta Veterinária - Max', client_id: 1, appointment_date: tomorrow.toISOString(), type: 'consulta', status: 'agendado', company_id: 1, branch_id: 1, created_at: new Date().toISOString() },
-        { id: 2, title: 'Vacinação - Luna', client_id: 2, appointment_date: nextWeek.toISOString(), type: 'vacinacao', status: 'agendado', company_id: 1, branch_id: 1, created_at: new Date().toISOString() },
-        { id: 3, title: 'Consulta Médica - Check-up', client_id: 3, appointment_date: tomorrow.toISOString(), type: 'consulta', status: 'agendado', company_id: 1, branch_id: 1, created_at: new Date().toISOString() }
-      ];
+      const appointments = await storage.getAppointments();
       res.json(appointments);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -213,17 +180,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financeiro
   app.get("/api/financial", async (req, res) => {
     try {
-      // Dados de desenvolvimento para entradas financeiras
-      const today = new Date();
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
-      
-      const entries = [
-        { id: 1, description: 'Venda de Medicamentos', amount: 145.80, type: 'income', category: 'Vendas', status: 'completed', transaction_date: today.toISOString(), company_id: 1, branch_id: 1, created_at: today.toISOString() },
-        { id: 2, description: 'Compra de Estoque', amount: -500.00, type: 'expense', category: 'Compras', status: 'completed', transaction_date: yesterday.toISOString(), company_id: 1, branch_id: 1, created_at: yesterday.toISOString() },
-        { id: 3, description: 'Venda de Produtos Pet', amount: 114.40, type: 'income', category: 'Vendas', status: 'completed', transaction_date: today.toISOString(), company_id: 1, branch_id: 1, created_at: today.toISOString() },
-        { id: 4, description: 'Pagamento de Aluguel', amount: -1200.00, type: 'expense', category: 'Fixos', status: 'pending', transaction_date: today.toISOString(), company_id: 1, branch_id: 1, created_at: today.toISOString() }
-      ];
+      const entries = await storage.getFinancialEntries();
       res.json(entries);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -234,6 +191,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const entry = await storage.createFinancialEntry(req.body);
       res.json(entry);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Transferências
+  app.get("/api/transfers", async (req, res) => {
+    try {
+      const transfers = await storage.getTransfers();
+      res.json(transfers);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/transfers", async (req, res) => {
+    try {
+      const transfer = await storage.createTransfer(req.body);
+      res.json(transfer);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Transferências de Dinheiro
+  app.get("/api/money-transfers", async (req, res) => {
+    try {
+      const transfers = await storage.getMoneyTransfers();
+      res.json(transfers);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/money-transfers", async (req, res) => {
+    try {
+      const transfer = await storage.createMoneyTransfer(req.body);
+      res.json(transfer);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Filiais
+  app.get("/api/branches", async (req, res) => {
+    try {
+      const branches = await storage.getBranches();
+      res.json(branches);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/branches", async (req, res) => {
+    try {
+      const branch = await storage.createBranch(req.body);
+      res.json(branch);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Informações de usuário-empresa
+  app.get("/api/user-company/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const user = await storage.getUserById(userId);
+      if (!user) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+      }
+      const company = await storage.getCompanyById(user.company_id);
+      res.json({ user, company });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

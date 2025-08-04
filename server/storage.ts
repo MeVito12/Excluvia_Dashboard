@@ -101,9 +101,13 @@ export class SupabaseStorage implements Storage {
   private apiKey: string;
 
   constructor() {
-    this.baseUrl = process.env.VITE_SUPABASE_URL!;
+    this.baseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL!;
     // Use service role key for backend operations (full access)
-    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY!;
+    this.apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY!;
+    
+    console.log('🔧 SupabaseStorage configurado:');
+    console.log('  - URL:', this.baseUrl ? 'Configurada' : 'FALTANDO');
+    console.log('  - API Key:', this.apiKey ? 'Configurada' : 'FALTANDO');
   }
 
   private async request(path: string, options: RequestInit = {}, companyId?: number): Promise<any> {
