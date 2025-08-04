@@ -67,12 +67,35 @@ export interface UserPermission {
 // ENTIDADES DE NEGÓCIO
 // ====================================
 
+export interface Category {
+  id: number;
+  name: string;
+  description?: string;
+  color: string;
+  company_id: number;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Subcategory {
+  id: number;
+  name: string;
+  description?: string;
+  category_id: number;
+  color: string;
+  company_id: number;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Product {
   id: number;
   name: string;
   description?: string;
-  category: string;
-  subcategory?: string;
+  category_id: number;
+  subcategory_id?: number;
   price: number;
   stock: number;
   min_stock: number;
@@ -252,17 +275,32 @@ export const UserSchema = z.object({
   role: z.enum(['ceo', 'master', 'user']),
 });
 
+export const CategorySchema = z.object({
+  name: z.string().min(1, "Nome da categoria é obrigatório"),
+  description: z.string().optional(),
+  color: z.string().min(1, "Cor é obrigatória"),
+});
+
+export const SubcategorySchema = z.object({
+  name: z.string().min(1, "Nome da subcategoria é obrigatório"),
+  description: z.string().optional(),
+  category_id: z.number().positive("Categoria é obrigatória"),
+  color: z.string().min(1, "Cor é obrigatória"),
+});
+
 export const ProductSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().optional(),
-  category: z.string().min(1, "Categoria é obrigatória"),
-  price: z.number().positive("Preço deve ser positivo"),
+  category_id: z.number().positive("Categoria é obrigatória"),
+  subcategory_id: z.number().positive().optional(),
+  price: z.number().min(0, "Preço não pode ser negativo"),
   stock: z.number().min(0, "Estoque não pode ser negativo"),
-  minStock: z.number().min(0, "Estoque mínimo não pode ser negativo"),
+  min_stock: z.number().min(0, "Estoque mínimo não pode ser negativo"),
   barcode: z.string().optional(),
-  manufacturingDate: z.string().optional(),
-  expiryDate: z.string().optional(),
-  isPerishable: z.boolean().default(false),
+  manufacturing_date: z.string().optional(),
+  expiry_date: z.string().optional(),
+  is_perishable: z.boolean().default(false),
+  for_sale: z.boolean().default(false),
 });
 
 export const SaleSchema = z.object({
@@ -353,6 +391,8 @@ export const MoneyTransferSchema = z.object({
 export type NewCompany = z.infer<typeof CompanySchema>;
 export type NewBranch = z.infer<typeof BranchSchema>;
 export type NewUser = z.infer<typeof UserSchema>;
+export type NewCategory = z.infer<typeof CategorySchema>;
+export type NewSubcategory = z.infer<typeof SubcategorySchema>;
 export type NewProduct = z.infer<typeof ProductSchema>;
 export type NewSale = z.infer<typeof SaleSchema>;
 export type NewClient = z.infer<typeof ClientSchema>;

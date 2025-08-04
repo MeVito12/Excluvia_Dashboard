@@ -1,4 +1,4 @@
-import { useClients, useProducts, useCreateClient } from "@/hooks/useData";
+import { useClients, useProducts, useCategories, useSubcategories, useCreateClient, useCreateCategory, useCreateSubcategory } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { formatDateBR } from '@/utils/dateFormat';
@@ -32,7 +32,12 @@ const CadastrosSection = () => {
     isLoading: productsLoading 
   } = useProducts();
   
+  const { data: categories = [] } = useCategories((user as any)?.companyId);
+  const { data: subcategories = [] } = useSubcategories((user as any)?.companyId);
+  
   const { mutateAsync: createClient } = useCreateClient();
+  const { mutateAsync: createCategory } = useCreateCategory();
+  const { mutateAsync: createSubcategory } = useCreateSubcategory();
   
   const [activeTab, setActiveTab] = useState('clientes');
   const [searchTerm, setSearchTerm] = useState('');
@@ -147,11 +152,54 @@ const CadastrosSection = () => {
     client.phone?.includes(searchTerm)
   );
 
-  // Extrair categorias únicas dos produtos
-  const categories = [...new Set(products.map((p: any) => p.category).filter(Boolean))];
-  
-  // Extrair subcategorias únicas dos produtos (simuladas)
-  const subcategories = [...new Set(products.map((p: any) => p.subcategory).filter(Boolean))];
+  // Função para lidar com criação de categorias
+  const handleCategorySubmit = async () => {
+    try {
+      const categoryData = {
+        ...categoryForm,
+        company_id: (user as any)?.companyId,
+        created_by: (user as any)?.id
+      };
+
+      if (editingItem) {
+        console.log('Edição de categoria ainda não implementada');
+      } else {
+        await createCategory(categoryData);
+      }
+
+      setShowAddModal(false);
+      setShowEditModal(false);
+      setEditingItem(null);
+      resetForms();
+    } catch (error) {
+      console.error('Erro ao salvar categoria:', error);
+    }
+  };
+
+  // Função para lidar com criação de subcategorias
+  const handleSubcategorySubmit = async () => {
+    try {
+      const subcategoryData = {
+        ...subcategoryForm,
+        category_id: parseInt(subcategoryForm.category_id),
+        company_id: (user as any)?.companyId,
+        created_by: (user as any)?.id
+      };
+
+      if (editingItem) {
+        console.log('Edição de subcategoria ainda não implementada');
+      } else {
+        await createSubcategory(subcategoryData);
+      }
+
+      setShowAddModal(false);
+      setShowEditModal(false);
+      setEditingItem(null);
+      resetForms();
+    } catch (error) {
+      console.error('Erro ao salvar subcategoria:', error);
+    }
+  };
 
   // Renderizar conteúdo baseado na aba ativa
   const renderTabContent = () => {
@@ -275,15 +323,15 @@ const CadastrosSection = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.map((category, index) => (
-                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                {categories.map((category: any) => (
+                  <div key={category.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <div 
                           className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: '#3B82F6' }}
+                          style={{ backgroundColor: category.color || '#3B82F6' }}
                         ></div>
-                        <h4 className="font-medium text-gray-900">{category}</h4>
+                        <h4 className="font-medium text-gray-900">{category.name}</h4>
                       </div>
                       <div className="flex gap-1">
                         <button className="p-1 text-gray-400 hover:text-blue-600">
@@ -295,7 +343,10 @@ const CadastrosSection = () => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600">
-                      {products.filter((p: any) => p.category === category).length} produtos
+                      {category.description || 'Sem descrição'}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {products.filter((p: any) => p.category_id === category.id).length} produtos
                     </p>
                   </div>
                 ))}
@@ -305,7 +356,7 @@ const CadastrosSection = () => {
                 <div className="text-center py-8">
                   <Tags className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhuma categoria cadastrada</h3>
-                  <p className="text-gray-500">As categorias aparecerão automaticamente conforme você cadastra produtos</p>
+                  <p className="text-gray-500">Crie categorias para organizar melhor seus produtos</p>
                 </div>
               )}
             </div>
@@ -334,37 +385,46 @@ const CadastrosSection = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {subcategories.map((subcategory, index) => (
-                  <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: '#10B981' }}
-                        ></div>
-                        <h4 className="font-medium text-gray-900">{subcategory}</h4>
+                {subcategories.map((subcategory: any) => {
+                  const parentCategory = categories.find((c: any) => c.id === subcategory.category_id);
+                  return (
+                    <div key={subcategory.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-4 h-4 rounded-full"
+                            style={{ backgroundColor: subcategory.color || '#10B981' }}
+                          ></div>
+                          <h4 className="font-medium text-gray-900">{subcategory.name}</h4>
+                        </div>
+                        <div className="flex gap-1">
+                          <button className="p-1 text-gray-400 hover:text-blue-600">
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button className="p-1 text-gray-400 hover:text-red-600">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex gap-1">
-                        <button className="p-1 text-gray-400 hover:text-blue-600">
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button className="p-1 text-gray-400 hover:text-red-600">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                      <p className="text-sm text-gray-600">
+                        {subcategory.description || 'Sem descrição'}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Categoria: {parentCategory?.name || 'N/A'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {products.filter((p: any) => p.subcategory_id === subcategory.id).length} produtos
+                      </p>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      {products.filter((p: any) => p.subcategory === subcategory).length} produtos
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {subcategories.length === 0 && (
                 <div className="text-center py-8">
                   <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhuma subcategoria cadastrada</h3>
-                  <p className="text-gray-500">As subcategorias aparecerão automaticamente conforme você cadastra produtos</p>
+                  <p className="text-gray-500">Crie subcategorias para detalhar ainda mais a organização dos produtos</p>
                 </div>
               )}
             </div>
@@ -585,6 +645,203 @@ const CadastrosSection = () => {
                 disabled={!clientForm.name}
               >
                 {editingItem ? 'Salvar' : 'Criar Cliente'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para adicionar/editar categoria */}
+      {(showAddModal || showEditModal) && activeTab === 'categorias' && (
+        <div 
+          className="modal-overlay bg-black bg-opacity-60 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAddModal(false);
+              setShowEditModal(false);
+              setEditingItem(null);
+              resetForms();
+            }
+          }}
+        >
+          <div 
+            className="modal-content bg-white rounded-lg p-6 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {editingItem ? 'Editar Categoria' : 'Nova Categoria'}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                <input
+                  type="text"
+                  value={categoryForm.name}
+                  onChange={(e) => setCategoryForm({...categoryForm, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Nome da categoria"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                <textarea
+                  value={categoryForm.description}
+                  onChange={(e) => setCategoryForm({...categoryForm, description: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                  placeholder="Descrição da categoria..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={categoryForm.color}
+                    onChange={(e) => setCategoryForm({...categoryForm, color: e.target.value})}
+                    className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={categoryForm.color}
+                    onChange={(e) => setCategoryForm({...categoryForm, color: e.target.value})}
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="#3B82F6"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  resetForms();
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCategorySubmit}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                disabled={!categoryForm.name}
+              >
+                {editingItem ? 'Salvar' : 'Criar Categoria'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para adicionar/editar subcategoria */}
+      {(showAddModal || showEditModal) && activeTab === 'subcategorias' && (
+        <div 
+          className="modal-overlay bg-black bg-opacity-60 flex items-center justify-center p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowAddModal(false);
+              setShowEditModal(false);
+              setEditingItem(null);
+              resetForms();
+            }
+          }}
+        >
+          <div 
+            className="modal-content bg-white rounded-lg p-6 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              {editingItem ? 'Editar Subcategoria' : 'Nova Subcategoria'}
+            </h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+                <select
+                  value={subcategoryForm.category_id}
+                  onChange={(e) => setSubcategoryForm({...subcategoryForm, category_id: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Selecionar categoria</option>
+                  {categories.map((category: any) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+                {categories.length === 0 && (
+                  <p className="text-xs text-orange-600 mt-1">
+                    Crie uma categoria primeiro para poder adicionar subcategorias.
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+                <input
+                  type="text"
+                  value={subcategoryForm.name}
+                  onChange={(e) => setSubcategoryForm({...subcategoryForm, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Nome da subcategoria"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                <textarea
+                  value={subcategoryForm.description}
+                  onChange={(e) => setSubcategoryForm({...subcategoryForm, description: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                  placeholder="Descrição da subcategoria..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cor</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={subcategoryForm.color}
+                    onChange={(e) => setSubcategoryForm({...subcategoryForm, color: e.target.value})}
+                    className="w-12 h-10 border border-gray-300 rounded cursor-pointer"
+                  />
+                  <input
+                    type="text"
+                    value={subcategoryForm.color}
+                    onChange={(e) => setSubcategoryForm({...subcategoryForm, color: e.target.value})}
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="#10B981"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  setShowEditModal(false);
+                  setEditingItem(null);
+                  resetForms();
+                }}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSubcategorySubmit}
+                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                disabled={!subcategoryForm.name || !subcategoryForm.category_id || categories.length === 0}
+              >
+                {editingItem ? 'Salvar' : 'Criar Subcategoria'}
               </button>
             </div>
           </div>

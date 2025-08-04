@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import type { 
   Product, NewProduct,
+  Category, NewCategory,
+  Subcategory, NewSubcategory,
   Sale, NewSale, 
   Client, NewClient,
   Appointment, NewAppointment,
@@ -44,6 +46,57 @@ export const useCreateProduct = () => {
   return useMutation({
     mutationFn: (product: NewProduct) => apiRequest('/api/products', { method: 'POST', body: JSON.stringify(product) }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['/api/products'] })
+  });
+};
+
+// Categories
+export const useCategories = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.companyId;
+  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
+  
+  const params = new URLSearchParams();
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
+  
+  return useQuery<Category[]>({
+    queryKey: ['/api/categories', effectiveCompanyId],
+    queryFn: () => fetch(`/api/categories?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
+  });
+};
+
+export const useCreateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (category: NewCategory) => apiRequest('/api/categories', { method: 'POST', body: JSON.stringify(category) }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['/api/categories'] })
+  });
+};
+
+// Subcategories
+export const useSubcategories = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.companyId;
+  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
+  
+  const params = new URLSearchParams();
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
+  
+  return useQuery<Subcategory[]>({
+    queryKey: ['/api/subcategories', effectiveCompanyId],
+    queryFn: () => fetch(`/api/subcategories?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
+  });
+};
+
+export const useCreateSubcategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (subcategory: NewSubcategory) => apiRequest('/api/subcategories', { method: 'POST', body: JSON.stringify(subcategory) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/subcategories'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/categories'] });
+    }
   });
 };
 

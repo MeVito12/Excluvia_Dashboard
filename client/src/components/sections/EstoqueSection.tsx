@@ -1,4 +1,4 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useProducts, useCategories, useSubcategories, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { formatDateBR } from '@/utils/dateFormat';
@@ -50,6 +50,7 @@ const EstoqueSection = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showForSalePrice, setShowForSalePrice] = useState(false);
   const [showPerishableDates, setShowPerishableDates] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [showStockControlModal, setShowStockControlModal] = useState(false);
   const [stockControlProduct, setStockControlProduct] = useState<Product | null>(null);
   const [stockAdjustment, setStockAdjustment] = useState(0);
@@ -82,6 +83,8 @@ const EstoqueSection = () => {
   const companyId = user?.company_id;
   
   const { data: products = [], isLoading } = useProducts(undefined, companyId);
+  const { data: categories = [] } = useCategories(companyId);
+  const { data: subcategories = [] } = useSubcategories(companyId);
   const { data: transfers = [], isLoading: isTransfersLoading } = useTransfers(undefined, companyId);
   const { mutateAsync: createProduct } = useCreateProduct();
   const createTransfer = useCreateTransfer();
@@ -740,8 +743,8 @@ const EstoqueSection = () => {
                 const productData = {
                   name: formData.get('name') as string,
                   description: formData.get('description') as string || '',
-                  category: formData.get('category') as string,
-                  subcategory: formData.get('subcategory') as string || '',
+                  category_id: parseInt(formData.get('categoryId') as string),
+                  subcategory_id: formData.get('subcategoryId') ? parseInt(formData.get('subcategoryId') as string) : undefined,
                   price: formData.get('forSale') ? parseFloat(formData.get('price') as string || '0') : 0,
                   stock: parseInt(formData.get('stock') as string || '0'),
                   min_stock: parseInt(formData.get('minStock') as string || '0'),
@@ -750,9 +753,6 @@ const EstoqueSection = () => {
                   expiry_date: formData.get('expiryDate') as string || null,
                   is_perishable: !!formData.get('isPerishable'),
                   for_sale: !!formData.get('forSale'),
-                  company_id: companyId,
-                  branch_id: 1, // Default branch
-                  created_by: (user as any)?.id || 1
                 };
 
                 await createProduct(productData);
@@ -764,6 +764,7 @@ const EstoqueSection = () => {
                 // Reset form states
                 setShowForSalePrice(false);
                 setShowPerishableDates(false);
+                setSelectedCategoryId('');
               } catch (error) {
                 console.error('Erro ao adicionar produto:', error);
               }
@@ -794,34 +795,47 @@ const EstoqueSection = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
                     <select
-                      name="category"
+                      name="categoryId"
                       required
+                      value={selectedCategoryId}
+                      onChange={(e) => setSelectedCategoryId(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="">Selecionar categoria</option>
-                      <option value="medicamentos">Medicamentos</option>
-                      <option value="cosmeticos">Cosméticos</option>
-                      <option value="higiene">Higiene</option>
-                      <option value="alimentos">Alimentos</option>
-                      <option value="equipamentos">Equipamentos</option>
-                      <option value="suplementos">Suplementos</option>
-                      <option value="brinquedos">Brinquedos</option>
-                      <option value="acessorios">Acessórios</option>
-                      <option value="tecnologia">Tecnologia</option>
-                      <option value="roupas">Roupas</option>
-                      <option value="servicos">Serviços</option>
-                      <option value="outros">Outros</option>
+                      {categories.map((category: any) => (
+                        <option key={category.id} value={category.id}>
+                          {category.name}
+                        </option>
+                      ))}
                     </select>
+                    {categories.length === 0 && (
+                      <p className="text-xs text-orange-600 mt-1">
+                        Nenhuma categoria cadastrada. Vá para Cadastros para criar categorias.
+                      </p>
+                    )}
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Subcategoria</label>
-                    <input
-                      name="subcategory"
-                      type="text"
+                    <select
+                      name="subcategoryId"
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      placeholder="Ex: Analgésicos, Vitaminas..."
-                    />
+                      disabled={!selectedCategoryId}
+                    >
+                      <option value="">Selecionar subcategoria (opcional)</option>
+                      {subcategories
+                        .filter((sub: any) => sub.category_id === parseInt(selectedCategoryId))
+                        .map((subcategory: any) => (
+                          <option key={subcategory.id} value={subcategory.id}>
+                            {subcategory.name}
+                          </option>
+                        ))}
+                    </select>
+                    {selectedCategoryId && subcategories.filter((sub: any) => sub.category_id === parseInt(selectedCategoryId)).length === 0 && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        Nenhuma subcategoria disponível para esta categoria.
+                      </p>
+                    )}
                   </div>
                 </div>
                 
