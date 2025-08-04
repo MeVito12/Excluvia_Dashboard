@@ -27,6 +27,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Primeiro, tentar buscar usuário no Supabase
       let user = await storage.getUserByEmail(email);
       
+      // Se encontrar usuário mas estiver na empresa errada, corrigir para empresa 1
+      if (user && user.company_id !== 1) {
+        console.log(`Corrigindo empresa do usuário ${user.email} de ${user.company_id} para 1`);
+        user = await storage.updateUser(user.id, { company_id: 1 });
+      }
+      
       // Se não encontrar no Supabase, criar usuário de desenvolvimento
       if (!user) {
         console.log('Usuário não encontrado no Supabase, criando usuário de desenvolvimento...');
@@ -40,7 +46,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         try {
-          user = await storage.createUser(devUserData);
+          // Força usuário na empresa 1 onde existem dados
+          const correctedUserData = { ...devUserData, company_id: 1 };
+          user = await storage.createUser(correctedUserData);
           console.log('Usuário criado com sucesso:', user.email);
         } catch (createError: any) {
           console.log('Erro ao criar usuário, usando dados fallback');
@@ -70,14 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Usuários
   app.get("/api/users", async (req, res) => {
     try {
-      // Retornar lista de usuários para desenvolvimento
-      const users = [
-        { id: 1, email: 'junior@mercadocentral.com.br', name: 'Junior Coordenador', role: 'master', company_id: 1 },
-        { id: 2, email: 'demo.farmacia@sistema.com', name: 'Demo Farmácia Central', role: 'user', company_id: 2 },
-        { id: 3, email: 'demo.pet@sistema.com', name: 'Demo Pet Clinic', role: 'user', company_id: 3 },
-        { id: 4, email: 'demo.medico@sistema.com', name: 'Demo Clínica Saúde', role: 'user', company_id: 4 },
-        { id: 5, email: 'demo.vendas@sistema.com', name: 'Demo Comercial Tech', role: 'user', company_id: 5 }
-      ];
+      const users = await storage.getAllUsers();
       res.json(users);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -86,7 +87,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/users", async (req, res) => {
     try {
-      const user = { id: Date.now(), ...req.body, created_at: new Date().toISOString() };
+      const user = await storage.createUser(req.body);
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.patch("/api/users/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await storage.updateUser(id, req.body);
       res.json(user);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
