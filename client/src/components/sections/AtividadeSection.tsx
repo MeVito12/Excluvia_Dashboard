@@ -233,15 +233,25 @@ const AtividadeSection = () => {
   );
 
   const renderSales = () => {
-    // Debug - calcular totais separadamente
-    const manualSales = financialEntries?.filter(entry => 
-      entry.type === 'income' && 
-      (entry.description?.includes('Venda manual') || 
-       entry.description?.includes('Venda de') || 
-       entry.description?.includes('Venda para'))
-    ) || [];
+    // Filtrar vendas por data e empresa
+    const filteredSales = (sales || []).filter((sale: any) => {
+      if (sale.company_id !== companyId) return false;
+      if (dateFrom && sale.sale_date && sale.sale_date < dateFrom) return false;
+      if (dateTo && sale.sale_date && sale.sale_date > dateTo + 'T23:59:59') return false;
+      return true;
+    });
+
+    // Filtrar vendas manuais por data e empresa
+    const manualSales = (financialEntries || []).filter((entry: any) => {
+      if (entry.company_id !== companyId) return false;
+      if (entry.type !== 'income') return false;
+      if (!entry.description?.includes('Venda')) return false;
+      if (dateFrom && entry.created_at && entry.created_at < dateFrom) return false;
+      if (dateTo && entry.created_at && entry.created_at > dateTo + 'T23:59:59') return false;
+      return true;
+    });
     
-    const salesTotal = (sales || []).reduce((sum: number, sale: any) => {
+    const salesTotal = filteredSales.reduce((sum: number, sale: any) => {
       const amount = Number(sale.total_price || 0);
       return sum + amount;
     }, 0);
@@ -253,7 +263,7 @@ const AtividadeSection = () => {
         <div className="main-card p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-900">
-              Vendas ({(sales || []).length + manualSales.length})
+              Vendas ({filteredSales.length + manualSales.length})
             </h3>
             <div className="text-right">
               <p className="text-sm text-gray-600">Total:</p>
@@ -303,7 +313,7 @@ const AtividadeSection = () => {
         <div className="standard-list-container">
           <div className="standard-list-content">
             {/* Vendas automáticas */}
-            {(sales || []).map((sale: any) => {
+            {filteredSales.map((sale: any) => {
               const client = (clients || []).find((c: any) => c.id === sale.client_id);
               const product = (products || []).find((p: any) => p.id === sale.product_id);
               
@@ -386,17 +396,30 @@ const AtividadeSection = () => {
   };
 
   const renderClients = () => {
-    // Definir vendas manuais no escopo local
-    const manualSales = financialEntries?.filter(entry => 
-      entry.type === 'income' && 
-      (entry.description?.includes('Venda manual') || 
-       entry.description?.includes('Venda de') || 
-       entry.description?.includes('Venda para'))
-    ) || [];
+    // Filtrar clientes por empresa
+    const filteredClients = (clients || []).filter((client: any) => client.company_id === companyId);
+
+    // Filtrar vendas por data e empresa
+    const filteredSales = (sales || []).filter((sale: any) => {
+      if (sale.company_id !== companyId) return false;
+      if (dateFrom && sale.sale_date && sale.sale_date < dateFrom) return false;
+      if (dateTo && sale.sale_date && sale.sale_date > dateTo + 'T23:59:59') return false;
+      return true;
+    });
+
+    // Filtrar vendas manuais por data e empresa
+    const manualSales = (financialEntries || []).filter((entry: any) => {
+      if (entry.company_id !== companyId) return false;
+      if (entry.type !== 'income') return false;
+      if (!entry.description?.includes('Venda')) return false;
+      if (dateFrom && entry.created_at && entry.created_at < dateFrom) return false;
+      if (dateTo && entry.created_at && entry.created_at > dateTo + 'T23:59:59') return false;
+      return true;
+    });
 
     // Calcular total gasto por cliente (vendas automáticas + manuais)
-    const clientsWithTotal = (clients || []).map((client: any) => {
-      const clientSales = (sales || []).filter((sale: any) => sale.client_id === client.id);
+    const clientsWithTotal = filteredClients.map((client: any) => {
+      const clientSales = filteredSales.filter((sale: any) => sale.client_id === client.id);
       const clientManualSales = manualSales.filter((entry: any) => entry.client_id === client.id);
       
       const salesTotal = clientSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
