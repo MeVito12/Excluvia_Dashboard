@@ -58,7 +58,7 @@ const FinanceiroSection = () => {
   const [dateFrom, setDateFrom] = useState(defaultDates.from);
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
-  const companyId = user?.company_id || 1;
+  const companyId = (user as any)?.companyId;
   
   const { data: allFinancialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
   

@@ -45,50 +45,89 @@ const AtividadeSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
   const { user } = useAuth();
-  const companyId = user?.companyId || 1;
+  const companyId = (user as any)?.companyId;
   
   // Dados das abas usando hooks reais
   const { data: sales = [] } = useSales(undefined, companyId);
   const { data: clients = [] } = useClients(undefined, companyId);
   const { data: products = [] } = useProducts(undefined, companyId);
   const { data: financialEntries = [] } = useFinancial(undefined, companyId);
+  const { data: appointments = [] } = useAppointments(undefined, companyId);
 
-  // Atividades do sistema simplificadas
-  const systemActivities = [
-    { 
-      id: 'sys_1',
-      action: 'Agendamento confirmado', 
-      description: 'Consulta veterinária para Luna agendada para hoje às 14:00',
-      timestamp: new Date('2024-12-26T08:00:00'),
-      status: 'success', 
-      user: 'Dr. Carlos Mendes',
-      type: 'appointment',
-      category: 'pet',
-      time: '08:00'
-    },
-    { 
-      id: 'sys_2',
-      action: 'Venda processada', 
-      description: 'Venda de R$ 45,90 - Combo Executivo processada com PIX',
-      timestamp: new Date('2024-12-26T07:45:00'),
-      status: 'success', 
-      user: 'Ana Costa',
-      type: 'sale',
-      category: 'vendas',
-      time: '07:45'
-    },
-    { 
-      id: 'sys_3',
-      action: 'Produto adicionado', 
-      description: 'Medicamento "Antibiótico Amoxicilina 500mg" cadastrado no estoque',
-      timestamp: new Date('2024-12-26T07:30:00'),
-      status: 'success', 
-      user: 'Farmacêutico',
-      type: 'product',
-      category: 'medico',
-      time: '07:30'
+  // Gerar atividades baseadas nos dados reais da empresa
+  const systemActivities = React.useMemo(() => {
+    const activities: any[] = [];
+    
+    // Adicionar vendas como atividades
+    sales.forEach((sale: any) => {
+      const product = products.find((p: any) => p.id === sale.product_id);
+      const client = sale.client_id ? clients.find((c: any) => c.id === sale.client_id) : null;
+      const clientName = client ? client.name : 'Cliente avulso';
+      
+      activities.push({
+        id: `sale-${sale.id}`,
+        action: 'Venda processada',
+        description: `${product?.name || 'Produto'} - ${clientName} - R$ ${Number(sale.total_price || 0).toFixed(2)}`,
+        timestamp: new Date(sale.sale_date || sale.created_at),
+        status: 'success',
+        user: user?.name || 'Sistema',
+        type: 'sale',
+        category: user?.business_category || 'general',
+        time: new Date(sale.sale_date || sale.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      });
+    });
+
+    // Adicionar agendamentos como atividades
+    appointments.forEach((appointment: any) => {
+      activities.push({
+        id: `appointment-${appointment.id}`,
+        action: 'Agendamento confirmado',
+        description: `${appointment.title} - ${appointment.status === 'completed' ? 'Realizado' : 'Agendado'}`,
+        timestamp: new Date(appointment.appointment_date),
+        status: appointment.status === 'completed' ? 'success' : 'pending',
+        user: user?.name || 'Sistema',
+        type: 'appointment',
+        category: user?.business_category || 'general',
+        time: appointment.start_time || '00:00'
+      });
+    });
+
+    // Adicionar entradas financeiras manuais como atividades
+    financialEntries.filter((entry: any) => entry.type === 'income' && (!entry.reference_type || entry.reference_type !== 'sale')).forEach((entry: any) => {
+      activities.push({
+        id: `manual-${entry.id}`,
+        action: 'Receita registrada',
+        description: `${entry.description} - R$ ${Number(entry.amount || 0).toFixed(2)}`,
+        timestamp: new Date(entry.created_at),
+        status: entry.status === 'paid' ? 'success' : 'pending',
+        user: user?.name || 'Sistema',
+        type: 'financial',
+        category: user?.business_category || 'general',
+        time: new Date(entry.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      });
+    });
+
+    // Adicionar algumas atividades de produto apenas se existirem produtos
+    if (products.length > 0) {
+      const recentProducts = products.slice(-3); // Últimos 3 produtos adicionados
+      recentProducts.forEach((product: any) => {
+        activities.push({
+          id: `product-${product.id}`,
+          action: 'Produto adicionado',
+          description: `${product.name} cadastrado no estoque`,
+          timestamp: new Date(product.created_at),
+          status: 'success',
+          user: user?.name || 'Sistema',
+          type: 'product',
+          category: user?.business_category || 'general',
+          time: new Date(product.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+        });
+      });
     }
-  ];
+
+    // Ordenar por data mais recente
+    return activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, [sales, appointments, financialEntries, products, clients, user]);
 
   const stats = {
     total: systemActivities.length + (sales || []).length,

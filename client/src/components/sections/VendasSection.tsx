@@ -70,7 +70,7 @@ export default function VendasSection() {
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Buscar produtos e clientes usando hooks consolidados
-  const companyId = user?.company_id || 1;
+  const companyId = (user as any)?.companyId;
   
   const { data: products = [] } = useProducts(undefined, companyId);
   const { data: clients = [] } = useClients(undefined, companyId);
