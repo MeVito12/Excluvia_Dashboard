@@ -63,9 +63,13 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     // Adicionar vendas automáticas como atividades
     if (sales && Array.isArray(sales)) {
       sales.forEach((sale: any) => {
+        const product = products?.find((p: any) => p.id === sale.product_id);
+        const client = clients?.find((c: any) => c.id === sale.client_id);
+        const clientName = client?.name || 'Cliente avulso';
+        
         activitiesList.push({
           id: `sale-${sale.id}`,
-          action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
+          action: `Venda: ${product?.name || 'Produto'} - ${clientName} - R$ ${Number(sale.total_price || 0).toFixed(2)}`,
           timestamp: sale.sale_date,
           type: 'sale'
         });
@@ -74,15 +78,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
     // Adicionar vendas manuais (entradas financeiras de receita não vinculadas) 
     if (financialEntries && Array.isArray(financialEntries)) {
-      console.log('Debug - ATIVIDADES - Entradas financeiras:', financialEntries.map(e => ({
-        id: e.id, type: e.type, amount: e.amount, description: e.description, reference_type: e.reference_type
-      })));
-      
       financialEntries.forEach((entry: any) => {
         if (entry.type === 'income' && (!entry.reference_type || entry.reference_type !== 'sale')) {
-          console.log('Debug - ATIVIDADES - Adicionando venda manual:', {
-            id: entry.id, description: entry.description, amount: entry.amount, reference_type: entry.reference_type
-          });
           activitiesList.push({
             id: `manual-sale-${entry.id}`,
             action: `Venda manual: ${entry.description} - R$ ${Number(entry.amount || 0).toFixed(2)}`,
@@ -118,9 +115,6 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     }
     
     // Ordenar por data mais recente
-    console.log('Debug - ATIVIDADES - Lista final:', activitiesList.map(a => ({
-      id: a.id, type: a.type, action: a.action
-    })));
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }, [sales, appointments, transfers, financialEntries]);
 
@@ -444,7 +438,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
                 <Activity className="w-4 h-4 text-purple-500 mt-1" />
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-800">{activity.action}</p>
-                  <p className="text-xs text-gray-500">{new Date(activity.timestamp).toLocaleString()}</p>
+                  <p className="text-xs text-gray-500">
+                    {activity.timestamp ? new Date(activity.timestamp).toLocaleString() : 'Data não disponível'}
+                  </p>
                 </div>
               </div>
             ))}
