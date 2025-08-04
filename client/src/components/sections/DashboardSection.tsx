@@ -48,12 +48,12 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
-  const { products, isLoading: productsLoading } = useProducts();
-  const { sales, isLoading: salesLoading } = useSales();
-  const { clients, isLoading: clientsLoading } = useClients();
-  const { transfers, isLoading: transfersLoading } = useTransfers();
-  const { appointments, isLoading: appointmentsLoading } = useAppointments();
-  const { entries: financialEntries, isLoading: financialLoading } = useFinancial();
+  const { data: products = [], isLoading: productsLoading } = useProducts();
+  const { data: sales = [], isLoading: salesLoading } = useSales();
+  const { data: clients = [], isLoading: clientsLoading } = useClients();
+  const { data: transfers = [], isLoading: transfersLoading } = useTransfers();
+  const { data: appointments = [], isLoading: appointmentsLoading } = useAppointments();
+  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial();
 
   // Gerar atividades baseadas em dados reais
   const activities = useMemo(() => {
@@ -120,6 +120,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   
   // Compromissos recentes e próximos (últimos 30 dias e próximos 30 dias)
   const upcomingAppointments = useMemo(() => {
+    if (!appointments || !Array.isArray(appointments)) return [];
+    
     const today = new Date();
     const thirtyDaysAgo = new Date();
     const thirtyDaysAhead = new Date();
@@ -136,6 +138,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Análise de produtos críticos
   const criticalProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
+    
     const today = new Date();
     return products.filter((product: any) => {
       // Produtos vencidos
