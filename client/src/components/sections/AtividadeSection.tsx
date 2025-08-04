@@ -1,5 +1,6 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -44,7 +45,7 @@ const AtividadeSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
   const { user } = useAuth();
-  const companyId = user?.companyId || user?.company_id || 1;
+  const companyId = user?.company_id || 1;
   
   // Dados das abas usando hooks reais
   const { data: sales = [] } = useSales(undefined, companyId);

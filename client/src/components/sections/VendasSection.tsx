@@ -54,7 +54,7 @@ export default function VendasSection() {
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
 
   // Buscar produtos e clientes usando hooks consolidados
-  const companyId = user?.companyId || user?.company_id || 1;
+  const companyId = user?.company_id || 1;
   
   const { data: products = [] } = useProducts(undefined, companyId);
   const { data: clients = [] } = useClients(undefined, companyId);

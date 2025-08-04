@@ -54,7 +54,7 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
-  const companyId = user?.companyId || user?.company_id || 1;
+  const companyId = user?.company_id || 1;
   
   // Hooks para dados reais da API
   const { data: products = [] } = useProducts(undefined, companyId);

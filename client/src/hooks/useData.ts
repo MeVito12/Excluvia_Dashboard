@@ -25,7 +25,7 @@ const getCurrentUser = () => {
 // Products
 export const useProducts = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId || user?.company_id || 1;
+  const effectiveCompanyId = companyId || user?.company_id || 1;
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -48,7 +48,7 @@ export const useCreateProduct = () => {
 // Sales
 export const useSales = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId || user?.company_id || 1;
+  const effectiveCompanyId = companyId || user?.company_id || 1;
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -75,7 +75,7 @@ export const useCreateSale = () => {
 // Clients
 export const useClients = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId || user?.company_id || 1;
+  const effectiveCompanyId = companyId || user?.company_id || 1;
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());

@@ -20,7 +20,7 @@ const AgendamentosSection = () => {
 
 
   const { user } = useAuth();
-  const companyId = user?.companyId || user?.company_id || 1;
+  const companyId = user?.company_id || 1;
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
