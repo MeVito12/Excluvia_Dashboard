@@ -27,10 +27,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Primeiro, tentar buscar usuário no Supabase
       let user = await storage.getUserByEmail(email);
       
-      // Se encontrar usuário mas estiver na empresa errada, corrigir para empresa 1
-      if (user && user.companyId !== 1) {
-        console.log(`Corrigindo empresa do usuário ${user.email} de ${user.companyId} para 1`);
-        user = await storage.updateUser(user.id, { companyId: 1 });
+      // Log do usuário encontrado
+      if (user) {
+        console.log(`Usuário encontrado: ${user.email}, empresa: ${user.companyId || 'não definida'}`);
       }
       
       // Se não encontrar no Supabase, criar usuário de desenvolvimento
@@ -57,11 +56,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             role: devUserData.role,
             companyId: 1,
             password: 'dev_password',
-            createdAt: new Date().toISOString()
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           };
         }
       }
 
+      // Garantir companyId válido para o usuário
+      if (!user.companyId) {
+        user = { ...user, companyId: 1 };
+      }
+      
       console.log('Login realizado com sucesso para:', user.email);
       res.json({ 
         user, 
