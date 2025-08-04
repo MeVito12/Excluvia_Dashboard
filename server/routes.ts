@@ -22,13 +22,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
+      console.log('Tentativa de login para:', email);
       const user = await storage.getUserByEmail(email);
+      
       if (!user) {
+        console.log('Usuário não encontrado:', email);
         return res.status(401).json({ error: "Credenciais inválidas" });
       }
 
+      console.log('Usuário encontrado:', user.email);
       res.json({ user, success: true });
     } catch (error: any) {
+      console.error('Erro no login:', error);
       res.status(500).json({ error: error.message });
     }
   });

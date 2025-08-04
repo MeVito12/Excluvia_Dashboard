@@ -150,8 +150,13 @@ export class SupabaseStorage implements Storage {
   // ====================================
 
   async getUserByEmail(email: string): Promise<User | null> {
-    const users = await this.request(`users?email=eq.${email}&select=*`);
-    return users[0] || null;
+    try {
+      const users = await this.request(`users?email=eq.${email}&select=*`);
+      return users[0] || null;
+    } catch (error: any) {
+      console.error('Erro ao buscar usuário por email:', error);
+      throw new Error(`Erro na autenticação: ${error.message}`);
+    }
   }
 
   async createUser(user: NewUser): Promise<User> {
