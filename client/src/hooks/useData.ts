@@ -26,7 +26,7 @@ const getCurrentUser = () => {
 export const useProducts = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
   // Se não tiver company_id, não carrega dados (evita mistura)
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
@@ -50,7 +50,7 @@ export const useCreateProduct = () => {
 // Sales
 export const useSales = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
@@ -78,7 +78,7 @@ export const useCreateSale = () => {
 // Clients
 export const useClients = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
@@ -102,7 +102,7 @@ export const useCreateClient = () => {
 // Appointments
 export const useAppointments = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -126,7 +126,7 @@ export const useCreateAppointment = () => {
 // Financial
 export const useFinancial = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
@@ -150,7 +150,7 @@ export const useCreateFinancial = () => {
 // Transfers
 export const useTransfers = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
@@ -174,7 +174,7 @@ export const useCreateTransfer = () => {
 // Money Transfers
 export const useMoneyTransfers = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId;
   if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
   
   const params = new URLSearchParams();
