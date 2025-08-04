@@ -235,7 +235,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Transferências
   app.get("/api/transfers", async (req, res) => {
     try {
-      const transfers = await storage.getTransfers();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const transfers = await storage.getTransfers(companyId);
       res.json(transfers);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

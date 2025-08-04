@@ -237,12 +237,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const chartData = prepareChartData();
   
   // Debug dos dados que estão sendo enviados
-  console.log("Debug - Dados recebidos:", {
+  console.log("Debug - Dados recebidos CORRIGIDOS:", {
     sales: (sales || []).length,
     products: (products || []).length,
     clients: (clients || []).length,
     financial: (financialEntries || []).length,
-    filteredSales: (filteredSales || []).length
+    filteredSales: (filteredSales || []).length,
+    userId: user?.id,
+    companyId: user?.companyId || user?.company_id
   });
 
   return (

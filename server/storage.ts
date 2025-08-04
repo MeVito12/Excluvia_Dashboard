@@ -316,8 +316,8 @@ export class SupabaseStorage implements Storage {
 
   async getProducts(branchId?: number, companyId?: number): Promise<Product[]> {
     let filter = '';
+    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
-    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`products?${filter}select=*&order=name.asc`);
   }
@@ -349,8 +349,8 @@ export class SupabaseStorage implements Storage {
 
   async getSales(branchId?: number, companyId?: number): Promise<Sale[]> {
     let filter = '';
+    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
-    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`sales?${filter}select=*&order=sale_date.desc`);
   }
@@ -369,8 +369,8 @@ export class SupabaseStorage implements Storage {
 
   async getClients(branchId?: number, companyId?: number): Promise<Client[]> {
     let filter = '';
+    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
-    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`clients?${filter}select=*&order=name.asc`);
   }
@@ -402,8 +402,8 @@ export class SupabaseStorage implements Storage {
 
   async getAppointments(branchId?: number, companyId?: number): Promise<Appointment[]> {
     let filter = '';
+    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
-    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`appointments?${filter}select=*&order=appointment_date.asc`);
   }
@@ -435,8 +435,8 @@ export class SupabaseStorage implements Storage {
 
   async getFinancialEntries(branchId?: number, companyId?: number): Promise<FinancialEntry[]> {
     let filter = '';
+    if (companyId) filter += `company_id=eq.${companyId}&`;
     if (branchId) filter += `branch_id=eq.${branchId}&`;
-    else if (companyId) filter += `company_id=eq.${companyId}&`;
     
     return this.request(`financial_entries?${filter}select=*&order=created_at.desc`);
   }

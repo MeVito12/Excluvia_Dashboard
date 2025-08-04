@@ -143,17 +143,17 @@ export const useCreateFinancial = () => {
 };
 
 // Transfers
-export const useTransfers = (companyId?: number) => {
+export const useTransfers = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId || user?.company_id || 1;
   
   const params = new URLSearchParams();
+  if (branchId) params.append('branch_id', branchId.toString());
   if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Transfer[]>({
-    queryKey: ['/api/transfers', effectiveCompanyId],
-    queryFn: () => fetch(`/api/transfers?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    queryKey: ['/api/transfers', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/transfers?${params}`).then(res => res.json())
   });
 };
 
@@ -166,17 +166,17 @@ export const useCreateTransfer = () => {
 };
 
 // Money Transfers
-export const useMoneyTransfers = (companyId?: number) => {
+export const useMoneyTransfers = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.companyId || user?.company_id || 1;
   
   const params = new URLSearchParams();
+  if (branchId) params.append('branch_id', branchId.toString());
   if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<MoneyTransfer[]>({
-    queryKey: ['/api/money-transfers', effectiveCompanyId],
-    queryFn: () => fetch(`/api/money-transfers?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    queryKey: ['/api/money-transfers', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/money-transfers?${params}`).then(res => res.json())
   });
 };
 
