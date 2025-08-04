@@ -28,9 +28,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let user = await storage.getUserByEmail(email);
       
       // Se encontrar usuário mas estiver na empresa errada, corrigir para empresa 1
-      if (user && user.company_id !== 1) {
-        console.log(`Corrigindo empresa do usuário ${user.email} de ${user.company_id} para 1`);
-        user = await storage.updateUser(user.id, { company_id: 1 });
+      if (user && user.companyId !== 1) {
+        console.log(`Corrigindo empresa do usuário ${user.email} de ${user.companyId} para 1`);
+        user = await storage.updateUser(user.id, { companyId: 1 });
       }
       
       // Se não encontrar no Supabase, criar usuário de desenvolvimento
@@ -40,15 +40,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const devUserData = {
           email: email,
           name: email === 'junior@mercadocentral.com.br' ? 'Junior Coordenador' : 'Usuário Demo',
-          role: email === 'junior@mercadocentral.com.br' ? 'master' : 'user',
-          company_id: 1,
-          password_hash: 'dev_password' // Para desenvolvimento
+          role: (email === 'junior@mercadocentral.com.br' ? 'master' : 'user') as 'user' | 'ceo' | 'master',
+          password: 'dev_password', // Para desenvolvimento
+          companyId: 1
         };
         
         try {
-          // Força usuário na empresa 1 onde existem dados
-          const correctedUserData = { ...devUserData, company_id: 1 };
-          user = await storage.createUser(correctedUserData);
+          user = await storage.createUser(devUserData);
           console.log('Usuário criado com sucesso:', user.email);
         } catch (createError: any) {
           console.log('Erro ao criar usuário, usando dados fallback');
@@ -57,9 +55,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: email,
             name: devUserData.name,
             role: devUserData.role,
-            company_id: 1,
-            password_hash: 'dev_password',
-            created_at: new Date().toISOString()
+            companyId: 1,
+            password: 'dev_password',
+            createdAt: new Date().toISOString()
           };
         }
       }
@@ -293,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
-      const company = await storage.getCompanyById(user.company_id);
+      const company = await storage.getCompanyById(user.companyId || 1);
       res.json({ user, company });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
