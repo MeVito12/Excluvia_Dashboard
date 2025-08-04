@@ -44,7 +44,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
-  const companyId = user?.company_id;
+  const companyId = (user as any)?.companyId;
 
   // Hooks para dados reais da API
   const { data: products = [], isLoading: productsLoading } = useProducts(undefined, companyId);
@@ -342,11 +342,11 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       {/* Grid de Seções Integradas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* Vendas do Gráficos */}
+        {/* Vendas Recentes */}
         <div className="main-card p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <BarChart3 className="w-5 h-5 text-green-600" />
+              <TrendingUp className="w-5 h-5 text-green-600" />
               <h3 className="text-lg font-semibold text-gray-800">Vendas Recentes</h3>
             </div>
             <button
