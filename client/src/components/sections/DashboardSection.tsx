@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   Database, 
   Users, 
@@ -47,8 +47,22 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     };
   };
   
-  const [dateFrom, setDateFrom] = useState<string>(() => getCurrentDates().from);
-  const [dateTo, setDateTo] = useState<string>(() => getCurrentDates().to);
+  // Para dados de demonstração, usar período maior para capturar mais dados
+  const getDemoDates = () => {
+    const today = new Date();
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(today.getMonth() - 6);
+    
+    return {
+      from: sixMonthsAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  // Usar período maior para demonstração para capturar dados existentes
+  const initialDates = getDemoDates();
+  const [dateFrom, setDateFrom] = useState<string>(initialDates.from);
+  const [dateTo, setDateTo] = useState<string>(initialDates.to);
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
@@ -172,18 +186,17 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     }
   };
 
-  // Limpar filtros e resetar para datas atuais
+  // Limpar filtros e resetar para período de demonstração
   const clearFilters = () => {
-    const currentDates = getCurrentDates();
-    setDateFrom(currentDates.from);
-    setDateTo(currentDates.to);
+    const demoDates = getDemoDates();
+    setDateFrom(demoDates.from);
+    setDateTo(demoDates.to);
   };
 
-  // Atualizar automaticamente as datas quando o componente for carregado
+  // Atualizar data final para hoje sempre que o componente for carregado
   useEffect(() => {
-    const currentDates = getCurrentDates();
-    setDateFrom(currentDates.from);
-    setDateTo(currentDates.to);
+    const today = new Date().toISOString().split('T')[0];
+    setDateTo(today);
   }, []); // Executa apenas uma vez ao montar o componente
 
   // Preparar dados para gráficos baseados nos dados reais
