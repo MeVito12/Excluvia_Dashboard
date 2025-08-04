@@ -30,14 +30,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   
-  // Configurar datas automáticas (últimos 7 dias por padrão)
+  // Configurar datas automáticas (últimos 30 dias por padrão para mostrar mais dados)
   const getDefaultDates = () => {
     const today = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 7);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
     
     return {
-      from: sevenDaysAgo.toISOString().split('T')[0],
+      from: thirtyDaysAgo.toISOString().split('T')[0],
       to: today.toISOString().split('T')[0]
     };
   };
@@ -108,7 +108,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     return data.filter(item => {
       const itemDate = new Date(item[dateField]);
       const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
-      const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
+      const toDate = dateTo ? new Date(dateTo + 'T23:59:59') : new Date('2100-12-31'); // Include full day
       
       return itemDate >= fromDate && itemDate <= toDate;
     });
