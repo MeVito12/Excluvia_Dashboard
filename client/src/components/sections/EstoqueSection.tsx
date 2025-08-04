@@ -79,7 +79,7 @@ const EstoqueSection = () => {
 
   // Hooks para dados
   const { user } = useAuth();
-  const companyId = user?.company_id || 1;
+  const companyId = user?.company_id;
   
   const { data: products = [] } = useProducts(undefined, companyId);
   const { data: transfers = [] } = useTransfers(undefined, companyId);
