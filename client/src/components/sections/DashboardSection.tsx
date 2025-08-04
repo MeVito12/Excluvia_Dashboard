@@ -60,34 +60,40 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     const activitiesList: any[] = [];
     
     // Adicionar vendas como atividades
-    sales.forEach((sale: any) => {
-      activitiesList.push({
-        id: `sale-${sale.id}`,
-        action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
-        timestamp: sale.sale_date,
-        type: 'sale'
+    if (sales && Array.isArray(sales)) {
+      sales.forEach((sale: any) => {
+        activitiesList.push({
+          id: `sale-${sale.id}`,
+          action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
+          timestamp: sale.sale_date,
+          type: 'sale'
+        });
       });
-    });
+    }
     
     // Adicionar agendamentos como atividades
-    appointments.forEach((appointment: any) => {
-      activitiesList.push({
-        id: `appointment-${appointment.id}`,
-        action: `Agendamento: ${appointment.title}`,
-        timestamp: appointment.appointment_date,
-        type: 'appointment'
+    if (appointments && Array.isArray(appointments)) {
+      appointments.forEach((appointment: any) => {
+        activitiesList.push({
+          id: `appointment-${appointment.id}`,
+          action: `Agendamento: ${appointment.title}`,
+          timestamp: appointment.appointment_date,
+          type: 'appointment'
+        });
       });
-    });
+    }
     
     // Adicionar transferências como atividades
-    transfers.forEach((transfer: any) => {
-      activitiesList.push({
-        id: `transfer-${transfer.id}`,
-        action: `Transferência de produto (${transfer.quantity} unidades)`,
-        timestamp: transfer.transferDate,
-        type: 'transfer'
+    if (transfers && Array.isArray(transfers)) {
+      transfers.forEach((transfer: any) => {
+        activitiesList.push({
+          id: `transfer-${transfer.id}`,
+          action: `Transferência de produto (${transfer.quantity} unidades)`,
+          timestamp: transfer.transferDate,
+          type: 'transfer'
+        });
       });
-    });
+    }
     
     // Ordenar por data mais recente
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -95,6 +101,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {
+    if (!data || !Array.isArray(data)) return [];
     if (!dateFrom && !dateTo) return data;
     
     return data.filter(item => {
@@ -107,9 +114,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   };
 
   // Dados filtrados por período
-  const filteredSales = useMemo(() => filterByDateRange(sales, 'sale_date'), [sales, dateFrom, dateTo]);
-  const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
-  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'created_at'), [transfers, dateFrom, dateTo]);
+  const filteredSales = useMemo(() => filterByDateRange(sales || [], 'sale_date'), [sales, dateFrom, dateTo]);
+  const filteredActivities = useMemo(() => filterByDateRange(activities || [], 'timestamp'), [activities, dateFrom, dateTo]);
+  const filteredTransfers = useMemo(() => filterByDateRange(transfers || [], 'created_at'), [transfers, dateFrom, dateTo]);
   
   // Compromissos recentes e próximos (últimos 30 dias e próximos 30 dias)
   const upcomingAppointments = useMemo(() => {
