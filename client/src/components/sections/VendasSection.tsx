@@ -52,12 +52,30 @@ export default function VendasSection() {
   const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
   const [lastSaleData, setLastSaleData] = useState<any>(null);
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
+  
+  // Estados para filtros de data
+  const getDefaultDates = () => {
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+    
+    return {
+      from: thirtyDaysAgo.toISOString().split('T')[0],
+      to: today.toISOString().split('T')[0]
+    };
+  };
+  
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState(defaultDates.from);
+  const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Buscar produtos e clientes usando hooks consolidados
   const companyId = user?.company_id || 1;
   
   const { data: products = [] } = useProducts(undefined, companyId);
   const { data: clients = [] } = useClients(undefined, companyId);
+  const { data: sales = [] } = useSales(undefined, companyId);
+  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
 
   // Filtrar produtos por busca ou código de barras
   const filteredProducts = products.filter((product: Product) => 
@@ -69,7 +87,38 @@ export default function VendasSection() {
   // Processar venda do carrinho usando hook consolidado
   const processSaleMutation = useCreateCartSale();
 
-  // Funções auxiliares
+  // Funções auxiliares para filtros
+  const filterByDateRange = (data: any[], dateField: string) => {
+    if (!data || !Array.isArray(data)) return [];
+    if (!dateFrom && !dateTo) return data;
+    
+    return data.filter(item => {
+      const itemValue = item[dateField];
+      if (!itemValue) return false;
+      
+      const itemDate = new Date(itemValue);
+      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
+      const toDate = dateTo ? new Date(dateTo + 'T23:59:59') : new Date('2100-12-31');
+      
+      if (isNaN(itemDate.getTime())) {
+        return false;
+      }
+      
+      return itemDate >= fromDate && itemDate <= toDate;
+    });
+  };
+
+  // Dados filtrados por período
+  const filteredSales = filterByDateRange(sales || [], 'sale_date');
+  const filteredFinancialEntries = filterByDateRange(financialEntries?.filter(entry => 
+    entry.type === 'income' && entry.description?.includes('Venda manual')
+  ) || [], 'created_at');
+
+  // Calcular totais (vendas automáticas + vendas manuais)
+  const totalSalesAmount = filteredSales.reduce((sum, sale) => sum + (sale.total_amount || 0), 0);
+  const totalManualSales = filteredFinancialEntries.reduce((sum, entry) => sum + (entry.amount || 0), 0);
+  const totalRevenue = totalSalesAmount + totalManualSales;
+
   const calculateCartTotal = () => cart.reduce((sum, item) => sum + item.totalPrice, 0);
   
   const clearCart = () => {
