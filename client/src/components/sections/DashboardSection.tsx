@@ -237,15 +237,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   const chartData = prepareChartData();
   
-  // Debug dos dados que estão sendo enviados
-  console.log("Debug - Dados recebidos CORRIGIDOS:", {
-    sales: (sales || []).length,
-    products: (products || []).length,
-    clients: (clients || []).length,
-    financial: (financialEntries || []).length,
-    filteredSales: (filteredSales || []).length,
-    userId: user?.id,
-    companyId: companyId
+  // Debug dos dados para verificar consistência entre seções
+  console.log("Debug - DASHBOARD - Dados filtrados:", {
+    totalVendas: (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
+    totalEntradas: (financialEntries || []).filter((f: any) => f.type === 'income').reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
+    vendas: (filteredSales || []).length,
+    entradas: (financialEntries || []).filter((f: any) => f.type === 'income').length,
+    companyId: companyId,
+    filtroData: `${dateFrom} até ${dateTo}`
   });
 
   return (

@@ -1,5 +1,5 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
@@ -60,7 +60,20 @@ const FinanceiroSection = () => {
 
   const companyId = user?.company_id || 1;
   
-  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
+  const { data: allFinancialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
+  
+  // Filtrar entradas financeiras por data (igual ao Dashboard)
+  const financialEntries = useMemo(() => {
+    if (!allFinancialEntries || !Array.isArray(allFinancialEntries)) return [];
+    if (!dateFrom && !dateTo) return allFinancialEntries;
+    
+    return allFinancialEntries.filter((entry: any) => {
+      const entryDate = new Date(entry.created_at);
+      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
+      const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
+      return entryDate >= fromDate && entryDate <= toDate;
+    });
+  }, [allFinancialEntries, dateFrom, dateTo]);
   const { data: moneyTransfers = [], isLoading: transfersLoading } = useMoneyTransfers(undefined, companyId);
   const { data: branches = [] } = useBranches(companyId);
   const createFinancialEntry = useCreateFinancial();

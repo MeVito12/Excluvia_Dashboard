@@ -64,32 +64,30 @@ const GraficosSection = () => {
 
 
 
-  // Função para filtrar vendas por data - Mostrando todas as vendas para garantir dados nos gráficos
+  // Função para filtrar vendas por data - igual ao Dashboard
   const filteredSales = useMemo(() => {
     if (!sales || !Array.isArray(sales)) return [];
+    if (!dateFrom && !dateTo) return sales;
     
-    // Retornar todas as vendas para garantir que os gráficos tenham dados
-    return sales;
-    
-    // TODO: Implementar filtro de data quando necessário
-    // return sales.filter((sale: any) => {
-    //   const saleDate = new Date(sale.sale_date);
-    //   const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
-    //   const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
-    //   return saleDate >= fromDate && saleDate <= toDate;
-    // });
-  }, [sales]);
+    return sales.filter((sale: any) => {
+      const saleDate = new Date(sale.sale_date);
+      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
+      const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
+      return saleDate >= fromDate && saleDate <= toDate;
+    });
+  }, [sales, dateFrom, dateTo]);
 
   // Calcular métricas e dados para gráficos
   const calculateMetrics = useMemo(() => {
     // Verificação mais robusta dos dados
     try {
-      console.log('Debug - GRÁFICOS - Dados financeiros:', { 
-        vendas: sales?.length, 
+      console.log('Debug - GRÁFICOS - Dados filtrados:', { 
         totalVendas: filteredSales?.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
-        entradas: financial?.filter((f: any) => f.type === 'income')?.length,
         totalEntradas: financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
-        companyId: user?.company_id
+        vendas: filteredSales?.length,
+        entradas: financial?.filter((f: any) => f.type === 'income')?.length,
+        companyId: user?.company_id,
+        filtroData: `${dateFrom} até ${dateTo}`
       });
       
       if (!sales || !Array.isArray(sales) || !products || !Array.isArray(products) || 
