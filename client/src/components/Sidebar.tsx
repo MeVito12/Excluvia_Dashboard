@@ -104,10 +104,10 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       description: 'Configuração de permissões'
     },
     {
-      id: 'cadastro',
-      label: 'Cadastro',
+      id: 'cadastros',
+      label: 'Cadastros',
       icon: UserPlus,
-      description: 'Cadastro de empresas e usuários'
+      description: 'Cadastros de clientes, categorias e subcategorias'
     }
   ];
 
@@ -118,9 +118,9 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       return isMasterUser || isCeoUser;
     }
 
-    // Cadastro só para CEO (por role ou email específico)
-    if (item.id === 'cadastro') {
-      return (user as any)?.role === 'ceo' || (user as any)?.email === 'ceo@sistema.com';
+    // Cadastros acessível para usuários com permissão
+    if (item.id === 'cadastros') {
+      return canAccessSection(item.id);
     }
     
     // Estoque e vendas não aparecem para design e sites
