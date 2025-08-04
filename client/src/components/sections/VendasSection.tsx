@@ -47,6 +47,18 @@ export default function VendasSection() {
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
   const [foundClient, setFoundClient] = useState<Client | null>(null);
+  const [showAddClientModal, setShowAddClientModal] = useState<boolean>(false);
+  
+  // Estados para formulário de novo cliente
+  const [clientForm, setClientForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    client_type: 'individual' as 'individual' | 'company',
+    document: '',
+    notes: ''
+  });
   
   // Estados para impressão térmica
   const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
@@ -86,6 +98,7 @@ export default function VendasSection() {
 
   // Processar venda do carrinho usando hook consolidado
   const processSaleMutation = useCreateCartSale();
+  const { mutateAsync: createClient } = useCreateClient();
 
   // Funções auxiliares para filtros
   const filterByDateRange = (data: any[], dateField: string) => {
@@ -123,9 +136,54 @@ export default function VendasSection() {
   
   const clearCart = () => {
     setCart([]);
-    setSelectedClient(null);
-    setPaymentMethod("");
-    setDiscount(0);
+  };
+
+  // Função para resetar formulário de cliente
+  const resetClientForm = () => {
+    setClientForm({
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      client_type: 'individual',
+      document: '',
+      notes: ''
+    });
+  };
+
+  // Função para lidar com criação de novo cliente
+  const handleClientSubmit = async () => {
+    try {
+      const clientData = {
+        ...clientForm,
+        user_id: (user as any)?.id,
+        company_id: (user as any)?.companyId
+      };
+
+      const newClient = await createClient(clientData);
+      
+      // Selecionar o cliente recém-criado
+      setSelectedClient(newClient.id);
+      
+      // Fechar modais e resetar formulários
+      setShowAddClientModal(false);
+      setShowClientModal(false);
+      resetClientForm();
+      setClientSearchTerm("");
+      setFoundClient(null);
+      
+      toast({
+        title: "Cliente cadastrado com sucesso!",
+        description: `${clientData.name} foi adicionado à sua lista de clientes.`,
+      });
+    } catch (error) {
+      console.error('Erro ao cadastrar cliente:', error);
+      toast({
+        title: "Erro ao cadastrar cliente",
+        description: "Tente novamente ou verifique os dados informados.",
+        variant: "destructive"
+      });
+    }
   };
 
   // Adicionar produto ao carrinho
@@ -605,6 +663,21 @@ export default function VendasSection() {
                 <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                 <p>Cliente não encontrado</p>
                 <p className="text-sm mt-1">Verifique o CPF/CNPJ digitado</p>
+                <button
+                  onClick={() => {
+                    // Pre-preencher o documento no formulário
+                    const cleanDocument = clientSearchTerm.replace(/\D/g, '');
+                    setClientForm({
+                      ...clientForm,
+                      document: cleanDocument,
+                      client_type: cleanDocument.length === 11 ? 'individual' : 'company'
+                    });
+                    setShowAddClientModal(true);
+                  }}
+                  className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
+                >
+                  + Cadastrar Novo Cliente
+                </button>
               </div>
             )}
             
@@ -739,6 +812,141 @@ export default function VendasSection() {
                 className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Cadastro de Novo Cliente */}
+      {showAddClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Cadastrar Novo Cliente</h3>
+              <button 
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Nome */}
+              <div>
+                <Label htmlFor="client-name">Nome *</Label>
+                <Input
+                  id="client-name"
+                  type="text"
+                  value={clientForm.name}
+                  onChange={(e) => setClientForm({...clientForm, name: e.target.value})}
+                  placeholder="Nome completo ou razão social"
+                  required
+                />
+              </div>
+
+              {/* Tipo de Cliente */}
+              <div>
+                <Label htmlFor="client-type">Tipo de Cliente</Label>
+                <Select 
+                  value={clientForm.client_type} 
+                  onValueChange={(value: 'individual' | 'company') => 
+                    setClientForm({...clientForm, client_type: value})
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecionar tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="individual">Pessoa Física</SelectItem>
+                    <SelectItem value="company">Pessoa Jurídica</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Documento */}
+              <div>
+                <Label htmlFor="client-document">
+                  {clientForm.client_type === 'individual' ? 'CPF' : 'CNPJ'}
+                </Label>
+                <Input
+                  id="client-document"
+                  type="text"
+                  value={clientForm.document}
+                  onChange={(e) => setClientForm({...clientForm, document: e.target.value})}
+                  placeholder={clientForm.client_type === 'individual' ? '000.000.000-00' : '00.000.000/0000-00'}
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <Label htmlFor="client-email">Email</Label>
+                <Input
+                  id="client-email"
+                  type="email"
+                  value={clientForm.email}
+                  onChange={(e) => setClientForm({...clientForm, email: e.target.value})}
+                  placeholder="email@exemplo.com"
+                />
+              </div>
+
+              {/* Telefone */}
+              <div>
+                <Label htmlFor="client-phone">Telefone</Label>
+                <Input
+                  id="client-phone"
+                  type="tel"
+                  value={clientForm.phone}
+                  onChange={(e) => setClientForm({...clientForm, phone: e.target.value})}
+                  placeholder="(11) 99999-9999"
+                />
+              </div>
+
+              {/* Endereço */}
+              <div>
+                <Label htmlFor="client-address">Endereço</Label>
+                <Textarea
+                  id="client-address"
+                  value={clientForm.address}
+                  onChange={(e) => setClientForm({...clientForm, address: e.target.value})}
+                  placeholder="Rua, número, bairro, cidade, CEP"
+                  rows={2}
+                />
+              </div>
+
+              {/* Observações */}
+              <div>
+                <Label htmlFor="client-notes">Observações</Label>
+                <Textarea
+                  id="client-notes"
+                  value={clientForm.notes}
+                  onChange={(e) => setClientForm({...clientForm, notes: e.target.value})}
+                  placeholder="Informações adicionais sobre o cliente"
+                  rows={2}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t mt-6">
+              <button
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleClientSubmit}
+                disabled={!clientForm.name.trim()}
+                className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                Cadastrar Cliente
               </button>
             </div>
           </div>
