@@ -467,7 +467,7 @@ const CadastrosSection = () => {
       {/* Modal para adicionar/editar cliente */}
       {(showAddModal || showEditModal) && activeTab === 'clientes' && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          className="modal-overlay bg-black bg-opacity-60 flex items-center justify-center p-4"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowAddModal(false);
@@ -478,7 +478,7 @@ const CadastrosSection = () => {
           }}
         >
           <div 
-            className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl"
+            className="modal-content bg-white rounded-lg p-6 w-full max-w-md max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-200"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
