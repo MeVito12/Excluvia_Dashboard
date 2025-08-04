@@ -269,6 +269,7 @@ const EstoqueSection = () => {
             >
               <option value="all">Todos os status</option>
               <option value="Em Estoque">Em Estoque</option>
+              <option value="Estoque Crítico">Estoque Crítico</option>
               <option value="Estoque Baixo">Estoque Baixo</option>
               <option value="Sem Estoque">Sem Estoque</option>
               <option value="Vencido">Vencido</option>
@@ -294,7 +295,9 @@ const EstoqueSection = () => {
                 const categoryMatch = filterCategory === 'all' || 
                   product.category?.toLowerCase().includes(filterCategory.toLowerCase());
                 const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
-                const statusMatch = statusFilter === 'all' || status === statusFilter;
+                const statusMatch = statusFilter === 'all' || 
+                  status === statusFilter ||
+                  (statusFilter === 'Estoque Crítico' && (status === 'Estoque Baixo' || status === 'Sem Estoque'));
                 return searchMatch && categoryMatch && statusMatch;
               })
               .map((product: any) => {
@@ -583,32 +586,14 @@ const EstoqueSection = () => {
             <div className="metric-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Estoque Baixo</p>
+                  <p className="text-sm font-medium text-gray-600">Estoque Crítico</p>
                   <p className="text-2xl font-bold text-black mt-1">
                     {products?.filter((product: any) => {
                       const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
-                      return status === 'Estoque Baixo';
+                      return status === 'Estoque Baixo' || status === 'Sem Estoque';
                     }).length || 0}
                   </p>
-                  <p className="text-xs text-yellow-600 mt-1">Produtos com baixo estoque</p>
-                </div>
-                <div className="p-3 rounded-full bg-yellow-100">
-                  <Package className="h-6 w-6 text-yellow-600" />
-                </div>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Sem Estoque</p>
-                  <p className="text-2xl font-bold text-black mt-1">
-                    {products?.filter((product: any) => {
-                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
-                      return status === 'Sem Estoque';
-                    }).length || 0}
-                  </p>
-                  <p className="text-xs text-red-600 mt-1">Produtos com estoque zerado</p>
+                  <p className="text-xs text-red-600 mt-1">Produtos com baixo estoque ou zerados</p>
                 </div>
                 <div className="p-3 rounded-full bg-red-100">
                   <Package className="h-6 w-6 text-red-600" />
