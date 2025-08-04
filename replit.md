@@ -34,6 +34,12 @@ Product registration should include: name, minimum stock, current stock, for sal
 
 **Category Systems**: The user has requested the ability to split the main system into separate category-based applications, each with independent database access while maintaining core functionality. This allows for specialized business management systems optimized for specific industries.
 
+**Demo Data Implementation (Aug 2025)**: Created comprehensive demo data for all 7 business categories with proper data segregation:
+- Each demo profile has realistic products, sales, financial entries, clients, and appointments
+- All data properly filtered by company_id ensuring complete separation between businesses
+- Status variations implemented (available, low stock, out of stock, expired, near expiry)
+- Realistic business scenarios for each category (pharmacy medications, pet supplies, medical equipment, etc.)
+
 ## Database Error Handling & Security
 
 Common database errors encountered and solutions implemented:
