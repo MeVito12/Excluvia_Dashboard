@@ -1372,44 +1372,7 @@ const AtendimentoSection = () => {
           </div>
         </div>
 
-        {/* Métricas de Fidelização - Sempre visíveis */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="w-6 h-6 text-purple-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
-            <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
-            <p className="text-xs text-green-600 mt-1">+15% este mês</p>
-          </div>
 
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Target className="w-6 h-6 text-green-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
-            <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
-            <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
-          </div>
-
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Retenção</h4>
-            <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
-            <p className="text-xs text-purple-600 mt-1">90 dias</p>
-          </div>
-
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Gift className="w-6 h-6 text-yellow-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Cupons Ativos</h4>
-            <p className="text-2xl font-bold text-yellow-600 mt-1">12</p>
-            <p className="text-xs text-gray-600 mt-1">6 campanhas</p>
-          </div>
-        </div>
 
         {loyaltyTab === 'overview' && (
           <>
@@ -1715,59 +1678,119 @@ const AtendimentoSection = () => {
         </p>
       </div>
 
-      {/* Métricas de Atendimento */}
+      {/* Métricas de Atendimento ou Fidelização */}
       <div className="metrics-grid">
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Conversas Ativas</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">24</p>
-              <p className="text-xs text-green-600 mt-1">+12% hoje</p>
+        {activeTab === 'fidelizacao' ? (
+          // Cards de Fidelização
+          <>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Clientes Ativos</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">1,247</p>
+                  <p className="text-xs text-green-600 mt-1">+15% este mês</p>
+                </div>
+                <div className="p-3 rounded-full bg-purple-100">
+                  <Users className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
-              <MessageCircle className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Bot Ativo</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">89%</p>
-              <p className="text-xs text-blue-600 mt-1">Taxa de resolução</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Taxa de Conversão</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">23.5%</p>
+                  <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
+                </div>
+                <div className="p-3 rounded-full bg-green-100">
+                  <Target className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-blue-100">
-              <Bot className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Pedidos Hoje</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">47</p>
-              <p className="text-xs text-purple-600 mt-1">+23% semana</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Retenção</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">78%</p>
+                  <p className="text-xs text-purple-600 mt-1">90 dias</p>
+                </div>
+                <div className="p-3 rounded-full bg-blue-100">
+                  <TrendingUp className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
-              <ShoppingCart className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
 
-        <div className="metric-card">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Tempo Médio</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">2min</p>
-              <p className="text-xs text-yellow-600 mt-1">Resposta IA</p>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Cupons Ativos</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">12</p>
+                  <p className="text-xs text-gray-600 mt-1">6 campanhas</p>
+                </div>
+                <div className="p-3 rounded-full bg-yellow-100">
+                  <Gift className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
             </div>
-            <div className="p-3 rounded-full bg-yellow-100">
-              <Clock className="h-6 w-6 text-yellow-600" />
+          </>
+        ) : (
+          // Cards de Atendimento (originais)
+          <>
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Conversas Ativas</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">24</p>
+                  <p className="text-xs text-green-600 mt-1">+12% hoje</p>
+                </div>
+                <div className="p-3 rounded-full bg-green-100">
+                  <MessageCircle className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Bot Ativo</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">89%</p>
+                  <p className="text-xs text-blue-600 mt-1">Taxa de resolução</p>
+                </div>
+                <div className="p-3 rounded-full bg-blue-100">
+                  <Bot className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Pedidos Hoje</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">47</p>
+                  <p className="text-xs text-purple-600 mt-1">+23% semana</p>
+                </div>
+                <div className="p-3 rounded-full bg-purple-100">
+                  <ShoppingCart className="h-6 w-6 text-purple-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Tempo Médio</p>
+                  <p className="text-2xl font-bold text-gray-900 mt-1">2min</p>
+                  <p className="text-xs text-yellow-600 mt-1">Resposta IA</p>
+                </div>
+                <div className="p-3 rounded-full bg-yellow-100">
+                  <Clock className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Navegação por Tabs */}
