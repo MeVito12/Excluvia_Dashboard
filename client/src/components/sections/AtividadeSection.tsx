@@ -382,20 +382,30 @@ const AtividadeSection = () => {
     );
   };
 
-  const renderClients = () => (
-    <div className="animate-fade-in">
-      <div className="main-card p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Clientes ({(clients || []).length})
-          </h3>
-          <div className="text-right">
-            <p className="text-sm text-gray-600">Total gasto:</p>
-            <p className="text-lg font-bold text-blue-600">
-              R$ {(clients || []).reduce((sum: number, client: any) => sum + (Number(client.totalSpent) || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </p>
+  const renderClients = () => {
+    // Calcular total gasto por cliente
+    const clientsWithTotal = (clients || []).map((client: any) => {
+      const clientSales = (sales || []).filter((sale: any) => sale.client_id === client.id);
+      const totalSpent = clientSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+      return { ...client, totalSpent };
+    });
+
+    const grandTotalSpent = clientsWithTotal.reduce((sum: number, client: any) => sum + client.totalSpent, 0);
+
+    return (
+      <div className="animate-fade-in">
+        <div className="main-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Clientes ({clientsWithTotal.length})
+            </h3>
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Total gasto:</p>
+              <p className="text-lg font-bold text-blue-600">
+                R$ {grandTotalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              </p>
+            </div>
           </div>
-        </div>
 
         {/* Filtros abaixo do cabeçalho */}
         <div className="flex flex-wrap gap-4 items-center mb-6">
@@ -436,7 +446,7 @@ const AtividadeSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {(clients || []).map((client: any) => (
+            {clientsWithTotal.map((client: any) => (
               <div key={client.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{client.name}</div>
@@ -456,7 +466,8 @@ const AtividadeSection = () => {
         </div>
       </div>
     </div>
-  );
+    );
+  };
 
   const renderReports = () => (
     <div className="animate-fade-in">
