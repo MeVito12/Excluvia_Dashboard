@@ -114,14 +114,15 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       });
     }
     
-    // Debug das atividades
-    console.log('Debug - ATIVIDADES GERADAS:', {
-      total: activitiesList.length,
-      vendas: activitiesList.filter(a => a.type === 'sale').length,
-      vendasManuais: activitiesList.filter(a => a.type === 'manual-sale').length,
-      agendamentos: activitiesList.filter(a => a.type === 'appointment').length,
-      lista: activitiesList.map(a => ({ id: a.id, type: a.type, action: a.action.substring(0, 50) }))
-    });
+    // Debug das atividades - apenas se houver vendas manuais
+    if (activitiesList.filter(a => a.type === 'manual-sale').length > 0) {
+      console.log('Debug - ATIVIDADES COM VENDAS MANUAIS:', {
+        total: activitiesList.length,
+        vendasManuais: activitiesList.filter(a => a.type === 'manual-sale').map(a => ({
+          id: a.id, timestamp: a.timestamp, action: a.action
+        }))
+      });
+    }
     
     // Ordenar por data mais recente
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -133,9 +134,18 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     if (!dateFrom && !dateTo) return data;
     
     return data.filter(item => {
-      const itemDate = new Date(item[dateField]);
+      const itemValue = item[dateField];
+      if (!itemValue) return false;
+      
+      const itemDate = new Date(itemValue);
       const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
-      const toDate = dateTo ? new Date(dateTo + 'T23:59:59') : new Date('2100-12-31'); // Include full day
+      const toDate = dateTo ? new Date(dateTo + 'T23:59:59') : new Date('2100-12-31');
+      
+      // Para debug: verificar se a data está válida
+      if (isNaN(itemDate.getTime())) {
+        console.log('Data inválida encontrada:', { item: item.id, dateField, value: itemValue });
+        return false;
+      }
       
       return itemDate >= fromDate && itemDate <= toDate;
     });
@@ -145,11 +155,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const filteredSales = useMemo(() => filterByDateRange(sales || [], 'sale_date'), [sales, dateFrom, dateTo]);
   const filteredActivities = useMemo(() => {
     const filtered = filterByDateRange(activities || [], 'timestamp');
-    console.log('Debug - ATIVIDADES FILTRADAS:', {
+    console.log('Debug - FILTRO DE ATIVIDADES:', {
       antes: activities?.length || 0,
       depois: filtered.length,
       periodo: `${dateFrom} até ${dateTo}`,
-      filtradas: filtered.map(a => ({ id: a.id, type: a.type, timestamp: a.timestamp }))
+      vendasManuaisFiltradas: filtered.filter(a => a.type === 'manual-sale').length,
+      todasVendasManuais: activities?.filter(a => a.type === 'manual-sale').map(a => ({
+        id: a.id, timestamp: a.timestamp, dentroFiltro: new Date(a.timestamp) >= new Date(dateFrom) && new Date(a.timestamp) <= new Date(dateTo + 'T23:59:59')
+      })) || []
     });
     return filtered;
   }, [activities, dateFrom, dateTo]);
