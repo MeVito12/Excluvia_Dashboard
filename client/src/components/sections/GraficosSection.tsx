@@ -54,11 +54,13 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
+  const companyId = user?.companyId || user?.company_id || 1;
+  
   // Hooks para dados reais da API
-  const { products } = useProducts();
-  const { sales } = useSales();
-  const { clients } = useClients();
-  const { entries: financial } = useFinancial();
+  const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: sales = [] } = useSales(undefined, companyId);
+  const { data: clients = [] } = useClients(undefined, companyId);
+  const { data: financial = [] } = useFinancial(undefined, companyId);
 
 
 

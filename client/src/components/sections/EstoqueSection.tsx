@@ -78,8 +78,11 @@ const EstoqueSection = () => {
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Hooks para dados
-  const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
-  const { transfers = [], updateTransfer } = useTransfers();
+  const { user } = useAuth();
+  const companyId = user?.companyId || user?.company_id || 1;
+  
+  const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: transfers = [] } = useTransfers(undefined, companyId);
 
   // Função para buscar nome do produto
   const getProductName = (productId: number): string => {

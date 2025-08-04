@@ -54,8 +54,10 @@ export default function VendasSection() {
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
 
   // Buscar produtos e clientes usando hooks consolidados
-  const { data: products = [] } = useProducts();
-  const { data: clients = [] } = useClients();
+  const companyId = user?.companyId || user?.company_id || 1;
+  
+  const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: clients = [] } = useClients(undefined, companyId);
 
   // Filtrar produtos por busca ou código de barras
   const filteredProducts = products.filter((product: Product) => 

@@ -58,22 +58,10 @@ const FinanceiroSection = () => {
   const [dateFrom, setDateFrom] = useState(defaultDates.from);
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
-  const { 
-    entries: financialEntries = [], 
-    isLoading, 
-    createEntry: createFinancialEntry, 
-    updateEntry: updateFinancialEntry, 
-    deleteEntry: deleteFinancialEntry
-  } = useFinancial(dateFrom, dateTo);
-
-  const {
-    moneyTransfers = [],
-    isLoading: isTransfersLoading,
-    createMoneyTransfer,
-    updateMoneyTransfer,
-    isCreating: isCreatingTransfer,
-    isUpdating: isUpdatingTransfer
-  } = useMoneyTransfers();
+  const companyId = user?.companyId || user?.company_id || 1;
+  
+  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
+  const { data: moneyTransfers = [] } = useMoneyTransfers(undefined, companyId);
 
   const { branches = [] } = useBranches();
 

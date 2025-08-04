@@ -46,9 +46,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
-  const companyId = 1; // Forçar empresa 1 onde estão os dados
+  const companyId = user?.companyId || user?.company_id || 1;
 
-  // Hooks para dados reais da API com filtros forçados
+  // Hooks para dados reais da API
   const { data: products = [], isLoading: productsLoading } = useProducts(undefined, companyId);
   const { data: sales = [], isLoading: salesLoading } = useSales(undefined, companyId);
   const { data: clients = [], isLoading: clientsLoading } = useClients(undefined, companyId);

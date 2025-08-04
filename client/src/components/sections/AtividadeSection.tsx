@@ -43,10 +43,13 @@ const AtividadeSection = () => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
+  const { user } = useAuth();
+  const companyId = user?.companyId || user?.company_id || 1;
+  
   // Dados das abas usando hooks reais
-  const { data: sales = [] } = useSales();
-  const { data: clients = [] } = useClients();
-  const { data: products = [] } = useProducts();
+  const { data: sales = [] } = useSales(undefined, companyId);
+  const { data: clients = [] } = useClients(undefined, companyId);
+  const { data: products = [] } = useProducts(undefined, companyId);
 
   // Atividades do sistema simplificadas
   const systemActivities = [
