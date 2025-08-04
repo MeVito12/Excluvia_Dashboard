@@ -72,6 +72,13 @@ export const availableSections: SectionPermission[] = [
     description: 'Gestão de usuários e permissões',
     icon: 'Settings',
     defaultEnabled: false
+  },
+  {
+    id: 'cadastros',
+    label: 'Cadastros',
+    description: 'Cadastros de clientes, categorias e subcategorias',
+    icon: 'UserPlus',
+    defaultEnabled: true
   }
 ];
 
