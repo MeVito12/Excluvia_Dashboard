@@ -6,6 +6,8 @@ interface User {
   email: string;
   role: string;
   businessCategory: string;
+  company_id?: number;
+  branch_id?: number;
   permissions?: string[];
 }
 
