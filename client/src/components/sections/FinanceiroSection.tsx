@@ -60,18 +60,14 @@ const FinanceiroSection = () => {
 
   const companyId = user?.company_id || 1;
   
-  const { data: financialEntries = [], isLoading } = useFinancial(undefined, companyId);
-  const { data: moneyTransfers = [], isLoading: isTransfersLoading } = useMoneyTransfers(undefined, companyId);
+  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
+  const { data: moneyTransfers = [] } = useMoneyTransfers(undefined, companyId);
 
-  const { data: branches = [] } = useBranches();
-
-  // Mutation hooks
-  const createFinancialMutation = useCreateFinancial();
-  const createMoneyTransferMutation = useCreateMoneyTransfer();
+  const { branches = [] } = useBranches();
 
   // Função auxiliar para obter nome da filial
   const getBranchName = (branchId: number) => {
-    const branch = branches.find((b: any) => b.id === branchId);
+    const branch = branches.find(b => b.id === branchId);
     return branch ? branch.name : `Filial ${branchId}`;
   };
 
@@ -145,15 +141,20 @@ const FinanceiroSection = () => {
   const handleCreateEntry = async () => {
     try {
       const entryData: NewFinancialEntry = {
+        userId,
+        businessCategory: selectedCategory,
         type: currentEntryType,
         amount: parseFloat(formData.amount),
         description: formData.description,
-        status: 'pending',
-        category: selectedCategory,
-        dueDate: formData.dueDate
+        dueDate: formData.dueDate,
+        isBoleto: formData.isBoleto,
+        boletoCode: formData.isBoleto ? formData.boletoCode : undefined,
+        isInstallment: formData.isInstallment,
+        installmentCount: formData.isInstallment ? parseInt(formData.installmentCount) : undefined,
+        currentInstallment: formData.isInstallment ? parseInt(formData.currentInstallment) : undefined
       };
 
-      await createFinancialMutation.mutateAsync(entryData);
+      await createFinancialEntry(entryData);
       
       console.log("Action performed");
       // toast({
@@ -178,8 +179,14 @@ const FinanceiroSection = () => {
     if (!selectedEntry) return;
 
     try {
-      // Note: Update functionality would need a separate mutation hook
-      console.log("Payment functionality needs implementation");
+      await updateFinancialEntry({
+        id: selectedEntry.id,
+        entry: {
+          status: 'paid',
+          paymentDate: new Date(paymentData.paymentDate),
+          paymentMethod: paymentData.paymentMethod
+        }
+      });
 
       console.log("Action performed");
       // toast({
@@ -202,8 +209,14 @@ const FinanceiroSection = () => {
 
   const handleRevertPayment = async (entryId: number) => {
     try {
-      // Note: Update functionality needs implementation
-      console.log("Revert payment functionality needs implementation");
+      await updateFinancialEntry({
+        id: entryId,
+        entry: {
+          status: 'pending',
+          paymentDate: undefined,
+          paymentMethod: undefined
+        }
+      });
       
       console.log("Action performed");
       // toast({
@@ -223,8 +236,7 @@ const FinanceiroSection = () => {
 
   const handleDeleteEntry = async (entryId: number) => {
     try {
-      // Note: Delete functionality needs implementation
-      console.log("Delete functionality needs implementation");
+      await deleteFinancialEntry(entryId);
       
       console.log("Action performed");
       // toast({
@@ -254,7 +266,7 @@ const FinanceiroSection = () => {
         notes: transferData.notes
       };
 
-      await createMoneyTransferMutation.mutateAsync(transferFormData as any);
+      await createMoneyTransfer(transferFormData);
       
       console.log("Action performed");
       // toast({
@@ -264,8 +276,14 @@ const FinanceiroSection = () => {
       // });
       
       setIsTransferModalOpen(false);
-      // Reset form data
-      console.log("Reset transfer form");
+      setTransferData({
+        fromBranchId: '',
+        toBranchId: '',
+        amount: '',
+        description: '',
+        transferType: 'operational',
+        notes: ''
+      });
     } catch (error) {
       console.log("Action performed");
       // toast({
@@ -278,8 +296,10 @@ const FinanceiroSection = () => {
 
   const handleUpdateTransferStatus = async (transferId: number, newStatus: string) => {
     try {
-      // Note: Update functionality needs implementation
-      console.log("Transfer status update functionality needs implementation");
+      await updateMoneyTransfer({
+        id: transferId,
+        transfer: { status: newStatus }
+      });
       
       console.log("Action performed");
       // toast({
@@ -417,7 +437,7 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Pendências</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {isLoading ? '...' : financialEntries.filter(e => e.type === 'expense' && (e.status === 'pending' || e.status === 'overdue')).length}
+                {isLoading ? '...' : financialEntries.filter(e => e.type === 'expense' && (e.status === 'pending' || e.status === 'near_due' || e.status === 'overdue')).length}
               </p>
               <p className="text-xs text-yellow-600 mt-1">
                 {financialEntries.filter(e => e.type === 'expense' && e.status === 'overdue').length > 0 ? 'Tem vencidas' : 'Em dia'}
@@ -737,19 +757,20 @@ const FinanceiroSection = () => {
                         <span className={`list-status-badge ${
                           entry.status === 'paid' ? 'status-success' : 
                           entry.status === 'pending' ? 'status-warning' : 
+                          entry.status === 'near_due' ? 'status-warning' :
                           entry.status === 'overdue' ? 'status-danger' :
                           'status-warning'
                         }`}>
                           {getStatusLabel(entry.status)}
                         </span>
 
-                        {(entry as any).isInstallment && (
+                        {entry.isInstallment && (
                           <span className="list-status-badge status-info">
-                            {(entry as any).currentInstallment}/{(entry as any).installmentCount}
+                            {entry.currentInstallment}/{entry.installmentCount}
                           </span>
                         )}
 
-                        {(entry as any).isBoleto && (
+                        {entry.isBoleto && (
                           <span className="list-status-badge status-info">
                             Boleto
                           </span>
@@ -768,8 +789,8 @@ const FinanceiroSection = () => {
                         <button
                           onClick={() => {
                             // Simular visualização de comprovante
-                            if ((entry as any).paymentProof) {
-                              window.open((entry as any).paymentProof, '_blank');
+                            if (entry.paymentProof) {
+                              window.open(entry.paymentProof, '_blank');
                             } else {
                               console.log("Action performed");
                               // toast({
@@ -1097,7 +1118,7 @@ const FinanceiroSection = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="">Selecione origem</option>
-                      {branches.map((branch: any) => (
+                      {branches.map((branch) => (
                         <option key={branch.id} value={branch.id}>
                           {branch.name}
                         </option>
@@ -1114,7 +1135,7 @@ const FinanceiroSection = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                     >
                       <option value="">Selecione destino</option>
-                      {branches.filter((branch: any) => branch.id.toString() !== transferData.fromBranchId).map((branch: any) => (
+                      {branches.filter(branch => branch.id.toString() !== transferData.fromBranchId).map((branch) => (
                         <option key={branch.id} value={branch.id}>
                           {branch.name}
                         </option>
@@ -1184,10 +1205,10 @@ const FinanceiroSection = () => {
                   </button>
                   <button
                     type="submit"
-                    disabled={!transferData.fromBranchId || !transferData.toBranchId || !transferData.amount || !transferData.description || createMoneyTransferMutation.isPending}
+                    disabled={!transferData.fromBranchId || !transferData.toBranchId || !transferData.amount || !transferData.description || isCreatingTransfer}
                     className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {createMoneyTransferMutation.isPending ? 'Criando...' : 'Criar Transferência'}
+                    {isCreatingTransfer ? 'Criando...' : 'Criar Transferência'}
                   </button>
                 </div>
               </div>
