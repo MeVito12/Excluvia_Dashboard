@@ -25,6 +25,7 @@ import { useTransfers } from '@/hooks/useTransfers';
 import { useAppointments } from '@/hooks/useAppointments';
 import { useFinancial } from '@/hooks/useFinancial';
 import { formatDateBR } from '@/utils/dateFormat';
+import DatabaseChart from '@/components/DatabaseChart';
 
 interface DashboardSectionProps {
   onSectionChange?: (section: string) => void;
@@ -178,6 +179,65 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     setDateFrom(defaultDates.from);
     setDateTo(defaultDates.to);
   };
+
+  // Preparar dados para gráficos baseados nos dados reais
+  const prepareChartData = () => {
+    // Dados para gráfico de vendas por dia
+    const salesByDay = filteredSales.reduce((acc: any, sale: any) => {
+      const date = new Date(sale.sale_date).toLocaleDateString('pt-BR');
+      if (!acc[date]) {
+        acc[date] = { name: date, vendas: 0, receita: 0 };
+      }
+      acc[date].vendas += 1;
+      acc[date].receita += Number(sale.total_price || 0);
+      return acc;
+    }, {});
+
+    // Dados para gráfico de produtos mais vendidos
+    const productSales = filteredSales.reduce((acc: any, sale: any) => {
+      const productId = sale.product_id;
+      const product = products.find((p: any) => p.id === productId);
+      const productName = product?.name || `Produto ${productId}`;
+      
+      if (!acc[productName]) {
+        acc[productName] = { name: productName, quantidade: 0, receita: 0 };
+      }
+      acc[productName].quantidade += Number(sale.quantity || 1);
+      acc[productName].receita += Number(sale.total_price || 0);
+      return acc;
+    }, {});
+
+    // Dados para gráfico de receitas vs despesas
+    const financialSummary = financialEntries.reduce((acc: any, entry: any) => {
+      const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
+      if (!acc[date]) {
+        acc[date] = { name: date, receitas: 0, despesas: 0 };
+      }
+      if (entry.type === 'income') {
+        acc[date].receitas += Number(entry.amount || 0);
+      } else {
+        acc[date].despesas += Number(entry.amount || 0);
+      }
+      return acc;
+    }, {});
+
+    return {
+      salesByDay: Object.values(salesByDay).slice(-7), // Últimos 7 dias
+      productSales: Object.values(productSales).slice(-5), // Top 5 produtos
+      financialSummary: Object.values(financialSummary).slice(-7) // Últimos 7 dias
+    };
+  };
+
+  const chartData = prepareChartData();
+  
+  // Debug dos dados que estão sendo enviados
+  console.log("Debug - Dados recebidos:", {
+    sales: sales.length,
+    products: products.length,
+    clients: clients.length,
+    financial: financialEntries.length,
+    filteredSales: filteredSales.length
+  });
 
   return (
     <div className="app-section">
@@ -542,6 +602,60 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
         </div>
       </div>
 
+      {/* Seção de Gráficos com Dados Reais */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Análise de Dados</h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Gráfico de Vendas por Dia */}
+          {chartData.salesByDay.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="bar"
+                title="Vendas por Dia"
+                data={chartData.salesByDay}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico de Produtos Mais Vendidos */}
+          {chartData.productSales.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="bar"
+                title="Produtos Mais Vendidos"
+                data={chartData.productSales}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico de Receitas vs Despesas */}
+          {chartData.financialSummary.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="line"
+                title="Receitas vs Despesas"
+                data={chartData.financialSummary}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico Pizza - Distribuição de Vendas */}
+          {filteredSales.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="pie"
+                title="Distribuição de Vendas"
+                data={[
+                  { name: 'Vendas Concluídas', value: filteredSales.length, color: 'hsl(var(--primary))' },
+                  { name: 'Produtos Cadastrados', value: products.length, color: 'hsl(var(--accent))' },
+                  { name: 'Clientes Ativos', value: clients.length, color: 'hsl(var(--muted-foreground))' }
+                ]}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
     </div>
   );
