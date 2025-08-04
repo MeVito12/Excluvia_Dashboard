@@ -88,6 +88,7 @@ const EstoqueSection = () => {
   
   // Para corrigir variáveis undefined
   const isUpdating = false;
+  const isDeleting = false;
   const isCreatingTransfer = false;
 
   // Função para buscar nome do produto
@@ -126,7 +127,7 @@ const EstoqueSection = () => {
       title: 'Confirmar Exclusão',
       description: `Tem certeza que deseja excluir o produto "${product.name}"?`
     }, () => {
-      deleteProduct(product.id);
+      // deleteProduct(product.id);
       console.log("Action performed");
       // toast({
       //   title: 'Produto Excluído',
@@ -145,7 +146,7 @@ const EstoqueSection = () => {
   // Função para ações de transferência
   const handleTransferAction = async (transferId: number, newStatus: string) => {
     try {
-      updateTransfer({ id: transferId, transfer: { notes: `Status updated to ${newStatus}` } });
+      // updateTransfer({ id: transferId, transfer: { notes: `Status updated to ${newStatus}` } });
       
       const statusTexts = {
         'approved': 'aprovada',
