@@ -25,7 +25,7 @@ const getCurrentUser = () => {
 // Products
 export const useProducts = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.company_id || 1; // Force company 1 if nothing
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -34,7 +34,7 @@ export const useProducts = (branchId?: number, companyId?: number) => {
   return useQuery<Product[]>({
     queryKey: ['/api/products', branchId, effectiveCompanyId],
     queryFn: () => fetch(`/api/products?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    enabled: true // Always enabled
   });
 };
 
@@ -49,7 +49,7 @@ export const useCreateProduct = () => {
 // Sales
 export const useSales = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.company_id || 1; // Force company 1 if nothing
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -58,7 +58,7 @@ export const useSales = (branchId?: number, companyId?: number) => {
   return useQuery<Sale[]>({
     queryKey: ['/api/sales', branchId, effectiveCompanyId],
     queryFn: () => fetch(`/api/sales?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    enabled: true // Always enabled
   });
 };
 
@@ -77,7 +77,7 @@ export const useCreateSale = () => {
 // Clients
 export const useClients = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.company_id || 1; // Force company 1 if nothing
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -86,7 +86,7 @@ export const useClients = (branchId?: number, companyId?: number) => {
   return useQuery<Client[]>({
     queryKey: ['/api/clients', branchId, effectiveCompanyId],
     queryFn: () => fetch(`/api/clients?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    enabled: true // Always enabled
   });
 };
 
@@ -125,7 +125,7 @@ export const useCreateAppointment = () => {
 // Financial
 export const useFinancial = (branchId?: number, companyId?: number) => {
   const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.company_id;
+  const effectiveCompanyId = companyId || user?.company_id || 1; // Force company 1 if nothing
   
   const params = new URLSearchParams();
   if (branchId) params.append('branch_id', branchId.toString());
@@ -134,7 +134,7 @@ export const useFinancial = (branchId?: number, companyId?: number) => {
   return useQuery<FinancialEntry[]>({
     queryKey: ['/api/financial', branchId, effectiveCompanyId],
     queryFn: () => fetch(`/api/financial?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    enabled: true // Always enabled
   });
 };
 
