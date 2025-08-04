@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Database, 
   Users, 
@@ -35,34 +35,21 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   
-  // Configurar datas automáticas sempre atualizadas
-  const getCurrentDates = () => {
+  // Configurar datas automáticas (últimos 7 dias por padrão)
+  const getDefaultDates = () => {
     const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(today.getDate() - 7);
     
     return {
-      from: thirtyDaysAgo.toISOString().split('T')[0],
+      from: sevenDaysAgo.toISOString().split('T')[0],
       to: today.toISOString().split('T')[0]
     };
   };
   
-  // Para dados de demonstração, usar período maior para capturar mais dados
-  const getDemoDates = () => {
-    const today = new Date();
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(today.getMonth() - 6);
-    
-    return {
-      from: sixMonthsAgo.toISOString().split('T')[0],
-      to: today.toISOString().split('T')[0]
-    };
-  };
-  
-  // Usar período maior para demonstração para capturar dados existentes
-  const initialDates = getDemoDates();
-  const [dateFrom, setDateFrom] = useState<string>(initialDates.from);
-  const [dateTo, setDateTo] = useState<string>(initialDates.to);
+  const defaultDates = getDefaultDates();
+  const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
+  const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
@@ -186,18 +173,12 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     }
   };
 
-  // Limpar filtros e resetar para período de demonstração
+  // Limpar filtros
   const clearFilters = () => {
-    const demoDates = getDemoDates();
-    setDateFrom(demoDates.from);
-    setDateTo(demoDates.to);
+    const defaultDates = getDefaultDates();
+    setDateFrom(defaultDates.from);
+    setDateTo(defaultDates.to);
   };
-
-  // Atualizar data final para hoje sempre que o componente for carregado
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setDateTo(today);
-  }, []); // Executa apenas uma vez ao montar o componente
 
   // Preparar dados para gráficos baseados nos dados reais
   const prepareChartData = () => {
