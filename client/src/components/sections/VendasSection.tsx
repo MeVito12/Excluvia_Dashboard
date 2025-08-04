@@ -89,12 +89,32 @@ export default function VendasSection() {
   const { data: sales = [] } = useSales(undefined, companyId);
   const { data: financialEntries = [] } = useFinancial(undefined, companyId);
 
-  // Filtrar produtos por busca ou código de barras
-  const filteredProducts = products.filter((product: Product) => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.barcode?.includes(barcodeInput) ||
-    product.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtrar produtos por busca ou código de barras com palavras-chave
+  const filteredProducts = products.filter((product: Product) => {
+    if (barcodeInput && product.barcode?.includes(barcodeInput)) {
+      return true;
+    }
+    
+    if (!searchTerm.trim()) {
+      return false;
+    }
+    
+    // Dividir termo de busca em palavras individuais
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
+    const productName = product.name.toLowerCase();
+    const productCategory = product.category.toLowerCase();
+    const productDescription = (product.description || '').toLowerCase();
+    const productText = `${productName} ${productCategory} ${productDescription}`;
+    
+    // Produto deve conter PELO MENOS UMA das palavras buscadas (busca mais flexível)
+    return searchWords.some(word => 
+      productText.includes(word) || 
+      // Busca parcial por início da palavra
+      productText.split(/\s+/).some(productWord => 
+        productWord.startsWith(word) && word.length >= 2
+      )
+    );
+  });
 
   // Processar venda do carrinho usando hook consolidado
   const processSaleMutation = useCreateCartSale();
