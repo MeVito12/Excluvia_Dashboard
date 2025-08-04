@@ -405,9 +405,11 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Receita Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {financialLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                R$ {unifiedMetrics.totalCombinado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-green-600 mt-1">Período selecionado</p>
+              <p className="text-xs text-green-600 mt-1">
+                {unifiedMetrics.vendasCount} vendas + {unifiedMetrics.receitasCount} receitas
+              </p>
             </div>
             <div className="p-3 rounded-full bg-green-100">
               <TrendingUp className="h-6 w-6 text-green-600" />
@@ -420,9 +422,11 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Despesas Total</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {financialLoading ? '...' : `R$ ${financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+                R$ {unifiedMetrics.totalDespesas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-red-600 mt-1">Período selecionado</p>
+              <p className="text-xs text-red-600 mt-1">
+                {unifiedMetrics.despesasCount} despesas registradas
+              </p>
             </div>
             <div className="p-3 rounded-full bg-red-100">
               <TrendingDown className="h-6 w-6 text-red-600" />
@@ -435,14 +439,9 @@ const FinanceiroSection = () => {
             <div>
               <p className="text-sm font-medium text-gray-600">Saldo Atual</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">
-                {financialLoading ? '...' : (() => {
-                  const receitas = financialEntries.filter(e => e.type === 'income').reduce((total, entry) => total + Number(entry.amount || 0), 0);
-                  const despesas = financialEntries.filter(e => e.type === 'expense').reduce((total, entry) => total + Number(entry.amount || 0), 0);
-                  const saldo = receitas - despesas;
-                  return `R$ ${saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-                })()}
+                R$ {(unifiedMetrics.totalCombinado - unifiedMetrics.totalDespesas).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </p>
-              <p className="text-xs text-blue-600 mt-1">Entradas - Saídas</p>
+              <p className="text-xs text-blue-600 mt-1">Receitas - Despesas</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <CreditCard className="h-6 w-6 text-blue-600" />
