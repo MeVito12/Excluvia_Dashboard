@@ -35,21 +35,20 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const { selectedCategory } = useCategory();
   const { user } = useAuth();
   
-  // Configurar datas automáticas (últimos 7 dias por padrão)
-  const getDefaultDates = () => {
+  // Configurar datas automáticas sempre atualizadas
+  const getCurrentDates = () => {
     const today = new Date();
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 7);
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
     
     return {
-      from: sevenDaysAgo.toISOString().split('T')[0],
+      from: thirtyDaysAgo.toISOString().split('T')[0],
       to: today.toISOString().split('T')[0]
     };
   };
   
-  const defaultDates = getDefaultDates();
-  const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
-  const [dateTo, setDateTo] = useState<string>(defaultDates.to);
+  const [dateFrom, setDateFrom] = useState<string>(() => getCurrentDates().from);
+  const [dateTo, setDateTo] = useState<string>(() => getCurrentDates().to);
   const userId = user?.id || 1;
 
   // Hooks para dados reais da API
@@ -173,12 +172,19 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     }
   };
 
-  // Limpar filtros
+  // Limpar filtros e resetar para datas atuais
   const clearFilters = () => {
-    const defaultDates = getDefaultDates();
-    setDateFrom(defaultDates.from);
-    setDateTo(defaultDates.to);
+    const currentDates = getCurrentDates();
+    setDateFrom(currentDates.from);
+    setDateTo(currentDates.to);
   };
+
+  // Atualizar automaticamente as datas quando o componente for carregado
+  useEffect(() => {
+    const currentDates = getCurrentDates();
+    setDateFrom(currentDates.from);
+    setDateTo(currentDates.to);
+  }, []); // Executa apenas uma vez ao montar o componente
 
   // Preparar dados para gráficos baseados nos dados reais
   const prepareChartData = () => {
