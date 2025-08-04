@@ -270,6 +270,7 @@ const EstoqueSection = () => {
               <option value="all">Todos os status</option>
               <option value="Em Estoque">Em Estoque</option>
               <option value="Estoque Baixo">Estoque Baixo</option>
+              <option value="Sem Estoque">Sem Estoque</option>
               <option value="Vencido">Vencido</option>
               <option value="Próximo ao Vencimento">Próximo ao Vencimento</option>
             </select>
@@ -593,6 +594,24 @@ const EstoqueSection = () => {
                 </div>
                 <div className="p-3 rounded-full bg-yellow-100">
                   <Package className="h-6 w-6 text-yellow-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="metric-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Sem Estoque</p>
+                  <p className="text-2xl font-bold text-black mt-1">
+                    {products?.filter((product: any) => {
+                      const status = getProductStatus(Number(product.stock || 0), Number(product.min_stock || 0), product.expiry_date);
+                      return status === 'Sem Estoque';
+                    }).length || 0}
+                  </p>
+                  <p className="text-xs text-red-600 mt-1">Produtos com estoque zerado</p>
+                </div>
+                <div className="p-3 rounded-full bg-red-100">
+                  <Package className="h-6 w-6 text-red-600" />
                 </div>
               </div>
             </div>
