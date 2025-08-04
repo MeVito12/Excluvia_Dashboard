@@ -12,15 +12,29 @@ import type {
   Branch, NewBranch
 } from '@shared/schema';
 
+// Função para obter usuário logado
+const getCurrentUser = () => {
+  try {
+    const userStr = sessionStorage.getItem('user') || localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch {
+    return null;
+  }
+};
+
 // Products
 export const useProducts = (branchId?: number, companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (branchId) params.append('branchId', branchId.toString());
-  if (companyId) params.append('companyId', companyId.toString());
+  if (branchId) params.append('branch_id', branchId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Product[]>({
-    queryKey: ['/api/products', branchId, companyId],
-    queryFn: () => fetch(`/api/products?${params}`).then(res => res.json())
+    queryKey: ['/api/products', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/products?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -34,13 +48,17 @@ export const useCreateProduct = () => {
 
 // Sales
 export const useSales = (branchId?: number, companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (branchId) params.append('branchId', branchId.toString());
-  if (companyId) params.append('companyId', companyId.toString());
+  if (branchId) params.append('branch_id', branchId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Sale[]>({
-    queryKey: ['/api/sales', branchId, companyId],
-    queryFn: () => fetch(`/api/sales?${params}`).then(res => res.json())
+    queryKey: ['/api/sales', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/sales?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -58,13 +76,17 @@ export const useCreateSale = () => {
 
 // Clients
 export const useClients = (branchId?: number, companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (branchId) params.append('branchId', branchId.toString());
-  if (companyId) params.append('companyId', companyId.toString());
+  if (branchId) params.append('branch_id', branchId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Client[]>({
-    queryKey: ['/api/clients', branchId, companyId],
-    queryFn: () => fetch(`/api/clients?${params}`).then(res => res.json())
+    queryKey: ['/api/clients', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/clients?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -78,13 +100,17 @@ export const useCreateClient = () => {
 
 // Appointments
 export const useAppointments = (branchId?: number, companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (branchId) params.append('branchId', branchId.toString());
-  if (companyId) params.append('companyId', companyId.toString());
+  if (branchId) params.append('branch_id', branchId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Appointment[]>({
-    queryKey: ['/api/appointments', branchId, companyId],
-    queryFn: () => fetch(`/api/appointments?${params}`).then(res => res.json())
+    queryKey: ['/api/appointments', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/appointments?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -98,13 +124,17 @@ export const useCreateAppointment = () => {
 
 // Financial
 export const useFinancial = (branchId?: number, companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (branchId) params.append('branchId', branchId.toString());
-  if (companyId) params.append('companyId', companyId.toString());
+  if (branchId) params.append('branch_id', branchId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<FinancialEntry[]>({
-    queryKey: ['/api/financial', branchId, companyId],
-    queryFn: () => fetch(`/api/financial?${params}`).then(res => res.json())
+    queryKey: ['/api/financial', branchId, effectiveCompanyId],
+    queryFn: () => fetch(`/api/financial?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -118,12 +148,16 @@ export const useCreateFinancial = () => {
 
 // Transfers
 export const useTransfers = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (companyId) params.append('companyId', companyId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Transfer[]>({
-    queryKey: ['/api/transfers', companyId],
-    queryFn: () => fetch(`/api/transfers?${params}`).then(res => res.json())
+    queryKey: ['/api/transfers', effectiveCompanyId],
+    queryFn: () => fetch(`/api/transfers?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -137,12 +171,16 @@ export const useCreateTransfer = () => {
 
 // Money Transfers
 export const useMoneyTransfers = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (companyId) params.append('companyId', companyId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<MoneyTransfer[]>({
-    queryKey: ['/api/money-transfers', companyId],
-    queryFn: () => fetch(`/api/money-transfers?${params}`).then(res => res.json())
+    queryKey: ['/api/money-transfers', effectiveCompanyId],
+    queryFn: () => fetch(`/api/money-transfers?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 
@@ -182,12 +220,16 @@ export const useCreateCartSale = () => {
 
 // Branches
 export const useBranches = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
   const params = new URLSearchParams();
-  if (companyId) params.append('companyId', companyId.toString());
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
   
   return useQuery<Branch[]>({
-    queryKey: ['/api/branches', companyId],
-    queryFn: () => fetch(`/api/branches?${params}`).then(res => res.json())
+    queryKey: ['/api/branches', effectiveCompanyId],
+    queryFn: () => fetch(`/api/branches?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
   });
 };
 

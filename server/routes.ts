@@ -13,7 +13,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Autenticação - sistema direto para desenvolvimento
+  // Autenticação - buscar usuário real do Supabase
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -24,30 +24,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('Tentativa de login para:', email);
       
-      // Lista de usuários válidos para desenvolvimento
-      const validUsers = [
-        { id: 1, email: 'junior@mercadocentral.com.br', name: 'Junior Coordenador', role: 'master', company_id: 1 },
-        { id: 2, email: 'demo.farmacia@sistema.com', name: 'Demo Farmácia Central', role: 'user', company_id: 2 },
-        { id: 3, email: 'demo.pet@sistema.com', name: 'Demo Pet Clinic', role: 'user', company_id: 3 },
-        { id: 4, email: 'demo.medico@sistema.com', name: 'Demo Clínica Saúde', role: 'user', company_id: 4 },
-        { id: 5, email: 'demo.vendas@sistema.com', name: 'Demo Comercial Tech', role: 'user', company_id: 5 },
-        { id: 6, email: 'demo@teste.com', name: 'Usuário Demo', role: 'user', company_id: 1 },
-        { id: 7, email: 'admin@sistema.com', name: 'Administrador', role: 'master', company_id: 1 }
-      ];
+      // Primeiro, tentar buscar usuário no Supabase
+      let user = await storage.getUserByEmail(email);
       
-      const user = validUsers.find(u => u.email === email);
-      
+      // Se não encontrar no Supabase, criar usuário de desenvolvimento
       if (!user) {
-        console.log('Usuário não encontrado:', email);
-        return res.status(401).json({ error: "Credenciais inválidas" });
+        console.log('Usuário não encontrado no Supabase, criando usuário de desenvolvimento...');
+        
+        const devUserData = {
+          email: email,
+          name: email === 'junior@mercadocentral.com.br' ? 'Junior Coordenador' : 'Usuário Demo',
+          role: email === 'junior@mercadocentral.com.br' ? 'master' : 'user',
+          company_id: 1,
+          password_hash: 'dev_password' // Para desenvolvimento
+        };
+        
+        try {
+          user = await storage.createUser(devUserData);
+          console.log('Usuário criado com sucesso:', user.email);
+        } catch (createError: any) {
+          console.log('Erro ao criar usuário, usando dados fallback');
+          user = {
+            id: 1,
+            email: email,
+            name: devUserData.name,
+            role: devUserData.role,
+            company_id: 1,
+            password_hash: 'dev_password',
+            created_at: new Date().toISOString()
+          };
+        }
       }
 
       console.log('Login realizado com sucesso para:', user.email);
       res.json({ 
-        user: {
-          ...user,
-          created_at: new Date().toISOString()
-        }, 
+        user, 
         success: true 
       });
     } catch (error: any) {
@@ -104,7 +115,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Produtos
   app.get("/api/products", async (req, res) => {
     try {
-      const products = await storage.getProducts();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const products = await storage.getProducts(branchId, companyId);
       res.json(products);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -123,7 +136,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      const sales = await storage.getSales();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const sales = await storage.getSales(branchId, companyId);
       res.json(sales);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -142,7 +157,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      const clients = await storage.getClients();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const clients = await storage.getClients(branchId, companyId);
       res.json(clients);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -161,7 +178,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Agendamentos
   app.get("/api/appointments", async (req, res) => {
     try {
-      const appointments = await storage.getAppointments();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const appointments = await storage.getAppointments(branchId, companyId);
       res.json(appointments);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
@@ -180,7 +199,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financeiro
   app.get("/api/financial", async (req, res) => {
     try {
-      const entries = await storage.getFinancialEntries();
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      const entries = await storage.getFinancialEntries(branchId, companyId);
       res.json(entries);
     } catch (error: any) {
       res.status(500).json({ error: error.message });
