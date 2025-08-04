@@ -163,6 +163,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/sales", async (req, res) => {
     try {
       const sale = await storage.createSale(req.body);
+      
+      // Criar entrada financeira automática para a venda
+      if (sale && sale.total_price) {
+        const financialEntry = {
+          type: 'income' as const,
+          amount: sale.total_price,
+          description: `Venda realizada - ${sale.quantity}x produto`,
+          status: 'paid' as const,
+          category: 'vendas',
+          reference_id: sale.id,
+          reference_type: 'sale',
+          company_id: sale.company_id,
+          branch_id: sale.branch_id,
+          created_by: sale.created_by
+        };
+        
+        try {
+          await storage.createFinancialEntry(financialEntry);
+        } catch (finError) {
+          console.error('Erro ao criar entrada financeira automática:', finError);
+          // Não falhar a venda se houver erro na entrada financeira
+        }
+      }
+      
       res.json(sale);
     } catch (error: any) {
       res.status(500).json({ error: error.message });

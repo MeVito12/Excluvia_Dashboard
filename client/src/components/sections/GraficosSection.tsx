@@ -84,13 +84,11 @@ const GraficosSection = () => {
   const calculateMetrics = useMemo(() => {
     // Verificação mais robusta dos dados
     try {
-      console.log('Debug - Dados recebidos GRÁFICOS:', { 
-        sales: sales?.length, 
-        products: products?.length, 
-        clients: clients?.length, 
-        financial: financial?.length,
-        filteredSales: filteredSales?.length,
-        userId: user?.id,
+      console.log('Debug - GRÁFICOS - Dados financeiros:', { 
+        vendas: sales?.length, 
+        totalVendas: filteredSales?.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
+        entradas: financial?.filter((f: any) => f.type === 'income')?.length,
+        totalEntradas: financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
         companyId: user?.company_id
       });
       
@@ -170,9 +168,9 @@ const GraficosSection = () => {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      // Filtrar movimentações financeiras do dia (verificar se financial existe)
+      // Filtrar movimentações financeiras do dia usando created_at
       const dayEntries = (financial || []).filter((entry: any) => 
-        entry.date && entry.date.split('T')[0] === dateStr
+        entry.created_at && entry.created_at.split('T')[0] === dateStr
       );
       
       const entradas = dayEntries
@@ -183,13 +181,9 @@ const GraficosSection = () => {
         .filter((entry: any) => entry.type === 'expense')
         .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
       
-      // Adicionar vendas como entrada adicional
-      const daySales = (filteredSales || []).filter((sale: any) => 
-        sale.sale_date && sale.sale_date.split('T')[0] === dateStr
-      );
-      const vendasReceita = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
-      
-      const totalEntradas = entradas + vendasReceita;
+      // As vendas já devem estar incluídas nas entradas financeiras automáticas
+      // Não duplicar - usar apenas os dados financeiros que já incluem as vendas
+      const totalEntradas = entradas;
       
       // Usar dados reais
       financialChartData.push({

@@ -214,9 +214,9 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       return acc;
     }, {});
 
-    // Dados para gráfico de receitas vs despesas
+    // Dados para gráfico de receitas vs despesas - usando dados financeiros que já incluem vendas
     const financialSummary = (financialEntries || []).reduce((acc: any, entry: any) => {
-      const date = new Date(entry.created_at || entry.transaction_date).toLocaleDateString('pt-BR');
+      const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
       if (!acc[date]) {
         acc[date] = { name: date, receitas: 0, despesas: 0 };
       }
