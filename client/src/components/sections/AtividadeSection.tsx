@@ -234,18 +234,19 @@ const AtividadeSection = () => {
 
   const renderSales = () => {
     // Debug - calcular totais separadamente
-    const manualSales = financialEntries?.filter(entry => entry.type === 'income' && entry.description?.includes('Venda manual')) || [];
-    const salesTotal = (sales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_amount) || 0), 0);
+    const manualSales = financialEntries?.filter(entry => 
+      entry.type === 'income' && 
+      (entry.description?.includes('Venda manual') || 
+       entry.description?.includes('Venda de') || 
+       entry.description?.includes('Venda para'))
+    ) || [];
+    
+    const salesTotal = (sales || []).reduce((sum: number, sale: any) => {
+      const amount = Number(sale.total_price || 0);
+      return sum + amount;
+    }, 0);
     const manualSalesTotal = manualSales.reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
     const grandTotal = salesTotal + manualSalesTotal;
-    
-    console.log('DEBUG ATIVIDADE VENDAS:', {
-      vendas: (sales || []).length,
-      vendasManuais: manualSales.length,
-      totalVendas: salesTotal,
-      totalVendasManuais: manualSalesTotal,
-      totalGeral: grandTotal
-    });
 
     return (
       <div className="animate-fade-in">
@@ -308,7 +309,7 @@ const AtividadeSection = () => {
               return (
                 <div key={sale.id} className="standard-list-item group">
                   <div className="list-item-main">
-                    <div className="list-item-title">{client?.name || `Cliente #${sale.client_id}`}</div>
+                    <div className="list-item-title">{client?.name || (sale.client_id ? `Cliente #${sale.client_id}` : 'Cliente avulso')}</div>
                     <div className="list-item-subtitle">{product?.name || `Produto #${sale.product_id}`} x{sale.quantity || 0}</div>
                     <div className="list-item-meta">
                       {sale.sale_date ? formatDateBR(sale.sale_date) : 'Data não disponível'}
