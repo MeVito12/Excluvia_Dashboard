@@ -214,15 +214,15 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     }, {});
 
     // Dados para gráfico de receitas vs despesas
-    const financialSummary = financialEntries.reduce((acc: any, entry: any) => {
-      const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
+    const financialSummary = (financialEntries || []).reduce((acc: any, entry: any) => {
+      const date = new Date(entry.created_at || entry.transaction_date).toLocaleDateString('pt-BR');
       if (!acc[date]) {
         acc[date] = { name: date, receitas: 0, despesas: 0 };
       }
       if (entry.type === 'income') {
         acc[date].receitas += Number(entry.amount || 0);
       } else {
-        acc[date].despesas += Number(entry.amount || 0);
+        acc[date].despesas += Math.abs(Number(entry.amount || 0));
       }
       return acc;
     }, {});
@@ -238,11 +238,11 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   
   // Debug dos dados que estão sendo enviados
   console.log("Debug - Dados recebidos:", {
-    sales: sales.length,
-    products: products.length,
-    clients: clients.length,
-    financial: financialEntries.length,
-    filteredSales: filteredSales.length
+    sales: (sales || []).length,
+    products: (products || []).length,
+    clients: (clients || []).length,
+    financial: (financialEntries || []).length,
+    filteredSales: (filteredSales || []).length
   });
 
   return (
