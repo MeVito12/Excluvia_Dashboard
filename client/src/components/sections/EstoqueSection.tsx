@@ -1,11 +1,8 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { useAuth } from '@/contexts/AuthContext';
-import { useProducts } from '@/hooks/useProducts';
-import { useSales } from '@/hooks/useSales';
-import { useClients } from '@/hooks/useClients';
-import { useTransfers } from '@/hooks/useTransfers';
 import type { Product, Transfer } from '@shared/schema';
 
 import { 
@@ -81,8 +78,11 @@ const EstoqueSection = () => {
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
   // Hooks para dados
-  const { products = [], deleteProduct, updateProduct, isDeleting, isUpdating } = useProducts();
-  const { transfers = [], updateTransfer } = useTransfers();
+  const { user } = useAuth();
+  const companyId = user?.company_id;
+  
+  const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: transfers = [] } = useTransfers(undefined, companyId);
 
   // Função para buscar nome do produto
   const getProductName = (productId: number): string => {

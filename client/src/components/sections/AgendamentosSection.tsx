@@ -1,6 +1,6 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
 import { useCategory, categories } from '@/contexts/CategoryContext';
-import { useAppointments } from '@/hooks/useAppointments';
 import { formatDateBR } from '@/utils/dateFormat';
 import { 
   Calendar as CalendarIcon, 
@@ -19,9 +19,12 @@ const AgendamentosSection = () => {
   const { selectedCategory } = useCategory();
 
 
+  const { user } = useAuth();
+  const companyId = user?.company_id || 1;
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const { appointments } = useAppointments();
+  const { data: appointments = [] } = useAppointments(undefined, companyId);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newAppointment, setNewAppointment] = useState({
     title: '',
@@ -88,7 +91,7 @@ const AgendamentosSection = () => {
       <div className="main-card p-6">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">
-            Compromissos ({appointments.length})
+            Compromissos ({(appointments || []).length})
           </h3>
           <button 
             className="btn btn-primary"
@@ -142,7 +145,7 @@ const AgendamentosSection = () => {
         
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {appointments.map((appointment: any) => (
+            {(appointments || []).map((appointment: any) => (
               <div key={appointment.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{appointment.title}</div>
@@ -216,8 +219,8 @@ const AgendamentosSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Agendamentos Hoje</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{appointments?.length || 0}</p>
-              <p className="text-xs text-blue-600 mt-1">{appointments?.filter((a: any) => a.status === 'scheduled').length || 0} pendentes</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{(appointments || []).length || 0}</p>
+              <p className="text-xs text-blue-600 mt-1">{(appointments || []).filter((a: any) => a.status === 'scheduled').length || 0} pendentes</p>
             </div>
             <div className="p-3 rounded-full bg-blue-100">
               <CalendarIcon className="h-6 w-6 text-blue-600" />
@@ -229,7 +232,7 @@ const AgendamentosSection = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total de Agendamentos</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{appointments?.length || 0}</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{(appointments || []).length || 0}</p>
               <p className="text-xs text-purple-600 mt-1">Todos os registros</p>
             </div>
             <div className="p-3 rounded-full bg-purple-100">

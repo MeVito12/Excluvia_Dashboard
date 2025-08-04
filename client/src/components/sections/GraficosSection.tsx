@@ -1,11 +1,8 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
-import { useProducts } from '@/hooks/useProducts';
-import { useSales } from '@/hooks/useSales';
-import { useClients } from '@/hooks/useClients';
-import { useFinancial } from '@/hooks/useFinancial';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -57,11 +54,13 @@ const GraficosSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
 
+  const companyId = user?.company_id || 1;
+  
   // Hooks para dados reais da API
-  const { products } = useProducts();
-  const { sales } = useSales();
-  const { clients } = useClients();
-  const { entries: financial } = useFinancial();
+  const { data: products = [] } = useProducts(undefined, companyId);
+  const { data: sales = [] } = useSales(undefined, companyId);
+  const { data: clients = [] } = useClients(undefined, companyId);
+  const { data: financial = [] } = useFinancial(undefined, companyId);
 
 
 

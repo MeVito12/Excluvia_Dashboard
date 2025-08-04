@@ -1,3 +1,4 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState, useMemo } from 'react';
 import { 
   Database, 
@@ -18,13 +19,8 @@ import {
 } from 'lucide-react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
-import { useProducts } from '@/hooks/useProducts';
-import { useSales } from '@/hooks/useSales';
-import { useClients } from '@/hooks/useClients';
-import { useTransfers } from '@/hooks/useTransfers';
-import { useAppointments } from '@/hooks/useAppointments';
-import { useFinancial } from '@/hooks/useFinancial';
 import { formatDateBR } from '@/utils/dateFormat';
+import DatabaseChart from '@/components/DatabaseChart';
 
 interface DashboardSectionProps {
   onSectionChange?: (section: string) => void;
@@ -50,48 +46,55 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const [dateFrom, setDateFrom] = useState<string>(defaultDates.from);
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
   const userId = user?.id || 1;
+  const companyId = user?.company_id;
 
   // Hooks para dados reais da API
-  const { products, isLoading: productsLoading } = useProducts();
-  const { sales, isLoading: salesLoading } = useSales();
-  const { clients, isLoading: clientsLoading } = useClients();
-  const { transfers, isLoading: transfersLoading } = useTransfers();
-  const { appointments, isLoading: appointmentsLoading } = useAppointments();
-  const { entries: financialEntries, isLoading: financialLoading } = useFinancial();
+  const { data: products = [], isLoading: productsLoading } = useProducts(undefined, companyId);
+  const { data: sales = [], isLoading: salesLoading } = useSales(undefined, companyId);
+  const { data: clients = [], isLoading: clientsLoading } = useClients(undefined, companyId);
+  const { data: transfers = [], isLoading: transfersLoading } = useTransfers(undefined, companyId);
+  const { data: appointments = [], isLoading: appointmentsLoading } = useAppointments(undefined, companyId);
+  const { data: financialEntries = [], isLoading: financialLoading } = useFinancial(undefined, companyId);
 
   // Gerar atividades baseadas em dados reais
   const activities = useMemo(() => {
     const activitiesList: any[] = [];
     
     // Adicionar vendas como atividades
-    sales.forEach((sale: any) => {
-      activitiesList.push({
-        id: `sale-${sale.id}`,
-        action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
-        timestamp: sale.sale_date,
-        type: 'sale'
+    if (sales && Array.isArray(sales)) {
+      sales.forEach((sale: any) => {
+        activitiesList.push({
+          id: `sale-${sale.id}`,
+          action: `Venda realizada: R$ ${Number(sale.total_price || 0).toFixed(2)}`,
+          timestamp: sale.sale_date,
+          type: 'sale'
+        });
       });
-    });
+    }
     
     // Adicionar agendamentos como atividades
-    appointments.forEach((appointment: any) => {
-      activitiesList.push({
-        id: `appointment-${appointment.id}`,
-        action: `Agendamento: ${appointment.title}`,
-        timestamp: appointment.appointment_date,
-        type: 'appointment'
+    if (appointments && Array.isArray(appointments)) {
+      appointments.forEach((appointment: any) => {
+        activitiesList.push({
+          id: `appointment-${appointment.id}`,
+          action: `Agendamento: ${appointment.title}`,
+          timestamp: appointment.appointment_date,
+          type: 'appointment'
+        });
       });
-    });
+    }
     
     // Adicionar transferências como atividades
-    transfers.forEach((transfer: any) => {
-      activitiesList.push({
-        id: `transfer-${transfer.id}`,
-        action: `Transferência de produto (${transfer.quantity} unidades)`,
-        timestamp: transfer.transferDate,
-        type: 'transfer'
+    if (transfers && Array.isArray(transfers)) {
+      transfers.forEach((transfer: any) => {
+        activitiesList.push({
+          id: `transfer-${transfer.id}`,
+          action: `Transferência de produto (${transfer.quantity} unidades)`,
+          timestamp: transfer.transferDate,
+          type: 'transfer'
+        });
       });
-    });
+    }
     
     // Ordenar por data mais recente
     return activitiesList.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
@@ -99,6 +102,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Função para filtrar dados por data
   const filterByDateRange = (data: any[], dateField: string) => {
+    if (!data || !Array.isArray(data)) return [];
     if (!dateFrom && !dateTo) return data;
     
     return data.filter(item => {
@@ -111,12 +115,14 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   };
 
   // Dados filtrados por período
-  const filteredSales = useMemo(() => filterByDateRange(sales, 'sale_date'), [sales, dateFrom, dateTo]);
-  const filteredActivities = useMemo(() => filterByDateRange(activities, 'timestamp'), [activities, dateFrom, dateTo]);
-  const filteredTransfers = useMemo(() => filterByDateRange(transfers, 'created_at'), [transfers, dateFrom, dateTo]);
+  const filteredSales = useMemo(() => filterByDateRange(sales || [], 'sale_date'), [sales, dateFrom, dateTo]);
+  const filteredActivities = useMemo(() => filterByDateRange(activities || [], 'timestamp'), [activities, dateFrom, dateTo]);
+  const filteredTransfers = useMemo(() => filterByDateRange(transfers || [], 'created_at'), [transfers, dateFrom, dateTo]);
   
   // Compromissos recentes e próximos (últimos 30 dias e próximos 30 dias)
   const upcomingAppointments = useMemo(() => {
+    if (!appointments || !Array.isArray(appointments)) return [];
+    
     const today = new Date();
     const thirtyDaysAgo = new Date();
     const thirtyDaysAhead = new Date();
@@ -133,6 +139,8 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
 
   // Análise de produtos críticos
   const criticalProducts = useMemo(() => {
+    if (!products || !Array.isArray(products)) return [];
+    
     const today = new Date();
     return products.filter((product: any) => {
       // Produtos vencidos
@@ -178,6 +186,67 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     setDateFrom(defaultDates.from);
     setDateTo(defaultDates.to);
   };
+
+  // Preparar dados para gráficos baseados nos dados reais
+  const prepareChartData = () => {
+    // Dados para gráfico de vendas por dia
+    const salesByDay = filteredSales.reduce((acc: any, sale: any) => {
+      const date = new Date(sale.sale_date).toLocaleDateString('pt-BR');
+      if (!acc[date]) {
+        acc[date] = { name: date, vendas: 0, receita: 0 };
+      }
+      acc[date].vendas += 1;
+      acc[date].receita += Number(sale.total_price || 0);
+      return acc;
+    }, {});
+
+    // Dados para gráfico de produtos mais vendidos
+    const productSales = filteredSales.reduce((acc: any, sale: any) => {
+      const productId = sale.product_id;
+      const product = products.find((p: any) => p.id === productId);
+      const productName = product?.name || `Produto ${productId}`;
+      
+      if (!acc[productName]) {
+        acc[productName] = { name: productName, quantidade: 0, receita: 0 };
+      }
+      acc[productName].quantidade += Number(sale.quantity || 1);
+      acc[productName].receita += Number(sale.total_price || 0);
+      return acc;
+    }, {});
+
+    // Dados para gráfico de receitas vs despesas
+    const financialSummary = (financialEntries || []).reduce((acc: any, entry: any) => {
+      const date = new Date(entry.created_at || entry.transaction_date).toLocaleDateString('pt-BR');
+      if (!acc[date]) {
+        acc[date] = { name: date, receitas: 0, despesas: 0 };
+      }
+      if (entry.type === 'income') {
+        acc[date].receitas += Number(entry.amount || 0);
+      } else {
+        acc[date].despesas += Math.abs(Number(entry.amount || 0));
+      }
+      return acc;
+    }, {});
+
+    return {
+      salesByDay: Object.values(salesByDay).slice(-7), // Últimos 7 dias
+      productSales: Object.values(productSales).slice(-5), // Top 5 produtos
+      financialSummary: Object.values(financialSummary).slice(-7) // Últimos 7 dias
+    };
+  };
+
+  const chartData = prepareChartData();
+  
+  // Debug dos dados que estão sendo enviados
+  console.log("Debug - Dados recebidos CORRIGIDOS:", {
+    sales: (sales || []).length,
+    products: (products || []).length,
+    clients: (clients || []).length,
+    financial: (financialEntries || []).length,
+    filteredSales: (filteredSales || []).length,
+    userId: user?.id,
+    companyId: companyId
+  });
 
   return (
     <div className="app-section">
@@ -542,6 +611,60 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
         </div>
       </div>
 
+      {/* Seção de Gráficos com Dados Reais */}
+      <div className="mt-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Análise de Dados</h2>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Gráfico de Vendas por Dia */}
+          {chartData.salesByDay.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="bar"
+                title="Vendas por Dia"
+                data={chartData.salesByDay}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico de Produtos Mais Vendidos */}
+          {chartData.productSales.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="bar"
+                title="Produtos Mais Vendidos"
+                data={chartData.productSales}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico de Receitas vs Despesas */}
+          {chartData.financialSummary.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="line"
+                title="Receitas vs Despesas"
+                data={chartData.financialSummary}
+              />
+            </div>
+          )}
+          
+          {/* Gráfico Pizza - Distribuição de Vendas */}
+          {filteredSales.length > 0 && (
+            <div>
+              <DatabaseChart 
+                type="pie"
+                title="Distribuição de Vendas"
+                data={[
+                  { name: 'Vendas Concluídas', value: filteredSales.length, color: 'hsl(var(--primary))' },
+                  { name: 'Produtos Cadastrados', value: products.length, color: 'hsl(var(--accent))' },
+                  { name: 'Clientes Ativos', value: clients.length, color: 'hsl(var(--muted-foreground))' }
+                ]}
+              />
+            </div>
+          )}
+        </div>
+      </div>
 
     </div>
   );

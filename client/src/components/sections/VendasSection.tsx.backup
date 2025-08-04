@@ -54,10 +54,8 @@ export default function VendasSection() {
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
 
   // Buscar produtos e clientes usando hooks consolidados
-  const companyId = user?.company_id || 1;
-  
-  const { data: products = [] } = useProducts(undefined, companyId);
-  const { data: clients = [] } = useClients(undefined, companyId);
+  const { data: products = [] } = useProducts();
+  const { data: clients = [] } = useClients();
 
   // Filtrar produtos por busca ou código de barras
   const filteredProducts = products.filter((product: Product) => 
@@ -125,9 +123,18 @@ export default function VendasSection() {
     ));
   };
 
+  // Limpar carrinho
+  const clearCart = () => {
+    setCart([]);
+    setSelectedClient(null);
+    setPaymentMethod("");
+    setDiscount(0);
+  };
+
   // Calcular totais
   const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  const totalAmount = subtotal - discount;
+  const discountAmount = (subtotal * discount) / 100;
+  const totalAmount = subtotal - discountAmount;
 
   // Processar venda
   const handleProcessSale = () => {
@@ -152,7 +159,7 @@ export default function VendasSection() {
     const saleData: SaleCart = {
       items: cart,
       clientId: selectedClient || undefined,
-      clientName: selectedClient ? clients.find((c: Client) => c.id === selectedClient)?.name : undefined,
+      clientName: selectedClient ? clients.find(c => c.id === selectedClient)?.name : undefined,
       subtotal,
       discount,
       totalAmount,
@@ -164,7 +171,7 @@ export default function VendasSection() {
 
   // Processar código de barras (simular "bip")
   const handleBarcodeScanned = (barcode: string) => {
-    const product = products.find((p: Product) => p.barcode === barcode);
+    const product = products.find(p => p.barcode === barcode);
     if (product) {
       addToCart(product);
       toast({

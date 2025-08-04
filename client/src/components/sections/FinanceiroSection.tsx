@@ -1,10 +1,8 @@
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
-import { useFinancial } from '@/hooks/useFinancial';
-import { useMoneyTransfers } from '@/hooks/useMoneyTransfers';
-import { useBranches } from '@/hooks/useBranches';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -60,22 +58,10 @@ const FinanceiroSection = () => {
   const [dateFrom, setDateFrom] = useState(defaultDates.from);
   const [dateTo, setDateTo] = useState(defaultDates.to);
 
-  const { 
-    entries: financialEntries = [], 
-    isLoading, 
-    createEntry: createFinancialEntry, 
-    updateEntry: updateFinancialEntry, 
-    deleteEntry: deleteFinancialEntry
-  } = useFinancial(dateFrom, dateTo);
-
-  const {
-    moneyTransfers = [],
-    isLoading: isTransfersLoading,
-    createMoneyTransfer,
-    updateMoneyTransfer,
-    isCreating: isCreatingTransfer,
-    isUpdating: isUpdatingTransfer
-  } = useMoneyTransfers();
+  const companyId = user?.company_id || 1;
+  
+  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
+  const { data: moneyTransfers = [] } = useMoneyTransfers(undefined, companyId);
 
   const { branches = [] } = useBranches();
 
