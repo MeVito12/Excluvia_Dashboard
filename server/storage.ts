@@ -581,4 +581,43 @@ export class SupabaseStorage implements Storage {
     await this.request(`money_transfers?id=eq.${id}`, { method: 'DELETE' });
     return true;
   }
+
+  // ====================================
+  // CUPONS
+  // ====================================
+
+  async getCoupons(companyId?: number): Promise<any[]> {
+    const filter = companyId ? `company_id=eq.${companyId}&` : '';
+    return this.request(`coupons?${filter}select=*&order=created_at.desc`);
+  }
+
+  async createCoupon(coupon: any): Promise<any> {
+    const [created] = await this.request('coupons', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...coupon,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }),
+    });
+    return created;
+  }
+
+  async validateCoupon(code: string): Promise<any | null> {
+    const coupons = await this.request(`coupons?code=eq.${code}&select=*`);
+    return coupons.length > 0 ? coupons[0] : null;
+  }
+
+  async applyCoupon(couponId: number, saleAmount: number): Promise<any> {
+    // Incrementar contador de uso do cupom
+    const [updated] = await this.request(`coupons?id=eq.${couponId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        uses_count: `uses_count + 1`,
+        updated_at: new Date().toISOString()
+      }),
+    });
+    
+    return { success: true, coupon: updated };
+  }
 }

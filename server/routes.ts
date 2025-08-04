@@ -332,6 +332,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cupons
+  app.get("/api/coupons", async (req, res) => {
+    try {
+      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const coupons = await storage.getCoupons(companyId);
+      res.json(coupons);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/coupons", async (req, res) => {
+    try {
+      const coupon = await storage.createCoupon(req.body);
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.get("/api/coupons/validate/:code", async (req, res) => {
+    try {
+      const code = req.params.code.toUpperCase();
+      const coupon = await storage.validateCoupon(code);
+      
+      if (!coupon) {
+        return res.status(404).json({ error: "Cupom não encontrado" });
+      }
+      
+      if (!coupon.is_active) {
+        return res.status(400).json({ error: "Cupom inativo" });
+      }
+      
+      // Verificar data de validade
+      if (coupon.end_date) {
+        const endDate = new Date(coupon.end_date);
+        if (new Date() > endDate) {
+          return res.status(400).json({ error: "Cupom expirado" });
+        }
+      }
+      
+      // Verificar limite de uso
+      if (coupon.max_uses && coupon.uses_count >= coupon.max_uses) {
+        return res.status(400).json({ error: "Cupom esgotado" });
+      }
+      
+      res.json(coupon);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.post("/api/coupons/apply", async (req, res) => {
+    try {
+      const { couponId, saleAmount } = req.body;
+      const result = await storage.applyCoupon(couponId, saleAmount);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

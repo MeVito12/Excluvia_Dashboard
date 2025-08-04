@@ -1,4 +1,4 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale, useCoupons, useValidateCoupon, useApplyCoupon } from "@/hooks/useData";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,6 +49,12 @@ export default function VendasSection() {
   const [foundClient, setFoundClient] = useState<Client | null>(null);
   const [showAddClientModal, setShowAddClientModal] = useState<boolean>(false);
   
+  // Estados para cupons
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [validatingCoupon, setValidatingCoupon] = useState<boolean>(false);
+  
   // Estados para formulário de novo cliente
   const [clientForm, setClientForm] = useState({
     name: '',
@@ -88,6 +94,7 @@ export default function VendasSection() {
   const { data: clients = [] } = useClients(undefined, companyId);
   const { data: sales = [] } = useSales(undefined, companyId);
   const { data: financialEntries = [] } = useFinancial(undefined, companyId);
+  const { data: coupons = [] } = useCoupons(companyId);
 
   // Filtrar produtos por busca ou código de barras com palavras-chave
   const filteredProducts = products.filter((product: Product) => {
@@ -119,6 +126,8 @@ export default function VendasSection() {
   // Processar venda do carrinho usando hook consolidado
   const processSaleMutation = useCreateCartSale();
   const { mutateAsync: createClient } = useCreateClient();
+  const validateCouponMutation = useValidateCoupon();
+  const applyCouponMutation = useApplyCoupon();
 
   // Funções auxiliares para filtros
   const filterByDateRange = (data: any[], dateField: string) => {
@@ -156,6 +165,84 @@ export default function VendasSection() {
   
   const clearCart = () => {
     setCart([]);
+    // Reset cupom
+    setCouponCode("");
+    setAppliedCoupon(null);
+    setCouponDiscount(0);
+  };
+
+  // Função para validar cupom
+  const handleValidateCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast({
+        title: "Erro",
+        description: "Digite um código de cupom",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setValidatingCoupon(true);
+    try {
+      const coupon = await validateCouponMutation.mutateAsync(couponCode.trim().toUpperCase());
+      
+      if (coupon && coupon.is_active) {
+        setAppliedCoupon(coupon);
+        calculateCouponDiscount(coupon);
+        toast({
+          title: "Cupom aplicado!",
+          description: `${coupon.name} - ${coupon.discount_type === 'percentage' ? coupon.discount_value + '%' : 'R$ ' + coupon.discount_value} de desconto`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Cupom inválido",
+        description: error.message || "Código não encontrado ou expirado",
+        variant: "destructive"
+      });
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
+
+  // Função para calcular desconto do cupom
+  const calculateCouponDiscount = (coupon: any) => {
+    const subtotal = cart.reduce((total, item) => total + item.totalPrice, 0);
+    
+    if (subtotal < coupon.min_purchase_amount) {
+      toast({
+        title: "Valor mínimo não atingido",
+        description: `Compra mínima de R$ ${coupon.min_purchase_amount.toFixed(2)} para usar este cupom`,
+        variant: "destructive"
+      });
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+      return;
+    }
+
+    let discountAmount = 0;
+    if (coupon.discount_type === 'percentage') {
+      discountAmount = (subtotal * coupon.discount_value) / 100;
+    } else {
+      discountAmount = coupon.discount_value;
+    }
+
+    // Garantir que o desconto não seja maior que o subtotal
+    discountAmount = Math.min(discountAmount, subtotal);
+    setCouponDiscount(discountAmount);
+  };
+
+  // Função para remover cupom
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponDiscount(0);
+    setCouponCode("");
+    toast({
+      title: "Cupom removido",
+      description: "O desconto foi removido da venda",
+    });
   };
 
   // Função para resetar formulário de cliente
@@ -254,10 +341,11 @@ export default function VendasSection() {
 
   // Calcular totais
   const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  const totalAmount = subtotal - discount;
+  const totalDiscount = discount + couponDiscount;
+  const totalAmount = subtotal - totalDiscount;
 
   // Processar venda
-  const handleProcessSale = () => {
+  const handleProcessSale = async () => {
     if (cart.length === 0) {
       toast({
         title: "Carrinho vazio",
@@ -276,17 +364,35 @@ export default function VendasSection() {
       return;
     }
 
-    const saleData: SaleCart = {
-      items: cart,
-      clientId: selectedClient || undefined,
-      clientName: selectedClient ? clients.find((c: Client) => c.id === selectedClient)?.name : undefined,
-      subtotal,
-      discount,
-      totalAmount,
-      paymentMethod: paymentMethod as any,
-    };
+    try {
+      // Se há cupom aplicado, registrar o uso
+      if (appliedCoupon) {
+        await applyCouponMutation.mutateAsync({
+          couponId: appliedCoupon.id,
+          saleAmount: subtotal
+        });
+      }
 
-    processSaleMutation.mutate(saleData);
+      const saleData: SaleCart = {
+        items: cart,
+        clientId: selectedClient || undefined,
+        clientName: selectedClient ? clients.find((c: Client) => c.id === selectedClient)?.name : undefined,
+        subtotal,
+        discount: totalDiscount, // Incluindo cupom no desconto total
+        totalAmount,
+        paymentMethod: paymentMethod as any,
+        couponId: appliedCoupon?.id,
+        couponDiscount: couponDiscount
+      };
+
+      processSaleMutation.mutate(saleData);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao aplicar cupom",
+        description: error.message || "Não foi possível processar o cupom",
+        variant: "destructive",
+      });
+    }
   };
 
   // Processar código de barras (simular "bip")
@@ -510,9 +616,57 @@ export default function VendasSection() {
                 </button>
               </div>
 
-              {/* Desconto */}
+              {/* Cupom de Desconto */}
               <div>
-                <Label htmlFor="discount">Desconto (%)</Label>
+                <Label htmlFor="coupon">Cupom de Desconto</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="coupon"
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="CÓDIGO DO CUPOM"
+                    disabled={!!appliedCoupon}
+                    className="uppercase"
+                  />
+                  {appliedCoupon ? (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleRemoveCoupon}
+                      className="shrink-0"
+                    >
+                      Remover
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleValidateCoupon}
+                      disabled={!couponCode.trim() || validatingCoupon}
+                      className="shrink-0"
+                    >
+                      {validatingCoupon ? "..." : "Aplicar"}
+                    </Button>
+                  )}
+                </div>
+                {appliedCoupon && (
+                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
+                    <p className="text-sm text-green-800 font-medium">{appliedCoupon.name}</p>
+                    <p className="text-xs text-green-600">
+                      {appliedCoupon.discount_type === 'percentage' 
+                        ? `${appliedCoupon.discount_value}% de desconto` 
+                        : `R$ ${appliedCoupon.discount_value} de desconto`}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Desconto Manual */}
+              <div>
+                <Label htmlFor="discount">Desconto Manual (%)</Label>
                 <Input
                   id="discount"
                   type="number"
@@ -540,8 +694,22 @@ export default function VendasSection() {
                 
                 {discount > 0 && (
                   <div className="flex justify-between text-emerald-600">
-                    <span>Desconto ({discount}%):</span>
-                    <span>- R$ {discountAmount.toFixed(2)}</span>
+                    <span>Desconto Manual ({discount}%):</span>
+                    <span>- R$ {(subtotal * discount / 100).toFixed(2)}</span>
+                  </div>
+                )}
+                
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-blue-600">
+                    <span>Cupom ({appliedCoupon?.name}):</span>
+                    <span>- R$ {couponDiscount.toFixed(2)}</span>
+                  </div>
+                )}
+                
+                {totalDiscount > 0 && (
+                  <div className="flex justify-between text-green-600 font-medium">
+                    <span>Total de Descontos:</span>
+                    <span>- R$ {totalDiscount.toFixed(2)}</span>
                   </div>
                 )}
                 

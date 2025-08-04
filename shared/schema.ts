@@ -90,6 +90,26 @@ export interface Subcategory {
   updated_at: string;
 }
 
+export interface Coupon {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  discount_type: 'percentage' | 'fixed';
+  discount_value: number;
+  min_purchase_amount: number;
+  max_uses?: number;
+  current_uses: number;
+  start_date?: string;
+  end_date?: string;
+  is_active: boolean;
+  is_loyalty_reward: boolean;
+  company_id: number;
+  created_by: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -288,6 +308,20 @@ export const SubcategorySchema = z.object({
   color: z.string().min(1, "Cor é obrigatória"),
 });
 
+export const CouponSchema = z.object({
+  code: z.string().min(1, "Código do cupom é obrigatório").max(20, "Código deve ter no máximo 20 caracteres"),
+  name: z.string().min(1, "Nome do cupom é obrigatório"),
+  description: z.string().optional(),
+  discount_type: z.enum(['percentage', 'fixed'], { required_error: "Tipo de desconto é obrigatório" }),
+  discount_value: z.number().positive("Valor do desconto deve ser positivo"),
+  min_purchase_amount: z.number().min(0, "Valor mínimo não pode ser negativo").default(0),
+  max_uses: z.number().positive().optional(),
+  start_date: z.string().optional(),
+  end_date: z.string().optional(),
+  is_active: z.boolean().default(true),
+  is_loyalty_reward: z.boolean().default(false),
+});
+
 export const ProductSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   description: z.string().optional(),
@@ -331,6 +365,8 @@ export const SaleCartSchema = z.object({
   totalAmount: z.number().positive("Total deve ser positivo"),
   paymentMethod: z.enum(['dinheiro', 'pix', 'cartao_credito', 'cartao_debito', 'boleto']),
   notes: z.string().optional(),
+  couponId: z.number().positive().optional(),
+  couponDiscount: z.number().min(0, "Desconto do cupom não pode ser negativo").default(0),
 });
 
 export const ClientSchema = z.object({

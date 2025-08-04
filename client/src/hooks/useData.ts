@@ -296,3 +296,60 @@ export const useCreateBranch = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['/api/branches'] })
   });
 };
+
+// CUPONS
+export const useCoupons = (companyId?: number) => {
+  const user = getCurrentUser();
+  const effectiveCompanyId = companyId || user?.company_id;
+  
+  const params = new URLSearchParams();
+  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
+  
+  return useQuery({
+    queryKey: ['/api/coupons', effectiveCompanyId],
+    queryFn: () => fetch(`/api/coupons?${params}`).then(res => res.json()),
+    enabled: !!effectiveCompanyId
+  });
+};
+
+export const useCreateCoupon = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => apiRequest('/api/coupons', { method: 'POST', body: JSON.stringify(data) }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['/api/coupons'] })
+  });
+};
+
+export const useValidateCoupon = () => {
+  return useMutation({
+    mutationFn: async (couponCode: string) => {
+      const response = await fetch(`/api/coupons/validate/${couponCode}`);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Cupom inválido');
+      }
+      return response.json();
+    }
+  });
+};
+
+export const useApplyCoupon = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: { couponId: number; saleAmount: number }) => {
+      const response = await fetch('/api/coupons/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Erro ao aplicar cupom');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/coupons'] });
+    }
+  });
+};
