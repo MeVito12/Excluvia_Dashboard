@@ -314,12 +314,17 @@ export const CouponSchema = z.object({
   description: z.string().optional(),
   discount_type: z.enum(['percentage', 'fixed'], { required_error: "Tipo de desconto é obrigatório" }),
   discount_value: z.number().positive("Valor do desconto deve ser positivo"),
+  campaign_type: z.enum(['category_discount', 'seasonal_promotion', 'client_reactivation', 'total_purchase'], { required_error: "Tipo de campanha é obrigatório" }),
+  target_categories: z.array(z.number()).optional(), // IDs das categorias elegíveis
+  target_products: z.array(z.number()).optional(), // IDs dos produtos elegíveis
   min_purchase_amount: z.number().min(0, "Valor mínimo não pode ser negativo").default(0),
   max_uses: z.number().positive().optional(),
+  max_uses_per_client: z.number().positive().optional(),
   start_date: z.string().optional(),
   end_date: z.string().optional(),
   is_active: z.boolean().default(true),
   is_loyalty_reward: z.boolean().default(false),
+  client_segment: z.enum(['all', 'new', 'inactive', 'vip']).default('all'),
 });
 
 export const ProductSchema = z.object({

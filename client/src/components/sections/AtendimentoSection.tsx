@@ -42,6 +42,7 @@ const AtendimentoSection = () => {
   const { products } = useProducts();
   const { showSuccess, showError, showWarning } = useNotificationContext();
   const [activeTab, setActiveTab] = useState('mensagens');
+  const [loyaltyTab, setLoyaltyTab] = useState('overview'); // overview, coupons, campaigns
   const [searchTerm, setSearchTerm] = useState('');
   const [showShareModal, setShowShareModal] = useState(false);
   const [shareType, setShareType] = useState('link'); // 'link' ou 'qr'
@@ -1333,7 +1334,7 @@ const AtendimentoSection = () => {
     );
   };
 
-  // Renderizar aba de fidelização
+  // Renderizar aba de fidelização com sistema completo de cupons
   const renderLoyalty = () => (
     <div className="animate-fade-in">
       <div className="main-card p-6">
@@ -1341,162 +1342,353 @@ const AtendimentoSection = () => {
           <div className="flex items-center gap-3">
             <Gift className="w-8 h-8 text-purple-600" />
             <div>
-              <h3 className="text-xl font-semibold text-gray-800">Programa de Fidelização</h3>
-              <p className="text-sm text-gray-600">Campanhas e promoções para retenção de clientes</p>
+              <h3 className="text-xl font-semibold text-gray-800">Sistema de Fidelização</h3>
+              <p className="text-sm text-gray-600">Gerenciamento completo de cupons e campanhas</p>
             </div>
           </div>
-          <button className="btn btn-primary flex items-center gap-2">
-            <Gift className="w-4 h-4" />
-            Nova Campanha
-          </button>
-        </div>
-
-        {/* Métricas de Fidelização */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Users className="w-6 h-6 text-purple-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
-            <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
-            <p className="text-xs text-green-600 mt-1">+15% este mês</p>
-          </div>
-
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Target className="w-6 h-6 text-green-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
-            <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
-            <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
-          </div>
-
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Retenção</h4>
-            <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
-            <p className="text-xs text-purple-600 mt-1">90 dias</p>
-          </div>
-
-          <div className="content-card text-center">
-            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Mail className="w-6 h-6 text-yellow-600" />
-            </div>
-            <h4 className="font-medium text-gray-800">Mensagens Enviadas</h4>
-            <p className="text-2xl font-bold text-yellow-600 mt-1">3,892</p>
-            <p className="text-xs text-gray-600 mt-1">Este mês</p>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setLoyaltyTab('overview')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                loyaltyTab === 'overview' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Visão Geral
+            </button>
+            <button 
+              onClick={() => setLoyaltyTab('coupons')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                loyaltyTab === 'coupons' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Cupons
+            </button>
+            <button 
+              onClick={() => setLoyaltyTab('campaigns')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                loyaltyTab === 'campaigns' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              Campanhas
+            </button>
           </div>
         </div>
 
-        {/* Campanhas Ativas */}
-        <div className="mb-6">
-          <h4 className="font-medium text-gray-800 mb-4">Campanhas Ativas</h4>
-          <div className="space-y-4">
-            <div className="content-card">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                    <Gift className="w-6 h-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-800">
-                      {selectedCategory === 'vendas' ? 'Desconto 20% - Pizza Margherita' : 'Black Friday - Eletrônicos'}
-                    </h5>
-                    <p className="text-sm text-gray-600">
-                      {selectedCategory === 'vendas' 
-                        ? 'Promoção especial para novos clientes' 
-                        : 'Descontos em smartphones e notebooks'
-                      }
-                    </p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-gray-500">Enviado para 856 clientes</span>
-                      <span className="text-xs text-green-600">142 conversões</span>
+        {loyaltyTab === 'overview' && (
+          <>
+            {/* Métricas de Fidelização */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              <div className="content-card text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <h4 className="font-medium text-gray-800">Clientes Ativos</h4>
+                <p className="text-2xl font-bold text-purple-600 mt-1">1,247</p>
+                <p className="text-xs text-green-600 mt-1">+15% este mês</p>
+              </div>
+
+              <div className="content-card text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Target className="w-6 h-6 text-green-600" />
+                </div>
+                <h4 className="font-medium text-gray-800">Taxa de Conversão</h4>
+                <p className="text-2xl font-bold text-green-600 mt-1">23.5%</p>
+                <p className="text-xs text-blue-600 mt-1">Campanhas ativas</p>
+              </div>
+
+              <div className="content-card text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <TrendingUp className="w-6 h-6 text-blue-600" />
+                </div>
+                <h4 className="font-medium text-gray-800">Retenção</h4>
+                <p className="text-2xl font-bold text-blue-600 mt-1">78%</p>
+                <p className="text-xs text-purple-600 mt-1">90 dias</p>
+              </div>
+
+              <div className="content-card text-center">
+                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <Gift className="w-6 h-6 text-yellow-600" />
+                </div>
+                <h4 className="font-medium text-gray-800">Cupons Ativos</h4>
+                <p className="text-2xl font-bold text-yellow-600 mt-1">12</p>
+                <p className="text-xs text-gray-600 mt-1">6 campanhas</p>
+              </div>
+            </div>
+
+            {/* Campanhas Ativas */}
+            <div className="mb-6">
+              <h4 className="font-medium text-gray-800 mb-4">Campanhas Recentes</h4>
+              <div className="space-y-4">
+                <div className="content-card">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                      <div>
+                        <h5 className="font-medium text-gray-800">ALIMENTO15 - Desconto Alimentícios</h5>
+                        <p className="text-sm text-gray-600">15% em produtos alimentícios • Desconto por categoria</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-800">127 usos</p>
+                      <p className="text-xs text-green-600">Ativo</p>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="badge badge-success">Ativa</span>
-                  <p className="text-sm text-gray-600 mt-1">Expira em 5 dias</p>
-                </div>
-              </div>
-            </div>
 
-            <div className="content-card">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <Star className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div>
-                    <h5 className="font-medium text-gray-800">
-                      {selectedCategory === 'vendas' ? 'Cliente VIP - Frete Grátis' : 'Programa VIP - Desconto Progressivo'}
-                    </h5>
-                    <p className="text-sm text-gray-600">
-                      {selectedCategory === 'vendas' 
-                        ? 'Entrega gratuita para pedidos acima de R$ 50' 
-                        : 'Descontos crescentes baseados em compras'
-                      }
-                    </p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-gray-500">Enviado para 234 clientes VIP</span>
-                      <span className="text-xs text-blue-600">78 utilizações</span>
+                <div className="content-card">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                      <div>
+                        <h5 className="font-medium text-gray-800">VERAO2025 - Promoção de Verão</h5>
+                        <p className="text-sm text-gray-600">20% em categorias selecionadas • Promoção sazonal</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-800">89 usos</p>
+                      <p className="text-xs text-blue-600">Ativo</p>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <span className="badge badge-info">Permanente</span>
-                  <p className="text-sm text-gray-600 mt-1">Sempre ativa</p>
+
+                <div className="content-card">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                      <div>
+                        <h5 className="font-medium text-gray-800">VOLTE10 - Bem-vindo de Volta</h5>
+                        <p className="text-sm text-gray-600">R$ 25 para clientes inativos • Reativação</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-gray-800">43 usos</p>
+                      <p className="text-xs text-orange-600">Ativo</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Configurações do Programa */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="content-card">
+                <h4 className="font-medium text-gray-800 mb-3">Configurações de Pontos</h4>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Pontos por R$ 1 gasto</span>
+                    <span className="font-medium">2 pontos</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Valor do ponto</span>
+                    <span className="font-medium">R$ 0,01</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Mínimo para resgate</span>
+                    <span className="font-medium">100 pontos</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="content-card">
+                <h4 className="font-medium text-gray-800 mb-3">Tipos de Campanha</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Desconto por Categoria</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Promoção Sazonal</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Reativação de Clientes</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <span className="text-sm text-gray-600">Desconto Total</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {loyaltyTab === 'coupons' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium text-gray-800">Gerenciar Cupons</h4>
+              <button className="btn btn-primary flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Novo Cupom
+              </button>
+            </div>
+
+            {/* Lista de Cupons */}
+            <div className="space-y-4">
+              <div className="content-card">
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">15%</span>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-800">ALIMENTO15</h5>
+                      <p className="text-sm text-gray-600">Desconto Alimentícios</p>
+                      <div className="flex items-center gap-4 mt-1">
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Categoria</span>
+                        <span className="text-xs text-gray-500">15% de desconto</span>
+                        <span className="text-xs text-gray-500">Min: R$ 30,00</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="badge badge-success">Ativo</span>
+                    </div>
+                    <p className="text-sm text-gray-600">127 usos de 200</p>
+                    <p className="text-xs text-gray-500">Válido até 31/12/2025</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="content-card">
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">20%</span>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-800">VERAO2025</h5>
+                      <p className="text-sm text-gray-600">Promoção de Verão</p>
+                      <div className="flex items-center gap-4 mt-1">
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Sazonal</span>
+                        <span className="text-xs text-gray-500">20% de desconto</span>
+                        <span className="text-xs text-gray-500">Min: R$ 80,00</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="badge badge-success">Ativo</span>
+                    </div>
+                    <p className="text-sm text-gray-600">89 usos de 100</p>
+                    <p className="text-xs text-gray-500">Válido até 31/03/2025</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="content-card">
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                      <span className="text-white font-bold text-xs">R$25</span>
+                    </div>
+                    <div>
+                      <h5 className="font-medium text-gray-800">VOLTE10</h5>
+                      <p className="text-sm text-gray-600">Bem-vindo de Volta</p>
+                      <div className="flex items-center gap-4 mt-1">
+                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">Reativação</span>
+                        <span className="text-xs text-gray-500">R$ 25 de desconto</span>
+                        <span className="text-xs text-gray-500">Min: R$ 50,00</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="badge badge-success">Ativo</span>
+                    </div>
+                    <p className="text-sm text-gray-600">43 usos de 50</p>
+                    <p className="text-xs text-gray-500">Apenas clientes inativos</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Tipos de Campanha */}
-        <div>
-          <h4 className="font-medium text-gray-800 mb-4">Criar Nova Campanha</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Gift className="w-8 h-8 text-purple-600" />
+        {loyaltyTab === 'campaigns' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h4 className="font-medium text-gray-800">Criar Nova Campanha</h4>
+              <button className="btn btn-primary flex items-center gap-2">
+                <Target className="w-4 h-4" />
+                Campanha Avançada
+              </button>
+            </div>
+
+            {/* Tipos de Campanha */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="content-card cursor-pointer hover:shadow-lg transition-all">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Target className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h5 className="font-medium text-gray-800 mb-2">Desconto por Categoria</h5>
+                  <p className="text-xs text-gray-600">Desconto específico para produtos de determinadas categorias</p>
                 </div>
-                <h5 className="font-medium text-gray-800 mb-2">Desconto por Categoria</h5>
-                <p className="text-sm text-gray-600 mb-4">
-                  {selectedCategory === 'vendas' 
-                    ? 'Promoções em pizzas, bebidas e sobremesas' 
-                    : 'Descontos em eletrônicos, roupas e casa'
-                  }
-                </p>
-                <button className="btn btn-outline w-full">Criar Campanha</button>
+              </div>
+
+              <div className="content-card cursor-pointer hover:shadow-lg transition-all">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Calendar className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h5 className="font-medium text-gray-800 mb-2">Promoção Sazonal</h5>
+                  <p className="text-xs text-gray-600">Campanhas com período específico, como verão, natal, etc.</p>
+                </div>
+              </div>
+
+              <div className="content-card cursor-pointer hover:shadow-lg transition-all">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Users className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <h5 className="font-medium text-gray-800 mb-2">Reativação</h5>
+                  <p className="text-xs text-gray-600">Cupons especiais para reconquistar clientes inativos</p>
+                </div>
+              </div>
+
+              <div className="content-card cursor-pointer hover:shadow-lg transition-all">
+                <div className="text-center p-4">
+                  <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Gift className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h5 className="font-medium text-gray-800 mb-2">Desconto Total</h5>
+                  <p className="text-xs text-gray-600">Desconto aplicado no valor total da compra</p>
+                </div>
               </div>
             </div>
 
-            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Calendar className="w-8 h-8 text-green-600" />
+            {/* Análise de Performance */}
+            <div className="content-card">
+              <h5 className="font-medium text-gray-800 mb-4">Análise de Performance</h5>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-blue-600">R$ 12.450</p>
+                  <p className="text-sm text-gray-600">Receita com cupons</p>
+                  <p className="text-xs text-green-600 mt-1">+25% este mês</p>
                 </div>
-                <h5 className="font-medium text-gray-800 mb-2">Promoção Sazonal</h5>
-                <p className="text-sm text-gray-600 mb-4">Campanhas para datas especiais e feriados</p>
-                <button className="btn btn-outline w-full">Criar Campanha</button>
-              </div>
-            </div>
-
-            <div className="content-card hover:shadow-lg transition-shadow cursor-pointer">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-blue-600" />
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-green-600">259</p>
+                  <p className="text-sm text-gray-600">Cupons utilizados</p>
+                  <p className="text-xs text-blue-600 mt-1">Taxa de uso: 64%</p>
                 </div>
-                <h5 className="font-medium text-gray-800 mb-2">Reativação de Clientes</h5>
-                <p className="text-sm text-gray-600 mb-4">Ofertas especiais para clientes inativos</p>
-                <button className="btn btn-outline w-full">Criar Campanha</button>
+                <div className="text-center">
+                  <p className="text-2xl font-bold text-purple-600">1.8x</p>
+                  <p className="text-sm text-gray-600">Aumento na retenção</p>
+                  <p className="text-xs text-orange-600 mt-1">Clientes com cupons</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

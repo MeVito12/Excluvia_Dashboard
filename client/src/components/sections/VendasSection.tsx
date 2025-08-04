@@ -223,10 +223,63 @@ export default function VendasSection() {
     }
 
     let discountAmount = 0;
-    if (coupon.discount_type === 'percentage') {
-      discountAmount = (subtotal * coupon.discount_value) / 100;
+
+    // Aplicar desconto baseado no tipo de campanha
+    if (coupon.campaign_type === 'total_purchase') {
+      // Desconto no total da compra
+      if (coupon.discount_type === 'percentage') {
+        discountAmount = (subtotal * coupon.discount_value) / 100;
+      } else {
+        discountAmount = coupon.discount_value;
+      }
+    } else if (coupon.campaign_type === 'category_discount' && coupon.target_categories) {
+      // Desconto apenas em produtos de categorias específicas
+      const eligibleItemsTotal = cart.reduce((total, item) => {
+        const product = products.find(p => p.id === item.productId);
+        if (product && coupon.target_categories.includes(product.category_id)) {
+          return total + item.totalPrice;
+        }
+        return total;
+      }, 0);
+
+      if (eligibleItemsTotal === 0) {
+        toast({
+          title: "Produtos não elegíveis",
+          description: "Este cupom só se aplica a produtos de categorias específicas",
+          variant: "destructive"
+        });
+        setAppliedCoupon(null);
+        setCouponDiscount(0);
+        return;
+      }
+
+      if (coupon.discount_type === 'percentage') {
+        discountAmount = (eligibleItemsTotal * coupon.discount_value) / 100;
+      } else {
+        discountAmount = Math.min(coupon.discount_value, eligibleItemsTotal);
+      }
+    } else if (coupon.campaign_type === 'seasonal_promotion' && coupon.target_categories) {
+      // Promoção sazonal em categorias específicas
+      const eligibleItemsTotal = cart.reduce((total, item) => {
+        const product = products.find(p => p.id === item.productId);
+        if (product && coupon.target_categories.includes(product.category_id)) {
+          return total + item.totalPrice;
+        }
+        return total;
+      }, 0);
+
+      if (coupon.discount_type === 'percentage') {
+        discountAmount = (eligibleItemsTotal * coupon.discount_value) / 100;
+      } else {
+        discountAmount = Math.min(coupon.discount_value, eligibleItemsTotal);
+      }
     } else {
-      discountAmount = coupon.discount_value;
+      // Outros tipos de campanha aplicam no total
+      if (coupon.discount_type === 'percentage') {
+        discountAmount = (subtotal * coupon.discount_value) / 100;
+      } else {
+        discountAmount = coupon.discount_value;
+      }
     }
 
     // Garantir que o desconto não seja maior que o subtotal
@@ -653,13 +706,24 @@ export default function VendasSection() {
                   )}
                 </div>
                 {appliedCoupon && (
-                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
+                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
                     <p className="text-sm text-green-800 font-medium">{appliedCoupon.name}</p>
-                    <p className="text-xs text-green-600">
+                    <p className="text-xs text-green-600 mb-1">
                       {appliedCoupon.discount_type === 'percentage' 
                         ? `${appliedCoupon.discount_value}% de desconto` 
                         : `R$ ${appliedCoupon.discount_value} de desconto`}
                     </p>
+                    <p className="text-xs text-gray-600">
+                      {appliedCoupon.campaign_type === 'category_discount' && '📂 Desconto por categoria'}
+                      {appliedCoupon.campaign_type === 'seasonal_promotion' && '🌟 Promoção sazonal'}
+                      {appliedCoupon.campaign_type === 'client_reactivation' && '🔄 Reativação de cliente'}
+                      {appliedCoupon.campaign_type === 'total_purchase' && '🛒 Desconto no total'}
+                    </p>
+                    {appliedCoupon.campaign_type !== 'total_purchase' && (
+                      <p className="text-xs text-blue-600 mt-1">
+                        ✓ Aplicado apenas aos produtos elegíveis
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
