@@ -81,11 +81,11 @@ const GraficosSection = () => {
   const calculateMetrics = useMemo(() => {
     // Verificação mais robusta dos dados
     try {
-      console.log('Debug - GRÁFICOS - Dados consistentes:', { 
+      console.log('Debug - GRÁFICOS - Dados alinhados:', { 
         totalVendas: filteredSales?.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
-        totalEntradasVendas: financial?.filter((f: any) => f.type === 'income' && f.reference_type === 'sale')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
-        totalEntradasManuais: financial?.filter((f: any) => f.type === 'income' && !f.reference_type)?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
+        totalReceitas: financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
         vendas: filteredSales?.length,
+        receitas: financial?.filter((f: any) => f.type === 'income')?.length,
         companyId: user?.company_id,
         filtroData: `${dateFrom} até ${dateTo}`
       });
@@ -166,22 +166,21 @@ const GraficosSection = () => {
       const dateStr = date.toISOString().split('T')[0];
       const dayName = formatDateBR(date).substring(0, 5); // DD/MM
       
-      // Usar apenas as receitas das vendas para manter consistência com as vendas mostradas
-      const daySales = (filteredSales || []).filter((sale: any) => 
-        sale.sale_date && sale.sale_date.split('T')[0] === dateStr
-      );
-      const vendasReceita = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
-      
-      // Filtrar despesas do dia para o gráfico
+      // Filtrar todas as movimentações financeiras do dia
       const dayEntries = (financial || []).filter((entry: any) => 
         entry.created_at && entry.created_at.split('T')[0] === dateStr
       );
+      
+      const entradas = dayEntries
+        .filter((entry: any) => entry.type === 'income')
+        .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
+        
       const despesas = dayEntries
         .filter((entry: any) => entry.type === 'expense')
         .reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
       
-      // Usar apenas receita das vendas para manter consistência
-      const totalEntradas = vendasReceita;
+      // Usar TODAS as receitas (vendas + outras entradas)
+      const totalEntradas = entradas;
       
       // Usar dados reais
       financialChartData.push({

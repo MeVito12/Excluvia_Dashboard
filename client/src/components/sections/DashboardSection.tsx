@@ -214,28 +214,19 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
       return acc;
     }, {});
 
-    // Dados para gráfico de receitas vs despesas - usar apenas vendas para receitas
-    const financialSummary = {};
-    
-    // Adicionar receitas das vendas
-    filteredSales.forEach((sale: any) => {
-      const date = new Date(sale.sale_date).toLocaleDateString('pt-BR');
-      if (!financialSummary[date]) {
-        financialSummary[date] = { name: date, receitas: 0, despesas: 0 };
+    // Dados para gráfico de receitas vs despesas - usar TODAS as entradas financeiras
+    const financialSummary = (financialEntries || []).reduce((acc: any, entry: any) => {
+      const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
+      if (!acc[date]) {
+        acc[date] = { name: date, receitas: 0, despesas: 0 };
       }
-      financialSummary[date].receitas += Number(sale.total_price || 0);
-    });
-    
-    // Adicionar despesas das entradas financeiras
-    (financialEntries || []).forEach((entry: any) => {
-      if (entry.type === 'expense') {
-        const date = new Date(entry.created_at).toLocaleDateString('pt-BR');
-        if (!financialSummary[date]) {
-          financialSummary[date] = { name: date, receitas: 0, despesas: 0 };
-        }
-        financialSummary[date].despesas += Math.abs(Number(entry.amount || 0));
+      if (entry.type === 'income') {
+        acc[date].receitas += Number(entry.amount || 0);
+      } else {
+        acc[date].despesas += Math.abs(Number(entry.amount || 0));
       }
-    });
+      return acc;
+    }, {});
 
     return {
       salesByDay: Object.values(salesByDay).slice(-7), // Últimos 7 dias
@@ -247,11 +238,11 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
   const chartData = prepareChartData();
   
   // Debug dos dados para verificar consistência entre seções
-  console.log("Debug - DASHBOARD - Dados filtrados:", {
+  console.log("Debug - DASHBOARD - Dados alinhados:", {
     totalVendas: (filteredSales || []).reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0),
-    totalEntradas: (financialEntries || []).filter((f: any) => f.type === 'income').reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
+    totalReceitas: (financialEntries || []).filter((f: any) => f.type === 'income').reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0),
     vendas: (filteredSales || []).length,
-    entradas: (financialEntries || []).filter((f: any) => f.type === 'income').length,
+    receitas: (financialEntries || []).filter((f: any) => f.type === 'income').length,
     companyId: companyId,
     filtroData: `${dateFrom} até ${dateTo}`
   });
