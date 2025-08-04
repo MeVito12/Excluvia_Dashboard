@@ -175,6 +175,7 @@ export interface FinancialEntry {
   paidDate?: string;
   referenceId?: number;
   referenceType?: string;
+  clientId?: number;
   companyId: number;
   branchId: number;
   createdBy: number;

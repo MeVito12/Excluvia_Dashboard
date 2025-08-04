@@ -356,25 +356,28 @@ const AtividadeSection = () => {
             })}
             
             {/* Vendas manuais (entradas financeiras) */}
-            {manualSales.map((entry: any) => (
-              <div key={`manual-${entry.id}`} className="standard-list-item group">
-                <div className="list-item-main">
-                  <div className="list-item-title">Cliente avulso</div>
-                  <div className="list-item-subtitle">{entry.description}</div>
-                  <div className="list-item-meta">
-                    {entry.created_at ? formatDateBR(entry.created_at) : 'Data não disponível'}
+            {manualSales.map((entry: any) => {
+              const client = (clients || []).find((c: any) => c.id === entry.client_id);
+              return (
+                <div key={`manual-${entry.id}`} className="standard-list-item group">
+                  <div className="list-item-main">
+                    <div className="list-item-title">{client?.name || 'Cliente avulso'}</div>
+                    <div className="list-item-subtitle">{entry.description}</div>
+                    <div className="list-item-meta">
+                      {entry.created_at ? formatDateBR(entry.created_at) : 'Data não disponível'}
+                    </div>
                   </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <span className="list-status-badge status-success">Concluída</span>
                   
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                  <div className="flex items-center gap-3">
+                    <span className="list-status-badge status-success">Concluída</span>
+                    
+                    <div className="text-right">
+                      <p className="font-semibold text-gray-900">R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
@@ -383,10 +386,15 @@ const AtividadeSection = () => {
   };
 
   const renderClients = () => {
-    // Calcular total gasto por cliente
+    // Calcular total gasto por cliente (vendas automáticas + manuais)
     const clientsWithTotal = (clients || []).map((client: any) => {
       const clientSales = (sales || []).filter((sale: any) => sale.client_id === client.id);
-      const totalSpent = clientSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+      const clientManualSales = manualSales.filter((entry: any) => entry.client_id === client.id);
+      
+      const salesTotal = clientSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
+      const manualSalesTotal = clientManualSales.reduce((sum: number, entry: any) => sum + (Number(entry.amount) || 0), 0);
+      const totalSpent = salesTotal + manualSalesTotal;
+      
       return { ...client, totalSpent };
     });
 
