@@ -223,6 +223,7 @@ const DashboardSection = ({ onSectionChange }: DashboardSectionProps) => {
     vendas: (filteredSales || []).length,
     receitas: (financialEntries || []).filter((f: any) => f.type === 'income').length,
     companyId: companyId,
+    user: user,
     filtroData: `${dateFrom} até ${dateTo}`
   });
 

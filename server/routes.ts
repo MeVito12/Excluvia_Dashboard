@@ -63,8 +63,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Garantir companyId válido para o usuário
-      if (!user.companyId) {
+      // Garantir companyId válido para o usuário - usar company_id do banco se existir
+      if (!user.companyId && user.company_id) {
+        user = { ...user, companyId: user.company_id };
+      } else if (!user.companyId) {
         user = { ...user, companyId: 1 };
       }
       
