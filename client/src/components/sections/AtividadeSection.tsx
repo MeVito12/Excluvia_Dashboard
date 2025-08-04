@@ -45,7 +45,7 @@ const AtividadeSection = () => {
   const [dateTo, setDateTo] = useState<string>(defaultDates.to);
 
   const { user } = useAuth();
-  const companyId = user?.company_id || 1;
+  const companyId = user?.companyId || 1;
   
   // Dados das abas usando hooks reais
   const { data: sales = [] } = useSales(undefined, companyId);
@@ -386,6 +386,14 @@ const AtividadeSection = () => {
   };
 
   const renderClients = () => {
+    // Definir vendas manuais no escopo local
+    const manualSales = financialEntries?.filter(entry => 
+      entry.type === 'income' && 
+      (entry.description?.includes('Venda manual') || 
+       entry.description?.includes('Venda de') || 
+       entry.description?.includes('Venda para'))
+    ) || [];
+
     // Calcular total gasto por cliente (vendas automáticas + manuais)
     const clientsWithTotal = (clients || []).map((client: any) => {
       const clientSales = (sales || []).filter((sale: any) => sale.client_id === client.id);
