@@ -123,9 +123,9 @@ const GraficosSection = () => {
         conversion: '0%'
       };
     }
-    // Calcular totais de TODAS as receitas (vendas automáticas + manuais)
-    const totalSales = financial?.filter((f: any) => f.type === 'income')?.reduce((sum: number, f: any) => sum + (Number(f.amount) || 0), 0) || 0;
-    const totalSalesCount = (filteredSales || []).length + (financial?.filter((f: any) => f.type === 'income' && (!f.reference_type || f.reference_type !== 'sale'))?.length || 0);
+    // Usar valores do hook unificado para garantir consistência
+    const totalSales = unifiedMetrics.totalCombinado;
+    const totalSalesCount = unifiedMetrics.vendasCount + unifiedMetrics.receitasCount;
     const avgTicket = totalSalesCount > 0 ? totalSales / totalSalesCount : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
