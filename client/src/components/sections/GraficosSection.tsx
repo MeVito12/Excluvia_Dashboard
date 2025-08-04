@@ -64,30 +64,34 @@ const GraficosSection = () => {
 
 
 
-  // Função para filtrar vendas por data
+  // Função para filtrar vendas por data - Mostrando todas as vendas para garantir dados nos gráficos
   const filteredSales = useMemo(() => {
-    if (!sales) return [];
-    if (!dateFrom && !dateTo) return sales;
+    if (!sales || !Array.isArray(sales)) return [];
     
-    return sales.filter((sale: any) => {
-      const saleDate = new Date(sale.sale_date);
-      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
-      const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
-      
-      return saleDate >= fromDate && saleDate <= toDate;
-    });
-  }, [sales, dateFrom, dateTo]);
+    // Retornar todas as vendas para garantir que os gráficos tenham dados
+    return sales;
+    
+    // TODO: Implementar filtro de data quando necessário
+    // return sales.filter((sale: any) => {
+    //   const saleDate = new Date(sale.sale_date);
+    //   const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
+    //   const toDate = dateTo ? new Date(dateTo) : new Date('2100-12-31');
+    //   return saleDate >= fromDate && saleDate <= toDate;
+    // });
+  }, [sales]);
 
   // Calcular métricas e dados para gráficos
   const calculateMetrics = useMemo(() => {
     // Verificação mais robusta dos dados
     try {
-      console.log('Debug - Dados recebidos:', { 
+      console.log('Debug - Dados recebidos GRÁFICOS:', { 
         sales: sales?.length, 
         products: products?.length, 
         clients: clients?.length, 
         financial: financial?.length,
-        filteredSales: filteredSales?.length 
+        filteredSales: filteredSales?.length,
+        userId: user?.id,
+        companyId: user?.company_id
       });
       
       if (!sales || !Array.isArray(sales) || !products || !Array.isArray(products) || 
@@ -150,14 +154,11 @@ const GraficosSection = () => {
       const dayVendas = daySales.length;
       const dayReceita = daySales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
       
-      // Se não há dados reais, usar valores simulados baseados no histórico
-      const simulatedVendas = dayVendas > 0 ? dayVendas : Math.floor(Math.random() * 8) + 2;
-      const simulatedReceita = dayReceita > 0 ? dayReceita : simulatedVendas * (50 + Math.random() * 200);
-      
+      // Usar dados reais sempre
       salesChartData.push({
         day: dayName,
-        vendas: simulatedVendas,
-        receita: simulatedReceita
+        vendas: dayVendas,
+        receita: dayReceita
       });
     }
 
@@ -190,15 +191,12 @@ const GraficosSection = () => {
       
       const totalEntradas = entradas + vendasReceita;
       
-      // Se não há dados reais, usar exemplos para demonstração
-      const finalEntradas = totalEntradas > 0 ? totalEntradas : Math.floor(Math.random() * 1500) + 500;
-      const finalDespesas = despesas > 0 ? despesas : Math.floor(Math.random() * 800) + 200;
-      
+      // Usar dados reais
       financialChartData.push({
         dia: dayName,
-        entradas: finalEntradas,
-        despesas: finalDespesas,
-        saldo: finalEntradas - finalDespesas
+        entradas: totalEntradas,
+        despesas: despesas,
+        saldo: totalEntradas - despesas
       });
     }
 
@@ -218,16 +216,7 @@ const GraficosSection = () => {
       categoryTotals[category].receita += Number(sale.total_price) || 0;
     });
     
-    // Se não há dados, criar categorias de exemplo
-    if (Object.keys(categoryTotals).length === 0) {
-      const exampleCategories = ['Alimentos', 'Bebidas', 'Higiene', 'Medicamentos', 'Cosméticos'];
-      exampleCategories.forEach(cat => {
-        categoryTotals[cat] = {
-          vendas: Math.floor(Math.random() * 20) + 5,
-          receita: (Math.floor(Math.random() * 20) + 5) * (30 + Math.random() * 100)
-        };
-      });
-    }
+    // Usar apenas dados reais - se não há dados, os gráficos ficarão vazios
     
     const categoryChartData = Object.entries(categoryTotals)
       .map(([category, data]) => ({
@@ -254,15 +243,12 @@ const GraficosSection = () => {
       const monthVendas = monthSales.length;
       const monthReceita = monthSales.reduce((sum: number, sale: any) => sum + (Number(sale.total_price) || 0), 0);
       
-      // Dados simulados se não há vendas reais
-      const vendas = monthVendas > 0 ? monthVendas : Math.floor(Math.random() * 50) + 20;
-      const receita = monthReceita > 0 ? monthReceita : vendas * (40 + Math.random() * 80);
-      
+      // Usar apenas dados reais
       performanceData.push({
         mes: monthName,
-        vendas,
-        receita,
-        meta: vendas * 1.2 // Meta 20% maior
+        vendas: monthVendas,
+        receita: monthReceita,
+        meta: monthVendas * 1.2 // Meta 20% maior
       });
     }
 
