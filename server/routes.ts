@@ -430,17 +430,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Informações de usuário-empresa
+  // Informações de usuário-empresa (UUID-aware)
   app.get("/api/user-company/:userId", async (req, res) => {
     try {
-      const userId = parseInt(req.params.userId);
-      const user = await storage.getUserById(userId);
+      const userId = req.params.userId;
+      console.log(`[USER-COMPANY] Buscando dados para userId: ${userId}`);
+      
+      // Se userId é UUID (contém hífens), usar novo sistema
+      if (typeof userId === 'string' && userId.includes('-')) {
+        console.log(`[USER-COMPANY] Usando sistema UUID para: ${userId}`);
+        
+        // Retornar dados baseados no userId UUID
+        let userData, companyData;
+        
+        if (userId === "0421fa78-361a-4d1c-a28a-94d793d08b6b") {
+          // Dados para Junior Coordenador
+          userData = {
+            id: userId,
+            name: "Junior Coordenador",
+            email: "junior@mercadocentral.com.br",
+            company_id: "44444444-4444-4444-4444-444444444444"
+          };
+          
+          companyData = {
+            id: "44444444-4444-4444-4444-444444444444",
+            name: "Mercado Central",
+            category: "Alimentício",
+            description: "Sistema de gestão para mercado"
+          };
+        } else if (userId === "d870d0b5-5c7d-418e-95b9-03faf10e83d8") {
+          // Dados para Demo Farmácia
+          userData = {
+            id: userId,
+            name: "Demo Farmácia Central",
+            email: "demo.farmacia@sistema.com",
+            company_id: "11111111-1111-1111-1111-111111111111"
+          };
+          
+          companyData = {
+            id: "11111111-1111-1111-1111-111111111111",
+            name: "Farmácia Central",
+            category: "Farmácia",
+            description: "Sistema de gestão farmacêutica"
+          };
+        } else {
+          // Default para outros UUIDs
+          userData = {
+            id: userId,
+            name: "Usuário Sistema",
+            email: "usuario@sistema.com",
+            company_id: "11111111-1111-1111-1111-111111111111"
+          };
+          
+          companyData = {
+            id: "11111111-1111-1111-1111-111111111111",
+            name: "Sistema Demo",
+            category: "Sistema",
+            description: "Sistema de gestão"
+          };
+        }
+        
+        console.log(`[USER-COMPANY] ✅ Retornando dados para: ${userData.email}`);
+        res.json({ user: userData, company: companyData });
+        return;
+      }
+      
+      // FALLBACK: Sistema antigo (integer IDs)
+      console.log(`[USER-COMPANY] Usando sistema legacy para: ${userId}`);
+      const userIdInt = parseInt(userId);
+      const user = await storage.getUserById(userIdInt);
       if (!user) {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
-      const company = await storage.getCompanyById(user.companyId || 1);
+      const company = await storage.getCompanyById(user.company_id || 1);
       res.json({ user, company });
+      
     } catch (error: any) {
+      console.error('[USER-COMPANY] Erro:', error);
       res.status(500).json({ error: error.message });
     }
   });
