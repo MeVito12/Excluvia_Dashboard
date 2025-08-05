@@ -72,7 +72,7 @@ const AtividadeSection = () => {
         status: 'success',
         user: user?.name || 'Sistema',
         type: 'sale',
-        category: user?.business_category || 'general',
+        category: (user as any)?.business_category || 'general',
         time: new Date(sale.sale_date || sale.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
       });
     });
@@ -87,7 +87,7 @@ const AtividadeSection = () => {
         status: appointment.status === 'completed' ? 'success' : 'pending',
         user: user?.name || 'Sistema',
         type: 'appointment',
-        category: user?.business_category || 'general',
+        category: (user as any)?.business_category || 'general',
         time: appointment.start_time || '00:00'
       });
     });
@@ -102,7 +102,7 @@ const AtividadeSection = () => {
         status: entry.status === 'paid' ? 'success' : 'pending',
         user: user?.name || 'Sistema',
         type: 'financial',
-        category: user?.business_category || 'general',
+        category: (user as any)?.business_category || 'general',
         time: new Date(entry.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
       });
     });
@@ -119,7 +119,7 @@ const AtividadeSection = () => {
           status: 'success',
           user: user?.name || 'Sistema',
           type: 'product',
-          category: user?.business_category || 'general',
+          category: (user as any)?.business_category || 'general',
           time: new Date(product.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
         });
       });
@@ -419,6 +419,33 @@ const AtividadeSection = () => {
                   
                   <div className="flex items-center gap-3">
                     <span className="list-status-badge status-success">Concluída</span>
+                    
+                    {/* Botão de impressão térmica - aparece no hover */}
+                    <div className="list-item-actions">
+                      <button
+                        onClick={() => {
+                          const saleForPrint = {
+                            id: entry.id,
+                            products: [{
+                              name: entry.description,
+                              quantity: 1,
+                              price: Number(entry.amount || 0),
+                              total: Number(entry.amount || 0)
+                            }],
+                            total: Number(entry.amount || 0),
+                            paymentMethod: 'Não informado',
+                            saleDate: entry.created_at || new Date().toISOString(),
+                            client: client
+                          };
+                          setPrintSaleData(saleForPrint);
+                          setShowPrintModal(true);
+                        }}
+                        className="list-action-button print"
+                        title="Imprimir comprovante"
+                      >
+                        <Printer className="w-4 h-4" />
+                      </button>
+                    </div>
                     
                     <div className="text-right">
                       <p className="font-semibold text-gray-900">R$ {Number(entry.amount || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>

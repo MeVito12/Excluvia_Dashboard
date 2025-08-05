@@ -930,7 +930,8 @@ export default function VendasSection() {
         </div>
 
         {/* Lista de Vendas Pendentes */}
-        <div className="item-list">
+        <div className="standard-list-container">
+          <div className="standard-list-content">
           {getPendingSales()
             .filter(sale => 
               sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -950,53 +951,53 @@ export default function VendasSection() {
               sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((sale) => (
-              <div key={sale.id} className="list-item">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
-                    R$ {sale.total_amount.toFixed(0)}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-gray-800">{sale.client_name}</h4>
-                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
-                        Aguardando Pagamento
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600">{getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}</p>
-                    <p className="text-xs text-gray-500">
-                      Vendedores: {sale.sellers.join(", ")} • {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'} • {new Date(sale.created_at).toLocaleString('pt-BR')}
-                    </p>
+              <div key={sale.id} className="standard-list-item group">
+                <div className="list-item-main">
+                  <div className="list-item-title">{sale.client_name}</div>
+                  <div className="list-item-subtitle">{getPaymentMethodLabel(sale.payment_method)} • {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}</div>
+                  <div className="list-item-meta">
+                    Vendedores: {sale.sellers.join(", ")} • {new Date(sale.created_at).toLocaleString('pt-BR')}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button 
-                    className="btn btn-outline p-2"
-                    onClick={() => {
-                      toast({
-                        title: "Venda retomada",
-                        description: "Processando pagamento da venda...",
-                      });
-                    }}
-                    title="Retomar venda para finalizar pagamento"
-                  >
-                    <CreditCard className="w-4 h-4" />
-                  </button>
-                  <button 
-                    className="btn btn-outline p-2"
-                    onClick={() => {
-                      toast({
-                        title: "Imprimindo nota",
-                        description: "Enviando para impressora...",
-                      });
-                    }}
-                    title="Imprimir nota da venda"
-                  >
-                    <Printer className="w-4 h-4" />
-                  </button>
+                
+                <div className="flex items-center gap-3">
+                  <span className="list-status-badge status-warning">Aguardando Pagamento</span>
+                  
+                  <div className="list-item-actions">
+                    <button 
+                      className="list-action-button view"
+                      onClick={() => {
+                        toast({
+                          title: "Venda retomada",
+                          description: "Processando pagamento da venda...",
+                        });
+                      }}
+                      title="Retomar venda para finalizar pagamento"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                    </button>
+                    <button 
+                      className="list-action-button print"
+                      onClick={() => {
+                        toast({
+                          title: "Imprimindo nota",
+                          description: "Enviando para impressora...",
+                        });
+                      }}
+                      title="Imprimir nota da venda"
+                    >
+                      <Printer className="w-4 h-4" />
+                    </button>
+                  </div>
+                  
+                  <div className="text-right">
+                    <p className="font-semibold text-gray-900">R$ {sale.total_amount.toFixed(2)}</p>
+                  </div>
                 </div>
               </div>
             ))
           )}
+          </div>
         </div>
 
         {/* Estatísticas do Caixa */}
