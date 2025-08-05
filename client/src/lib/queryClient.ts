@@ -6,6 +6,8 @@ export const queryClient = new QueryClient({
       queryFn: async ({ queryKey }) => {
         const userId = getCurrentUserId();
         const url = Array.isArray(queryKey) ? queryKey.join('/') : queryKey;
+        console.log('[QUERY-CLIENT] 🔍 Fazendo requisição:', { url, userId });
+        
         const response = await fetch(url as string, {
           headers: {
             'x-user-id': userId || ''
@@ -13,6 +15,7 @@ export const queryClient = new QueryClient({
         });
         
         if (!response.ok) {
+          console.error('[QUERY-CLIENT] ❌ Erro na requisição:', response.status, response.statusText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
