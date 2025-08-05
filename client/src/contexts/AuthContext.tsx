@@ -1,12 +1,12 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface User {
-  id: number;
+  id: string; // UUID
   name: string;
   email: string;
   role: string;
   businessCategory: string;
-  companyId?: number;
+  companyId?: string; // UUID
   company?: any;
   permissions?: string[];
 }
@@ -25,15 +25,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Recuperar usuário do localStorage na inicialização
     try {
       const savedUser = localStorage.getItem('currentUser');
+      console.log('[AUTH-CONTEXT] 🔄 Initializing with localStorage:', savedUser);
       return savedUser ? JSON.parse(savedUser) : null;
-    } catch {
+    } catch (error) {
+      console.error('[AUTH-CONTEXT] ❌ Error parsing localStorage:', error);
       return null;
     }
   });
 
   const login = (userData: User) => {
+    console.log('[AUTH-CONTEXT] 🔐 Login called with:', userData);
     setUser(userData);
     localStorage.setItem('currentUser', JSON.stringify(userData));
+    console.log('[AUTH-CONTEXT] ✅ User set and saved to localStorage');
   };
 
   const logout = () => {

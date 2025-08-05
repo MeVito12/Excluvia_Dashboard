@@ -103,12 +103,15 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
 
       if (response.ok) {
         const { user } = await response.json();
+        console.log('[LOGIN] 📊 Login response user:', user);
         
         // Buscar dados completos do usuário incluindo company_id
         const userCompanyResponse = await fetch(`/api/user-company/${user.id}`);
         const { user: fullUser, company } = await userCompanyResponse.json();
+        console.log('[LOGIN] 📋 Full user data:', fullUser);
+        console.log('[LOGIN] 🏢 Company data:', company);
         
-        // Armazenar dados completos do usuário
+        // Armazenar dados completos do usuário - ESTRUTURA CORRIGIDA
         const userData = {
           id: fullUser.id,
           name: fullUser.name,
@@ -120,10 +123,16 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
           permissions: fullUser.permissions
         };
         
+        console.log('[LOGIN] 💾 Saving to localStorage:', userData);
+        
         // Salvar no localStorage para persistência
         localStorage.setItem('currentUser', JSON.stringify(userData));
         localStorage.setItem('userBusinessCategory', fullUser.business_category);
         setSelectedCategory(fullUser.business_category);
+        
+        // Verificar se foi salvo corretamente
+        const savedCheck = localStorage.getItem('currentUser');
+        console.log('[LOGIN] ✅ Verification - saved to localStorage:', savedCheck);
         
         onLogin(userData);
       } else {

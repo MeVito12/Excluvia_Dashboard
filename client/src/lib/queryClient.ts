@@ -6,11 +6,16 @@ export const queryClient = new QueryClient({
       queryFn: async ({ queryKey }) => {
         const userId = getCurrentUserId();
         const url = Array.isArray(queryKey) ? queryKey.join('/') : queryKey;
-        console.log('[QUERY-CLIENT] 🔍 Fazendo requisição:', { url, userId });
+        console.log('[QUERY-CLIENT] 🔍 Fazendo requisição:', { url, userId, hasUserId: !!userId });
+        
+        if (!userId) {
+          console.error('[QUERY-CLIENT] ❌ No userId available for request:', url);
+          throw new Error('User not authenticated');
+        }
         
         const response = await fetch(url as string, {
           headers: {
-            'x-user-id': userId || ''
+            'x-user-id': userId
           }
         });
         
@@ -31,18 +36,23 @@ export const queryClient = new QueryClient({
 function getCurrentUserId(): string | null {
   try {
     const userData = localStorage.getItem('currentUser');
-    console.log('[QUERY-CLIENT] 🔍 localStorage currentUser:', userData);
+    console.log('[QUERY-CLIENT] 🔍 Raw localStorage currentUser:', userData);
     
-    if (userData) {
+    if (userData && userData !== 'null' && userData !== 'undefined') {
       const user = JSON.parse(userData);
       console.log('[QUERY-CLIENT] 📊 Parsed user data:', user);
       
       // O sistema UUID salva o UUID diretamente em user.id
       const userId = user.id?.toString();
       console.log('[QUERY-CLIENT] 🎯 Extracted userId:', userId, 'type:', typeof userId);
-      return userId;
+      
+      if (userId && userId !== 'undefined' && userId !== 'null') {
+        return userId;
+      } else {
+        console.log('[QUERY-CLIENT] ❌ userId is null/undefined:', userId);
+      }
     } else {
-      console.log('[QUERY-CLIENT] ❌ No currentUser in localStorage');
+      console.log('[QUERY-CLIENT] ❌ No valid currentUser in localStorage');
     }
   } catch (error) {
     console.error('[QUERY-CLIENT] ❌ Error getting current user:', error);
