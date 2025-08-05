@@ -17,7 +17,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Autenticação - buscar usuário real do Supabase
+  // Autenticação unificada - UUID primeiro, integer como fallback
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -26,25 +26,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email e senha são obrigatórios" });
       }
 
-      console.log('Tentativa de login para:', email);
+      console.log('Tentativa de login unificado para:', email);
       
-      // Primeiro, tentar buscar usuário no Supabase
-      let user = await storage.getUserByEmail(email);
-      
-      // Log do usuário encontrado
-      if (user) {
-        console.log(`Usuário encontrado: ${user.email}, empresa: ${user.companyId || 'não definida'}`);
+      // 1. PRIMEIRO: Tentar autenticação UUID
+      try {
+        const { SupabaseAuthStorage } = await import('./auth-storage.js');
+        const authStorage = new SupabaseAuthStorage();
+        
+        console.log('Verificando login UUID para:', email);
+        const uuidUser = await authStorage.loginUser(email, password);
+        if (uuidUser) {
+          console.log('🎯 Login UUID realizado com sucesso para:', email, 'UUID:', uuidUser.id);
+          
+          // Converter UUID user para formato compatível com sistema atual
+          const compatibleUser = {
+            id: 99999, // ID especial para usuários UUID
+            email: uuidUser.email,
+            name: uuidUser.name,
+            role: uuidUser.role as 'user' | 'ceo' | 'master',
+            companyId: 1, // Mapear UUID company para integer temporariamente
+            uuid: uuidUser.id, // Manter UUID original
+            company_uuid: uuidUser.company_id,
+            branch_uuid: uuidUser.branch_id,
+            business_category: uuidUser.business_category,
+            isActive: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          };
+          
+          return res.json({ 
+            user: compatibleUser, 
+            success: true,
+            authType: 'uuid'
+          });
+        } else {
+          console.log('❌ Usuário UUID não encontrado para:', email);
+        }
+      } catch (uuidError) {
+        console.error('❌ Erro no login UUID:', uuidError);
       }
       
-      // Se não encontrar no Supabase, criar usuário de desenvolvimento
+      // 2. FALLBACK: Sistema de integer IDs (sistema atual)
+      let user = await storage.getUserByEmail(email);
+      
+      if (user) {
+        console.log(`Usuário integer encontrado: ${user.email}, empresa: ${user.companyId || 'não definida'}`);
+      }
+      
+      // Se não encontrar, criar usuário de desenvolvimento
       if (!user) {
-        console.log('Usuário não encontrado no Supabase, criando usuário de desenvolvimento...');
+        console.log('Usuário não encontrado, criando usuário de desenvolvimento...');
         
         const devUserData = {
           email: email,
           name: email === 'junior@mercadocentral.com.br' ? 'Junior Coordenador' : 'Usuário Demo',
           role: (email === 'junior@mercadocentral.com.br' ? 'master' : 'user') as 'user' | 'ceo' | 'master',
-          password: 'dev_password', // Para desenvolvimento
+          password: 'dev_password',
           companyId: 1
         };
         
@@ -67,20 +104,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Garantir companyId válido para o usuário - usar company_id do banco se existir
+      // Garantir companyId válido para o usuário
       if (!user.companyId && user.company_id) {
         user = { ...user, companyId: user.company_id };
       } else if (!user.companyId) {
         user = { ...user, companyId: 1 };
       }
       
-      console.log('Login realizado com sucesso para:', user.email);
+      console.log('Login integer realizado com sucesso para:', user.email);
       res.json({ 
         user, 
-        success: true 
+        success: true,
+        authType: 'integer'
       });
     } catch (error: any) {
-      console.error('Erro no login:', error);
+      console.error('Erro no login unificado:', error);
       res.status(500).json({ error: "Erro interno do servidor" });
     }
   });

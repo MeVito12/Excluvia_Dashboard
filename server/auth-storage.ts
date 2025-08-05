@@ -73,18 +73,25 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async loginUser(email: string, password: string): Promise<AuthUser | null> {
     try {
+      console.log('🔍 Buscando usuário UUID:', email);
+      
       // Buscar usuário por email na nova tabela auth_users
       const users = await this.request(`auth_users?email=eq.${email}&select=*`);
       
+      console.log('📊 Usuários UUID encontrados:', users?.length || 0);
+      
       if (!users || users.length === 0) {
+        console.log('❌ Nenhum usuário UUID encontrado para:', email);
         return null;
       }
 
       const user = users[0];
+      console.log('✅ Usuário UUID encontrado:', { id: user.id, email: user.email, name: user.name });
       
       // Por enquanto, vamos aceitar login sem verificação de senha para teste
       // TODO: Implementar hash de senha quando necessário
       if (password === 'demo123' || !user.password_hash) {
+        console.log('🎯 Senha aceita para usuário UUID:', email);
         return {
           id: user.id,
           email: user.email,
@@ -96,9 +103,10 @@ export class SupabaseAuthStorage implements AuthStorage {
         };
       }
 
+      console.log('❌ Senha rejeitada para usuário UUID:', email);
       return null;
     } catch (error) {
-      console.error('Erro no login:', error);
+      console.error('❌ Erro no login UUID:', error);
       return null;
     }
   }

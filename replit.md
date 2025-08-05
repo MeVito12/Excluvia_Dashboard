@@ -69,7 +69,9 @@ Common database errors encountered and solutions implemented:
 - Implemented JWT-based authentication with bcrypt password hashing
 - Built complete authentication middleware and storage layer for UUID system
 - Created UUID test interface demonstrating improved security architecture
+- Integrated UUID authentication with existing login system (UUID first, integer fallback)
 - UUID system ready for production use with better security than integer IDs
+- Demo users: junior@mercadocentral.com.br (UUID), admin@farmacia.com.br (UUID)
 
 **Row Level Security (RLS) Implementation:**
 - RLS enabled on all tables (users, companies, products, sales, clients, appointments, financial_entries)
