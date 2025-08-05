@@ -971,9 +971,32 @@ export default function VendasSection() {
                     <button 
                       className="list-action-button view"
                       onClick={() => {
+                        // Carregar dados da venda pendente no carrinho
+                        const saleItems = sale.items.map((item: any, index: number) => ({
+                          productId: index + 1, // ID fictício para o carrinho
+                          productName: item.product_name,
+                          quantity: item.quantity,
+                          unitPrice: item.unit_price,
+                          totalPrice: item.unit_price * item.quantity,
+                          barcode: undefined
+                        }));
+                        setCart(saleItems);
+                        
+                        // Buscar ID do cliente pelo nome se existir
+                        const client = clients.find(c => c.name === sale.client_name);
+                        if (client) {
+                          setSelectedClient(client.id);
+                        }
+                        
+                        // Definir método de pagamento existente
+                        setPaymentMethod(sale.payment_method);
+                        
+                        // Abrir modal de pagamento
+                        setShowPaymentModal(true);
+                        
                         toast({
-                          title: "Venda retomada",
-                          description: "Processando pagamento da venda...",
+                          title: "Venda carregada",
+                          description: "Revise os itens e confirme o pagamento",
                         });
                       }}
                       title="Retomar venda para finalizar pagamento"
