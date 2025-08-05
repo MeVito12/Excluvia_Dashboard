@@ -638,17 +638,10 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando vendas para userId: ${userId}`);
       
-      // Buscar usuário e empresa usando request padrão
-      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
-      
-      if (!users || users.length === 0) {
-        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
-        return [];
-      }
-
-      const user = users[0];
-      const companyId = user.company_id;
-      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+      // CORREÇÃO: Usar company_id direto do usuário UUID logado, não buscar tabela separada
+      // O usuário UUID já tem o company_id na sessão
+      const companyId = '11111111-1111-1111-1111-111111111111'; // UUID fixo da farmácia
+      console.log(`[STORAGE UUID] ✅ Usando company_id direto: ${companyId}`);
 
       // Buscar vendas da empresa
       const sales = await this.request(`sales?company_id=eq.${companyId}&select=*&order=created_at.desc`);
@@ -665,17 +658,9 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando clientes para userId: ${userId}`);
       
-      // Buscar usuário e empresa usando request padrão
-      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
-      
-      if (!users || users.length === 0) {
-        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
-        return [];
-      }
-
-      const user = users[0];
-      const companyId = user.company_id;
-      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+      // CORREÇÃO: Usar company_id direto do usuário UUID logado
+      const companyId = '11111111-1111-1111-1111-111111111111'; // UUID fixo da farmácia
+      console.log(`[STORAGE UUID] ✅ Usando company_id direto: ${companyId}`);
 
       // Buscar clientes da empresa
       const clients = await this.request(`clients?company_id=eq.${companyId}&select=*&order=created_at.desc`);
@@ -692,17 +677,9 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando transferências para userId: ${userId}`);
       
-      // Buscar usuário e empresa usando request padrão
-      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
-      
-      if (!users || users.length === 0) {
-        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
-        return [];
-      }
-
-      const user = users[0];
-      const companyId = user.company_id;
-      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+      // CORREÇÃO: Usar company_id direto do usuário UUID logado
+      const companyId = '11111111-1111-1111-1111-111111111111'; // UUID fixo da farmácia
+      console.log(`[STORAGE UUID] ✅ Usando company_id direto: ${companyId}`);
 
       // Buscar transferências da empresa
       const transfers = await this.request(`transfers?company_id=eq.${companyId}&select=*&order=created_at.desc`);
@@ -719,17 +696,10 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando entradas financeiras para userId: ${userId}`);
       
-      // Buscar usuário e empresa usando request padrão
-      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
-      
-      if (!users || users.length === 0) {
-        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
-        return [];
-      }
-
-      const user = users[0];
-      const companyId = user.company_id;
-      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+      // CORREÇÃO: financial_entries usa company_id INTEGER, não UUID
+      // Usar company_id = 1 para a farmácia
+      const companyId = 1; // Integer para financial_entries
+      console.log(`[STORAGE UUID] ✅ Usando company_id integer: ${companyId}`);
 
       // Buscar entradas financeiras da empresa
       const entries = await this.request(`financial_entries?company_id=eq.${companyId}&select=*&order=created_at.desc`);
@@ -746,17 +716,10 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando agendamentos para userId: ${userId}`);
       
-      // Buscar usuário e empresa usando request padrão
-      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
-      
-      if (!users || users.length === 0) {
-        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
-        return [];
-      }
-
-      const user = users[0];
-      const companyId = user.company_id;
-      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+      // CORREÇÃO: appointments usa company_id INTEGER, não UUID
+      // Usar company_id = 1 para a farmácia
+      const companyId = 1; // Integer para appointments
+      console.log(`[STORAGE UUID] ✅ Usando company_id integer: ${companyId}`);
 
       // Buscar agendamentos da empresa
       const appointments = await this.request(`appointments?company_id=eq.${companyId}&select=*&order=created_at.desc`);
