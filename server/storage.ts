@@ -322,55 +322,52 @@ export class SupabaseStorage implements Storage {
     return this.request(`products?${filter}select=*&order=name.asc`);
   }
 
-  // NOVO MÉTODO UUID-AWARE para produtos
+  // MÉTODO SIMPLIFICADO para produtos (sistema UUID limpo)
   async getProductsUuidAware(userId: any): Promise<Product[]> {
-    // 1. Verificar se userId é UUID ou integer
-    let companyFilter = '';
+    console.log(`[STORAGE UUID] 🔍 Buscando produtos para userId: ${userId} (tipo: ${typeof userId})`);
     
     if (typeof userId === 'string' && userId.includes('-')) {
-      // É UUID - buscar company_id do usuário UUID
       try {
-        const { data: uuidUser } = await this.supabase
-          .from('auth_users')
-          .select('company_id')
-          .eq('id', userId)
-          .single();
+        console.log(`[STORAGE UUID] 📋 Buscando usuário: ${userId}`);
+        
+        // Primeiro: buscar o usuário usando o método request do storage
+        const users = await this.request(`users?id=eq.${userId}&select=company_id,email,name`);
+        
+        console.log('[STORAGE UUID] 📊 Resposta da busca de usuário:', {
+          data: users,
+          count: users?.length
+        });
           
-        if (uuidUser?.company_id) {
-          companyFilter = `company_id_uuid=eq.${uuidUser.company_id}`;
-          console.log(`[STORAGE] Filtro UUID produtos - CompanyId: ${uuidUser.company_id}`);
+        if (!users || users.length === 0) {
+          console.error('[STORAGE UUID] ❌ Usuário não encontrado');
+          return [];
+        }
+        
+        const user = users[0];
+        if (user?.company_id) {
+          console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${user.company_id}`);
+          
+          // Segundo: buscar produtos usando o método request
+          const products = await this.request(`products?company_id=eq.${user.company_id}&select=*&order=name`);
+
+          console.log('[STORAGE UUID] 📦 Resposta da busca de produtos:', {
+            count: products?.length || 0,
+            filter: `company_id = ${user.company_id}`
+          });
+
+          console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${products?.length || 0} produtos encontrados`);
+          return products || [];
+        } else {
+          console.warn(`[STORAGE UUID] ⚠️ Usuário ${userId} não tem company_id definido`);
         }
       } catch (error) {
-        console.error('[STORAGE] Erro ao buscar usuário UUID:', error);
+        console.error('[STORAGE UUID] 💥 Erro geral:', error);
       }
     } else {
-      // É integer - usar company_id tradicional
-      const user = await this.getUserById(Number(userId));
-      if (user?.companyId || user?.company_id) {
-        const finalCompanyId = user.companyId || user.company_id;
-        companyFilter = `company_id=eq.${finalCompanyId}`;
-        console.log(`[STORAGE] Filtro integer produtos - CompanyId: ${finalCompanyId}`);
-      }
+      console.warn(`[STORAGE UUID] ❌ UserId inválido: ${userId} (não é UUID)`);
     }
     
-    if (!companyFilter) {
-      console.warn('[STORAGE] Nenhum filtro de empresa encontrado, retornando array vazio');
-      return [];
-    }
-    
-    const { data: products, error } = await this.supabase
-      .from('products')
-      .select('*')
-      .filter(companyFilter.split('=')[0], 'eq', companyFilter.split('=')[1].replace('eq.', ''))
-      .order('name');
-
-    if (error) {
-      console.error('[STORAGE] Erro ao buscar produtos UUID-aware:', error);
-      throw new Error(`Erro ao buscar produtos: ${error.message}`);
-    }
-
-    console.log(`[STORAGE] Produtos UUID-aware encontrados: ${products?.length || 0}`);
-    return products || [];
+    return [];
   }
 
   async createProduct(product: NewProduct): Promise<Product> {

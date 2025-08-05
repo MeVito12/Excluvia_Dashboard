@@ -75,8 +75,8 @@ export class SupabaseAuthStorage implements AuthStorage {
     try {
       console.log('🔍 Buscando usuário UUID:', email);
       
-      // Buscar usuário por email na nova tabela auth_users
-      const users = await this.request(`auth_users?email=eq.${email}&select=*`);
+      // Buscar usuário por email na tabela users (após limpeza)
+      const users = await this.request(`users?email=eq.${email}&select=*`);
       
       console.log('📊 Usuários UUID encontrados:', users?.length || 0);
       
@@ -123,7 +123,7 @@ export class SupabaseAuthStorage implements AuthStorage {
   }): Promise<AuthUser> {
     const passwordHash = await hashPassword(userData.password);
     
-    const [created] = await this.request('auth_users', {
+    const [created] = await this.request('users', {
       method: 'POST',
       body: JSON.stringify({
         email: userData.email,
@@ -150,7 +150,7 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserById(id: string): Promise<AuthUser | null> {
     try {
-      const users = await this.request(`auth_users?id=eq.${id}&select=*`);
+      const users = await this.request(`users?id=eq.${id}&select=*`);
       
       if (!users || users.length === 0) {
         return null;
@@ -174,7 +174,7 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserByEmail(email: string): Promise<AuthUser | null> {
     try {
-      const users = await this.request(`auth_users?email=eq.${email}&select=*`);
+      const users = await this.request(`users?email=eq.${email}&select=*`);
       
       if (!users || users.length === 0) {
         return null;

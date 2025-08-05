@@ -28,46 +28,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('Tentativa de login unificado para:', email);
       
-      // 1. PRIMEIRO: Tentar autenticação UUID
-      try {
-        const { SupabaseAuthStorage } = await import('./auth-storage.js');
-        const authStorage = new SupabaseAuthStorage();
+      // Sistema UUID simplificado
+      const { SupabaseAuthStorage } = await import('./auth-storage.js');
+      const authStorage = new SupabaseAuthStorage();
+      
+      console.log('Verificando login para:', email);
+      const user = await authStorage.loginUser(email, password);
+      if (user) {
+        console.log('✅ Login realizado com sucesso para:', email, 'UUID:', user.id);
         
-        console.log('Verificando login UUID para:', email);
-        const uuidUser = await authStorage.loginUser(email, password);
-        if (uuidUser) {
-          console.log('🎯 Login UUID realizado com sucesso para:', email, 'UUID:', uuidUser.id);
-          
-          // Converter UUID user para formato compatível com sistema atual
-          const compatibleUser = {
-            id: 99999, // ID especial para usuários UUID
-            email: uuidUser.email,
-            name: uuidUser.name,
-            role: uuidUser.role as 'user' | 'ceo' | 'master',
-            companyId: 1, // Mapear UUID company para integer temporariamente
-            uuid: uuidUser.id, // Manter UUID original
-            company_uuid: uuidUser.company_id,
-            branch_uuid: uuidUser.branch_id,
-            business_category: uuidUser.business_category,
+        return res.json({ 
+          user: {
+            id: user.id, // UUID direto
+            email: user.email,
+            name: user.name,
+            role: user.role,
+            companyId: user.company_id, // UUID da empresa
+            uuid: user.id, // Para compatibilidade
+            company_uuid: user.company_id,
+            branch_uuid: user.branch_id,
+            business_category: user.business_category,
             isActive: true,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-          
-          return res.json({ 
-            user: compatibleUser, 
-            success: true,
-            authType: 'uuid'
-          });
-        } else {
-          console.log('❌ Usuário UUID não encontrado para:', email);
-        }
-      } catch (uuidError) {
-        console.error('❌ Erro no login UUID:', uuidError);
+            createdAt: user.created_at,
+            updatedAt: user.updated_at
+          }, 
+          success: true,
+          authType: 'uuid'
+        });
       }
       
-      // 2. FALLBACK: Sistema de integer IDs (sistema atual)
-      let user = await storage.getUserByEmail(email);
+      console.log('❌ Usuário não encontrado para:', email);
       
       if (user) {
         console.log(`Usuário integer encontrado: ${user.email}, empresa: ${user.companyId || 'não definida'}`);
@@ -179,25 +169,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
       // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId) {
-        console.log(`[ROUTES] Usando método UUID-aware para userId: ${userId}`);
+      console.log(`[ROUTES] 🔍 Debug userId: "${userId}" (tipo: ${typeof userId}, length: ${userId?.length})`);
+      
+      if (userId && userId.trim() !== '') {
+        console.log(`[ROUTES] ✅ Usando método UUID-aware para userId: ${userId}`);
         const products = await storage.getProductsUuidAware(userId);
-        console.log(`[ROUTES] Produtos UUID-aware encontrados: ${products.length}`);
+        console.log(`[ROUTES] 📦 Produtos UUID-aware encontrados: ${products.length}`);
         return res.json(products);
+      } else {
+        console.log(`[ROUTES] ❌ UserId vazio ou inválido: "${userId}"`);
       }
       
-      // PRIORIDADE 2: Método tradicional com company_id
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
-      }
-      
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const products = await storage.getProducts(branchId, companyId);
-      res.json(products);
+      // FALLBACK: Método tradicional (não deveria ser usado mais)
+      console.log(`[ROUTES] Fallback: userId não encontrado no header`);
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar produtos:', error);
       res.status(500).json({ error: error.message });
