@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit } from "lucide-react";
+import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 // import ThermalPrint from "@/components/ThermalPrint"; // Comentado temporariamente
@@ -930,7 +930,7 @@ export default function VendasSection() {
         </div>
 
         {/* Lista de Vendas Pendentes */}
-        <div className="space-y-4">
+        <div className="item-list">
           {getPendingSales()
             .filter(sale => 
               sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -950,59 +950,49 @@ export default function VendasSection() {
               sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((sale) => (
-              <div key={sale.id} className="standard-card group hover:shadow-lg transition-all duration-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-md">
-                      R$ {sale.total_amount.toFixed(0)}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-gray-800">{sale.client_name}</h4>
-                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
-                          Aguardando Pagamento
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">
-                        {getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}
-                      </p>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <span>Vendedores: {sale.sellers.join(", ")}</span>
-                        <span>•</span>
-                        <span>{sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}</span>
-                        <span>•</span>
-                        <span>{new Date(sale.created_at).toLocaleString('pt-BR')}</span>
-                      </div>
-                    </div>
+              <div key={sale.id} className="list-item">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm">
+                    R$ {sale.total_amount.toFixed(0)}
                   </div>
-                  <div className="flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      className="btn btn-primary text-sm px-3 py-2"
-                      onClick={() => {
-                        toast({
-                          title: "Venda retomada",
-                          description: "Processando pagamento da venda...",
-                        });
-                      }}
-                      title="Retomar venda para finalizar pagamento"
-                    >
-                      <CreditCard className="w-4 h-4 mr-1" />
-                      Finalizar
-                    </button>
-                    <button 
-                      className="btn btn-outline text-sm px-3 py-2"
-                      onClick={() => {
-                        toast({
-                          title: "Imprimindo nota",
-                          description: "Enviando para impressora...",
-                        });
-                      }}
-                      title="Imprimir nota da venda"
-                    >
-                      <Package className="w-4 h-4 mr-1" />
-                      Imprimir
-                    </button>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium text-gray-800">{sale.client_name}</h4>
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                        Aguardando Pagamento
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600">{getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">
+                      Vendedores: {sale.sellers.join(", ")} • {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'} • {new Date(sale.created_at).toLocaleString('pt-BR')}
+                    </p>
                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    className="btn btn-outline p-2"
+                    onClick={() => {
+                      toast({
+                        title: "Venda retomada",
+                        description: "Processando pagamento da venda...",
+                      });
+                    }}
+                    title="Retomar venda para finalizar pagamento"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                  </button>
+                  <button 
+                    className="btn btn-outline p-2"
+                    onClick={() => {
+                      toast({
+                        title: "Imprimindo nota",
+                        description: "Enviando para impressora...",
+                      });
+                    }}
+                    title="Imprimir nota da venda"
+                  >
+                    <Printer className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             ))
