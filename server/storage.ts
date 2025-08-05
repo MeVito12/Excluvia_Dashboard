@@ -631,6 +631,145 @@ export class SupabaseStorage implements Storage {
   }
 
   // ====================================
+  // MÉTODOS UUID-AWARE PARA TODAS AS ENTIDADES
+  // ====================================
+
+  async getSalesUuidAware(userId: string): Promise<Sale[]> {
+    try {
+      console.log(`[STORAGE UUID] 🔍 Buscando vendas para userId: ${userId}`);
+      
+      // Buscar usuário e empresa usando request padrão
+      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      const companyId = user.company_id;
+      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+
+      // Buscar vendas da empresa
+      const sales = await this.request(`sales?company_id=eq.${companyId}&select=*&order=created_at.desc`);
+
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${sales?.length || 0} vendas encontradas`);
+      return sales || [];
+    } catch (error) {
+      console.error('[STORAGE UUID] Erro ao buscar vendas UUID-aware:', error);
+      return [];
+    }
+  }
+
+  async getClientsUuidAware(userId: string): Promise<Client[]> {
+    try {
+      console.log(`[STORAGE UUID] 🔍 Buscando clientes para userId: ${userId}`);
+      
+      // Buscar usuário e empresa usando request padrão
+      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      const companyId = user.company_id;
+      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+
+      // Buscar clientes da empresa
+      const clients = await this.request(`clients?company_id=eq.${companyId}&select=*&order=created_at.desc`);
+
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${clients?.length || 0} clientes encontrados`);
+      return clients || [];
+    } catch (error) {
+      console.error('[STORAGE UUID] Erro ao buscar clientes UUID-aware:', error);
+      return [];
+    }
+  }
+
+  async getTransfersUuidAware(userId: string): Promise<Transfer[]> {
+    try {
+      console.log(`[STORAGE UUID] 🔍 Buscando transferências para userId: ${userId}`);
+      
+      // Buscar usuário e empresa usando request padrão
+      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      const companyId = user.company_id;
+      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+
+      // Buscar transferências da empresa
+      const transfers = await this.request(`transfers?company_id=eq.${companyId}&select=*&order=created_at.desc`);
+
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${transfers?.length || 0} transferências encontradas`);
+      return transfers || [];
+    } catch (error) {
+      console.error('[STORAGE UUID] Erro ao buscar transferências UUID-aware:', error);
+      return [];
+    }
+  }
+
+  async getFinancialEntriesUuidAware(userId: string): Promise<FinancialEntry[]> {
+    try {
+      console.log(`[STORAGE UUID] 🔍 Buscando entradas financeiras para userId: ${userId}`);
+      
+      // Buscar usuário e empresa usando request padrão
+      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      const companyId = user.company_id;
+      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+
+      // Buscar entradas financeiras da empresa
+      const entries = await this.request(`financial_entries?company_id=eq.${companyId}&select=*&order=created_at.desc`);
+
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${entries?.length || 0} entradas financeiras encontradas`);
+      return entries || [];
+    } catch (error) {
+      console.error('[STORAGE UUID] Erro ao buscar entradas financeiras UUID-aware:', error);
+      return [];
+    }
+  }
+
+  async getAppointmentsUuidAware(userId: string): Promise<Appointment[]> {
+    try {
+      console.log(`[STORAGE UUID] 🔍 Buscando agendamentos para userId: ${userId}`);
+      
+      // Buscar usuário e empresa usando request padrão
+      const users = await this.request(`auth_users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      const companyId = user.company_id;
+      console.log(`[STORAGE UUID] ✅ Usuário encontrado: ${user.email}, empresa: ${companyId}`);
+
+      // Buscar agendamentos da empresa
+      const appointments = await this.request(`appointments?company_id=eq.${companyId}&select=*&order=created_at.desc`);
+
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${appointments?.length || 0} agendamentos encontrados`);
+      return appointments || [];
+    } catch (error) {
+      console.error('[STORAGE UUID] Erro ao buscar agendamentos UUID-aware:', error);
+      return [];
+    }
+  }
+
+  // ====================================
   // CUPONS
   // ====================================
 

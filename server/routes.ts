@@ -198,27 +198,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Vendas
+  // Vendas (UUID-aware)
   app.get("/api/sales", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
-      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
-      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId && userId.trim() !== '') {
+        const sales = await storage.getSalesUuidAware(userId);
+        return res.json(sales);
       }
       
-      // SEMPRE filtrar por company_id
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const sales = await storage.getSales(branchId, companyId);
-      res.json(sales);
+      // FALLBACK: Método tradicional
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar vendas:', error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -256,27 +250,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Clientes
+  // Clientes (UUID-aware)
   app.get("/api/clients", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
-      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
-      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId && userId.trim() !== '') {
+        const clients = await storage.getClientsUuidAware(userId);
+        return res.json(clients);
       }
       
-      // SEMPRE filtrar por company_id
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const clients = await storage.getClients(branchId, companyId);
-      res.json(clients);
+      // FALLBACK: Método tradicional
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar clientes:', error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -290,27 +278,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Agendamentos
+  // Agendamentos (UUID-aware)
   app.get("/api/appointments", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
-      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
-      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId && userId.trim() !== '') {
+        const appointments = await storage.getAppointmentsUuidAware(userId);
+        return res.json(appointments);
       }
       
-      // SEMPRE filtrar por company_id
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const appointments = await storage.getAppointments(branchId, companyId);
-      res.json(appointments);
+      // FALLBACK: Método tradicional
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar agendamentos:', error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -324,27 +306,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Financeiro
+  // Financeiro (UUID-aware)
   app.get("/api/financial", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
-      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
-      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId && userId.trim() !== '') {
+        const entries = await storage.getFinancialEntriesUuidAware(userId);
+        return res.json(entries);
       }
       
-      // SEMPRE filtrar por company_id
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const entries = await storage.getFinancialEntries(branchId, companyId);
-      res.json(entries);
+      // FALLBACK: Método tradicional
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar financeiro:', error);
       res.status(500).json({ error: error.message });
     }
   });
@@ -358,27 +334,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Transferências
+  // Transferências (UUID-aware)
   app.get("/api/transfers", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
-      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
-      const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
-      if (!companyId && userId) {
-        const user = await storage.getUserById(parseInt(userId));
-        companyId = user?.company_id;
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId && userId.trim() !== '') {
+        const transfers = await storage.getTransfersUuidAware(userId);
+        return res.json(transfers);
       }
       
-      // SEMPRE filtrar por company_id
-      if (!companyId) {
-        return res.status(400).json({ error: 'Company ID é obrigatório' });
-      }
-      
-      const transfers = await storage.getTransfers(companyId);
-      res.json(transfers);
+      // FALLBACK: Método tradicional
+      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar transferências:', error);
       res.status(500).json({ error: error.message });
     }
   });
