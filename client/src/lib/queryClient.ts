@@ -30,8 +30,11 @@ function getCurrentUserId(): string | null {
     const userData = localStorage.getItem('currentUser');
     if (userData) {
       const user = JSON.parse(userData);
-      // Priorizar UUID se existir, senão usar ID integer
-      return user.uuid?.toString() || user.id?.toString();
+      console.log('[QUERY-CLIENT] User data from localStorage:', user);
+      // O sistema UUID salva o UUID diretamente em user.id
+      const userId = user.id?.toString();
+      console.log('[QUERY-CLIENT] Extracted userId:', userId);
+      return userId;
     }
   } catch (error) {
     console.error('Error getting current user:', error);
