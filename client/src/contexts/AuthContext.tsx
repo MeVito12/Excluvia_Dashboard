@@ -6,6 +6,8 @@ interface User {
   email: string;
   role: string;
   businessCategory: string;
+  companyId?: number;
+  company?: any;
   permissions?: string[];
 }
 
@@ -19,14 +21,24 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Recuperar usuário do localStorage na inicialização
+    try {
+      const savedUser = localStorage.getItem('currentUser');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const login = (userData: User) => {
     setUser(userData);
+    localStorage.setItem('currentUser', JSON.stringify(userData));
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('currentUser');
     localStorage.removeItem('userBusinessCategory');
   };
 

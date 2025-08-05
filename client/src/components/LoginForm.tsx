@@ -104,18 +104,28 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
       if (response.ok) {
         const { user } = await response.json();
         
-        // Definir categoria no localStorage e contexto
-        localStorage.setItem('userBusinessCategory', user.businessCategory);
-        setSelectedCategory(user.businessCategory);
+        // Buscar dados completos do usuário incluindo company_id
+        const userCompanyResponse = await fetch(`/api/user-company/${user.id}`);
+        const { user: fullUser, company } = await userCompanyResponse.json();
         
-        onLogin({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          businessCategory: user.businessCategory,
-          permissions: user.permissions
-        });
+        // Armazenar dados completos do usuário
+        const userData = {
+          id: fullUser.id,
+          name: fullUser.name,
+          email: fullUser.email,
+          role: fullUser.role,
+          businessCategory: fullUser.business_category,
+          companyId: fullUser.company_id,
+          company: company,
+          permissions: fullUser.permissions
+        };
+        
+        // Salvar no localStorage para persistência
+        localStorage.setItem('currentUser', JSON.stringify(userData));
+        localStorage.setItem('userBusinessCategory', fullUser.business_category);
+        setSelectedCategory(fullUser.business_category);
+        
+        onLogin(userData);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Erro na autenticação');
