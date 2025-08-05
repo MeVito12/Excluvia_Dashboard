@@ -97,7 +97,8 @@ const GraficosSection = () => {
           avgTicket: '0.00',
           growth: '+0%',
           period: 'carregando...',
-          totalClients: 0,
+          defaultRate: '0.0',
+          creditBoletoCount: 0,
           salesChartData: [],
           financialChartData: [],
           categoryChartData: [],
@@ -114,7 +115,8 @@ const GraficosSection = () => {
         avgTicket: '0.00',
         growth: '+0%',
         period: 'erro',
-        totalClients: 0,
+        defaultRate: '0.0',
+        creditBoletoCount: 0,
         salesChartData: [],
         financialChartData: [],
         categoryChartData: [],
@@ -127,6 +129,18 @@ const GraficosSection = () => {
     const totalSales = unifiedMetrics.totalCombinado;
     const totalSalesCount = unifiedMetrics.vendasCount + unifiedMetrics.receitasCount;
     const avgTicket = totalSalesCount > 0 ? totalSales / totalSalesCount : 0;
+    
+    // Calcular taxa de inadimplência
+    // Vendas em cartão de crédito ou boleto que não foram pagas (status "aguardando pagamento")
+    const creditBoletoSales = filteredSales.filter((sale: any) => 
+      sale.payment_method === 'cartao_credito' || sale.payment_method === 'boleto'
+    );
+    const unpaidCreditBoletoSales = creditBoletoSales.filter((sale: any) => 
+      sale.status === 'aguardando_pagamento'
+    );
+    const defaultRate = creditBoletoSales.length > 0 
+      ? (unpaidCreditBoletoSales.length / creditBoletoSales.length) * 100 
+      : 0;
 
     // Calcular crescimento (comparação simples baseada no período anterior)
     const today = new Date();
@@ -247,7 +261,8 @@ const GraficosSection = () => {
       avgTicket: avgTicket.toFixed(2),
       growth: `+${growthRate}%`,
       period: dateFrom && dateTo ? `${dateFrom} até ${dateTo}` : 'período atual',
-      totalClients: (clients || []).length,
+      defaultRate: defaultRate.toFixed(1),
+      creditBoletoCount: creditBoletoSales.length,
       salesChartData,
       financialChartData,
       categoryChartData,
@@ -368,12 +383,14 @@ const GraficosSection = () => {
         <div className="metric-card-standard">
           <div className="flex items-center justify-between">
             <div className="metric-card-content">
-              <p className="metric-card-label">Clientes Ativos</p>
-              <p className="metric-card-value">{calculateMetrics?.totalClients || 0}</p>
-              <p className="metric-card-description text-orange-600">Base total</p>
+              <p className="metric-card-label">Taxa de Inadimplência</p>
+              <p className="metric-card-value">{calculateMetrics?.defaultRate || '0.0'}%</p>
+              <p className="metric-card-description text-red-600">
+                {calculateMetrics?.creditBoletoCount || 0} vendas crédito/boleto
+              </p>
             </div>
-            <div className="metric-card-icon bg-orange-100">
-              <Users className="h-4 w-4 md:h-6 md:w-6 text-orange-600" />
+            <div className="metric-card-icon bg-red-100">
+              <TrendingUp className="h-4 w-4 md:h-6 md:w-6 text-red-600" />
             </div>
           </div>
         </div>
