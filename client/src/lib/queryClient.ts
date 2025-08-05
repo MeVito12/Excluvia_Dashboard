@@ -24,13 +24,14 @@ export const queryClient = new QueryClient({
   },
 });
 
-// Função para obter userId atual
+// Função para obter userId atual (UUID-aware)
 function getCurrentUserId(): string | null {
   try {
     const userData = localStorage.getItem('currentUser');
     if (userData) {
       const user = JSON.parse(userData);
-      return user.id?.toString();
+      // Priorizar UUID se existir, senão usar ID integer
+      return user.uuid?.toString() || user.id?.toString();
     }
   } catch (error) {
     console.error('Error getting current user:', error);

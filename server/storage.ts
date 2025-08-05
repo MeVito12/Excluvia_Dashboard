@@ -322,6 +322,57 @@ export class SupabaseStorage implements Storage {
     return this.request(`products?${filter}select=*&order=name.asc`);
   }
 
+  // NOVO MÉTODO UUID-AWARE para produtos
+  async getProductsUuidAware(userId: any): Promise<Product[]> {
+    // 1. Verificar se userId é UUID ou integer
+    let companyFilter = '';
+    
+    if (typeof userId === 'string' && userId.includes('-')) {
+      // É UUID - buscar company_id do usuário UUID
+      try {
+        const { data: uuidUser } = await this.supabase
+          .from('auth_users')
+          .select('company_id')
+          .eq('id', userId)
+          .single();
+          
+        if (uuidUser?.company_id) {
+          companyFilter = `company_id_uuid=eq.${uuidUser.company_id}`;
+          console.log(`[STORAGE] Filtro UUID produtos - CompanyId: ${uuidUser.company_id}`);
+        }
+      } catch (error) {
+        console.error('[STORAGE] Erro ao buscar usuário UUID:', error);
+      }
+    } else {
+      // É integer - usar company_id tradicional
+      const user = await this.getUserById(Number(userId));
+      if (user?.companyId || user?.company_id) {
+        const finalCompanyId = user.companyId || user.company_id;
+        companyFilter = `company_id=eq.${finalCompanyId}`;
+        console.log(`[STORAGE] Filtro integer produtos - CompanyId: ${finalCompanyId}`);
+      }
+    }
+    
+    if (!companyFilter) {
+      console.warn('[STORAGE] Nenhum filtro de empresa encontrado, retornando array vazio');
+      return [];
+    }
+    
+    const { data: products, error } = await this.supabase
+      .from('products')
+      .select('*')
+      .filter(companyFilter.split('=')[0], 'eq', companyFilter.split('=')[1].replace('eq.', ''))
+      .order('name');
+
+    if (error) {
+      console.error('[STORAGE] Erro ao buscar produtos UUID-aware:', error);
+      throw new Error(`Erro ao buscar produtos: ${error.message}`);
+    }
+
+    console.log(`[STORAGE] Produtos UUID-aware encontrados: ${products?.length || 0}`);
+    return products || [];
+  }
+
   async createProduct(product: NewProduct): Promise<Product> {
     const [created] = await this.request('products', {
       method: 'POST',

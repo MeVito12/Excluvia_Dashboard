@@ -171,20 +171,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Produtos
+  // Produtos (UUID-aware)
   app.get("/api/products", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
       
-      // Se não tiver company_id na query, buscar do usuário
+      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
+      if (userId) {
+        console.log(`[ROUTES] Usando método UUID-aware para userId: ${userId}`);
+        const products = await storage.getProductsUuidAware(userId);
+        console.log(`[ROUTES] Produtos UUID-aware encontrados: ${products.length}`);
+        return res.json(products);
+      }
+      
+      // PRIORIDADE 2: Método tradicional com company_id
       if (!companyId && userId) {
         const user = await storage.getUserById(parseInt(userId));
         companyId = user?.company_id;
       }
       
-      // SEMPRE filtrar por company_id - não permitir dados sem filtro
       if (!companyId) {
         return res.status(400).json({ error: 'Company ID é obrigatório' });
       }
@@ -192,6 +199,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const products = await storage.getProducts(branchId, companyId);
       res.json(products);
     } catch (error: any) {
+      console.error('[ROUTES] Erro ao buscar produtos:', error);
       res.status(500).json({ error: error.message });
     }
   });
