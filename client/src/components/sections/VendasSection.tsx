@@ -50,6 +50,7 @@ export default function VendasSection() {
   const [showProductSearch, setShowProductSearch] = useState<boolean>(false);
   const [showClientModal, setShowClientModal] = useState<boolean>(false);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
+  const [showSellersModal, setShowSellersModal] = useState<boolean>(false);
   const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
   const [foundClient, setFoundClient] = useState<Client | null>(null);
   const [showAddClientModal, setShowAddClientModal] = useState<boolean>(false);
@@ -699,51 +700,24 @@ export default function VendasSection() {
               {/* Vendedores */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Vendedores *</label>
-                <div className="border border-gray-300 rounded-md p-2 min-h-[80px] bg-white">
-                  {selectedSellers.length === 0 ? (
-                    <p className="text-gray-500 text-sm">Selecione os vendedores...</p>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSellersModal(true)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
+                >
+                  {selectedSellers.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
                       {selectedSellers.map(sellerId => {
                         const seller = companyProfiles.find(p => p.id === sellerId);
                         return seller ? (
-                          <span
-                            key={sellerId}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
-                          >
+                          <span key={sellerId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                             {seller.name}
-                            <button
-                              onClick={() => setSelectedSellers(selectedSellers.filter(id => id !== sellerId))}
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              ×
-                            </button>
                           </span>
                         ) : null;
                       })}
                     </div>
-                  )}
-                  <div className="mt-2 max-h-32 overflow-y-auto">
-                    {companyProfiles.map(profile => (
-                      <button
-                        key={profile.id}
-                        onClick={() => {
-                          if (selectedSellers.includes(profile.id)) {
-                            setSelectedSellers(selectedSellers.filter(id => id !== profile.id));
-                          } else {
-                            setSelectedSellers([...selectedSellers, profile.id]);
-                          }
-                        }}
-                        className={`w-full text-left px-2 py-1 text-sm rounded hover:bg-gray-100 ${
-                          selectedSellers.includes(profile.id) ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
-                        }`}
-                      >
-                        <User className="w-3 h-3 inline mr-2" />
-                        {profile.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  ) : "+ Selecionar Vendedores"}
+                </button>
               </div>
 
               {/* Cliente */}
@@ -1353,6 +1327,80 @@ export default function VendasSection() {
               >
                 Fechar
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Seleção de Vendedores */}
+      {showSellersModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
+              <button 
+                onClick={() => setShowSellersModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            {/* Lista de vendedores */}
+            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
+              {companyProfiles.length > 0 ? (
+                companyProfiles.map((seller) => (
+                  <div key={seller.id} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              if (selectedSellers.includes(seller.id)) {
+                                setSelectedSellers(selectedSellers.filter(id => id !== seller.id));
+                              } else {
+                                setSelectedSellers([...selectedSellers, seller.id]);
+                              }
+                            }}
+                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
+                          >
+                            {selectedSellers.includes(seller.id) && (
+                              <div className="w-3 h-3 bg-purple-600 rounded"></div>
+                            )}
+                          </button>
+                          <div>
+                            <h4 className="font-medium text-gray-800">{seller.name}</h4>
+                            <p className="text-sm text-gray-600">{seller.email || 'Vendedor'}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p>Nenhum vendedor cadastrado</p>
+                  <p className="text-sm mt-1">Cadastre clientes individuais na seção Cadastros</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t">
+              <button
+                onClick={() => setShowSellersModal(false)}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Fechar
+              </button>
+              {selectedSellers.length > 0 && (
+                <button
+                  onClick={() => setShowSellersModal(false)}
+                  className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  Confirmar ({selectedSellers.length} selecionado{selectedSellers.length > 1 ? 's' : ''})
+                </button>
+              )}
             </div>
           </div>
         </div>
