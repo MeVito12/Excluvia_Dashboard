@@ -31,16 +31,21 @@ export const queryClient = new QueryClient({
 function getCurrentUserId(): string | null {
   try {
     const userData = localStorage.getItem('currentUser');
+    console.log('[QUERY-CLIENT] 🔍 localStorage currentUser:', userData);
+    
     if (userData) {
       const user = JSON.parse(userData);
-      console.log('[QUERY-CLIENT] User data from localStorage:', user);
+      console.log('[QUERY-CLIENT] 📊 Parsed user data:', user);
+      
       // O sistema UUID salva o UUID diretamente em user.id
       const userId = user.id?.toString();
-      console.log('[QUERY-CLIENT] Extracted userId:', userId);
+      console.log('[QUERY-CLIENT] 🎯 Extracted userId:', userId, 'type:', typeof userId);
       return userId;
+    } else {
+      console.log('[QUERY-CLIENT] ❌ No currentUser in localStorage');
     }
   } catch (error) {
-    console.error('Error getting current user:', error);
+    console.error('[QUERY-CLIENT] ❌ Error getting current user:', error);
   }
   return null;
 }
