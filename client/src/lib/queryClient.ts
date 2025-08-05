@@ -55,7 +55,13 @@ export const queryClient = new QueryClient({
         }
         
         const data = await response.json();
-        console.log('[QUERY-CLIENT] ✅ Success! Data received:', Array.isArray(data) ? `${data.length} items` : typeof data);
+        console.log('[QUERY-CLIENT] ✅ SUCCESS! Received data:', { 
+          type: typeof data, 
+          isArray: Array.isArray(data), 
+          length: Array.isArray(data) ? data.length : 'not array',
+          firstItem: Array.isArray(data) && data.length > 0 ? data[0] : 'no items',
+          sample: Array.isArray(data) ? data.slice(0, 2) : data
+        });
         
         return data;
       },
