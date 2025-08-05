@@ -1450,25 +1450,17 @@ export default function VendasSection() {
       </div>
 
       {/* Navegação por Abas */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="tab-navigation">
         <button
           onClick={() => setActiveTab('vendas')}
-          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
-            activeTab === 'vendas' 
-              ? 'text-purple-600 border-purple-600 bg-purple-50' 
-              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-          }`}
+          className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
         >
           <ShoppingCart className="w-4 h-4" />
           Nova Venda
         </button>
         <button
           onClick={() => setActiveTab('caixa')}
-          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
-            activeTab === 'caixa' 
-              ? 'text-purple-600 border-purple-600 bg-purple-50' 
-              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
-          }`}
+          className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
         >
           <CreditCard className="w-4 h-4" />
           Caixa
