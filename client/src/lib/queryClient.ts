@@ -4,14 +4,29 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
+        console.log('[QUERY-CLIENT] 🚀 Starting request for:', queryKey);
+        
         const userId = getCurrentUserId();
         const url = Array.isArray(queryKey) ? queryKey.join('/') : queryKey;
-        console.log('[QUERY-CLIENT] 🔍 Fazendo requisição:', { url, userId, hasUserId: !!userId });
+        
+        console.log('[QUERY-CLIENT] 🔍 Request details:', { 
+          url, 
+          userId, 
+          hasUserId: !!userId,
+          userIdType: typeof userId,
+          userIdLength: userId?.length 
+        });
+        
+        // Teste direto do localStorage
+        const directTest = localStorage.getItem('currentUser');
+        console.log('[QUERY-CLIENT] 🧪 Direct localStorage test:', directTest);
         
         if (!userId) {
-          console.error('[QUERY-CLIENT] ❌ No userId available for request:', url);
-          throw new Error('User not authenticated');
+          console.error('[QUERY-CLIENT] ❌ No userId - cannot make authenticated request to:', url);
+          throw new Error('User not authenticated - userId is null/undefined');
         }
+        
+        console.log('[QUERY-CLIENT] ✅ Making request with userId:', userId);
         
         const response = await fetch(url as string, {
           headers: {
@@ -19,12 +34,17 @@ export const queryClient = new QueryClient({
           }
         });
         
+        console.log('[QUERY-CLIENT] 📡 Response status:', response.status);
+        
         if (!response.ok) {
-          console.error('[QUERY-CLIENT] ❌ Erro na requisição:', response.status, response.statusText);
+          console.error('[QUERY-CLIENT] ❌ Request failed:', response.status, response.statusText);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        return response.json();
+        const data = await response.json();
+        console.log('[QUERY-CLIENT] ✅ Request successful, data length:', Array.isArray(data) ? data.length : 'not array');
+        
+        return data;
       },
       retry: 1,
       staleTime: 5 * 60 * 1000, // 5 minutes
