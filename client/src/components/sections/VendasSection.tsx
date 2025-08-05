@@ -970,7 +970,12 @@ export default function VendasSection() {
                   <div className="list-item-actions">
                     <button 
                       className="list-action-button view"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        console.log("Botão Retomar Venda clicado!", sale);
+                        
                         // Carregar dados da venda pendente no carrinho
                         const saleItems = sale.items.map((item: any, index: number) => ({
                           productId: index + 1, // ID fictício para o carrinho
@@ -980,18 +985,23 @@ export default function VendasSection() {
                           totalPrice: item.unit_price * item.quantity,
                           barcode: undefined
                         }));
+                        
+                        console.log("Itens do carrinho:", saleItems);
                         setCart(saleItems);
                         
                         // Buscar ID do cliente pelo nome se existir
                         const client = clients.find(c => c.name === sale.client_name);
                         if (client) {
                           setSelectedClient(client.id);
+                          console.log("Cliente selecionado:", client);
                         }
                         
                         // Definir método de pagamento existente
                         setPaymentMethod(sale.payment_method);
+                        console.log("Método de pagamento:", sale.payment_method);
                         
                         // Abrir modal de pagamento
+                        console.log("Abrindo modal de pagamento...");
                         setShowPaymentModal(true);
                         
                         toast({
