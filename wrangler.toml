@@ -1,0 +1,30 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "sistema-gestao"
+main = "worker/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Variables de ambiente
+[vars]
+ENVIRONMENT = "production"
+
+# Assets estáticos (seu React build)
+[assets]
+directory = "./dist/public"
+binding = "ASSETS"
+
+# KV para cache (opcional - comentado por enquanto)
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your_kv_namespace_id"
+# preview_id = "your_preview_kv_namespace_id"
+
+# D1 Database (alternativa ao Supabase - comentado por enquanto)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "sistema-gestao-db"
+# database_id = "your_database_id"
+
+# Secrets (configurar via CLI)
+# wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
