@@ -132,8 +132,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Produtos
   app.get("/api/products", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id - não permitir dados sem filtro
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const products = await storage.getProducts(branchId, companyId);
       res.json(products);
     } catch (error: any) {
@@ -153,8 +166,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Vendas
   app.get("/api/sales", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const sales = await storage.getSales(branchId, companyId);
       res.json(sales);
     } catch (error: any) {
@@ -198,8 +224,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Clientes
   app.get("/api/clients", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const clients = await storage.getClients(branchId, companyId);
       res.json(clients);
     } catch (error: any) {
@@ -219,8 +258,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Agendamentos
   app.get("/api/appointments", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const appointments = await storage.getAppointments(branchId, companyId);
       res.json(appointments);
     } catch (error: any) {
@@ -240,8 +292,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Financeiro
   app.get("/api/financial", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const entries = await storage.getFinancialEntries(branchId, companyId);
       res.json(entries);
     } catch (error: any) {
@@ -261,8 +326,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Transferências
   app.get("/api/transfers", async (req, res) => {
     try {
-      const companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
+      const userId = req.headers['x-user-id'] as string;
+      let companyId = req.query.company_id ? parseInt(req.query.company_id as string) : undefined;
       const branchId = req.query.branch_id ? parseInt(req.query.branch_id as string) : undefined;
+      
+      // Se não tiver company_id na query, buscar do usuário
+      if (!companyId && userId) {
+        const user = await storage.getUserById(parseInt(userId));
+        companyId = user?.company_id;
+      }
+      
+      // SEMPRE filtrar por company_id
+      if (!companyId) {
+        return res.status(400).json({ error: 'Company ID é obrigatório' });
+      }
+      
       const transfers = await storage.getTransfers(companyId);
       res.json(transfers);
     } catch (error: any) {

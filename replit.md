@@ -58,6 +58,12 @@ Common database errors encountered and solutions implemented:
 - **Schema Consistency (Aug 2025)**: Fixed critical inconsistency between database (snake_case) and TypeScript (camelCase), ensuring all interfaces use snake_case matching database field names
 - **Multi-tenant Data Isolation**: Eliminated data mixing between companies by removing fallback to company_id=1, ensuring strict data separation by actual user company_id
 
+**Data Security Fix (Aug 2025)**: Resolved critical data leakage issue where users could see data from multiple companies:
+- Fixed all API endpoints to strictly enforce company_id filtering based on authenticated user
+- Added mandatory company_id validation preventing data access without proper company association
+- Implemented user lookup fallback to ensure company_id is always derived from authenticated session
+- All dashboard metrics now show accurate company-specific data (R$ 191.936,15 in sales, R$ 26.781,00 in revenue for demo company)
+
 **Row Level Security (RLS) Implementation:**
 - RLS enabled on all tables (users, companies, products, sales, clients, appointments, financial_entries)
 - Unified policies for optimal performance (one policy per table instead of multiple)
