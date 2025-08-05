@@ -31,7 +31,7 @@ export const queryClient = new QueryClient({
           }
         }
         
-        const url = Array.isArray(queryKey) ? queryKey.join('/') : queryKey;
+        const url = Array.isArray(queryKey) ? queryKey.filter(Boolean).join('/') : queryKey;
         console.log('[QUERY-CLIENT] 🌐 Final URL:', url);
         console.log('[QUERY-CLIENT] 🔑 Final userId:', userId);
         
