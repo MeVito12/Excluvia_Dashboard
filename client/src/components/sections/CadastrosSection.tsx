@@ -447,49 +447,49 @@ const CadastrosSection = () => {
       </div>
 
       {/* Cards de Métricas */}
-      <div className="metrics-grid">
-        <div className="metric-card">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Total de Clientes</p>
-              <p className="text-2xl font-bold text-black mt-1">
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {clients.length}
               </p>
               <p className="text-xs text-blue-600 mt-1">
                 {clients.filter((c: any) => c.client_type === 'company').length} empresas, {clients.filter((c: any) => c.client_type === 'individual').length} pessoas físicas
               </p>
             </div>
-            <div className="p-3 rounded-full bg-blue-100">
+            <div className="p-3 rounded-full bg-blue-100 flex-shrink-0 ml-3">
               <Users className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Categorias</p>
-              <p className="text-2xl font-bold text-black mt-1">
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {categories.length}
               </p>
               <p className="text-xs text-green-600 mt-1">Categorias de produtos</p>
             </div>
-            <div className="p-3 rounded-full bg-green-100">
+            <div className="p-3 rounded-full bg-green-100 flex-shrink-0 ml-3">
               <Tags className="h-6 w-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="metric-card">
+        <div className="bg-white border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:border-gray-300">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-600">Subcategorias</p>
-              <p className="text-2xl font-bold text-black mt-1">
+              <p className="text-2xl font-bold text-gray-900 mt-1">
                 {subcategories.length}
               </p>
               <p className="text-xs text-purple-600 mt-1">Subcategorias de produtos</p>
             </div>
-            <div className="p-3 rounded-full bg-purple-100">
+            <div className="p-3 rounded-full bg-purple-100 flex-shrink-0 ml-3">
               <Layers className="h-6 w-6 text-purple-600" />
             </div>
           </div>

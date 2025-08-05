@@ -232,12 +232,12 @@ All colors MUST be HSL.
 
   /* Grid para métricas */
   .metrics-grid {
-    @apply grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4;
+    @apply grid grid-cols-1 md:grid-cols-3 gap-4;
   }
 
   /* Metric cards responsivos */
   .metric-card {
-    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-3 md:p-4 text-center min-h-[80px] md:min-h-[100px];
+    @apply bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg p-4 transition-all duration-300 hover:bg-white/15;
   }
 
   /* Navegação em abas responsiva */
@@ -284,7 +284,7 @@ All colors MUST be HSL.
 
   /* Cards de Métricas Padronizados */
   .metric-card-standard {
-    @apply bg-white border border-gray-200 rounded-lg p-4 md:p-6 transition-all duration-300 hover:shadow-lg hover:border-gray-300;
+    @apply bg-white border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-lg hover:border-gray-300;
   }
 
   .metric-card-icon {
