@@ -1,0 +1,126 @@
+stallwart: failed ping 1
+_app-d29b3a62783c502e.js:13 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-d29b3a62783c502e.js:13 [LaunchDarkly] LaunchDarkly client initialized
+ExcluviaDashboard:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+63Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.Understand this error
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'battery'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+framework-fb0407fadd1bb955.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-fb0407fadd1bb955.js:1Understand this warning
+r.stripe.com/b:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+r.stripe.com/b:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+stallwart.build.js:1 stallwart: failed ping 1
+3635-6a9dc88373464d2c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSWxzWEh4QVlTQmdpMTRjZkVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...HRSVEpEUkZoMVptaHJTVXRyV0hwc1MzRllPRVZDU0ZaTlJrMDRaVWRLU21kVlltbFdZMVJGT0hkWVFsWmpTamhIVDNOQmVuSWxNa1pSU1hoYU4xVndUR1ZGYXpOM2NqSkxiMDlLY2xod04wUTBNVEoxTlZkUFZTVXlRbkExVlRaUWQzUnRlRVEyTmlVeVJpVXlRbm8xT0dORlpYZEZXV3RrWkhwS1YzcG9iRTVOWVZVbE1rWXhkVkJYZW1wYVNrNXNNbTExYkNVeVJsTk5TMDVHWmxCR01GWkRSazVYU2s0eU5UVldOWFpYUkRaaFQxWjFjWFEyYzJGMk1HaDNkMFpxZWtWVVR6UmhVblpTUmpZMWRXZ3dNWGNsTTBRbE0wUT3CJM4256f3Nx3F2U9kfBXii20UrEIzYtg0n0YJ_oUw1pHD5imbV24JZ6FTIioepiChmPG9tDnQN-lBVeT5mGID.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6a9dc88373464d2c.js:1Understand this error
+62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/data/repls/a826f969-8823-408c-817d-693a3b3f4175/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/data/repls/a826f969-8823-408c-817d-693a3b3f4175/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+_app-d29b3a62783c502e.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-d29b3a62783c502e.js:40Understand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+3635-6a9dc88373464d2c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSWxzWEh4QVlTQmdpMTRjZkVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...HRSVEpEUkZoMVptaHJTVXRyV0hwc1MzRllPRVZDU0ZaTlJrMDRaVWRLU21kVlltbFdZMVJGT0hkWVFsWmpTamhIVDNOQmVuSWxNa1pSU1hoYU4xVndUR1ZGYXpOM2NqSkxiMDlLY2xod04wUTBNVEoxTlZkUFZTVXlRbkExVlRaUWQzUnRlRVEyTmlVeVJpVXlRbm8xT0dORlpYZEZXV3RrWkhwS1YzcG9iRTVOWVZVbE1rWXhkVkJYZW1wYVNrNXNNbTExYkNVeVJsTk5TMDVHWmxCR01GWkRSazVYU2s0eU5UVldOWFpYUkRaaFQxWjFjWFEyYzJGMk1HaDNkMFpxZWtWVVR6UmhVblpTUmpZMWRXZ3dNWGNsTTBRbE0wUT3CJM4256f3Nx3F2U9kfBXii20UrEIzYtg0n0YJ_oUw1pHD5imbV24JZ6FTIioepiChmPG9tDnQN-lBVeT5mGID.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6a9dc88373464d2c.js:1Understand this error
+3635-6a9dc88373464d2c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSWxzWEh4QVlTQmdpMTRjZkVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...HRSVEpEUkZoMVptaHJTVXRyV0hwc1MzRllPRVZDU0ZaTlJrMDRaVWRLU21kVlltbFdZMVJGT0hkWVFsWmpTamhIVDNOQmVuSWxNa1pSU1hoYU4xVndUR1ZGYXpOM2NqSkxiMDlLY2xod04wUTBNVEoxTlZkUFZTVXlRbkExVlRaUWQzUnRlRVEyTmlVeVJpVXlRbm8xT0dORlpYZEZXV3RrWkhwS1YzcG9iRTVOWVZVbE1rWXhkVkJYZW1wYVNrNXNNbTExYkNVeVJsTk5TMDVHWmxCR01GWkRSazVYU2s0eU5UVldOWFpYUkRaaFQxWjFjWFEyYzJGMk1HaDNkMFpxZWtWVVR6UmhVblpTUmpZMWRXZ3dNWGNsTTBRbE0wUT3CJM4256f3Nx3F2U9kfBXii20UrEIzYtg0n0YJ_oUw1pHD5imbV24JZ6FTIioepiChmPG9tDnQN-lBVeT5mGID.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: WebSocket is closed before the connection is established.
+cleanupSocket @ 3635-6a9dc88373464d2c.js:1Understand this warning
+_app-d29b3a62783c502e.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-d29b3a62783c502e.js:40Understand this error
+api.sorryapp.com/v1/pages/27c7b5fc:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/data/repls/a826f969-8823-408c-817d-693a3b3f4175/get_connection_metadata:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+events.launchdarkly.com/events/bulk/62b35a865152ab14c5942820:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+3635-6a9dc88373464d2c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSWg5N0h4QVlTQmdpbStzZkVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...nFkVVZYZEhwMVpuVWxNa1l4VjNWVFQyUjNWaVV5UmtoSWMweG9RbE5NZGxRMWNtd3hkSFpEVkdwTlVtOXNOMmhHVjNaMlZuVTBhMkVsTWtKMFRYTnRVVXd6VHpaNmIyZFZNbEpFU2xobGEzTnhSVGc1YkVOeE1qWlRPRVptYW5sd2N6RjJVRVY2YVdaRGQyazNTa1JOU21oa2FGWnpPVGhLYzBsRGRVcFZkRlZxTkhOTFVqWkNUVVJTWWxWMGRGTTVXVVIzV21KQ1dWQjJTbHBzT1U0emRYTjBTelZvU0ZGa1NucGlkRkJRTUU1aU5sUkVKVEpHVlZadk15VXlRa2tsTWtZMGJtSkhVVFJpUlZkRFoycG9keVV6UkNVelJBPT2J7sOB5bo50cEOmVkq8jWEIKTuLII7c7HeWPxULawshKdIGHRDZhgUzPDXSecW5_5ggz-PuYyRbffXTN0BqVYG.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6a9dc88373464d2c.js:1Understand this error
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Abeacon%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A46b8ad38&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=d9e24263-f487-4be2-8cf2-64246ce3c10a:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDEDUnderstand this error
+r.stripe.com/b:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+r.stripe.com/b:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+3635-6a9dc88373464d2c.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSXh2M0h4QVlTQmdqbG1jakVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...MFFrTWxNa0pDTWpSNE9UTmFXV3hYUkhSVU4xWnpVREZSTkV0VldXRlNaM2xPUVU5NVZscFlZVVZNYW5KaVNIbG5ZVlEyYkVsSUpUSkNTMWxwY2s0eWJETjFhRmRWTVc1cVpYRmxSU1V5UmtGQ1JuaFBKVEpDUjIxR2F6QnRiR2w1YmtOVFluQnpZVmxqWVhaVWRIUndORmN6U1RKaGRqVjFaemwyVm5SdEpUSkNaV2RaTTBRMmRHaDJabTlETWtoR1MxUjRSRE5XV1V4WFdsVnRia05sTUZsWFEweFNXR1ZKVFVoTldXVkZWRzF4YUdoalNrdE1TSGN6ZGxobldDVXlSbVUyTWtoR2RIQlBkVWR4UTI1dlRIY2xNMFFsTTBRPdBkXZu-eR_logC5eFS5w5cUNt9rwdR4_sAIZgwLvjGTj3s3wgomEFVSuwfMc62TunHxXYTz5a3xy0Q8f2h6hgc.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+connect @ 3635-6a9dc88373464d2c.js:1Understand this error
+_app-d29b3a62783c502e.js:13 task queue exceeded allotted deadline by 489ms
+(anonymous) @ _app-d29b3a62783c502e.js:13Understand this warning
+_app-d29b3a62783c502e.js:13 task queue exceeded allotted deadline by 447ms
+(anonymous) @ _app-d29b3a62783c502e.js:13Understand this warning
+9397-4712f3f3b7f17382.js:1 WebSocket connection to 'wss://eval.spock.platform.replit.com/wsv2/v2.public.Q2dZSStwckl4QVlTQmdpWnQ4akVCaUlGYzNCdlkyc3dBRHJaQVFva1lUZ3lObVk1TmprdE9EZ3lNeTAwTURoakxUZ3hOMlF0TmprellUTmlNMlkwTVRjMUVnTnVhWGdhRjNKbGNHeHBkQzF5WlhCc0xXWnBiR1Z6TFhOd2IyTnJJaEZGZUdOc2RYWnBZVVJoYzJoaWIyRnlaQ29QZG1sMGIzSm5ZVzFoY25ScGJuTXhRbEVLR0hKbGNHeHBkQzF5WlhCc0xXSnNiMk5yY3kxemNHOWpheElXY21Wd2JHbDBMWEpsY0d3dGJXVjBZUzF6Y0c5amF4b2RjbVZ3YkdsMExXMWhjbWRoY21sdVpTMWliRzlqYTNNdGMzQnZZMnRLQndpOG1zTVVFQUZRQUZvUGFXNTBaVzUwWDNCbGNuTnZibUZzZUFCU0l3Z0JFSUNBZ0lBZ0dRQUF...3VjJsNVJsZE5SelpVYVVsck1FNXhkelJYZVRGU2VuWk5TakpNSlRKR04yMTVPVTFZZUdKRk5FUlhjMGRuVTBwbU5uWnJaSFV6YjJGSllYWmpRVGRCTkdJMFRteEVjMW81VWtORVlUSkhSVkYzWjBFMlVtRTRiWEZKWW5NMmVUQjJTSEp0YWpSMlZXUjRNVmR5VmxVeVlsUnVjM1Z2YVVJeFVqaDNSRmRIVGpSRFJXaGpOa0ZJZGtnMlRFaFdRMkZvTWpWaGFuWjRTM1JFUmpobVJESlJOMUZzZUdaUE5XTk5KVEpDU1hSS1ZURnNTa0Z6WVRkbFIybEJSMkZhVEhKSlJIaDZUblpIZUdoaGFYQktVRTEwTWpWQkpUTkVKVE5FSQ49FWeIx4Ss1S72z3VYldNn2I5EVq_BMj2TZAD8iaWHwqMX1Mq7R3hVe2pXuCjzYx22H3ZvD_1yhFQOxJqFAg.Q2dad2NtOWtPak1pQ25KbGNHeHBkQzVqYjIwPQ' failed: 
+(anonymous) @ 9397-4712f3f3b7f17382.js:1Understand this error
+_app-d29b3a62783c502e.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-d29b3a62783c502e.js:40Understand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+/graphql:1  Failed to load resource: net::ERR_NAME_NOT_RESOLVEDUnderstand this error
+_app-d29b3a62783c502e.js:40 WebSocket connection to 'wss://replit.com/graphql_subscriptions' failed: 
+(anonymous) @ _app-d29b3a62783c502e.js:40Understand this error
+_app-d29b3a62783c502e.js:13 task queue exceeded allotted deadline by 40ms
+(anonymous) @ _app-d29b3a62783c502e.js:13Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'battery'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.Understand this warning
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.Understand this warning
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.Understand this warning
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/products?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 400 (Bad Request)Understand this error
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/sales?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/clients?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+Console.js:61 [AUTH-CONTEXT] 🔄 Initializing with localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/products?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 400 (Bad Request)Understand this error
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/clients?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+a826f969-8823-408c-817d-693a3b3f4175-00-gkf7k2t27rad.spock.replit.dev/api/sales?company_id=44444444-4444-4444-4444-444444444444:1  Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this error
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
