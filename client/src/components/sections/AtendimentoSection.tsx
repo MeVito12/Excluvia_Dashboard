@@ -1457,61 +1457,58 @@ const AtendimentoSection = () => {
         </div>
 
         {/* Lista de Campanhas */}
-        <div className="item-list">
-          {getLoyaltyCampaigns()
-            .filter(campaign => 
-              campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              campaign.code.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((campaign) => {
-              const typeColor = getTypeColor(campaign.type);
-              return (
-                <div key={campaign.id} className="list-item">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-16 h-16 bg-gradient-to-br from-${typeColor}-500 to-${typeColor}-600 rounded-lg flex items-center justify-center text-white font-bold text-sm`}>
-                      {campaign.discount_type === 'percentage' ? `${campaign.discount_value}%` : `R$${campaign.discount_value}`}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-medium text-gray-800">{campaign.code}</h4>
-                        <span className={`text-xs bg-${typeColor}-100 text-${typeColor}-700 px-2 py-1 rounded`}>
-                          {getTypeLabel(campaign.type)}
-                        </span>
+        <div className="standard-list-container">
+          <div className="standard-list-content">
+            {getLoyaltyCampaigns()
+              .filter(campaign => 
+                campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                campaign.code.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .map((campaign) => {
+                const typeColor = getTypeColor(campaign.type);
+                return (
+                  <div key={campaign.id} className="standard-list-item group">
+                    <div className="list-item-main">
+                      <div className="list-item-title">{campaign.code}</div>
+                      <div className="list-item-subtitle">{campaign.name} • {getTypeLabel(campaign.type)}</div>
+                      <div className="list-item-meta">
+                        {campaign.discount_type === 'percentage' ? `${campaign.discount_value}%` : `R$ ${campaign.discount_value}`} de desconto • 
+                        {campaign.usage_count} de {campaign.max_uses} usos • 
+                        Min: R$ {campaign.minimum_value},00
+                        {campaign.valid_until && ` • Válido até ${campaign.valid_until}`}
                       </div>
-                      <p className="text-sm text-gray-600 mb-1">{campaign.name}</p>
-                      <p className="text-xs text-gray-500">{campaign.description}</p>
-                      <div className="flex items-center gap-4 mt-2">
-                        <span className="text-xs text-gray-500">
-                          {campaign.usage_count} de {campaign.max_uses} usos
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          Min: R$ {campaign.minimum_value},00
-                        </span>
-                        {campaign.valid_until && (
-                          <span className="text-xs text-gray-500">
-                            Válido até {campaign.valid_until}
-                          </span>
-                        )}
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <span className={`list-status-badge ${campaign.status === 'ativo' ? 'status-success' : 'status-warning'}`}>
+                        {campaign.status === 'ativo' ? 'Ativo' : 'Inativo'}
+                      </span>
+                      
+                      <div className="list-item-actions">
+                        <button 
+                          className="list-action-button edit"
+                          title="Editar campanha"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button 
+                          className="list-action-button view"
+                          title="Visualizar relatório"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button 
+                          className="list-action-button delete"
+                          title="Desativar campanha"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className={`badge badge-${campaign.status === 'ativo' ? 'success' : 'warning'}`}>
-                      {campaign.status === 'ativo' ? 'Ativo' : 'Inativo'}
-                    </span>
-                    <button className="btn btn-outline p-2" title="Editar campanha">
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button className="btn btn-outline p-2" title="Visualizar relatório">
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    <button className="btn btn-outline p-2 text-red-600" title="Desativar campanha">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+          </div>
         </div>
 
         {/* Estatísticas Rápidas */}
