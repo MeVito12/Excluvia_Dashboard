@@ -37,6 +37,7 @@ export default function VendasSection() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [installments, setInstallments] = useState<number>(1);
   const [discount, setDiscount] = useState<number>(0);
   const [selectedSellers, setSelectedSellers] = useState<number[]>([]);
   
@@ -212,10 +213,11 @@ export default function VendasSection() {
   
   const clearCart = () => {
     setCart([]);
-    // Reset cupom
+    // Reset cupom e parcelamento
     setCouponCode("");
     setAppliedCoupon(null);
     setCouponDiscount(0);
+    setInstallments(1);
   };
 
   // Função para validar cupom
@@ -487,6 +489,7 @@ export default function VendasSection() {
       setCart([]);
       setSelectedClient(null);
       setPaymentMethod("");
+      setInstallments(1);
       setDiscount(0);
       setSelectedSellers([]);
       setCouponCode("");
@@ -766,7 +769,16 @@ export default function VendasSection() {
                   onClick={() => setShowPaymentModal(true)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
                 >
-                  {paymentMethod ? getPaymentMethodLabel(paymentMethod) : "+ Selecionar Método"}
+                  {paymentMethod ? (
+                    <>
+                      {getPaymentMethodLabel(paymentMethod)}
+                      {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && installments > 1 && (
+                        <span className="text-sm text-gray-500 ml-2">
+                          ({installments}x de R$ {(totalAmount / installments).toFixed(2)})
+                        </span>
+                      )}
+                    </>
+                  ) : "+ Selecionar Método"}
                 </button>
               </div>
 
@@ -1203,7 +1215,11 @@ export default function VendasSection() {
                         <button
                           onClick={() => {
                             setPaymentMethod(method.value);
-                            setShowPaymentModal(false);
+                            // Se for crédito ou boleto, não fechar o modal ainda para mostrar opções de parcelamento
+                            if (method.value !== 'cartao_credito' && method.value !== 'boleto') {
+                              setInstallments(1);
+                              setShowPaymentModal(false);
+                            }
                           }}
                           className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
                         >
@@ -1219,9 +1235,54 @@ export default function VendasSection() {
               ))}
             </div>
             
+            {/* Opções de Parcelamento - aparece quando crédito ou boleto for selecionado */}
+            {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
+              <div className="border-t pt-4 mt-4">
+                <h4 className="text-md font-medium text-gray-800 mb-3">
+                  {paymentMethod === 'cartao_credito' ? '💳 Parcelamento no Cartão' : '📄 Parcelamento do Boleto'}
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((parcela) => {
+                    const valorParcela = totalAmount / parcela;
+                    return (
+                      <button
+                        key={parcela}
+                        onClick={() => {
+                          setInstallments(parcela);
+                          setShowPaymentModal(false);
+                        }}
+                        className={`p-3 border rounded-lg text-sm transition-all ${
+                          installments === parcela 
+                            ? 'border-purple-500 bg-purple-50 text-purple-700' 
+                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        <div className="font-medium">
+                          {parcela === 1 ? 'À vista' : `${parcela}x`}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          R$ {valorParcela.toFixed(2)}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  {paymentMethod === 'cartao_credito' 
+                    ? 'Selecione o número de parcelas para o cartão de crédito'
+                    : 'Selecione o número de parcelas para o boleto bancário'
+                  }
+                </p>
+              </div>
+            )}
+            
             <div className="flex gap-3 pt-4 border-t">
               <button
-                onClick={() => setShowPaymentModal(false)}
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setPaymentMethod("");
+                  setInstallments(1);
+                }}
                 className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Cancelar
