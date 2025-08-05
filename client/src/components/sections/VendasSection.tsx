@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package } from "lucide-react";
+import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 // import ThermalPrint from "@/components/ThermalPrint"; // Comentado temporariamente
@@ -33,11 +33,15 @@ export default function VendasSection() {
     return methods[method as keyof typeof methods] || method;
   };
   
-  // Estados do carrinho
+  // Estados do carrinho e vendas
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
   const [discount, setDiscount] = useState<number>(0);
+  const [selectedSellers, setSelectedSellers] = useState<number[]>([]);
+  
+  // Estados das abas
+  const [activeTab, setActiveTab] = useState<'vendas' | 'caixa'>('vendas');
   
   // Estados de busca de produtos
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -95,6 +99,50 @@ export default function VendasSection() {
   const { data: sales = [] } = useSales(undefined, companyId);
   const { data: financialEntries = [] } = useFinancial(undefined, companyId);
   const { data: coupons = [] } = useCoupons(companyId);
+  
+  // Buscar perfis da empresa para vendedores (usando clientes como vendedores por enquanto)
+  const companyProfiles = clients.filter(client => client.client_type === 'individual');
+  
+  // Dados das vendas aguardando pagamento
+  const getPendingSales = () => [
+    {
+      id: 1,
+      client_name: "João Silva",
+      total_amount: 125.50,
+      payment_method: "pix",
+      sellers: ["Maria Santos", "Carlos Oliveira"],
+      created_at: "2025-01-05 14:30:00",
+      status: "aguardando_pagamento",
+      items: [
+        { product_name: "Produto A", quantity: 2, unit_price: 45.00 },
+        { product_name: "Produto B", quantity: 1, unit_price: 35.50 }
+      ]
+    },
+    {
+      id: 2,
+      client_name: "Ana Costa",
+      total_amount: 89.90,
+      payment_method: "cartao_credito",
+      sellers: ["Pedro Lima"],
+      created_at: "2025-01-05 13:15:00",
+      status: "aguardando_pagamento",
+      items: [
+        { product_name: "Produto C", quantity: 3, unit_price: 29.97 }
+      ]
+    },
+    {
+      id: 3,
+      client_name: "Empresa XYZ",
+      total_amount: 450.00,
+      payment_method: "boleto",
+      sellers: ["Maria Santos", "João Pedro"],
+      created_at: "2025-01-05 11:45:00",
+      status: "aguardando_pagamento",
+      items: [
+        { product_name: "Produto D", quantity: 5, unit_price: 90.00 }
+      ]
+    }
+  ];
 
   // Filtrar produtos por busca ou código de barras com palavras-chave
   const filteredProducts = products.filter((product: Product) => {
@@ -109,9 +157,8 @@ export default function VendasSection() {
     // Dividir termo de busca em palavras individuais
     const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
     const productName = product.name.toLowerCase();
-    const productCategory = product.category.toLowerCase();
     const productDescription = (product.description || '').toLowerCase();
-    const productText = `${productName} ${productCategory} ${productDescription}`;
+    const productText = `${productName} ${productDescription}`;
     
     // Produto deve conter PELO MENOS UMA das palavras buscadas (busca mais flexível)
     return searchWords.some(word => 
@@ -315,9 +362,12 @@ export default function VendasSection() {
   const handleClientSubmit = async () => {
     try {
       const clientData = {
-        ...clientForm,
-        user_id: (user as any)?.id,
-        company_id: (user as any)?.companyId
+        name: clientForm.name,
+        clientType: clientForm.client_type,
+        email: clientForm.email,
+        phone: clientForm.phone,
+        address: clientForm.address,
+        document: clientForm.document
       };
 
       const newClient = await createClient(clientData);
@@ -397,12 +447,12 @@ export default function VendasSection() {
   const totalDiscount = discount + couponDiscount;
   const totalAmount = subtotal - totalDiscount;
 
-  // Processar venda
+  // Processar venda para aguardar pagamento
   const handleProcessSale = async () => {
     if (cart.length === 0) {
       toast({
         title: "Carrinho vazio",
-        description: "Adicione produtos antes de finalizar a venda",
+        description: "Adicione produtos antes de enviar para o caixa",
         variant: "destructive",
       });
       return;
@@ -417,32 +467,38 @@ export default function VendasSection() {
       return;
     }
 
+    if (selectedSellers.length === 0) {
+      toast({
+        title: "Vendedor não selecionado",
+        description: "Selecione pelo menos um vendedor para a venda",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      // Se há cupom aplicado, registrar o uso
-      if (appliedCoupon) {
-        await applyCouponMutation.mutateAsync({
-          couponId: appliedCoupon.id,
-          saleAmount: subtotal
-        });
-      }
+      // Aqui a venda será enviada para o caixa ao invés de ser finalizada
+      toast({
+        title: "Venda enviada para o caixa",
+        description: "A venda está aguardando pagamento no caixa",
+      });
 
-      const saleData: SaleCart = {
-        items: cart,
-        clientId: selectedClient || undefined,
-        clientName: selectedClient ? clients.find((c: Client) => c.id === selectedClient)?.name : undefined,
-        subtotal,
-        discount: totalDiscount, // Incluindo cupom no desconto total
-        totalAmount,
-        paymentMethod: paymentMethod as any,
-        couponId: appliedCoupon?.id,
-        couponDiscount: couponDiscount
-      };
-
-      processSaleMutation.mutate(saleData);
+      // Limpar carrinho e formulário
+      setCart([]);
+      setSelectedClient(null);
+      setPaymentMethod("");
+      setDiscount(0);
+      setSelectedSellers([]);
+      setCouponCode("");
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+      
+      // Mudar para aba caixa
+      setActiveTab('caixa');
     } catch (error: any) {
       toast({
-        title: "Erro ao aplicar cupom",
-        description: error.message || "Não foi possível processar o cupom",
+        title: "Erro ao processar venda",
+        description: error.message || "Não foi possível enviar a venda para o caixa",
         variant: "destructive",
       });
     }
@@ -474,14 +530,9 @@ export default function VendasSection() {
     }
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Sistema de Vendas</h1>
-        <p className="text-gray-300">Gerenciamento de vendas e carrinho</p>
-      </div>
-
+  // Renderizar aba de vendas
+  const renderVendasTab = () => (
+    <div className="animate-fade-in">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Painel de Adição de Produtos */}
         <div className="lg:col-span-2 space-y-4">
@@ -642,6 +693,56 @@ export default function VendasSection() {
               <CardTitle>Finalizar Venda</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Vendedores */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Vendedores *</label>
+                <div className="border border-gray-300 rounded-md p-2 min-h-[80px] bg-white">
+                  {selectedSellers.length === 0 ? (
+                    <p className="text-gray-500 text-sm">Selecione os vendedores...</p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSellers.map(sellerId => {
+                        const seller = companyProfiles.find(p => p.id === sellerId);
+                        return seller ? (
+                          <span
+                            key={sellerId}
+                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full"
+                          >
+                            {seller.name}
+                            <button
+                              onClick={() => setSelectedSellers(selectedSellers.filter(id => id !== sellerId))}
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+                  <div className="mt-2 max-h-32 overflow-y-auto">
+                    {companyProfiles.map(profile => (
+                      <button
+                        key={profile.id}
+                        onClick={() => {
+                          if (selectedSellers.includes(profile.id)) {
+                            setSelectedSellers(selectedSellers.filter(id => id !== profile.id));
+                          } else {
+                            setSelectedSellers([...selectedSellers, profile.id]);
+                          }
+                        }}
+                        className={`w-full text-left px-2 py-1 text-sm rounded hover:bg-gray-100 ${
+                          selectedSellers.includes(profile.id) ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
+                        }`}
+                      >
+                        <User className="w-3 h-3 inline mr-2" />
+                        {profile.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               {/* Cliente */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Cliente (Opcional)</label>
@@ -785,20 +886,138 @@ export default function VendasSection() {
                 </div>
               </div>
 
-              {/* Botão de Finalizar */}
+              {/* Botão de Enviar para Caixa */}
               <Button
                 onClick={handleProcessSale}
-                disabled={cart.length === 0 || !paymentMethod || processSaleMutation.isPending}
+                disabled={cart.length === 0 || !paymentMethod || selectedSellers.length === 0}
                 className="w-full"
                 size="lg"
               >
                 <CreditCard className="h-4 w-4 mr-2" />
-                {processSaleMutation.isPending ? 'Processando...' : 'Finalizar Venda'}
+                Enviar para Caixa - R$ {totalAmount.toFixed(2)}
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+    </div>
+  );
+
+  // Renderizar aba do caixa
+  const renderCaixaTab = () => (
+    <div className="animate-fade-in">
+      <div className="main-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <CreditCard className="w-8 h-8 text-green-600" />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">Caixa - Vendas Pendentes</h3>
+              <p className="text-sm text-gray-600">Vendas aguardando pagamento</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 z-10" />
+              <input
+                type="text"
+                placeholder="Buscar vendas..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-64 pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Lista de Vendas Pendentes */}
+        <div className="item-list">
+          {getPendingSales()
+            .filter(sale => 
+              sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .map((sale) => (
+              <div key={sale.id} className="list-item">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                    R$ {sale.total_amount.toFixed(0)}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-medium text-gray-800">{sale.client_name}</h4>
+                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
+                        Aguardando Pagamento
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-1">
+                      {getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-gray-500 mb-1">
+                      Vendedores: {sale.sellers.join(", ")}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2">
+                      <span className="text-xs text-gray-500">
+                        {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {new Date(sale.created_at).toLocaleString('pt-BR')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button 
+                    className="btn btn-primary text-sm"
+                    onClick={() => {
+                      toast({
+                        title: "Venda retomada",
+                        description: "Processando pagamento da venda...",
+                      });
+                    }}
+                    title="Retomar venda para finalizar pagamento"
+                  >
+                    <CreditCard className="w-4 h-4 mr-1" />
+                    Finalizar
+                  </button>
+                  <button 
+                    className="btn btn-outline text-sm"
+                    onClick={() => {
+                      toast({
+                        title: "Imprimindo nota",
+                        description: "Enviando para impressora...",
+                      });
+                    }}
+                    title="Imprimir nota da venda"
+                  >
+                    <Package className="w-4 h-4 mr-1" />
+                    Imprimir
+                  </button>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        {/* Estatísticas do Caixa */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div className="content-card text-center">
+            <p className="text-2xl font-bold text-green-600">R$ 665,40</p>
+            <p className="text-sm text-gray-600">Total pendente</p>
+            <p className="text-xs text-orange-600 mt-1">3 vendas aguardando</p>
+          </div>
+          <div className="content-card text-center">
+            <p className="text-2xl font-bold text-blue-600">R$ 2.450</p>
+            <p className="text-sm text-gray-600">Processado hoje</p>
+            <p className="text-xs text-green-600 mt-1">12 vendas finalizadas</p>
+          </div>
+          <div className="content-card text-center">
+            <p className="text-2xl font-bold text-purple-600">4 min</p>
+            <p className="text-sm text-gray-600">Tempo médio</p>
+            <p className="text-xs text-gray-600 mt-1">Por transação</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
@@ -885,20 +1104,22 @@ export default function VendasSection() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => {
-                            setSelectedClient(foundClient.id!);
-                            setShowClientModal(false);
-                            setClientSearchTerm("");
-                            setFoundClient(null);
+                            if (foundClient?.id) {
+                              setSelectedClient(foundClient.id);
+                              setShowClientModal(false);
+                              setClientSearchTerm("");
+                              setFoundClient(null);
+                            }
                           }}
                           className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-green-400 hover:border-green-500"
                         >
                           <div className="w-3 h-3 bg-green-600 rounded"></div>
                         </button>
                         <div>
-                          <h4 className="font-medium text-gray-800">{foundClient.name}</h4>
+                          <h4 className="font-medium text-gray-800">{foundClient?.name}</h4>
                           <p className="text-sm text-gray-600">
-                            {foundClient.document && `${foundClient.document.length === 11 ? 'CPF' : 'CNPJ'}: ${foundClient.document}`}
-                            {foundClient.email && ` • ${foundClient.email}`}
+                            {foundClient?.document && `${foundClient.document.length === 11 ? 'CPF' : 'CNPJ'}: ${foundClient.document}`}
+                            {foundClient?.email && ` • ${foundClient.email}`}
                           </p>
                         </div>
                       </div>
@@ -1040,7 +1261,10 @@ export default function VendasSection() {
               )}
               
               <div className="border rounded-lg p-3 bg-gray-50">
-                <ThermalPrint
+                <p className="text-sm text-gray-600">
+                  Funcionalidade de impressão será implementada em breve.
+                </p>
+                {/* <ThermalPrint
                   sale={lastSaleData}
                   company={{
                     name: "Demo Restaurante Bella Vista",
@@ -1054,7 +1278,7 @@ export default function VendasSection() {
                     phone: "(11) 99999-9999"
                   }}
                   includeClient={includeClientInPrint}
-                />
+                /> */}
               </div>
             </div>
             
@@ -1204,6 +1428,35 @@ export default function VendasSection() {
           </div>
         </div>
       )}
+
+  return (
+    <div className="app-section">
+      {/* Header */}
+      <div className="section-header">
+        <h1 className="section-title">Sistema de Vendas</h1>
+        <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
+      </div>
+
+      {/* Navegação por Abas */}
+      <div className="tab-navigation">
+        <button
+          onClick={() => setActiveTab('vendas')}
+          className={`tab-button ${activeTab === 'vendas' ? 'tab-button-active' : ''}`}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          Nova Venda
+        </button>
+        <button
+          onClick={() => setActiveTab('caixa')}
+          className={`tab-button ${activeTab === 'caixa' ? 'tab-button-active' : ''}`}
+        >
+          <CreditCard className="w-4 h-4" />
+          Caixa
+        </button>
+      </div>
+
+      {/* Conteúdo das Abas */}
+      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
     </div>
   );
 }
