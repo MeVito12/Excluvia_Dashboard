@@ -6,7 +6,7 @@ import { z } from "zod";
 // ====================================
 
 export interface Company {
-  id: number;
+  id: string; // UUID
   name: string;
   businessCategory: string;
   cnpj?: string;
@@ -15,14 +15,14 @@ export interface Company {
   phone?: string;
   email?: string;
   isActive: boolean;
-  createdBy: number;
+  createdBy: string; // UUID
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Branch {
-  id: number;
-  company_id: number;
+  id: string; // UUID
+  company_id: string; // UUID
   name: string;
   code: string;
   address?: string;
@@ -30,23 +30,23 @@ export interface Branch {
   email?: string;
   is_main: boolean;
   is_active: boolean;
-  manager_id?: number;
+  manager_id?: string; // UUID
   created_at: string;
   updated_at: string;
 }
 
 export interface User {
-  id: number;
+  id: string; // UUID
   email: string;
   password?: string;
   name: string;
   phone?: string;
-  company_id?: number;
-  branch_id?: number;
+  company_id?: string; // UUID
+  branch_id?: string; // UUID
   role: 'ceo' | 'master' | 'user';
   business_category?: string;
   is_active: boolean;
-  created_by?: number;
+  created_by?: string; // UUID
   last_login?: string;
   created_at: string;
   updated_at: string;

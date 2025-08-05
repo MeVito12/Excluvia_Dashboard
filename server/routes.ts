@@ -1,10 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { SupabaseStorage } from './storage';
+import { setupAuthRoutes } from "./auth-routes.js";
 
 const storage = new SupabaseStorage();
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup UUID-based authentication routes
+  setupAuthRoutes(app);
+  
   // Health check
   app.get("/api/health", async (_req, res) => {
     res.json({ 

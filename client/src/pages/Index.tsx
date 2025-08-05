@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import * as React from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardSection from '@/components/sections/DashboardSection';
 import GraficosSection from '@/components/sections/GraficosSection';
@@ -38,6 +39,16 @@ const Index = () => {
         return <ControleSection />;
       case 'cadastros':
         return <CadastrosSection />;
+      case 'uuid-test':
+        // Carregar dinamicamente para testar UUID
+        const TestUuidRoute = React.lazy(() => 
+          import('./TestUuidRoute').then(m => ({ default: m.TestUuidRoute }))
+        );
+        return (
+          <React.Suspense fallback={<div className="p-8 text-center">Carregando teste UUID...</div>}>
+            <TestUuidRoute />
+          </React.Suspense>
+        );
       default:
         return <DashboardSection />;
     }
