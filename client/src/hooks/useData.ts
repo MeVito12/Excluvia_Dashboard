@@ -24,20 +24,11 @@ const getCurrentUser = () => {
   }
 };
 
-// Products
+// Products - Usando sistema UUID com headers
 export const useProducts = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  // Se não tiver company_id, não carrega dados (evita mistura)
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Product[]>({
-    queryKey: ['/api/products', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/products?${params}`).then(res => res.json())
+    queryKey: ['/api/products', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -49,19 +40,11 @@ export const useCreateProduct = () => {
   });
 };
 
-// Categories
+// Categories - Usando sistema UUID com headers
 export const useCategories = (companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Category[]>({
-    queryKey: ['/api/categories', effectiveCompanyId],
-    queryFn: () => fetch(`/api/categories?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    queryKey: ['/api/categories', companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -73,19 +56,11 @@ export const useCreateCategory = () => {
   });
 };
 
-// Subcategories
+// Subcategories - Usando sistema UUID com headers
 export const useSubcategories = (companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Subcategory[]>({
-    queryKey: ['/api/subcategories', effectiveCompanyId],
-    queryFn: () => fetch(`/api/subcategories?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    queryKey: ['/api/subcategories', companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -100,19 +75,11 @@ export const useCreateSubcategory = () => {
   });
 };
 
-// Sales
+// Sales - Usando sistema UUID com headers  
 export const useSales = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Sale[]>({
-    queryKey: ['/api/sales', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/sales?${params}`).then(res => res.json())
+    queryKey: ['/api/sales', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -128,19 +95,11 @@ export const useCreateSale = () => {
   });
 };
 
-// Clients
+// Clients - Usando sistema UUID com headers
 export const useClients = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Client[]>({
-    queryKey: ['/api/clients', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/clients?${params}`).then(res => res.json())
+    queryKey: ['/api/clients', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -152,19 +111,11 @@ export const useCreateClient = () => {
   });
 };
 
-// Appointments
+// Appointments - Usando sistema UUID com headers
 export const useAppointments = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Appointment[]>({
-    queryKey: ['/api/appointments', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/appointments?${params}`).then(res => res.json()),
-    enabled: !!effectiveCompanyId
+    queryKey: ['/api/appointments', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -176,19 +127,11 @@ export const useCreateAppointment = () => {
   });
 };
 
-// Financial
+// Financial - Usando sistema UUID com headers
 export const useFinancial = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<FinancialEntry[]>({
-    queryKey: ['/api/financial', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/financial?${params}`).then(res => res.json())
+    queryKey: ['/api/financial', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -200,19 +143,11 @@ export const useCreateFinancial = () => {
   });
 };
 
-// Transfers
+// Transfers - Usando sistema UUID com headers
 export const useTransfers = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<Transfer[]>({
-    queryKey: ['/api/transfers', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/transfers?${params}`).then(res => res.json())
+    queryKey: ['/api/transfers', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
@@ -224,19 +159,11 @@ export const useCreateTransfer = () => {
   });
 };
 
-// Money Transfers
+// Money Transfers - Usando sistema UUID com headers
 export const useMoneyTransfers = (branchId?: number, companyId?: number) => {
-  const user = getCurrentUser();
-  const effectiveCompanyId = companyId || user?.companyId;
-  if (!effectiveCompanyId) return { data: [], isLoading: false, error: 'Usuário sem empresa associada' };
-  
-  const params = new URLSearchParams();
-  if (branchId) params.append('branch_id', branchId.toString());
-  if (effectiveCompanyId) params.append('company_id', effectiveCompanyId.toString());
-  
   return useQuery<MoneyTransfer[]>({
-    queryKey: ['/api/money-transfers', branchId, effectiveCompanyId],
-    queryFn: () => fetch(`/api/money-transfers?${params}`).then(res => res.json())
+    queryKey: ['/api/money-transfers', branchId, companyId],
+    // A queryFn padrão do queryClient já lida com headers automaticamente
   });
 };
 
