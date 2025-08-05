@@ -930,71 +930,83 @@ export default function VendasSection() {
         </div>
 
         {/* Lista de Vendas Pendentes */}
-        <div className="item-list">
+        <div className="space-y-4">
           {getPendingSales()
+            .filter(sale => 
+              sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
+            ).length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <CreditCard className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-medium text-gray-800 mb-2">Nenhuma venda pendente</h3>
+              <p className="text-sm text-gray-600">
+                Todas as vendas foram finalizadas ou não há vendas aguardando pagamento.
+              </p>
+            </div>
+          ) : (
+            getPendingSales()
             .filter(sale => 
               sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
               sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
             )
             .map((sale) => (
-              <div key={sale.id} className="list-item">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
-                    R$ {sale.total_amount.toFixed(0)}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-medium text-gray-800">{sale.client_name}</h4>
-                      <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">
-                        Aguardando Pagamento
-                      </span>
+              <div key={sale.id} className="standard-card group hover:shadow-lg transition-all duration-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-md">
+                      R$ {sale.total_amount.toFixed(0)}
                     </div>
-                    <p className="text-sm text-gray-600 mb-1">
-                      {getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}
-                    </p>
-                    <p className="text-xs text-gray-500 mb-1">
-                      Vendedores: {sale.sellers.join(", ")}
-                    </p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-gray-500">
-                        {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {new Date(sale.created_at).toLocaleString('pt-BR')}
-                      </span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-gray-800">{sale.client_name}</h4>
+                        <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">
+                          Aguardando Pagamento
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {getPaymentMethodLabel(sale.payment_method)} • R$ {sale.total_amount.toFixed(2)}
+                      </p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        <span>Vendedores: {sale.sellers.join(", ")}</span>
+                        <span>•</span>
+                        <span>{sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}</span>
+                        <span>•</span>
+                        <span>{new Date(sale.created_at).toLocaleString('pt-BR')}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button 
-                    className="btn btn-primary text-sm"
-                    onClick={() => {
-                      toast({
-                        title: "Venda retomada",
-                        description: "Processando pagamento da venda...",
-                      });
-                    }}
-                    title="Retomar venda para finalizar pagamento"
-                  >
-                    <CreditCard className="w-4 h-4 mr-1" />
-                    Finalizar
-                  </button>
-                  <button 
-                    className="btn btn-outline text-sm"
-                    onClick={() => {
-                      toast({
-                        title: "Imprimindo nota",
-                        description: "Enviando para impressora...",
-                      });
-                    }}
-                    title="Imprimir nota da venda"
-                  >
-                    <Package className="w-4 h-4 mr-1" />
-                    Imprimir
-                  </button>
+                  <div className="flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      className="btn btn-primary text-sm px-3 py-2"
+                      onClick={() => {
+                        toast({
+                          title: "Venda retomada",
+                          description: "Processando pagamento da venda...",
+                        });
+                      }}
+                      title="Retomar venda para finalizar pagamento"
+                    >
+                      <CreditCard className="w-4 h-4 mr-1" />
+                      Finalizar
+                    </button>
+                    <button 
+                      className="btn btn-outline text-sm px-3 py-2"
+                      onClick={() => {
+                        toast({
+                          title: "Imprimindo nota",
+                          description: "Enviando para impressora...",
+                        });
+                      }}
+                      title="Imprimir nota da venda"
+                    >
+                      <Package className="w-4 h-4 mr-1" />
+                      Imprimir
+                    </button>
+                  </div>
                 </div>
               </div>
-            ))}
+            ))
+          )}
         </div>
 
         {/* Estatísticas do Caixa */}
@@ -1438,17 +1450,25 @@ export default function VendasSection() {
       </div>
 
       {/* Navegação por Abas */}
-      <div className="tab-navigation">
+      <div className="flex border-b border-gray-200 mb-6">
         <button
           onClick={() => setActiveTab('vendas')}
-          className={`tab-button ${activeTab === 'vendas' ? 'tab-button-active' : ''}`}
+          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
+            activeTab === 'vendas' 
+              ? 'text-purple-600 border-purple-600 bg-purple-50' 
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+          }`}
         >
           <ShoppingCart className="w-4 h-4" />
           Nova Venda
         </button>
         <button
           onClick={() => setActiveTab('caixa')}
-          className={`tab-button ${activeTab === 'caixa' ? 'tab-button-active' : ''}`}
+          className={`px-6 py-3 text-sm font-medium flex items-center gap-2 border-b-2 transition-colors ${
+            activeTab === 'caixa' 
+              ? 'text-purple-600 border-purple-600 bg-purple-50' 
+              : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+          }`}
         >
           <CreditCard className="w-4 h-4" />
           Caixa
