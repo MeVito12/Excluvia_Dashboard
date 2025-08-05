@@ -31,7 +31,19 @@ export const queryClient = new QueryClient({
           }
         }
         
-        const url = Array.isArray(queryKey) ? queryKey.filter(Boolean).join('/') : queryKey;
+        // Para arrays, primeiro item é base URL, demais são query params
+        let url = Array.isArray(queryKey) ? queryKey[0] : queryKey;
+        
+        // Se há parâmetros adicionais no queryKey, construir query string
+        if (Array.isArray(queryKey) && queryKey.length > 1) {
+          const [baseUrl, ...params] = queryKey;
+          const filteredParams = params.filter(Boolean);
+          if (filteredParams.length > 0) {
+            // Assumindo que o último parâmetro é sempre company_id
+            const companyId = filteredParams[filteredParams.length - 1];
+            url = `${baseUrl}?company_id=${companyId}`;
+          }
+        }
         console.log('[QUERY-CLIENT] 🌐 Final URL:', url);
         console.log('[QUERY-CLIENT] 🔑 Final userId:', userId);
         
@@ -54,13 +66,23 @@ export const queryClient = new QueryClient({
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const data = await response.json();
+        console.log('[QUERY-CLIENT] 🔄 About to parse JSON...');
+        let data;
+        try {
+          data = await response.json();
+          console.log('[QUERY-CLIENT] 🎉 JSON parsed successfully!');
+        } catch (jsonError) {
+          console.error('[QUERY-CLIENT] ❌ JSON parse failed:', jsonError);
+          const responseText = await response.text();
+          console.error('[QUERY-CLIENT] 📄 Response text:', responseText);
+          throw new Error('Failed to parse JSON response');
+        }
+        
         console.log('[QUERY-CLIENT] ✅ SUCCESS! Received data:', { 
           type: typeof data, 
           isArray: Array.isArray(data), 
           length: Array.isArray(data) ? data.length : 'not array',
-          firstItem: Array.isArray(data) && data.length > 0 ? data[0] : 'no items',
-          sample: Array.isArray(data) ? data.slice(0, 2) : data
+          firstItem: Array.isArray(data) && data.length > 0 ? data[0]?.name || data[0] : 'no items'
         });
         
         return data;

@@ -1,0 +1,109 @@
+🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/clients/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/transfers/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/appointments/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/financial/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+6Console.js:61 [QUERY-CLIENT] 📡 Response: 200 OK
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/clients/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/appointments/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+2Console.js:61 [QUERY-CLIENT] 📡 Response: 200 OK
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/products/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/sales/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/transfers/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 [QUERY-CLIENT] 🚀 === STARTING REQUEST ===
+Console.js:61 [QUERY-CLIENT] 🔗 QueryKey: Array(3)
+Console.js:61 [QUERY-CLIENT] 🔧 getCurrentUserId called
+Console.js:61 [QUERY-CLIENT] 🔍 Raw localStorage: {"id":"0421fa78-361a-4d1c-a28a-94d793d08b6b","name":"Junior Coordenador","email":"junior@mercadocentral.com.br","companyId":"44444444-4444-4444-4444-444444444444","company":{"id":"44444444-4444-4444-4444-444444444444","name":"Mercado Central","category":"Alimentício","description":"Sistema de gestão para mercado"}}
+Console.js:61 [QUERY-CLIENT] 📊 Parsed data: Object
+Console.js:61 [QUERY-CLIENT] 🎯 Extracted userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 📋 getUserId result: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] 🌐 Final URL: /api/financial/44444444-4444-4444-4444-444444444444
+Console.js:61 [QUERY-CLIENT] 🔑 Final userId: 0421fa78-361a-4d1c-a28a-94d793d08b6b
+Console.js:61 [QUERY-CLIENT] ✅ Making authenticated request
+3Console.js:61 [QUERY-CLIENT] 📡 Response: 200 OK
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 [QUERY-CLIENT] 📡 Response: 200 OK
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
+Console.js:61 Debug - DASHBOARD - Dados alinhados: Object
