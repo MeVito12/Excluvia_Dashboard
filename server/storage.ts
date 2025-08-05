@@ -696,15 +696,35 @@ export class SupabaseStorage implements Storage {
     try {
       console.log(`[STORAGE UUID] 🔍 Buscando entradas financeiras para userId: ${userId}`);
       
-      // CORREÇÃO: financial_entries usa company_id INTEGER, não UUID
-      // Usar company_id = 1 para a farmácia
-      const companyId = 1; // Integer para financial_entries
-      console.log(`[STORAGE UUID] ✅ Usando company_id integer: ${companyId}`);
+      // CORREÇÃO CRÍTICA: Usar company_id específico da farmácia, não pegar TODAS as empresas
+      // Buscar o company_id correto baseado no usuário UUID
+      const users = await this.request(`users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado para financial: ${userId}`);
+        return [];
+      }
 
-      // Buscar entradas financeiras da empresa
+      const user = users[0];
+      // Para financial_entries, precisa mapear UUID para integer
+      // Farmácia (UUID: 11111111-1111-1111-1111-111111111111) deve usar company_id específico
+      let companyId = user.company_id;
+      
+      // Para usuário UUID da farmácia, usar company_id específico baseado no sistema existente
+      if (userId === 'd870d0b5-5c7d-418e-95b9-03faf10e83d8') {
+        // Farmácia Demo usa company_id = 1 nas tabelas antigas (financial_entries, appointments)
+        // Mas precisa ser isolada dos outros dados do company_id = 1
+        // Como há conflito de tipos, criar entradas financeiras específicas da farmácia
+        companyId = 99; // ID específico para farmácia isolada
+        console.log(`[STORAGE UUID] 🎯 Usando company_id isolado para farmácia: ${companyId}`);
+      }
+      
+      console.log(`[STORAGE UUID] ✅ Usando company_id específico: ${companyId} para usuário: ${user.email}`);
+
+      // Buscar entradas financeiras APENAS da empresa específica
       const entries = await this.request(`financial_entries?company_id=eq.${companyId}&select=*&order=created_at.desc`);
 
-      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${entries?.length || 0} entradas financeiras encontradas`);
+      console.log(`[STORAGE UUID] 🎯 RESULTADO FINAL: ${entries?.length || 0} entradas financeiras encontradas para company_id ${companyId}`);
       return entries || [];
     } catch (error) {
       console.error('[STORAGE UUID] Erro ao buscar entradas financeiras UUID-aware:', error);
@@ -717,9 +737,24 @@ export class SupabaseStorage implements Storage {
       console.log(`[STORAGE UUID] 🔍 Buscando agendamentos para userId: ${userId}`);
       
       // CORREÇÃO: appointments usa company_id INTEGER, não UUID
-      // Usar company_id = 1 para a farmácia
-      const companyId = 1; // Integer para appointments
-      console.log(`[STORAGE UUID] ✅ Usando company_id integer: ${companyId}`);
+      // Buscar o company_id correto baseado no usuário UUID
+      const users = await this.request(`users?id=eq.${userId}&select=company_id,email,name`);
+      
+      if (!users || users.length === 0) {
+        console.log(`[STORAGE UUID] ❌ Usuário não encontrado para appointments: ${userId}`);
+        return [];
+      }
+
+      const user = users[0];
+      let companyId = user.company_id;
+      
+      // Para usuário UUID da farmácia, usar company_id específico isolado
+      if (userId === 'd870d0b5-5c7d-418e-95b9-03faf10e83d8') {
+        companyId = 99; // ID específico para farmácia isolada, igual ao financial
+        console.log(`[STORAGE UUID] 🎯 Usando company_id isolado para farmácia: ${companyId}`);
+      }
+      
+      console.log(`[STORAGE UUID] ✅ Usando company_id específico: ${companyId} para usuário: ${user.email}`);
 
       // Buscar agendamentos da empresa
       const appointments = await this.request(`appointments?company_id=eq.${companyId}&select=*&order=created_at.desc`);
