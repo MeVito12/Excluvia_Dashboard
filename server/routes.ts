@@ -48,9 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             company_uuid: user.company_id,
             branch_uuid: user.branch_id,
             business_category: user.business_category,
-            isActive: true,
-            createdAt: user.created_at,
-            updatedAt: user.updated_at
+            isActive: true
           }, 
           success: true,
           authType: 'uuid'
@@ -370,8 +368,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               email: userResult.email,
               role: userResult.role,
               business_category: userResult.business_category,
-              company_id: userResult.company_id,
-              permissions: userResult.permissions
+              company_id: userResult.company_id
+              // permissions handled by PermissionsContext
             };
             
             const companyData = {

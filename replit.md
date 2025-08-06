@@ -85,6 +85,7 @@ Common database errors encountered and solutions implemented:
 - Integrated UUID authentication with existing login system (UUID first, integer fallback)
 - UUID system now active for all logins with better security than integer IDs
 - All demo users migrated: master@sistema.com, junior@mercadocentral.com.br, demo.farmacia@sistema.com, etc.
+- **Auto-Sync Implementation**: Users are now automatically created in both auth_users and users tables during registration and login, ensuring complete integration with authenticated users as requested
 
 **Row Level Security (RLS) Implementation:**
 - RLS enabled on all tables (users, companies, products, sales, clients, appointments, financial_entries)

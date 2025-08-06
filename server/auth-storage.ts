@@ -101,6 +101,35 @@ export class SupabaseAuthStorage implements AuthStorage {
       }
 
       console.log('🎯 Login UUID realizado com sucesso:', email);
+      
+      // SINCRONIZAÇÃO AUTOMÁTICA: Garantir que usuário existe na tabela users
+      try {
+        console.log('🔄 Verificando sincronização com tabela users...');
+        const existingUser = await this.request(`users?email=eq.${email}&select=*`);
+        
+        if (!existingUser || existingUser.length === 0) {
+          console.log('🔄 Usuário não encontrado na tabela users, criando...');
+          await this.request('users', {
+            method: 'POST',
+            body: JSON.stringify({
+              email: user.email,
+              name: user.name,
+              phone: user.phone,
+              company_id: user.company_id,
+              branch_id: user.branch_id,
+              role: user.role,
+              business_category: user.business_category,
+              uuid_reference: user.id
+            }),
+          });
+          console.log('✅ Usuário sincronizado automaticamente no login');
+        } else {
+          console.log('✅ Usuário já sincronizado na tabela users');
+        }
+      } catch (syncError) {
+        console.warn('⚠️ Erro na sincronização automática (não afeta login):', syncError);
+      }
+
       return {
         id: user.id,
         email: user.email,
@@ -130,7 +159,10 @@ export class SupabaseAuthStorage implements AuthStorage {
   }): Promise<AuthUser> {
     const passwordHash = await hashPassword(userData.password);
     
-    const [created] = await this.request('users', {
+    console.log('🔐 Criando usuário autenticado:', userData.email);
+    
+    // Criar primeiro na tabela auth_users (UUID)
+    const authUsers = await this.request('auth_users', {
       method: 'POST',
       body: JSON.stringify({
         email: userData.email,
@@ -143,6 +175,35 @@ export class SupabaseAuthStorage implements AuthStorage {
         business_category: userData.business_category,
       }),
     });
+
+    if (!authUsers || authUsers.length === 0) {
+      throw new Error('Falha ao criar usuário na autenticação');
+    }
+
+    const created = authUsers[0];
+    console.log('✅ Usuário UUID criado:', created.id);
+
+    // Criar automaticamente na tabela users (sincronização)
+    try {
+      console.log('🔄 Sincronizando com tabela users...');
+      await this.request('users', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: userData.email,
+          name: userData.name,
+          phone: userData.phone,
+          company_id: userData.company_id,
+          branch_id: userData.branch_id,
+          role: userData.role || 'user',
+          business_category: userData.business_category,
+          uuid_reference: created.id // Referência UUID
+        }),
+      });
+      console.log('✅ Usuario sincronizado em ambas as tabelas');
+    } catch (syncError) {
+      console.warn('⚠️ Erro na sincronização com users:', syncError);
+      // Não falhar a criação se houver erro na sincronização
+    }
 
     return {
       id: created.id,
@@ -157,7 +218,8 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserById(id: string): Promise<AuthUser | null> {
     try {
-      const users = await this.request(`users?id=eq.${id}&select=*`);
+      // Buscar primeiro na tabela auth_users (UUID)
+      const users = await this.request(`auth_users?id=eq.${id}&select=*`);
       
       if (!users || users.length === 0) {
         return null;
@@ -181,7 +243,8 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserByEmail(email: string): Promise<AuthUser | null> {
     try {
-      const users = await this.request(`users?email=eq.${email}&select=*`);
+      // Buscar primeiro na tabela auth_users (UUID)
+      const users = await this.request(`auth_users?email=eq.${email}&select=*`);
       
       if (!users || users.length === 0) {
         return null;
