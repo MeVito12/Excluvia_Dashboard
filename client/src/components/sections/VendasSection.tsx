@@ -611,7 +611,7 @@ const VendasSection = () => {
         </div>
 
         {/* Lista de Vendas Pendentes */}
-        <div className="space-y-4">
+        <div className="standard-list-container">
           {mockPendingSales.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <CreditCard className="w-16 h-16 mx-auto mb-4 text-gray-300" />
@@ -619,65 +619,70 @@ const VendasSection = () => {
               <p>Todas as vendas foram processadas</p>
             </div>
           ) : (
-            mockPendingSales.map((sale) => (
-              <div key={sale.id} className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                      Pendente
-                    </Badge>
-                    <span className="text-sm text-gray-500">#{sale.id}</span>
-                  </div>
-                  <span className="text-sm text-gray-500">{sale.created_at}</span>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Cliente</p>
-                    <p className="font-semibold text-gray-800">{sale.client_name}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Pagamento</p>
-                    <p className="font-semibold text-gray-800">{getPaymentMethodLabel(sale.payment_method)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Vendedor(es)</p>
-                    <p className="font-semibold text-gray-800">{sale.sellers.join(", ")}</p>
-                  </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-gray-50 rounded-md">
-                  <p className="text-sm font-medium text-gray-600 mb-2">Itens:</p>
-                  <div className="space-y-1">
-                    {sale.items.map((item, index) => (
-                      <div key={index} className="flex justify-between text-sm">
-                        <span>{item.quantity}x {item.product_name}</span>
-                        <span>R$ {(item.quantity * item.unit_price).toFixed(2)}</span>
+            <div className="standard-list-content">
+              {mockPendingSales.map((sale) => (
+                <div key={sale.id} className="standard-list-item group">
+                  <div className="list-item-main">
+                    <div className="list-item-title">
+                      Venda #{sale.id} • {sale.client_name}
+                    </div>
+                    <div className="list-item-subtitle">
+                      {getPaymentMethodLabel(sale.payment_method)} • Vendedor(es): {sale.sellers.join(", ")}
+                    </div>
+                    <div className="list-item-meta">
+                      <span className="flex items-center gap-1">
+                        <CreditCard className="w-3 h-3" />
+                        Total: R$ {sale.total_amount.toFixed(2)}
+                      </span>
+                      <span className="flex items-center gap-1 ml-4">
+                        <span>{sale.created_at}</span>
+                      </span>
+                    </div>
+                    <div className="mt-3 p-3 bg-gray-50 rounded-md">
+                      <p className="text-sm font-medium text-gray-600 mb-2">Itens:</p>
+                      <div className="space-y-1">
+                        {sale.items.map((item, index) => (
+                          <div key={index} className="flex justify-between text-sm">
+                            <span>{item.quantity}x {item.product_name}</span>
+                            <span>R$ {(item.quantity * item.unit_price).toFixed(2)}</span>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
-                  <div className="flex justify-between text-lg font-semibold mt-2 pt-2 border-t">
-                    <span>Total:</span>
-                    <span>R$ {sale.total_amount.toFixed(2)}</span>
+                  
+                  <div className="flex items-center gap-3">
+                    <span className="list-status-badge status-warning">
+                      Pendente
+                    </span>
+                    
+                    <div className="list-item-actions">
+                      <button 
+                        onClick={() => console.log('Processar pagamento:', sale.id)}
+                        className="list-action-button view"
+                        title="Processar Pagamento"
+                      >
+                        <CreditCard className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => console.log('Ver detalhes:', sale.id)}
+                        className="list-action-button edit"
+                        title="Ver Detalhes"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button 
+                        onClick={() => console.log('Imprimir:', sale.id)}
+                        className="list-action-button transfer"
+                        title="Imprimir"
+                      >
+                        <Printer className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-                
-                <div className="flex gap-2 mt-4">
-                  <Button size="sm" className="flex-1">
-                    <CreditCard className="h-4 w-4 mr-2" />
-                    Processar Pagamento
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Eye className="h-4 w-4 mr-2" />
-                    Ver Detalhes
-                  </Button>
-                  <Button size="sm" variant="outline">
-                    <Printer className="h-4 w-4 mr-2" />
-                    Imprimir
-                  </Button>
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>
