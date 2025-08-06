@@ -48,67 +48,48 @@ const PrintOptions: React.FC<PrintOptionsProps> = ({
   const [selectedPrinterType, setSelectedPrinterType] = useState<'thermal' | 'conventional'>('thermal');
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-w-4xl mx-auto">
       {/* Header */}
-      <Card className="glassmorphism border-primary/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">
-            <Printer className="w-5 h-5 text-primary" />
-            Opções de Impressão
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-3">
-              Escolha o tipo de impressora:
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Button
-                variant={selectedPrinterType === 'thermal' ? 'default' : 'outline'}
-                onClick={() => setSelectedPrinterType('thermal')}
-                className="h-auto p-4 flex-col items-start space-y-2 hover:scale-[1.02] transition-all duration-200"
-              >
-                <div className="flex items-center gap-2 w-full">
-                  <Printer className="w-4 h-4" />
-                  <span className="font-medium">Térmica (80mm)</span>
-                  {selectedPrinterType === 'thermal' && (
-                    <Badge variant="secondary" className="ml-auto">Selecionada</Badge>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground text-left w-full">
-                  Formato compacto para cupom fiscal
-                </p>
-              </Button>
-              
-              <Button
-                variant={selectedPrinterType === 'conventional' ? 'default' : 'outline'}
-                onClick={() => setSelectedPrinterType('conventional')}
-                className="h-auto p-4 flex-col items-start space-y-2 hover:scale-[1.02] transition-all duration-200"
-              >
-                <div className="flex items-center gap-2 w-full">
-                  <FileText className="w-4 h-4" />
-                  <span className="font-medium">Convencional (A4)</span>
-                  {selectedPrinterType === 'conventional' && (
-                    <Badge variant="secondary" className="ml-auto">Selecionada</Badge>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground text-left w-full">
-                  Formato padrão em papel A4
-                </p>
-              </Button>
-            </div>
-          </div>
+      <div className="flex items-center gap-2 mb-4">
+        <Printer className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-semibold text-foreground">Opções de Impressão</h3>
+      </div>
 
-          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-primary">
-            <p className="text-sm text-muted-foreground">
-              {selectedPrinterType === 'thermal' 
-                ? '📄 Formato compacto otimizado para impressoras térmicas de 80mm (cupom fiscal)'
-                : '📋 Formato padrão para impressoras convencionais em papel A4'
-              }
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Printer Type Selection */}
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-muted-foreground">
+          Escolha o tipo de impressora:
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            variant={selectedPrinterType === 'thermal' ? 'default' : 'outline'}
+            onClick={() => setSelectedPrinterType('thermal')}
+            className="h-auto p-3 justify-start text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Printer className="w-4 h-4" />
+              <div>
+                <div className="font-medium text-sm">Térmica (80mm)</div>
+                <div className="text-xs opacity-70">Cupom fiscal</div>
+              </div>
+            </div>
+          </Button>
+          
+          <Button
+            variant={selectedPrinterType === 'conventional' ? 'default' : 'outline'}
+            onClick={() => setSelectedPrinterType('conventional')}
+            className="h-auto p-3 justify-start text-left"
+          >
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <div>
+                <div className="font-medium text-sm">Convencional (A4)</div>
+                <div className="text-xs opacity-70">Papel A4</div>
+              </div>
+            </div>
+          </Button>
+        </div>
+      </div>
 
       {/* Print Component */}
       <ThermalPrint
