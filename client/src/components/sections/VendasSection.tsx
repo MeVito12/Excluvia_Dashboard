@@ -1056,6 +1056,8 @@ export default function VendasSection() {
           </div>
         </div>
       </div>
+    </div>
+  );
 
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
@@ -1590,35 +1592,34 @@ export default function VendasSection() {
         </div>
       )}
 
-      {/* Return do componente principal */}
-      <div className="app-section">
-        {/* Header */}
-        <div className="section-header">
-          <h1 className="section-title">Sistema de Vendas</h1>
-          <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
-        </div>
-
-        {/* Navegação por Abas */}
-        <div className="tab-navigation">
-          <button
-            onClick={() => setActiveTab('vendas')}
-            className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Nova Venda
-          </button>
-          <button
-            onClick={() => setActiveTab('caixa')}
-            className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
-          >
-            <CreditCard className="w-4 h-4" />
-            Caixa
-          </button>
-        </div>
-
-        {/* Conteúdo das Abas */}
-        {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
+  return (
+    <div className="app-section">
+      {/* Header */}
+      <div className="section-header">
+        <h1 className="section-title">Sistema de Vendas</h1>
+        <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
       </div>
+
+      {/* Navegação por Abas */}
+      <div className="tab-navigation">
+        <button
+          onClick={() => setActiveTab('vendas')}
+          className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          Nova Venda
+        </button>
+        <button
+          onClick={() => setActiveTab('caixa')}
+          className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
+        >
+          <CreditCard className="w-4 h-4" />
+          Caixa
+        </button>
+      </div>
+
+      {/* Conteúdo das Abas */}
+      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
     </div>
   );
 }
