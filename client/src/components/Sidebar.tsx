@@ -107,7 +107,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       id: 'cadastros',
       label: 'Cadastros',
       icon: UserPlus,
-      description: 'Cadastros de clientes, categorias e subcategorias'
+      description: 'Clientes, categorias e subcategorias'
     }
   ];
 
@@ -184,10 +184,10 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
                       onClick={() => handleMenuClick(item.id)}
                     >
                       <Icon className="mr-3 flex-shrink-0 w-5 h-5 text-white" />
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm leading-tight">{item.label}</div>
+                      <div className="flex-1 min-w-0 overflow-hidden">
+                        <div className="font-medium text-sm leading-tight truncate">{item.label}</div>
                         <div className={cn(
-                          "text-xs mt-1 leading-tight break-words hidden md:block",
+                          "text-xs mt-1 leading-tight break-words hidden md:block overflow-hidden line-clamp-2",
                           isActive ? "text-blue-100" : "text-blue-200"
                         )}>
                           {item.description}
