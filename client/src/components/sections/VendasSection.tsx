@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import StandardModal from "@/components/StandardModalTemplate";
+
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -653,14 +653,24 @@ export default function VendasSection() {
       {renderTabContent()}
 
       {/* Modal de Vendedores */}
-      <StandardModal
-        isOpen={showSellersModal}
-        onClose={() => setShowSellersModal(false)}
-        title="Selecionar Vendedores"
-        subtitle="Escolha os vendedores responsáveis por esta venda"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
+      {showSellersModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
+                  <p className="text-sm text-gray-500">Escolha os vendedores responsáveis por esta venda</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowSellersModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
         <div className="space-y-4">
           {companyProfiles.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
@@ -706,25 +716,44 @@ export default function VendasSection() {
             </div>
           )}
         </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowSellersModal(false)}>
-            Cancelar
-          </Button>
-          <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
-            Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
-          </Button>
+            <div className="flex gap-3 justify-end mt-6">
+              <button 
+                onClick={() => setShowSellersModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={() => setShowSellersModal(false)} 
+                disabled={selectedSellers.length === 0}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+              >
+                Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
+              </button>
+            </div>
+          </div>
         </div>
-      </StandardModal>
+      )}
 
       {/* Modal de Clientes */}
-      <StandardModal
-        isOpen={showClientModal}
-        onClose={() => setShowClientModal(false)}
-        title="Selecionar Cliente"
-        subtitle="Escolha um cliente existente ou cadastre um novo"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
+      {showClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
+                  <p className="text-sm text-gray-500">Escolha um cliente existente ou cadastre um novo</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowClientModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
         <div className="space-y-4">
           {/* Busca de clientes */}
           <div>
@@ -773,45 +802,60 @@ export default function VendasSection() {
             )}
           </div>
 
-          {/* Botão para novo cliente */}
-          <div className="pt-4 border-t">
-            <Button
-              variant="outline"
-              onClick={() => {
-                setShowClientModal(false);
-                setShowAddClientModal(true);
-              }}
-              className="w-full"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Cadastrar Novo Cliente
-            </Button>
+            {/* Botão para novo cliente */}
+            <div className="pt-4 border-t">
+              <button
+                onClick={() => {
+                  setShowClientModal(false);
+                  setShowAddClientModal(true);
+                }}
+                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Cadastrar Novo Cliente
+              </button>
+            </div>
+            
+            <div className="flex gap-3 justify-end mt-6">
+              <button 
+                onClick={() => setShowClientModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedClient(null);
+                  setShowClientModal(false);
+                }}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              >
+                Venda Avulsa (Sem Cliente)
+              </button>
+            </div>
           </div>
         </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowClientModal(false)}>
-            Cancelar
-          </Button>
-          <Button 
-            onClick={() => {
-              setSelectedClient(null);
-              setShowClientModal(false);
-            }}
-          >
-            Venda Avulsa (Sem Cliente)
-          </Button>
-        </div>
-      </StandardModal>
+      )}
 
       {/* Modal de Método de Pagamento */}
-      <StandardModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        title="Método de Pagamento"
-        subtitle="Selecione como o cliente irá pagar"
-        icon={<CreditCard className="h-5 w-5" />}
-        size="md"
-      >
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
+                  <p className="text-sm text-gray-500">Selecione como o cliente irá pagar</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
         <div className="space-y-3">
           {[
             { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
@@ -883,28 +927,45 @@ export default function VendasSection() {
             </div>
           )}
         </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
-            Cancelar
-          </Button>
+        
+        <div className="flex gap-3 justify-end mt-6">
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
-      </StandardModal>
+      )}
 
       {/* Modal de Cadastro de Cliente */}
-      <StandardModal
-        isOpen={showAddClientModal}
-        onClose={() => {
-          setShowAddClientModal(false);
-          resetClientForm();
-        }}
-        title="Cadastrar Novo Cliente"
-        subtitle="Preencha os dados do cliente"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="client-name">Nome *</Label>
+      {showAddClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-2">
+                <User className="h-5 w-5 text-purple-600" />
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800">Cadastrar Novo Cliente</h3>
+                  <p className="text-sm text-gray-500">Preencha os dados do cliente</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="client-name">Nome *</Label>
             <Input
               id="client-name"
               value={clientForm.name}
@@ -949,27 +1010,31 @@ export default function VendasSection() {
                 <SelectItem value="individual">Pessoa Física</SelectItem>
                 <SelectItem value="company">Pessoa Jurídica</SelectItem>
               </SelectContent>
-            </Select>
+              </Select>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 justify-end mt-6">
+              <button 
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleClientSubmit}
+                disabled={!clientForm.name.trim()}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+              >
+                Cadastrar
+              </button>
+            </div>
           </div>
         </div>
-        <div className="flex gap-3 justify-end">
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              setShowAddClientModal(false);
-              resetClientForm();
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleClientSubmit}
-            disabled={!clientForm.name.trim()}
-          >
-            Cadastrar
-          </Button>
-        </div>
-      </StandardModal>
+      )}
     </div>
   );
 }
