@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import StandardModal from "@/components/StandardModalTemplate";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -653,15 +653,11 @@ export default function VendasSection() {
       {renderTabContent()}
 
       {/* Modal de Vendedores */}
-      <StandardModal
-        isOpen={showSellersModal}
-        onClose={() => setShowSellersModal(false)}
-        title="Selecionar Vendedores"
-        subtitle="Escolha os vendedores responsáveis por esta venda"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
-        <div className="space-y-4">
+      <Dialog open={showSellersModal} onOpenChange={setShowSellersModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogTitle>Selecionar Vendedores</DialogTitle>
+          <DialogDescription>Escolha os vendedores responsáveis por esta venda</DialogDescription>
+          <div className="space-y-4">
           {companyProfiles.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -705,27 +701,24 @@ export default function VendasSection() {
               ))}
             </div>
           )}
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowSellersModal(false)}>
-            Cancelar
-          </Button>
-          <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
-            Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
-          </Button>
-        </div>
-      </StandardModal>
+          </div>
+          <div className="flex gap-3 justify-end pt-4">
+            <Button variant="outline" onClick={() => setShowSellersModal(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
+              Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Clientes */}
-      <StandardModal
-        isOpen={showClientModal}
-        onClose={() => setShowClientModal(false)}
-        title="Selecionar Cliente"
-        subtitle="Escolha um cliente existente ou cadastre um novo"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
-        <div className="space-y-4">
+      <Dialog open={showClientModal} onOpenChange={setShowClientModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogTitle>Selecionar Cliente</DialogTitle>
+          <DialogDescription>Escolha um cliente existente ou cadastre um novo</DialogDescription>
+          <div className="space-y-4">
           {/* Busca de clientes */}
           <div>
             <Input
@@ -787,32 +780,29 @@ export default function VendasSection() {
               Cadastrar Novo Cliente
             </Button>
           </div>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowClientModal(false)}>
-            Cancelar
-          </Button>
-          <Button 
-            onClick={() => {
-              setSelectedClient(null);
-              setShowClientModal(false);
-            }}
-          >
-            Venda Avulsa (Sem Cliente)
-          </Button>
-        </div>
-      </StandardModal>
+          </div>
+          <div className="flex gap-3 justify-end pt-4">
+            <Button variant="outline" onClick={() => setShowClientModal(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={() => {
+                setSelectedClient(null);
+                setShowClientModal(false);
+              }}
+            >
+              Venda Avulsa (Sem Cliente)
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Método de Pagamento */}
-      <StandardModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        title="Método de Pagamento"
-        subtitle="Selecione como o cliente irá pagar"
-        icon={<CreditCard className="h-5 w-5" />}
-        size="md"
-      >
-        <div className="space-y-3">
+      <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
+        <DialogContent className="max-w-md">
+          <DialogTitle>Método de Pagamento</DialogTitle>
+          <DialogDescription>Selecione como o cliente irá pagar</DialogDescription>
+          <div className="space-y-3">
           {[
             { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
             { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
@@ -882,26 +872,31 @@ export default function VendasSection() {
               </div>
             </div>
           )}
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
-            Cancelar
-          </Button>
-        </div>
-      </StandardModal>
+          </div>
+          <div className="flex gap-3 justify-end pt-4">
+            <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={() => setShowPaymentModal(false)}
+              disabled={!paymentMethod}
+            >
+              Finalizar Venda
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Modal de Cadastro de Cliente */}
-      <StandardModal
-        isOpen={showAddClientModal}
-        onClose={() => {
+      <Dialog open={showAddClientModal} onOpenChange={(open) => {
+        if (!open) {
           setShowAddClientModal(false);
           resetClientForm();
-        }}
-        title="Cadastrar Novo Cliente"
-        subtitle="Preencha os dados do cliente"
-        icon={<User className="h-5 w-5" />}
-        size="lg"
-      >
+        }
+      }}>
+        <DialogContent className="max-w-2xl">
+          <DialogTitle>Cadastrar Novo Cliente</DialogTitle>
+          <DialogDescription>Preencha os dados do cliente</DialogDescription>
         <div className="space-y-4">
           <div>
             <Label htmlFor="client-name">Nome *</Label>
@@ -951,25 +946,26 @@ export default function VendasSection() {
               </SelectContent>
             </Select>
           </div>
-        </div>
-        <div className="flex gap-3 justify-end">
-          <Button 
-            variant="outline" 
-            onClick={() => {
-              setShowAddClientModal(false);
-              resetClientForm();
-            }}
-          >
-            Cancelar
-          </Button>
-          <Button 
-            onClick={handleClientSubmit}
-            disabled={!clientForm.name.trim()}
-          >
-            Cadastrar
-          </Button>
-        </div>
-      </StandardModal>
+          </div>
+          <div className="flex gap-3 justify-end pt-4">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setShowAddClientModal(false);
+                resetClientForm();
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleClientSubmit}
+              disabled={!clientForm.name.trim()}
+            >
+              Cadastrar
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
