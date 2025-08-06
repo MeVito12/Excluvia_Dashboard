@@ -733,7 +733,7 @@ const VendasSection = () => {
                   setShowClientModal(false);
                 }}
               >
-                <p className="font-medium">Venda sem cliente</p>
+                <p className="font-medium text-gray-800">Venda sem cliente</p>
                 <p className="text-sm text-gray-600">Continuar sem identificar cliente</p>
               </div>
             </div>
@@ -769,7 +769,7 @@ const VendasSection = () => {
                       setClientSearchTerm("");
                     }}
                   >
-                    <p className="font-medium">{client.name}</p>
+                    <p className="font-medium text-gray-800">{client.name}</p>
                     {client.email && <p className="text-sm text-gray-600">{client.email}</p>}
                     {client.phone && <p className="text-sm text-gray-600">{client.phone}</p>}
                   </div>
@@ -815,7 +815,7 @@ const VendasSection = () => {
               ].map((method) => (
                 <button
                   key={method.value}
-                  className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors"
+                  className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors text-gray-800"
                   onClick={() => {
                     setPaymentMethod(method.value);
                     setShowPaymentModal(false);
@@ -862,7 +862,7 @@ const VendasSection = () => {
                     className="mr-3"
                   />
                   <div>
-                    <p className="font-medium">{profile.name}</p>
+                    <p className="font-medium text-gray-800">{profile.name}</p>
                     <p className="text-sm text-gray-600">{profile.email}</p>
                   </div>
                 </label>
