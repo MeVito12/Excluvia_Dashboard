@@ -577,7 +577,7 @@ const VendasSection = () => {
 
               {/* Botão Finalizar */}
               <Button 
-                className="w-full py-3 text-lg bg-[hsl(158,89%,53%)] hover:bg-[hsl(158,89%,48%)] text-white"
+                className="w-full py-3 text-lg bg-[hsl(262,83%,58%)] hover:bg-[hsl(262,83%,53%)] text-white"
                 onClick={handleProcessSale}
                 disabled={cart.length === 0 || processSaleMutation.isPending}
               >
