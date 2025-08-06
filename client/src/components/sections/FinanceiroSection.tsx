@@ -478,7 +478,7 @@ const FinanceiroSection = () => {
         </div>
       </div>
 
-      {/* Navegação das abas */}
+      {/* Navegação das abas - sempre mostra porque entradas e saídas são essenciais */}
       <div className="tab-navigation">
         <button
           onClick={() => setActiveTab('entradas')}

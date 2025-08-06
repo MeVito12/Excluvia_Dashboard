@@ -64,6 +64,12 @@ Common database errors encountered and solutions implemented:
 - Implemented user lookup fallback to ensure company_id is always derived from authenticated session
 - All dashboard metrics now show accurate company-specific data (R$ 191.936,15 in sales, R$ 26.781,00 in revenue for demo company)
 
+**Conditional UI Implementation (Aug 2025)**: Implemented intelligent interface adaptation based on business structure:
+- **Transfer tabs**: Only appear in Estoque and Financeiro when company has multiple branches (>1)
+- **Tab navigation**: Completely hidden in Estoque when no branches exist (single-page view)
+- **Smart fallback**: Auto-redirects to main tabs if user tries accessing transfer tabs without branches
+- **Consistent logic**: Applied across both Inventory and Financial sections for uniform experience
+
 **UUID Authentication System Implementation (Aug 2025)**: Developed comprehensive UUID-based authentication as requested by user:
 - Created new auth_users, auth_companies, and auth_branches tables with UUID primary keys
 - Implemented JWT-based authentication with bcrypt password hashing

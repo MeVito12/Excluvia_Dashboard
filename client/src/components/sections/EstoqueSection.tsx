@@ -716,21 +716,24 @@ const EstoqueSection = () => {
         )}
       </div>
 
-      <div className="tab-navigation">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-          >
-            <tab.icon className="w-4 h-4" />
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {/* Só mostra navegação se houver mais de uma aba */}
+      {hasBranches && (
+        <div className="tab-navigation">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {activeTab === 'produtos' && renderProducts()}
-      {activeTab === 'transferencias' && renderTransfers()}
+      {activeTab === 'transferencias' && hasBranches && renderTransfers()}
 
       {/* Modal Adicionar Produto */}
       {showAddProductModal && (
