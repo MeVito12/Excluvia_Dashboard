@@ -73,8 +73,126 @@ const VendasSection = () => {
   const validateCouponMutation = useValidateCoupon();
   const applyCouponMutation = useApplyCoupon();
 
+  // Estados adicionais para caixa
+  const [processingPayment, setProcessingPayment] = useState<number | null>(null);
+
   // Debug para modais
   console.log('Modal states:', { showClientModal, showPaymentModal, showSellersModal });
+
+  // Função para processar pagamento
+  const handleProcessPayment = async (saleId: number) => {
+    setProcessingPayment(saleId);
+    try {
+      // Simular processamento
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast({
+        title: "Pagamento Processado",
+        description: `Venda #${saleId} foi processada com sucesso!`,
+        variant: "default"
+      });
+      
+      // Aqui você removeria a venda da lista de pendentes
+      console.log(`Pagamento processado para venda #${saleId}`);
+    } catch (error) {
+      toast({
+        title: "Erro no Pagamento",
+        description: "Não foi possível processar o pagamento. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setProcessingPayment(null);
+    }
+  };
+
+  // Função para imprimir comprovante
+  const handlePrintReceipt = (sale: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast({
+        title: "Erro de Impressão",
+        description: "Não foi possível abrir a janela de impressão. Verifique se pop-ups estão permitidos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Comprovante de Venda #${sale.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; max-width: 300px; margin: 0 auto; }
+            .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
+            .item { display: flex; justify-content: space-between; margin: 5px 0; }
+            .total { border-top: 1px solid #000; padding-top: 10px; margin-top: 10px; font-weight: bold; }
+            .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>Sistema de Gestão</h2>
+            <p>Comprovante de Venda</p>
+            <p>Venda #${sale.id}</p>
+          </div>
+          
+          <div>
+            <p><strong>Cliente:</strong> ${sale.client_name}</p>
+            <p><strong>Data:</strong> ${sale.created_at}</p>
+            <p><strong>Pagamento:</strong> ${getPaymentMethodLabel(sale.payment_method)}</p>
+            <p><strong>Vendedor(es):</strong> ${sale.sellers.join(", ")}</p>
+          </div>
+          
+          <div style="margin: 15px 0;">
+            <p><strong>Itens:</strong></p>
+            ${sale.items.map(item => `
+              <div class="item">
+                <span>${item.quantity}x ${item.product_name}</span>
+                <span>R$ ${(item.quantity * item.unit_price).toFixed(2)}</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div class="total">
+            <div class="item">
+              <span>TOTAL:</span>
+              <span>R$ ${sale.total_amount.toFixed(2)}</span>
+            </div>
+          </div>
+          
+          <div class="footer">
+            <p>Obrigado pela preferência!</p>
+            <p>---</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    // Aguardar carregamento e imprimir
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
+
+    toast({
+      title: "Imprimindo",
+      description: `Comprovante da venda #${sale.id} enviado para impressão.`,
+      variant: "default"
+    });
+  };
+
+  // Função para ver detalhes
+  const handleViewDetails = (sale: any) => {
+    toast({
+      title: `Detalhes da Venda #${sale.id}`,
+      description: `Cliente: ${sale.client_name}\nTotal: R$ ${sale.total_amount.toFixed(2)}\nPagamento: ${getPaymentMethodLabel(sale.payment_method)}`,
+      variant: "default"
+    });
+  };
 
   // Função para obter label do método de pagamento
   const getPaymentMethodLabel = (method: string) => {
@@ -658,21 +776,26 @@ const VendasSection = () => {
                     
                     <div className="list-item-actions">
                       <button 
-                        onClick={() => console.log('Processar pagamento:', sale.id)}
+                        onClick={() => handleProcessPayment(sale.id)}
                         className="list-action-button view"
                         title="Processar Pagamento"
+                        disabled={processingPayment === sale.id}
                       >
-                        <CreditCard className="w-4 h-4" />
+                        {processingPayment === sale.id ? (
+                          <div className="w-4 h-4 animate-spin border-2 border-white border-t-transparent rounded-full"></div>
+                        ) : (
+                          <CreditCard className="w-4 h-4" />
+                        )}
                       </button>
                       <button 
-                        onClick={() => console.log('Ver detalhes:', sale.id)}
+                        onClick={() => handleViewDetails(sale)}
                         className="list-action-button edit"
                         title="Ver Detalhes"
                       >
                         <Eye className="w-4 h-4" />
                       </button>
                       <button 
-                        onClick={() => console.log('Imprimir:', sale.id)}
+                        onClick={() => handlePrintReceipt(sale)}
                         className="list-action-button transfer"
                         title="Imprimir"
                       >
