@@ -1,5 +1,6 @@
 import { useProducts, useCategories, useSubcategories, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import React, { useState } from 'react';
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { useCategory } from '@/contexts/CategoryContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { useAuth } from '@/contexts/AuthContext';
@@ -236,6 +237,28 @@ const EstoqueSection = () => {
 
 
 
+  // Filtrar produtos
+  const filteredProducts = products.filter((product: any) => {
+    const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const categoryMatch = filterCategory === 'all' || 
+      product.category?.toLowerCase().includes(filterCategory.toLowerCase());
+    const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
+    const statusMatch = statusFilter === 'all' || 
+      status === statusFilter ||
+      (statusFilter === 'Estoque Crítico' && (status === 'Estoque Baixo' || status === 'Sem Estoque'));
+    return searchMatch && categoryMatch && statusMatch;
+  });
+
+  // Paginação para produtos
+  const {
+    currentItems: paginatedProducts,
+    currentPage: productsCurrentPage,
+    totalPages: productsTotalPages,
+    totalItems: productsTotalItems,
+    itemsPerPage: productsItemsPerPage,
+    setCurrentPage: setProductsCurrentPage
+  } = usePagination(filteredProducts, 10);
+
   // Renderização dos produtos
   const renderProducts = () => (
     <div className="animate-fade-in">
@@ -303,17 +326,7 @@ const EstoqueSection = () => {
 
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {products
-              .filter((product: any) => {
-                const searchMatch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-                const categoryMatch = filterCategory === 'all' || 
-                  product.category?.toLowerCase().includes(filterCategory.toLowerCase());
-                const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
-                const statusMatch = statusFilter === 'all' || 
-                  status === statusFilter ||
-                  (statusFilter === 'Estoque Crítico' && (status === 'Estoque Baixo' || status === 'Sem Estoque'));
-                return searchMatch && categoryMatch && statusMatch;
-              })
+            {paginatedProducts
               .map((product: any) => {
                 const status = getProductStatus(product.stock, product.min_stock || 0, product.expiry_date?.toString());
                 
@@ -372,7 +385,18 @@ const EstoqueSection = () => {
               })}
           </div>
           
-          {products.length === 0 && (
+          {/* Paginação para produtos */}
+          {productsTotalPages > 1 && (
+            <Pagination
+              currentPage={productsCurrentPage}
+              totalPages={productsTotalPages}
+              onPageChange={setProductsCurrentPage}
+              totalItems={productsTotalItems}
+              itemsPerPage={productsItemsPerPage}
+            />
+          )}
+          
+          {filteredProducts.length === 0 && (
             <div className="text-center py-8">
               <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhum produto encontrado</h3>
@@ -390,6 +414,42 @@ const EstoqueSection = () => {
       </div>
     </div>
   );
+
+  // Filtrar transferências
+  const filteredTransfers = (transfers || []).filter((transfer: any) => {
+    const productName = getProductName(transfer.productId);
+    const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
+    const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
+      (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
+    
+    // Filtro de data
+    let dateMatch = true;
+    if (dateFrom || dateTo) {
+      const transferDate = new Date(transfer.transfer_date || transfer.created_at);
+      const fromDate = dateFrom ? new Date(dateFrom) : null;
+      const toDate = dateTo ? new Date(dateTo) : null;
+      
+      if (fromDate && toDate) {
+        dateMatch = transferDate >= fromDate && transferDate <= toDate;
+      } else if (fromDate) {
+        dateMatch = transferDate >= fromDate;
+      } else if (toDate) {
+        dateMatch = transferDate <= toDate;
+      }
+    }
+    
+    return searchMatch && statusMatch && dateMatch;
+  });
+
+  // Paginação para transferências
+  const {
+    currentItems: paginatedTransfers,
+    currentPage: transfersCurrentPage,
+    totalPages: transfersTotalPages,
+    totalItems: transfersTotalItems,
+    itemsPerPage: transfersItemsPerPage,
+    setCurrentPage: setTransfersCurrentPage
+  } = usePagination(filteredTransfers, 10);
 
   // Renderização das transferências
   const renderTransfers = () => (
@@ -469,31 +529,7 @@ const EstoqueSection = () => {
 
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {transfers
-              ?.filter((transfer: any) => {
-                const productName = getProductName(transfer.productId);
-                const searchMatch = productName.toLowerCase().includes(searchTerm.toLowerCase());
-                const statusMatch = statusFilter === 'all' || transfer.status === statusFilter || 
-                  (statusFilter === 'approved' && (transfer.status === 'approved' || transfer.status === 'in_transit'));
-                
-                // Filtro de data
-                let dateMatch = true;
-                if (dateFrom || dateTo) {
-                  const transferDate = new Date(transfer.transfer_date || transfer.created_at);
-                  const fromDate = dateFrom ? new Date(dateFrom) : null;
-                  const toDate = dateTo ? new Date(dateTo) : null;
-                  
-                  if (fromDate && toDate) {
-                    dateMatch = transferDate >= fromDate && transferDate <= toDate;
-                  } else if (fromDate) {
-                    dateMatch = transferDate >= fromDate;
-                  } else if (toDate) {
-                    dateMatch = transferDate <= toDate;
-                  }
-                }
-                
-                return searchMatch && statusMatch && dateMatch;
-              })
+            {paginatedTransfers
               .map((transfer: any) => (
               <div key={transfer.id} className="standard-list-item group">
                 <div className="list-item-main">
@@ -553,6 +589,17 @@ const EstoqueSection = () => {
               </div>
             ))}
           </div>
+          
+          {/* Paginação para transferências */}
+          {transfersTotalPages > 1 && (
+            <Pagination
+              currentPage={transfersCurrentPage}
+              totalPages={transfersTotalPages}
+              onPageChange={setTransfersCurrentPage}
+              totalItems={transfersTotalItems}
+              itemsPerPage={transfersItemsPerPage}
+            />
+          )}
         </div>
 
         {(!transfers || transfers.length === 0) && (

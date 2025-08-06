@@ -4,6 +4,7 @@ import { useCategory } from '@/contexts/CategoryContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Client } from '@shared/schema';
+import { Pagination, usePagination } from "@/components/ui/pagination";
 
 import { 
   Users, 
@@ -152,6 +153,46 @@ const CadastrosSection = () => {
     client.phone?.includes(searchTerm)
   );
 
+  // Filtrar categorias baseado na busca
+  const filteredCategories = categories.filter((category: any) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Filtrar subcategorias baseado na busca
+  const filteredSubcategories = subcategories.filter((subcategory: any) =>
+    subcategory.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Paginação para clientes
+  const {
+    currentItems: paginatedClients,
+    currentPage: clientsCurrentPage,
+    totalPages: clientsTotalPages,
+    totalItems: clientsTotalItems,
+    itemsPerPage: clientsItemsPerPage,
+    setCurrentPage: setClientsCurrentPage
+  } = usePagination(filteredClients, 10);
+
+  // Paginação para categorias
+  const {
+    currentItems: paginatedCategories,
+    currentPage: categoriesCurrentPage,
+    totalPages: categoriesTotalPages,
+    totalItems: categoriesTotalItems,
+    itemsPerPage: categoriesItemsPerPage,
+    setCurrentPage: setCategoriesCurrentPage
+  } = usePagination(filteredCategories, 10);
+
+  // Paginação para subcategorias
+  const {
+    currentItems: paginatedSubcategories,
+    currentPage: subcategoriesCurrentPage,
+    totalPages: subcategoriesTotalPages,
+    totalItems: subcategoriesTotalItems,
+    itemsPerPage: subcategoriesItemsPerPage,
+    setCurrentPage: setSubcategoriesCurrentPage
+  } = usePagination(filteredSubcategories, 10);
+
   // Função para lidar com criação de categorias
   const handleCategorySubmit = async () => {
     try {
@@ -242,7 +283,7 @@ const CadastrosSection = () => {
               {/* Lista de clientes */}
               <div className="standard-list-container">
                 <div className="standard-list-content">
-                  {filteredClients.map((client: any) => (
+                  {paginatedClients.map((client: any) => (
                     <div key={client.id} className="standard-list-item group">
                       <div className="list-item-main">
                         <div className="list-item-title">{client.name}</div>
@@ -284,6 +325,17 @@ const CadastrosSection = () => {
                     </div>
                   ))}
                 </div>
+                
+                {/* Paginação */}
+                {clientsTotalPages > 1 && (
+                  <Pagination
+                    currentPage={clientsCurrentPage}
+                    totalPages={clientsTotalPages}
+                    onPageChange={setClientsCurrentPage}
+                    totalItems={clientsTotalItems}
+                    itemsPerPage={clientsItemsPerPage}
+                  />
+                )}
               </div>
 
               {filteredClients.length === 0 && (
@@ -323,7 +375,7 @@ const CadastrosSection = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {categories.map((category: any) => (
+                {paginatedCategories.map((category: any) => (
                   <div key={category.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
@@ -352,7 +404,20 @@ const CadastrosSection = () => {
                 ))}
               </div>
 
-              {categories.length === 0 && (
+              {/* Paginação para categorias */}
+              {categoriesTotalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={categoriesCurrentPage}
+                    totalPages={categoriesTotalPages}
+                    onPageChange={setCategoriesCurrentPage}
+                    totalItems={categoriesTotalItems}
+                    itemsPerPage={categoriesItemsPerPage}
+                  />
+                </div>
+              )}
+
+              {filteredCategories.length === 0 && (
                 <div className="text-center py-8">
                   <Tags className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhuma categoria cadastrada</h3>
@@ -385,7 +450,7 @@ const CadastrosSection = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {subcategories.map((subcategory: any) => {
+                {paginatedSubcategories.map((subcategory: any) => {
                   const parentCategory = categories.find((c: any) => c.id === subcategory.category_id);
                   return (
                     <div key={subcategory.id} className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -420,7 +485,20 @@ const CadastrosSection = () => {
                 })}
               </div>
 
-              {subcategories.length === 0 && (
+              {/* Paginação para subcategorias */}
+              {subcategoriesTotalPages > 1 && (
+                <div className="mt-6">
+                  <Pagination
+                    currentPage={subcategoriesCurrentPage}
+                    totalPages={subcategoriesTotalPages}
+                    onPageChange={setSubcategoriesCurrentPage}
+                    totalItems={subcategoriesTotalItems}
+                    itemsPerPage={subcategoriesItemsPerPage}
+                  />
+                </div>
+              )}
+
+              {filteredSubcategories.length === 0 && (
                 <div className="text-center py-8">
                   <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700 mb-2">Nenhuma subcategoria cadastrada</h3>

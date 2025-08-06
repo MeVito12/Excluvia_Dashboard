@@ -1,5 +1,6 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useState } from 'react';
+import { Pagination, usePagination } from "@/components/ui/pagination";
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
 import { Badge } from '@/components/ui/badge';
@@ -144,6 +145,16 @@ const AtividadeSection = () => {
     return matchesSearch;
   });
 
+  // Paginação para atividades
+  const {
+    currentItems: paginatedActivities,
+    currentPage: activitiesCurrentPage,
+    totalPages: activitiesTotalPages,
+    totalItems: activitiesTotalItems,
+    itemsPerPage: activitiesItemsPerPage,
+    setCurrentPage: setActivitiesCurrentPage
+  } = usePagination(filteredActivities, 10);
+
   // Tabs da seção
   const tabs = [
     { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
@@ -228,7 +239,7 @@ const AtividadeSection = () => {
 
         <div className="standard-list-container">
           <div className="standard-list-content">
-            {filteredActivities.map((activity) => (
+            {paginatedActivities.map((activity) => (
               <div key={activity.id} className="standard-list-item group">
                 <div className="list-item-main">
                   <div className="list-item-title">{activity.action}</div>
@@ -266,6 +277,17 @@ const AtividadeSection = () => {
               </div>
             ))}
           </div>
+          
+          {/* Paginação para atividades */}
+          {activitiesTotalPages > 1 && (
+            <Pagination
+              currentPage={activitiesCurrentPage}
+              totalPages={activitiesTotalPages}
+              onPageChange={setActivitiesCurrentPage}
+              totalItems={activitiesTotalItems}
+              itemsPerPage={activitiesItemsPerPage}
+            />
+          )}
         </div>
       </div>
     </div>
