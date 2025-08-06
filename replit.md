@@ -46,6 +46,10 @@ Product registration should include: name, minimum stock, current stock, for sal
 - **Flexible Printing System**: Dual-mode support for thermal (80mm) and conventional (A4) printers with optimized layouts and automatic detection.
 - **Conditional UI**: Intelligent interface adaptation based on business structure, e.g., showing transfer tabs only for multi-branch companies.
 
+## Recent Changes and Updates
+- **Financial Transfer Integration (Aug 2025)**: Implemented automatic revenue deduction from origin branch when money transfers are completed - transfer amounts are automatically deducted from sender branch revenue and added to receiver branch revenue through automatic financial entries
+- **Modal Design System Standardization (Aug 2025)**: Updated print modal and created StandardModalTemplate component to ensure consistent design patterns across all modals using glassmorphism effects, shadcn/ui components, and system colors
+
 ## External Dependencies
 - **@tanstack/react-query**: Data synchronization for React.
 - **express**: Web framework for Node.js.
