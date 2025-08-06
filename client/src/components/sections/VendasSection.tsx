@@ -1057,6 +1057,30 @@ export default function VendasSection() {
         </div>
       </div>
 
+      {/* Navegação por Abas */}
+      <div className="flex border-b mb-6">
+        <button
+          onClick={() => setActiveTab('vendas')}
+          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === 'vendas'
+              ? 'border-purple-500 text-purple-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          🛒 Vendas
+        </button>
+        <button
+          onClick={() => setActiveTab('caixa')}
+          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+            activeTab === 'caixa'
+              ? 'border-purple-500 text-purple-600'
+              : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          💰 Caixa
+        </button>
+      </div>
+
       {/* Conteúdo das Abas */}
       {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
 
