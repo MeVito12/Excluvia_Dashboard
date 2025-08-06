@@ -115,6 +115,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
   const menuItems = allMenuItems.filter(item => {
     // Controle só para usuários master ou CEO
     if (item.id === 'controle') {
+      console.log('[SIDEBAR] 🔍 Checking controle access - isMasterUser:', isMasterUser, 'isCeoUser:', isCeoUser);
       return isMasterUser || isCeoUser;
     }
 

@@ -101,8 +101,15 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
   // Verifica se é usuário master ou CEO
   const isMasterUser = (user as any)?.role === 'master';
-  const isCeoUser = (user as any)?.email === 'ceo@sistema.com'; // CEO específico
+  const isCeoUser = (user as any)?.email === 'ceo@sistema.com' || (user as any)?.role === 'ceo'; // CEO específico
   const isGestaoUser = isCeoUser; // CEO tem acesso universal (gestão)
+  
+  // Debug para verificar detecção de usuários
+  console.log('[PERMISSIONS] 🔍 User data:', user);
+  console.log('[PERMISSIONS] 👑 isMasterUser:', isMasterUser);
+  console.log('[PERMISSIONS] 🎯 isCeoUser:', isCeoUser);
+  console.log('[PERMISSIONS] 📧 User email:', (user as any)?.email);
+  console.log('[PERMISSIONS] 🏷️ User role:', (user as any)?.role);
 
   // Carrega permissões do localStorage
   useEffect(() => {
@@ -112,7 +119,9 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       
       if (isMasterUser || isCeoUser) {
         // Master e CEO têm acesso a tudo, incluindo controle
-        setUserPermissions([...availableSections.map(s => s.id), 'controle']);
+        const allPermissions = [...availableSections.map(s => s.id), 'controle'];
+        console.log('[PERMISSIONS] ✅ Setting master/CEO permissions:', allPermissions);
+        setUserPermissions(allPermissions);
       } else if (savedPermissions) {
         setUserPermissions(JSON.parse(savedPermissions));
       } else {
