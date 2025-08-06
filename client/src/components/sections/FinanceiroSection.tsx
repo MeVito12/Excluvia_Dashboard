@@ -1,6 +1,6 @@
 import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useUnifiedMetrics } from "@/hooks/useUnifiedMetrics";
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatDateBR } from '@/utils/dateFormat';
@@ -80,6 +80,10 @@ const FinanceiroSection = () => {
   }, [allFinancialEntries, dateFrom, dateTo]);
   const { data: moneyTransfers = [], isLoading: transfersLoading } = useMoneyTransfers(undefined, companyId);
   const { data: branches = [] } = useBranches(companyId);
+  
+  // Verificar se a empresa tem filiais
+  const hasBranches = branches && branches.length > 1; // Mais de 1 filial (incluindo matriz)
+  
   const createFinancialEntry = useCreateFinancial();
   const createMoneyTransfer = useCreateMoneyTransfer();
 
@@ -90,6 +94,13 @@ const FinanceiroSection = () => {
   };
 
   const [activeTab, setActiveTab] = useState('entradas');
+  
+  // Redefine aba ativa se transferências não estiverem disponíveis
+  React.useEffect(() => {
+    if (activeTab === 'transferencias' && !hasBranches) {
+      setActiveTab('entradas');
+    }
+  }, [activeTab, hasBranches]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isPayModalOpen, setIsPayModalOpen] = useState(false);
@@ -483,13 +494,15 @@ const FinanceiroSection = () => {
           <TrendingDown className="w-4 h-4" />
           Saídas
         </button>
-        <button
-          onClick={() => setActiveTab('transferencias')}
-          className={`tab-button ${activeTab === 'transferencias' ? 'active' : ''}`}
-        >
-          <ArrowLeftRight className="w-4 h-4" />
-          Transferências
-        </button>
+        {hasBranches && (
+          <button
+            onClick={() => setActiveTab('transferencias')}
+            className={`tab-button ${activeTab === 'transferencias' ? 'active' : ''}`}
+          >
+            <ArrowLeftRight className="w-4 h-4" />
+            Transferências
+          </button>
+        )}
       </div>
 
       {/* Conteúdo das abas */}
