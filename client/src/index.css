@@ -65,6 +65,19 @@
   background: white !important;
   border-radius: 8px !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  max-width: min(calc(100vw - 32px), var(--radix-dialog-content-width, 32rem)) !important;
+  max-height: min(calc(100vh - 32px), var(--radix-dialog-content-height, 85vh)) !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+/* Forçar centralização para todos os diálogos */
+[data-radix-popper-content-wrapper] {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 50001 !important;
 }
 
 /* Modal de recuperação de senha - força z-index máximo */
