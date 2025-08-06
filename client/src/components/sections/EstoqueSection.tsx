@@ -86,6 +86,7 @@ const EstoqueSection = () => {
   const { data: categories = [] } = useCategories(companyId);
   const { data: subcategories = [] } = useSubcategories(companyId);
   const { data: transfers = [], isLoading: isTransfersLoading } = useTransfers(undefined, companyId);
+  const { data: branches = [] } = useBranches(companyId);
   const { mutateAsync: createProduct } = useCreateProduct();
   const createTransfer = useCreateTransfer();
   
@@ -113,10 +114,20 @@ const EstoqueSection = () => {
     setTransferQuantity(1);
   };
 
-  // Tabs do sistema
+  // Verificar se a empresa tem filiais
+  const hasBranches = branches && branches.length > 1; // Mais de 1 filial (incluindo matriz)
+  
+  // Redefine aba ativa se transferências não estiverem disponíveis
+  React.useEffect(() => {
+    if (activeTab === 'transferencias' && !hasBranches) {
+      setActiveTab('produtos');
+    }
+  }, [activeTab, hasBranches]);
+  
+  // Tabs do sistema - só mostra transferências se houver filiais
   const tabs = [
     { id: 'produtos', label: 'Produtos', icon: Package },
-    { id: 'transferencias', label: 'Transferências', icon: ArrowRightLeft }
+    ...(hasBranches ? [{ id: 'transferencias', label: 'Transferências', icon: ArrowRightLeft }] : [])
   ];
 
   // Funções para manipular produtos
