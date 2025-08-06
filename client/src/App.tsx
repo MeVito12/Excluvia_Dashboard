@@ -11,23 +11,24 @@ import NotificationSystem, { useNotifications } from "@/components/NotificationS
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
 
-// Limpeza de dados inconsistentes do localStorage
+// Limpeza FORÇADA de dados inconsistentes do localStorage
 if (typeof window !== 'undefined') {
   const currentUser = localStorage.getItem('currentUser');
   if (currentUser) {
     try {
       const userData = JSON.parse(currentUser);
-      // Se detectar dados inconsistentes (email usuario@ mas role null), limpar
-      if (userData.email === 'usuario@sistema.com' && !userData.role) {
-        console.log('[AUTH-CLEANUP] 🔄 Clearing inconsistent localStorage data...');
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('userBusinessCategory');
+      // Se detectar qualquer dados inconsistentes (email usuario@ OU role null), limpar
+      if (userData.email === 'usuario@sistema.com' || !userData.role) {
+        console.log('[AUTH-CLEANUP] 🔄 FORCED clearing of inconsistent localStorage data...');
+        localStorage.clear(); // Limpar tudo
+        sessionStorage.clear(); // Limpar session também
         window.location.reload();
       }
     } catch (e) {
-      console.log('[AUTH-CLEANUP] ❌ Error parsing localStorage, clearing...');
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('userBusinessCategory');
+      console.log('[AUTH-CLEANUP] ❌ Error parsing localStorage, clearing everything...');
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.reload();
     }
   }
 }
