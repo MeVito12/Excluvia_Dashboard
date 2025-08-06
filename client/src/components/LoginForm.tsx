@@ -25,7 +25,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
-  const [showDemoModal, setShowDemoModal] = useState(false);
+
 
   // Sistema de usuários mantidos
   const categoryUsers = {
@@ -33,58 +33,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     'junior': { email: 'junior@mercadocentral.com.br', password: 'junior2025', name: 'Junior Coordenador', business: 'Mercado Central', userType: 'gestao' }
   };
 
-  // Perfis de demonstração com dados de exemplo
-  const demoProfiles = [
-    {
-      category: 'farmacia',
-      name: 'Farmácia Central',
-      business: 'Demo Farmácia Central',
-      description: 'Sistema completo para farmácias com controle de medicamentos, vendas e estoque com validade',
-      features: ['Controle de medicamentos', 'Gestão de validade', 'Receitas médicas', 'Vendas automatizadas']
-    },
-    {
-      category: 'pet',
-      name: 'Pet Clinic',
-      business: 'Demo Pet Clinic',
-      description: 'Plataforma veterinária com agendamentos, prontuários e controle de produtos pet',
-      features: ['Agendamentos veterinários', 'Prontuários digitais', 'Produtos pet', 'Consultas e vacinas']
-    },
-    {
-      category: 'medico',
-      name: 'Clínica Saúde',
-      business: 'Demo Clínica Saúde', 
-      description: 'Sistema médico completo com agendamentos, prontuários e controle financeiro',
-      features: ['Agendamentos médicos', 'Prontuários eletrônicos', 'Controle financeiro', 'Equipamentos médicos']
-    },
-    {
-      category: 'alimenticio',
-      name: 'Restaurante Bella Vista',
-      business: 'Demo Restaurante Bella Vista',
-      description: 'Sistema completo para restaurantes com cardápio digital, pedidos online e controle de estoque',
-      features: ['Cardápio digital', 'Pedidos WhatsApp', 'Controle de ingredientes', 'Delivery automático']
-    },
-    {
-      category: 'vendas',
-      name: 'Comercial Tech',
-      business: 'Demo Comercial Tech',
-      description: 'Plataforma de vendas B2B com gestão de clientes corporativos e produtos tecnológicos',
-      features: ['Vendas B2B', 'Clientes corporativos', 'Produtos tecnológicos', 'Relatórios de vendas']
-    },
-    {
-      category: 'design',
-      name: 'Agência Creative',
-      business: 'Demo Agência Creative',
-      description: 'Gestão de projetos criativos com portfólio, clientes e controle de campanhas',
-      features: ['Portfólio de projetos', 'Gestão de campanhas', 'Clientes criativos', 'Propostas comerciais']
-    },
-    {
-      category: 'sites',
-      name: 'Web Agency',
-      business: 'Demo Web Agency',
-      description: 'Agência de desenvolvimento web com projetos, clientes e gestão técnica completa',
-      features: ['Projetos web', 'Desenvolvimento técnico', 'Clientes digitais', 'Hospedagem e domínios']
-    }
-  ];
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,56 +125,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
     setError('');
   };
 
-  const handleDemoLogin = async (category: string) => {
-    const demoCredentials = {
-      'farmacia': { email: 'demo.farmacia@sistema.com', password: 'demo123' },
-      'pet': { email: 'demo.pet@sistema.com', password: 'demo123' },
-      'medico': { email: 'demo.medico@sistema.com', password: 'demo123' },
-      'alimenticio': { email: 'demo.alimenticio@sistema.com', password: 'rest2025' },
-      'vendas': { email: 'demo.vendas@sistema.com', password: 'demo123' },
-      'design': { email: 'demo.design@sistema.com', password: 'demo123' },
-      'sites': { email: 'demo.sites@sistema.com', password: 'demo123' }
-    };
 
-    const credentials = demoCredentials[category as keyof typeof demoCredentials];
-    if (credentials) {
-      setIsLoading(true);
-      setError('');
-      setShowDemoModal(false);
-      
-      try {
-        // Fazer login direto via API
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            email: credentials.email, 
-            password: credentials.password 
-          }),
-        });
-
-        if (response.ok) {
-          const { user } = await response.json();
-          
-          // Definir categoria no localStorage e contexto
-          localStorage.setItem('userBusinessCategory', user.businessCategory || category);
-          setSelectedCategory(user.businessCategory || category);
-          
-          // Fazer login com dados reais do usuário
-          onLogin(user);
-        } else {
-          const error = await response.json();
-          setError(error.error || 'Erro ao fazer login na demonstração');
-        }
-      } catch (error) {
-        setError('Erro de conexão. Tente novamente.');
-      }
-      
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--dashboard-darker))] to-[hsl(var(--dashboard-dark))] flex items-center justify-center p-4">
@@ -338,19 +238,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
                   Esqueceu sua senha?
                 </button>
                 
-                <div className="flex items-center justify-center">
-                  <div className="border-t border-gray-300 flex-1"></div>
-                  <span className="px-3 text-xs text-gray-500">ou</span>
-                  <div className="border-t border-gray-300 flex-1"></div>
-                </div>
-                
-                <button
-                  type="button"
-                  onClick={() => setShowDemoModal(true)}
-                  className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm font-medium rounded-md hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105"
-                >
-                  🚀 Acessar Demonstração
-                </button>
+
               </div>
             </form>
 
@@ -433,93 +321,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
           </DialogContent>
         </Dialog>
 
-        {/* Modal de Demonstração */}
-        {showDemoModal && (
-          <div className="demo-modal-overlay" onClick={() => setShowDemoModal(false)}>
-            <div className="demo-modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="p-6">
-                <div className="text-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900 mb-2">
-                    🚀 Demonstração do Sistema
-                  </h2>
-                  <p className="text-gray-600 text-sm">
-                    Escolha um perfil para explorar todas as funcionalidades com dados reais
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
-              {demoProfiles.map((profile, index) => (
-                <div 
-                  key={profile.category}
-                  className="border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-all duration-200 cursor-pointer hover:border-purple-300"
-                  onClick={() => handleDemoLogin(profile.category)}
-                >
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-base text-gray-900">{profile.name}</h3>
-                      <p className="text-xs text-purple-600 font-medium">{profile.business}</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center text-lg">
-                      {profile.category === 'farmacia' ? '💊' :
-                       profile.category === 'pet' ? '🐕' :
-                       profile.category === 'medico' ? '🏥' :
-                       profile.category === 'alimenticio' ? '🍽️' :
-                       profile.category === 'vendas' ? '💼' :
-                       profile.category === 'design' ? '🎨' : '💻'}
-                    </div>
-                  </div>
-                  
-                  <p className="text-xs text-gray-600 mb-2">{profile.description}</p>
-                  
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium text-gray-700">Funcionalidades:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {profile.features.slice(0, 2).map((feature, idx) => (
-                        <span 
-                          key={idx}
-                          className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                      {profile.features.length > 2 && (
-                        <span className="text-xs text-gray-500">+{profile.features.length - 2}</span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <button className="w-full mt-3 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-medium rounded-md hover:from-purple-600 hover:to-blue-600 transition-colors">
-                    Acessar Demo
-                  </button>
-                </div>
-                ))}
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-start space-x-2">
-                    <div className="text-lg">ℹ️</div>
-                    <div>
-                      <h4 className="font-medium text-blue-900 mb-1 text-sm">Sobre a Demonstração</h4>
-                      <p className="text-xs text-blue-800">
-                        Cada perfil possui dados completos do Supabase: produtos, vendas, clientes, 
-                        agendamentos, transferências e relatórios financeiros. Explore sem limitações.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex justify-center mt-3">
-                  <button 
-                    onClick={() => setShowDemoModal(false)}
-                    className="px-6 py-2 border border-gray-300 text-gray-700 text-sm rounded-md hover:bg-gray-50 transition-colors"
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
