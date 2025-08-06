@@ -1,4 +1,4 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale, useCoupons, useValidateCoupon, useApplyCoupon } from "@/hooks/useData";
+import { useProducts, useSales, useClients, useCreateCartSale, useCoupons, useValidateCoupon, useApplyCoupon, useCreateClient } from "@/hooks/useData";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,28 +12,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-// import ThermalPrint from "@/components/ThermalPrint"; // Comentado temporariamente
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 const VendasSection = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  // Usando toast para notificações
   const queryClient = useQueryClient();
 
-  // Função para obter o label do método de pagamento
-  const getPaymentMethodLabel = (method: string) => {
-    const methods = {
-      dinheiro: "💵 Dinheiro",
-      pix: "📱 PIX",
-      cartao_credito: "💳 Cartão de Crédito",
-      cartao_debito: "💳 Cartão de Débito",
-      boleto: "📄 Boleto"
-    };
-    return methods[method as keyof typeof methods] || method;
-  };
-  
-  // Estados do carrinho e vendas
+  // Estados principais
+  const [activeTab, setActiveTab] = useState<'vendas' | 'caixa'>('vendas');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedClient, setSelectedClient] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -41,30 +28,19 @@ const VendasSection = () => {
   const [discount, setDiscount] = useState<number>(0);
   const [selectedSellers, setSelectedSellers] = useState<number[]>([]);
   
-  // Estados das abas
-  const [activeTab, setActiveTab] = useState<'vendas' | 'caixa'>('vendas');
-  
-  // Estados de busca de produtos
+  // Estados de busca e modais
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [barcodeInput, setBarcodeInput] = useState<string>("");
   const [showProductSearch, setShowProductSearch] = useState<boolean>(false);
   const [showClientModal, setShowClientModal] = useState<boolean>(false);
   const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [showSellersModal, setShowSellersModal] = useState<boolean>(false);
+  const [showAddClientModal, setShowAddClientModal] = useState<boolean>(false);
+  const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
   
-  // Debug dos modais
-  console.log('Modal states:', { showClientModal, showPaymentModal, showSellersModal });
+  // Estados para cliente
   const [clientSearchTerm, setClientSearchTerm] = useState<string>("");
   const [foundClient, setFoundClient] = useState<Client | null>(null);
-  const [showAddClientModal, setShowAddClientModal] = useState<boolean>(false);
-  
-  // Estados para cupons
-  const [couponCode, setCouponCode] = useState<string>("");
-  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
-  const [couponDiscount, setCouponDiscount] = useState<number>(0);
-  const [validatingCoupon, setValidatingCoupon] = useState<boolean>(false);
-  
-  // Estados para formulário de novo cliente
   const [clientForm, setClientForm] = useState({
     name: '',
     email: '',
@@ -75,47 +51,238 @@ const VendasSection = () => {
     notes: ''
   });
   
-  // Estados para impressão térmica
-  const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
+  // Estados para cupons
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [validatingCoupon, setValidatingCoupon] = useState<boolean>(false);
+  
+  // Estados para última venda e impressão
   const [lastSaleData, setLastSaleData] = useState<any>(null);
   const [includeClientInPrint, setIncludeClientInPrint] = useState<boolean>(false);
-  
-  // Estados para filtros de data
-  const getDefaultDates = () => {
-    const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
-    
-    return {
-      from: thirtyDaysAgo.toISOString().split('T')[0],
-      to: today.toISOString().split('T')[0]
-    };
-  };
-  
-  const defaultDates = getDefaultDates();
-  const [dateFrom, setDateFrom] = useState(defaultDates.from);
-  const [dateTo, setDateTo] = useState(defaultDates.to);
 
-  // Buscar produtos e clientes usando hooks consolidados
-  const companyId = (user as any)?.companyId;
+  // Hooks de dados
+  const { data: products = [] } = useProducts();
+  const { data: clients = [] } = useClients();
+  const { data: sales = [] } = useSales();
+  const { data: coupons = [] } = useCoupons();
   
-  const { data: products = [] } = useProducts(undefined, companyId);
-  const { data: clients = [] } = useClients(undefined, companyId);
-  const { data: sales = [] } = useSales(undefined, companyId);
-  const { data: financialEntries = [] } = useFinancial(undefined, companyId);
-  const { data: coupons = [] } = useCoupons(companyId);
-  
-  // Buscar perfis da empresa para vendedores (usando clientes como vendedores por enquanto)
-  const companyProfiles = clients.filter(client => client.client_type === 'individual');
-  
-  // Dados das vendas aguardando pagamento
-  const getPendingSales = () => [
+  // Hooks de mutações
+  const processSaleMutation = useCreateCartSale();
+  const { mutateAsync: createClient } = useCreateClient();
+  const validateCouponMutation = useValidateCoupon();
+  const applyCouponMutation = useApplyCoupon();
+
+  // Debug para modais
+  console.log('Modal states:', { showClientModal, showPaymentModal, showSellersModal });
+
+  // Função para obter label do método de pagamento
+  const getPaymentMethodLabel = (method: string) => {
+    const methods = {
+      dinheiro: "💵 Dinheiro",
+      pix: "📱 PIX", 
+      cartao_credito: "💳 Cartão de Crédito",
+      cartao_debito: "💳 Cartão de Débito",
+      boleto: "📄 Boleto"
+    };
+    return methods[method as keyof typeof methods] || method;
+  };
+
+  // Filtrar produtos por busca
+  const filteredProducts = products.filter((product: Product) => {
+    if (barcodeInput && product.barcode?.includes(barcodeInput)) {
+      return true;
+    }
+    
+    if (!searchTerm.trim()) {
+      return false;
+    }
+    
+    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
+    const productName = product.name.toLowerCase();
+    const productDescription = (product.description || '').toLowerCase();
+    const productText = `${productName} ${productDescription}`;
+    
+    return searchWords.some(word => 
+      productText.includes(word) || 
+      productText.split(/\s+/).some(productWord => 
+        productWord.startsWith(word) && word.length >= 2
+      )
+    );
+  });
+
+  // Adicionar produto ao carrinho
+  const addToCart = (product: Product) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.product_id === product.id);
+      if (existing) {
+        return prev.map(item =>
+          item.product_id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, {
+        product_id: product.id,
+        product_name: product.name,
+        quantity: 1,
+        unit_price: product.price,
+        total_price: product.price
+      }];
+    });
+    setSearchTerm("");
+    setBarcodeInput("");
+    setShowProductSearch(false);
+  };
+
+  // Remover item do carrinho
+  const removeFromCart = (productId: number) => {
+    setCart(prev => prev.filter(item => item.product_id !== productId));
+  };
+
+  // Atualizar quantidade no carrinho
+  const updateCartQuantity = (productId: number, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    
+    setCart(prev => prev.map(item =>
+      item.product_id === productId
+        ? { ...item, quantity, total_price: item.unit_price * quantity }
+        : item
+    ));
+  };
+
+  // Calcular totais
+  const subtotal = cart.reduce((sum, item) => sum + item.total_price, 0);
+  const totalDiscount = discount + couponDiscount;
+  const totalAmount = subtotal - totalDiscount;
+
+  // Processar venda
+  const handleProcessSale = async () => {
+    if (cart.length === 0) {
+      toast({
+        title: "Carrinho vazio",
+        description: "Adicione produtos ao carrinho antes de processar a venda",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!paymentMethod) {
+      toast({
+        title: "Método de pagamento obrigatório",
+        description: "Selecione um método de pagamento",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (selectedSellers.length === 0) {
+      toast({
+        title: "Vendedor obrigatório",
+        description: "Selecione pelo menos um vendedor",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const saleData: SaleCart = {
+        client_id: selectedClient,
+        items: cart,
+        payment_method: paymentMethod,
+        installments: installments,
+        discount: totalDiscount,
+        total_amount: totalAmount,
+        sellers: selectedSellers,
+        coupon_code: appliedCoupon?.code || null
+      };
+
+      await processSaleMutation.mutateAsync(saleData);
+
+      // Limpar formulário
+      setCart([]);
+      setSelectedClient(null);
+      setPaymentMethod("");
+      setInstallments(1);
+      setDiscount(0);
+      setSelectedSellers([]);
+      setCouponCode("");
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+      
+      // Mostrar modal de impressão
+      setLastSaleData(saleData);
+      setShowPrintModal(true);
+
+      toast({
+        title: "Venda processada!",
+        description: "A venda foi enviada para o caixa com sucesso"
+      });
+    } catch (error) {
+      console.error('Erro ao processar venda:', error);
+      toast({
+        title: "Erro ao processar venda",
+        description: "Ocorreu um erro inesperado",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Reset do formulário de cliente
+  const resetClientForm = () => {
+    setClientForm({
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      client_type: 'individual',
+      document: '',
+      notes: ''
+    });
+  };
+
+  // Submissão do formulário de cliente
+  const handleClientSubmit = async () => {
+    if (!clientForm.name.trim()) {
+      toast({
+        title: "Nome obrigatório",
+        description: "O nome do cliente é obrigatório",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      await createClient(clientForm);
+      
+      toast({
+        title: "Cliente cadastrado!",
+        description: "Cliente foi cadastrado com sucesso"
+      });
+      
+      setShowAddClientModal(false);
+      resetClientForm();
+    } catch (error) {
+      console.error('Erro ao cadastrar cliente:', error);
+      toast({
+        title: "Erro ao cadastrar cliente",
+        description: "Ocorreu um erro inesperado",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Dados mock para vendas pendentes (demonstração)
+  const mockPendingSales = [
     {
       id: 1,
       client_name: "João Silva",
       total_amount: 125.50,
       payment_method: "pix",
-      sellers: ["Maria Santos", "Carlos Oliveira"],
+      sellers: ["Maria Santos"],
       created_at: "2025-01-05 14:30:00",
       status: "aguardando_pagamento",
       items: [
@@ -134,556 +301,149 @@ const VendasSection = () => {
       items: [
         { product_name: "Produto C", quantity: 3, unit_price: 29.97 }
       ]
-    },
-    {
-      id: 3,
-      client_name: "Empresa XYZ",
-      total_amount: 450.00,
-      payment_method: "boleto",
-      sellers: ["Maria Santos", "João Pedro"],
-      created_at: "2025-01-05 11:45:00",
-      status: "aguardando_pagamento",
-      items: [
-        { product_name: "Produto D", quantity: 5, unit_price: 90.00 }
-      ]
     }
   ];
 
-  // Filtrar produtos por busca ou código de barras com palavras-chave
-  const filteredProducts = products.filter((product: Product) => {
-    if (barcodeInput && product.barcode?.includes(barcodeInput)) {
-      return true;
-    }
-    
-    if (!searchTerm.trim()) {
-      return false;
-    }
-    
-    // Dividir termo de busca em palavras individuais
-    const searchWords = searchTerm.toLowerCase().trim().split(/\s+/);
-    const productName = product.name.toLowerCase();
-    const productDescription = (product.description || '').toLowerCase();
-    const productText = `${productName} ${productDescription}`;
-    
-    // Produto deve conter PELO MENOS UMA das palavras buscadas (busca mais flexível)
-    return searchWords.some(word => 
-      productText.includes(word) || 
-      // Busca parcial por início da palavra
-      productText.split(/\s+/).some(productWord => 
-        productWord.startsWith(word) && word.length >= 2
-      )
-    );
-  });
-
-  // Processar venda do carrinho usando hook consolidado
-  const processSaleMutation = useCreateCartSale();
-  const { mutateAsync: createClient } = useCreateClient();
-  const validateCouponMutation = useValidateCoupon();
-  const applyCouponMutation = useApplyCoupon();
-
-  // Funções auxiliares para filtros
-  const filterByDateRange = (data: any[], dateField: string) => {
-    if (!data || !Array.isArray(data)) return [];
-    if (!dateFrom && !dateTo) return data;
-    
-    return data.filter(item => {
-      const itemValue = item[dateField];
-      if (!itemValue) return false;
-      
-      const itemDate = new Date(itemValue);
-      const fromDate = dateFrom ? new Date(dateFrom) : new Date('1900-01-01');
-      const toDate = dateTo ? new Date(dateTo + 'T23:59:59') : new Date('2100-12-31');
-      
-      if (isNaN(itemDate.getTime())) {
-        return false;
-      }
-      
-      return itemDate >= fromDate && itemDate <= toDate;
-    });
-  };
-
-  // Dados filtrados por período
-  const filteredSales = filterByDateRange(sales || [], 'sale_date');
-  const filteredFinancialEntries = filterByDateRange(financialEntries?.filter(entry => 
-    entry.type === 'income' && entry.description?.includes('Venda manual')
-  ) || [], 'created_at');
-
-  // Calcular totais (vendas automáticas + vendas manuais)
-  const totalSalesAmount = filteredSales.reduce((sum, sale) => sum + (sale.total_amount || 0), 0);
-  const totalManualSales = filteredFinancialEntries.reduce((sum, entry) => sum + (entry.amount || 0), 0);
-  const totalRevenue = totalSalesAmount + totalManualSales;
-
-  const calculateCartTotal = () => cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  
-  const clearCart = () => {
-    setCart([]);
-    // Reset cupom e parcelamento
-    setCouponCode("");
-    setAppliedCoupon(null);
-    setCouponDiscount(0);
-    setInstallments(1);
-  };
-
-  // Função para validar cupom
-  const handleValidateCoupon = async () => {
-    if (!couponCode.trim()) {
-      toast({
-        title: "Erro",
-        description: "Digite um código de cupom",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setValidatingCoupon(true);
-    try {
-      const coupon = await validateCouponMutation.mutateAsync(couponCode.trim().toUpperCase());
-      
-      if (coupon && coupon.is_active) {
-        setAppliedCoupon(coupon);
-        calculateCouponDiscount(coupon);
-        toast({
-          title: "Cupom aplicado!",
-          description: `${coupon.name} - ${coupon.discount_type === 'percentage' ? coupon.discount_value + '%' : 'R$ ' + coupon.discount_value} de desconto`,
-        });
-      }
-    } catch (error: any) {
-      toast({
-        title: "Cupom inválido",
-        description: error.message || "Código não encontrado ou expirado",
-        variant: "destructive"
-      });
-      setAppliedCoupon(null);
-      setCouponDiscount(0);
-    } finally {
-      setValidatingCoupon(false);
-    }
-  };
-
-  // Função para calcular desconto do cupom
-  const calculateCouponDiscount = (coupon: any) => {
-    const subtotal = cart.reduce((total, item) => total + item.totalPrice, 0);
-    
-    if (subtotal < coupon.min_purchase_amount) {
-      toast({
-        title: "Valor mínimo não atingido",
-        description: `Compra mínima de R$ ${coupon.min_purchase_amount.toFixed(2)} para usar este cupom`,
-        variant: "destructive"
-      });
-      setAppliedCoupon(null);
-      setCouponDiscount(0);
-      return;
-    }
-
-    let discountAmount = 0;
-
-    // Aplicar desconto baseado no tipo de campanha
-    if (coupon.campaign_type === 'total_purchase') {
-      // Desconto no total da compra
-      if (coupon.discount_type === 'percentage') {
-        discountAmount = (subtotal * coupon.discount_value) / 100;
-      } else {
-        discountAmount = coupon.discount_value;
-      }
-    } else if (coupon.campaign_type === 'category_discount' && coupon.target_categories) {
-      // Desconto apenas em produtos de categorias específicas
-      const eligibleItemsTotal = cart.reduce((total, item) => {
-        const product = products.find(p => p.id === item.productId);
-        if (product && coupon.target_categories.includes(product.category_id)) {
-          return total + item.totalPrice;
-        }
-        return total;
-      }, 0);
-
-      if (eligibleItemsTotal === 0) {
-        toast({
-          title: "Produtos não elegíveis",
-          description: "Este cupom só se aplica a produtos de categorias específicas",
-          variant: "destructive"
-        });
-        setAppliedCoupon(null);
-        setCouponDiscount(0);
-        return;
-      }
-
-      if (coupon.discount_type === 'percentage') {
-        discountAmount = (eligibleItemsTotal * coupon.discount_value) / 100;
-      } else {
-        discountAmount = Math.min(coupon.discount_value, eligibleItemsTotal);
-      }
-    } else if (coupon.campaign_type === 'seasonal_promotion' && coupon.target_categories) {
-      // Promoção sazonal em categorias específicas
-      const eligibleItemsTotal = cart.reduce((total, item) => {
-        const product = products.find(p => p.id === item.productId);
-        if (product && coupon.target_categories.includes(product.category_id)) {
-          return total + item.totalPrice;
-        }
-        return total;
-      }, 0);
-
-      if (coupon.discount_type === 'percentage') {
-        discountAmount = (eligibleItemsTotal * coupon.discount_value) / 100;
-      } else {
-        discountAmount = Math.min(coupon.discount_value, eligibleItemsTotal);
-      }
-    } else {
-      // Outros tipos de campanha aplicam no total
-      if (coupon.discount_type === 'percentage') {
-        discountAmount = (subtotal * coupon.discount_value) / 100;
-      } else {
-        discountAmount = coupon.discount_value;
-      }
-    }
-
-    // Garantir que o desconto não seja maior que o subtotal
-    discountAmount = Math.min(discountAmount, subtotal);
-    setCouponDiscount(discountAmount);
-  };
-
-  // Função para remover cupom
-  const handleRemoveCoupon = () => {
-    setAppliedCoupon(null);
-    setCouponDiscount(0);
-    setCouponCode("");
-    toast({
-      title: "Cupom removido",
-      description: "O desconto foi removido da venda",
-    });
-  };
-
-  // Função para resetar formulário de cliente
-  const resetClientForm = () => {
-    setClientForm({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      client_type: 'individual',
-      document: '',
-      notes: ''
-    });
-  };
-
-  // Função para lidar com criação de novo cliente
-  const handleClientSubmit = async () => {
-    try {
-      const clientData = {
-        name: clientForm.name,
-        clientType: clientForm.client_type,
-        email: clientForm.email,
-        phone: clientForm.phone,
-        address: clientForm.address,
-        document: clientForm.document
-      };
-
-      const newClient = await createClient(clientData);
-      
-      // Selecionar o cliente recém-criado
-      setSelectedClient(newClient.id);
-      
-      // Fechar modais e resetar formulários
-      setShowAddClientModal(false);
-      setShowClientModal(false);
-      resetClientForm();
-      setClientSearchTerm("");
-      setFoundClient(null);
-      
-      toast({
-        title: "Cliente cadastrado com sucesso!",
-        description: `${clientData.name} foi adicionado à sua lista de clientes.`,
-      });
-    } catch (error) {
-      console.error('Erro ao cadastrar cliente:', error);
-      toast({
-        title: "Erro ao cadastrar cliente",
-        description: "Tente novamente ou verifique os dados informados.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  // Adicionar produto ao carrinho
-  const addToCart = (product: Product, quantity: number = 1) => {
-    const existingItem = cart.find(item => item.productId === product.id);
-    
-    if (existingItem) {
-      setCart(cart.map(item => 
-        item.productId === product.id 
-          ? { ...item, quantity: item.quantity + quantity, totalPrice: (item.quantity + quantity) * item.unitPrice }
-          : item
-      ));
-    } else {
-      const newItem: CartItem = {
-        productId: product.id!,
-        productName: product.name,
-        quantity,
-        unitPrice: product.price,
-        totalPrice: product.price * quantity,
-        barcode: product.barcode,
-      };
-      setCart([...cart, newItem]);
-    }
-    
-    setSearchTerm("");
-    setBarcodeInput("");
-    setShowProductSearch(false);
-  };
-
-  // Remover produto do carrinho
-  const removeFromCart = (productId: number) => {
-    setCart(cart.filter(item => item.productId !== productId));
-  };
-
-  // Atualizar quantidade no carrinho
-  const updateQuantity = (productId: number, newQuantity: number) => {
-    if (newQuantity <= 0) {
-      removeFromCart(productId);
-      return;
-    }
-    
-    setCart(cart.map(item => 
-      item.productId === productId 
-        ? { ...item, quantity: newQuantity, totalPrice: newQuantity * item.unitPrice }
-        : item
-    ));
-  };
-
-  // Calcular totais
-  const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
-  const totalDiscount = discount + couponDiscount;
-  const totalAmount = subtotal - totalDiscount;
-
-  // Processar venda para aguardar pagamento
-  const handleProcessSale = async () => {
-    if (cart.length === 0) {
-      toast({
-        title: "Carrinho vazio",
-        description: "Adicione produtos antes de enviar para o caixa",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!paymentMethod) {
-      toast({
-        title: "Método de pagamento",
-        description: "Selecione um método de pagamento para continuar",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedSellers.length === 0) {
-      toast({
-        title: "Vendedor não selecionado",
-        description: "Selecione pelo menos um vendedor para a venda",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      // Aqui a venda será enviada para o caixa ao invés de ser finalizada
-      toast({
-        title: "Venda enviada para o caixa",
-        description: "A venda está aguardando pagamento no caixa",
-      });
-
-      // Limpar carrinho e formulário
-      setCart([]);
-      setSelectedClient(null);
-      setPaymentMethod("");
-      setInstallments(1);
-      setDiscount(0);
-      setSelectedSellers([]);
-      setCouponCode("");
-      setAppliedCoupon(null);
-      setCouponDiscount(0);
-      
-      // Mudar para aba caixa
-      setActiveTab('caixa');
-    } catch (error: any) {
-      toast({
-        title: "Erro ao processar venda",
-        description: error.message || "Não foi possível enviar a venda para o caixa",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Processar código de barras (simular "bip")
-  const handleBarcodeScanned = (barcode: string) => {
-    const product = products.find((p: Product) => p.barcode === barcode);
-    if (product) {
-      addToCart(product);
-      toast({
-        title: "Produto adicionado!",
-        description: `"${product.name}" foi adicionado ao carrinho`,
-      });
-    } else {
-      toast({
-        title: "Produto não encontrado",
-        description: "Código de barras não encontrado no sistema",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Listener para "Enter" no campo de código de barras
-  const handleBarcodeKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && barcodeInput.trim()) {
-      handleBarcodeScanned(barcodeInput.trim());
-      setBarcodeInput("");
-    }
-  };
+  // Dados mock para perfis de vendedores
+  const companyProfiles = [
+    { id: 1, name: "Maria Santos", email: "maria@empresa.com" },
+    { id: 2, name: "Pedro Lima", email: "pedro@empresa.com" },
+    { id: 3, name: "Ana Costa", email: "ana@empresa.com" }
+  ];
 
   // Renderizar aba de vendas
   const renderVendasTab = () => (
     <div className="animate-fade-in">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Painel de Adição de Produtos */}
-        <div className="lg:col-span-2 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Coluna da Esquerda - Busca de Produtos */}
+        <div className="space-y-6">
+          {/* Card de Busca de Produtos */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Scan className="h-5 w-5" />
-                <span>Adicionar Produtos</span>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Buscar Produtos
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Código de Barras */}
-              <div>
-                <Label htmlFor="barcode">Código de Barras (Bip)</Label>
+              {/* Campo de busca */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  id="barcode"
-                  value={barcodeInput}
-                  onChange={(e) => setBarcodeInput(e.target.value)}
-                  onKeyPress={handleBarcodeKeyPress}
-                  placeholder="Digite ou escaneie o código de barras..."
-                  className="font-mono"
+                  placeholder="Buscar produtos..."
+                  value={searchTerm}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setShowProductSearch(e.target.value.length > 0);
+                  }}
+                  className="pl-10"
                 />
-                <p className="text-sm text-gray-500 mt-1">
-                  Digite o código e pressione Enter, ou use um leitor de código de barras
-                </p>
               </div>
 
-              <Separator />
+              {/* Campo código de barras */}
+              <div className="relative">
+                <Scan className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Código de barras"
+                  value={barcodeInput}
+                  onChange={(e) => {
+                    setBarcodeInput(e.target.value);
+                    setShowProductSearch(e.target.value.length > 0);
+                  }}
+                  className="pl-10"
+                />
+              </div>
 
-              {/* Busca Manual */}
-              <div>
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="search">Busca Manual</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowProductSearch(!showProductSearch)}
-                  >
-                    <Search className="h-4 w-4 mr-2" />
-                    {showProductSearch ? 'Ocultar' : 'Buscar Produtos'}
-                  </Button>
-                </div>
-                
-                {showProductSearch && (
-                  <div className="mt-3 space-y-3">
-                    <Input
-                      id="search"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      placeholder="Digite o nome do produto..."
-                    />
-                    
-                    {searchTerm && (
-                      <div className="max-h-60 overflow-y-auto border rounded-md">
-                        {filteredProducts.map((product) => (
-                          <div
-                            key={product.id}
-                            className="p-3 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer flex items-center justify-between"
-                            onClick={() => addToCart(product)}
-                          >
-                            <div>
-                              <p className="font-medium">{product.name}</p>
-                              <p className="text-sm text-gray-500">
-                                R$ {Number(product.price || 0).toFixed(2)} • Estoque: {product.stock}
-                              </p>
-                            </div>
-                            <Plus className="h-4 w-4 text-emerald-600" />
+              {/* Lista de produtos filtrados */}
+              {showProductSearch && (
+                <div className="max-h-64 overflow-y-auto border rounded-md">
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.slice(0, 10).map((product: Product) => (
+                      <div
+                        key={product.id}
+                        className="p-3 border-b last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors"
+                        onClick={() => addToCart(product)}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-medium text-gray-800">{product.name}</p>
+                            <p className="text-sm text-gray-600">{product.description}</p>
+                            <p className="text-sm text-green-600 font-semibold">
+                              R$ {product.price.toFixed(2)}
+                            </p>
                           </div>
-                        ))}
-                        
-                        {filteredProducts.length === 0 && (
-                          <p className="p-3 text-center text-gray-500">
-                            Nenhum produto encontrado
-                          </p>
-                        )}
+                          <Button size="sm" variant="outline">
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      <Package className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                      <p>Nenhum produto encontrado</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
 
-          {/* Carrinho de Compras */}
+          {/* Card do Carrinho */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Carrinho de Compras</span>
-                {cart.length > 0 && (
-                  <Button variant="outline" size="sm" onClick={clearCart}>
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Limpar
-                  </Button>
-                )}
+              <CardTitle className="flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5" />
+                Carrinho ({cart.length} {cart.length === 1 ? 'item' : 'itens'})
               </CardTitle>
             </CardHeader>
             <CardContent>
               {cart.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
-                  <ShoppingCart className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                   <p>Carrinho vazio</p>
-                  <p className="text-sm">Adicione produtos usando o código de barras ou busca manual</p>
+                  <p className="text-sm mt-1">Adicione produtos para começar</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {cart.map((item) => (
-                    <div key={item.productId} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={item.product_id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex-1">
-                        <p className="font-medium">{item.productName}</p>
-                        <p className="text-sm text-gray-500">
-                          R$ {Number(item.unitPrice || 0).toFixed(2)} cada
+                        <p className="font-medium text-gray-800">{item.product_name}</p>
+                        <p className="text-sm text-gray-600">
+                          R$ {item.unit_price.toFixed(2)} cada
                         </p>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center gap-2">
                         <Button
-                          variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                          variant="outline"
+                          onClick={() => updateCartQuantity(item.product_id, item.quantity - 1)}
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
-                        
-                        <span className="w-8 text-center">{item.quantity}</span>
-                        
+                        <span className="w-8 text-center font-medium">{item.quantity}</span>
                         <Button
-                          variant="outline"
                           size="sm"
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                          variant="outline"
+                          onClick={() => updateCartQuantity(item.product_id, item.quantity + 1)}
                         >
                           <Plus className="h-3 w-3" />
                         </Button>
-                        
-                        <div className="w-20 text-right font-medium">
-                          R$ {Number(item.totalPrice || 0).toFixed(2)}
-                        </div>
-                        
                         <Button
-                          variant="destructive"
                           size="sm"
-                          onClick={() => removeFromCart(item.productId)}
+                          variant="destructive"
+                          onClick={() => removeFromCart(item.product_id)}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
+                      </div>
+                      
+                      <div className="ml-4 text-right">
+                        <p className="font-semibold text-gray-800">
+                          R$ {item.total_price.toFixed(2)}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -693,204 +453,108 @@ const VendasSection = () => {
           </Card>
         </div>
 
-        {/* Painel de Finalização */}
-        <div className="space-y-4">
+        {/* Coluna da Direita - Checkout */}
+        <div className="space-y-6">
+          {/* Seleção de Cliente */}
           <Card>
             <CardHeader>
-              <CardTitle>Finalizar Venda</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Cliente
+              </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Vendedores */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Vendedores *</label>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Vendedores button clicked');
-                    setShowSellersModal(true);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
-                >
-                  {selectedSellers.length > 0 ? (
-                    <div className="flex flex-wrap gap-1">
-                      {selectedSellers.map(sellerId => {
-                        const seller = companyProfiles.find(p => p.id === sellerId);
-                        return seller ? (
-                          <span key={sellerId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                            {seller.name}
-                          </span>
-                        ) : null;
-                      })}
-                    </div>
-                  ) : "+ Selecionar Vendedores"}
-                </button>
-              </div>
+            <CardContent>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => {
+                  console.log('Clientes button clicked');
+                  setShowClientModal(true);
+                }}
+              >
+                <User className="h-4 w-4 mr-2" />
+                {selectedClient 
+                  ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
+                  : "Selecionar Cliente"
+                }
+              </Button>
+            </CardContent>
+          </Card>
 
-              {/* Cliente */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cliente (Opcional)</label>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Cliente button clicked');
-                    setShowClientModal(true);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
-                >
-                  {selectedClient 
-                    ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
-                    : "+ Selecionar Cliente"
-                  }
-                </button>
-              </div>
+          {/* Seleção de Vendedores */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Vendedores
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => {
+                  console.log('Vendedores button clicked');
+                  setShowSellersModal(true);
+                }}
+              >
+                <User className="h-4 w-4 mr-2" />
+                {selectedSellers.length > 0
+                  ? `${selectedSellers.length} vendedor${selectedSellers.length > 1 ? 'es' : ''} selecionado${selectedSellers.length > 1 ? 's' : ''}`
+                  : "Selecionar Vendedores"
+                }
+              </Button>
+            </CardContent>
+          </Card>
 
-              {/* Método de Pagamento */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Método de Pagamento *</label>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('Payment method button clicked');
-                    setShowPaymentModal(true);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors text-sm text-left"
-                >
-                  {paymentMethod ? (
-                    <>
-                      {getPaymentMethodLabel(paymentMethod)}
-                      {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && installments > 1 && (
-                        <span className="text-sm text-gray-500 ml-2">
-                          ({installments}x de R$ {(totalAmount / installments).toFixed(2)})
-                        </span>
-                      )}
-                    </>
-                  ) : "+ Selecionar Método"}
-                </button>
-              </div>
+          {/* Método de Pagamento */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Pagamento
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                onClick={() => setShowPaymentModal(true)}
+              >
+                <CreditCard className="h-4 w-4 mr-2" />
+                {paymentMethod 
+                  ? getPaymentMethodLabel(paymentMethod)
+                  : "Selecionar Método"
+                }
+              </Button>
+            </CardContent>
+          </Card>
 
-              {/* Cupom de Desconto */}
-              <div>
-                <Label htmlFor="coupon">Cupom de Desconto</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="coupon"
-                    type="text"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                    placeholder="CÓDIGO DO CUPOM"
-                    disabled={!!appliedCoupon}
-                    className="uppercase"
-                  />
-                  {appliedCoupon ? (
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={handleRemoveCoupon}
-                      className="shrink-0"
-                    >
-                      Remover
-                    </Button>
-                  ) : (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleValidateCoupon}
-                      disabled={!couponCode.trim() || validatingCoupon}
-                      className="shrink-0"
-                    >
-                      {validatingCoupon ? "..." : "Aplicar"}
-                    </Button>
-                  )}
+          {/* Resumo da Venda */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Resumo</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span>Subtotal:</span>
+                <span>R$ {subtotal.toFixed(2)}</span>
+              </div>
+              
+              {totalDiscount > 0 && (
+                <div className="flex justify-between text-green-600 font-medium">
+                  <span>Total de Descontos:</span>
+                  <span>- R$ {totalDiscount.toFixed(2)}</span>
                 </div>
-                {appliedCoupon && (
-                  <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-md">
-                    <p className="text-sm text-green-800 font-medium">{appliedCoupon.name}</p>
-                    <p className="text-xs text-green-600 mb-1">
-                      {appliedCoupon.discount_type === 'percentage' 
-                        ? `${appliedCoupon.discount_value}% de desconto` 
-                        : `R$ ${appliedCoupon.discount_value} de desconto`}
-                    </p>
-                    <p className="text-xs text-gray-600">
-                      {appliedCoupon.campaign_type === 'category_discount' && '📂 Desconto por categoria'}
-                      {appliedCoupon.campaign_type === 'seasonal_promotion' && '🌟 Promoção sazonal'}
-                      {appliedCoupon.campaign_type === 'client_reactivation' && '🔄 Reativação de cliente'}
-                      {appliedCoupon.campaign_type === 'total_purchase' && '🛒 Desconto no total'}
-                    </p>
-                    {appliedCoupon.campaign_type !== 'total_purchase' && (
-                      <p className="text-xs text-blue-600 mt-1">
-                        ✓ Aplicado apenas aos produtos elegíveis
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              {/* Desconto Manual */}
-              <div>
-                <Label htmlFor="discount">Desconto Manual (%)</Label>
-                <Input
-                  id="discount"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={discount}
-                  onChange={(e) => setDiscount(parseFloat(e.target.value) || 0)}
-                  onFocus={(e) => {
-                    if (discount === 0) {
-                      e.target.select();
-                    }
-                  }}
-                  placeholder="0"
-                />
-              </div>
-
+              )}
+              
               <Separator />
-
-              {/* Resumo da Venda */}
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span>R$ {subtotal.toFixed(2)}</span>
-                </div>
-                
-                {discount > 0 && (
-                  <div className="flex justify-between text-emerald-600">
-                    <span>Desconto Manual ({discount}%):</span>
-                    <span>- R$ {(subtotal * discount / 100).toFixed(2)}</span>
-                  </div>
-                )}
-                
-                {couponDiscount > 0 && (
-                  <div className="flex justify-between text-blue-600">
-                    <span>Cupom ({appliedCoupon?.name}):</span>
-                    <span>- R$ {couponDiscount.toFixed(2)}</span>
-                  </div>
-                )}
-                
-                {totalDiscount > 0 && (
-                  <div className="flex justify-between text-green-600 font-medium">
-                    <span>Total de Descontos:</span>
-                    <span>- R$ {totalDiscount.toFixed(2)}</span>
-                  </div>
-                )}
-                
-                <Separator />
-                
-                <div className="flex justify-between text-lg font-bold">
-                  <span>Total:</span>
-                  <span>R$ {totalAmount.toFixed(2)}</span>
-                </div>
+              
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total:</span>
+                <span>R$ {totalAmount.toFixed(2)}</span>
               </div>
 
-              {/* Botão de Enviar para Caixa */}
               <Button
                 onClick={handleProcessSale}
                 disabled={cart.length === 0 || !paymentMethod || selectedSellers.length === 0}
@@ -919,112 +583,67 @@ const VendasSection = () => {
               <p className="text-sm text-gray-600">Vendas aguardando pagamento</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4 z-10" />
-              <input
-                type="text"
-                placeholder="Buscar vendas..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-64 pl-10 pr-4 py-2 border border-gray-200 rounded-md text-gray-900 bg-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
-          </div>
         </div>
 
         {/* Lista de Vendas Pendentes */}
-        <div className="standard-list-container">
-          <div className="standard-list-content">
-          {getPendingSales()
-            .filter(sale => 
-              sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
-            ).length === 0 ? (
+        <div className="space-y-4">
+          {mockPendingSales.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
               <CreditCard className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-              <h3 className="text-lg font-medium text-gray-800 mb-2">Nenhuma venda pendente</h3>
-              <p className="text-sm text-gray-600">
-                Todas as vendas foram finalizadas ou não há vendas aguardando pagamento.
-              </p>
+              <p className="text-xl font-semibold mb-2">Nenhuma venda pendente</p>
+              <p>Todas as vendas foram processadas</p>
             </div>
           ) : (
-            getPendingSales()
-            .filter(sale => 
-              sale.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-              sale.payment_method.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            .map((sale) => (
-              <div key={sale.id} className="standard-list-item group">
-                <div className="list-item-main">
-                  <div className="list-item-title">{sale.client_name}</div>
-                  <div className="list-item-subtitle">{getPaymentMethodLabel(sale.payment_method)} • {sale.items.length} {sale.items.length === 1 ? 'item' : 'itens'}</div>
-                  <div className="list-item-meta">
-                    Vendedores: {sale.sellers.join(", ")} • {new Date(sale.created_at).toLocaleString('pt-BR')}
+            mockPendingSales.map((sale) => (
+              <div key={sale.id} className="border rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                      Pendente
+                    </Badge>
+                    <span className="text-sm text-gray-500">#{sale.id}</span>
+                  </div>
+                  <span className="text-sm text-gray-500">{sale.created_at}</span>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Cliente</p>
+                    <p className="font-semibold text-gray-800">{sale.client_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Pagamento</p>
+                    <p className="font-semibold text-gray-800">{getPaymentMethodLabel(sale.payment_method)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-600">Vendedor(es)</p>
+                    <p className="font-semibold text-gray-800">{sale.sellers.join(", ")}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3">
-                  <span className="list-status-badge status-warning">Aguardando Pagamento</span>
-                  
-                  <div className="list-item-actions">
-                    <button 
-                      className="list-action-button view"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        console.log("Botão Retomar Venda clicado!", sale);
-                        
-                        // Carregar dados da venda pendente no carrinho
-                        const saleItems = sale.items.map((item: any, index: number) => ({
-                          productId: index + 1, // ID fictício para o carrinho
-                          productName: item.product_name,
-                          quantity: item.quantity,
-                          unitPrice: item.unit_price,
-                          totalPrice: item.unit_price * item.quantity,
-                          barcode: undefined
-                        }));
-                        
-                        console.log("Itens do carrinho:", saleItems);
-                        setCart(saleItems);
-                        
-                        // Buscar ID do cliente pelo nome se existir
-                        const client = clients.find(c => c.name === sale.client_name);
-                        if (client) {
-                          setSelectedClient(client.id);
-                          console.log("Cliente selecionado:", client);
-                        }
-                        
-                        // Definir método de pagamento existente
-                        setPaymentMethod(sale.payment_method);
-                        console.log("Método de pagamento:", sale.payment_method);
-                        
-                        // Abrir modal de pagamento
-                        console.log("Abrindo modal de pagamento...");
-                        setShowPaymentModal(true);
-                        
-                        toast({
-                          title: "Venda carregada",
-                          description: "Revise os itens e confirme o pagamento",
-                        });
-                      }}
-                      title="Retomar venda para finalizar pagamento"
-                    >
-                      <CreditCard className="w-4 h-4" />
-                    </button>
-                    <button 
-                      className="list-action-button print"
-                      onClick={() => {
-                        toast({
-                          title: "Imprimindo nota",
-                          description: "Enviando para impressora...",
-                        });
-                      }}
-                      title="Imprimir nota da venda"
-                    >
+                <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                  <p className="text-sm font-medium text-gray-600 mb-2">Itens:</p>
+                  <div className="space-y-1">
+                    {sale.items.map((item, index) => (
+                      <div key={index} className="flex justify-between text-sm">
+                        <span>{item.quantity}x {item.product_name}</span>
+                        <span>R$ {(item.quantity * item.unit_price).toFixed(2)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" variant="outline">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      <Edit className="w-4 h-4" />
+                    </Button>
+                    <Button size="sm" variant="outline">
                       <Printer className="w-4 h-4" />
-                    </button>
+                    </Button>
                   </div>
                   
                   <div className="text-right">
@@ -1034,28 +653,39 @@ const VendasSection = () => {
               </div>
             ))
           )}
-          </div>
-        </div>
-
-        {/* Estatísticas do Caixa */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-          <div className="content-card text-center">
-            <p className="text-2xl font-bold text-green-600">R$ 665,40</p>
-            <p className="text-sm text-gray-600">Total pendente</p>
-            <p className="text-xs text-orange-600 mt-1">3 vendas aguardando</p>
-          </div>
-          <div className="content-card text-center">
-            <p className="text-2xl font-bold text-blue-600">R$ 2.450</p>
-            <p className="text-sm text-gray-600">Processado hoje</p>
-            <p className="text-xs text-green-600 mt-1">12 vendas finalizadas</p>
-          </div>
-          <div className="content-card text-center">
-            <p className="text-2xl font-bold text-purple-600">4 min</p>
-            <p className="text-sm text-gray-600">Tempo médio</p>
-            <p className="text-xs text-gray-600 mt-1">Por transação</p>
-          </div>
         </div>
       </div>
+    </div>
+  );
+
+  return (
+    <div className="app-section">
+      {/* Header */}
+      <div className="section-header">
+        <h1 className="section-title">Sistema de Vendas</h1>
+        <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
+      </div>
+
+      {/* Navegação por Abas */}
+      <div className="tab-navigation">
+        <button
+          onClick={() => setActiveTab('vendas')}
+          className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
+        >
+          <ShoppingCart className="w-4 h-4" />
+          Nova Venda
+        </button>
+        <button
+          onClick={() => setActiveTab('caixa')}
+          className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
+        >
+          <CreditCard className="w-4 h-4" />
+          Caixa
+        </button>
+      </div>
+
+      {/* Conteúdo das Abas */}
+      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
 
       {/* Modal de Seleção de Cliente */}
       {showClientModal && (
@@ -1070,44 +700,13 @@ const VendasSection = () => {
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
             
-            {/* Campo de pesquisa por CPF/CNPJ */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Digite o CPF ou CNPJ do cliente
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                  value={clientSearchTerm}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setClientSearchTerm(value);
-                    
-                    // Limpar números apenas
-                    const cleanValue = value.replace(/\D/g, '');
-                    
-                    // Buscar cliente por CPF/CNPJ
-                    if (cleanValue.length >= 11) {
-                      const client = clients.find(c => c.document && c.document.replace(/\D/g, '') === cleanValue);
-                      setFoundClient(client || null);
-                    } else {
-                      setFoundClient(null);
-                    }
-                  }}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-            </div>
-
             {/* Opção venda sem cliente */}
             <div className="mb-4">
-              <div className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+              <div className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
@@ -1132,250 +731,67 @@ const VendasSection = () => {
               </div>
             </div>
             
-            {/* Cliente encontrado */}
-            {foundClient && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Cliente encontrado:</h4>
-                <div className="border rounded-lg p-3 bg-green-50 border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => {
-                            if (foundClient?.id) {
-                              setSelectedClient(foundClient.id);
-                              setShowClientModal(false);
-                              setClientSearchTerm("");
-                              setFoundClient(null);
-                            }
-                          }}
-                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-green-400 hover:border-green-500"
-                        >
-                          <div className="w-3 h-3 bg-green-600 rounded"></div>
-                        </button>
-                        <div>
-                          <h4 className="font-medium text-gray-800">{foundClient?.name}</h4>
-                          <p className="text-sm text-gray-600">
-                            {foundClient?.document && `${foundClient.document.length === 11 ? 'CPF' : 'CNPJ'}: ${foundClient.document}`}
-                            {foundClient?.email && ` • ${foundClient.email}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-green-600 mt-2">Clique no cliente para confirmar a seleção</p>
-              </div>
-            )}
-
-            {/* Mensagem quando não encontra cliente */}
-            {clientSearchTerm && clientSearchTerm.replace(/\D/g, '').length >= 11 && !foundClient && (
-              <div className="text-center py-8 text-gray-500">
-                <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Cliente não encontrado</p>
-                <p className="text-sm mt-1">Verifique o CPF/CNPJ digitado</p>
-                <button
-                  onClick={() => {
-                    // Pre-preencher o documento no formulário
-                    const cleanDocument = clientSearchTerm.replace(/\D/g, '');
-                    setClientForm({
-                      ...clientForm,
-                      document: cleanDocument,
-                      client_type: cleanDocument.length === 11 ? 'individual' : 'company'
-                    });
-                    setShowAddClientModal(true);
-                  }}
-                  className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                >
-                  + Cadastrar Novo Cliente
-                </button>
-              </div>
-            )}
-            
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowClientModal(false);
-                  setClientSearchTerm("");
-                  setFoundClient(null);
-                }}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Seleção de Método de Pagamento */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
-              <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            {/* Lista de métodos */}
+            {/* Lista de clientes */}
             <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
-              {[
-                { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
-                { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
-                { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
-                { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
-                { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
-              ].map((method) => (
-                <div key={method.value} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => {
-                            setPaymentMethod(method.value);
-                            // Se for crédito ou boleto, não fechar o modal ainda para mostrar opções de parcelamento
-                            if (method.value !== 'cartao_credito' && method.value !== 'boleto') {
-                              setInstallments(1);
-                              setShowPaymentModal(false);
-                            }
-                          }}
-                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                        >
-                        </button>
-                        <div>
-                          <h4 className="font-medium text-gray-800">{method.label}</h4>
-                          <p className="text-sm text-gray-600">{method.description}</p>
+              {clients.length > 0 ? (
+                clients.slice(0, 10).map((client) => (
+                  <div key={client.id} className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              setSelectedClient(client.id);
+                              setShowClientModal(false);
+                            }}
+                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
+                          >
+                            {selectedClient === client.id && (
+                              <div className="w-3 h-3 bg-purple-600 rounded"></div>
+                            )}
+                          </button>
+                          <div>
+                            <h4 className="font-medium text-gray-800">{client.name}</h4>
+                            <p className="text-sm text-gray-600">{client.email || 'Sem email'}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            
-            {/* Opções de Parcelamento - aparece quando crédito ou boleto for selecionado */}
-            {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
-              <div className="border-t pt-4 mt-4">
-                <h4 className="text-md font-medium text-gray-800 mb-3">
-                  {paymentMethod === 'cartao_credito' ? '💳 Parcelamento no Cartão' : '📄 Parcelamento do Boleto'}
-                </h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((parcela) => {
-                    const valorParcela = totalAmount / parcela;
-                    return (
-                      <button
-                        key={parcela}
-                        onClick={() => {
-                          setInstallments(parcela);
-                          setShowPaymentModal(false);
-                        }}
-                        className={`p-3 border rounded-lg text-sm transition-all ${
-                          installments === parcela 
-                            ? 'border-purple-500 bg-purple-50 text-purple-700' 
-                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
-                        }`}
-                      >
-                        <div className="font-medium">
-                          {parcela === 1 ? 'À vista' : `${parcela}x`}
-                        </div>
-                        <div className="text-xs text-gray-600">
-                          R$ {valorParcela.toFixed(2)}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  {paymentMethod === 'cartao_credito' 
-                    ? 'Selecione o número de parcelas para o cartão de crédito'
-                    : 'Selecione o número de parcelas para o boleto bancário'
-                  }
-                </p>
-              </div>
-            )}
-            
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowPaymentModal(false);
-                  setPaymentMethod("");
-                  setInstallments(1);
-                }}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Impressão Térmica */}
-      {showPrintModal && lastSaleData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Impressão Térmica</h3>
-              <button 
-                onClick={() => setShowPrintModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <p className="text-gray-600">Venda processada com sucesso! Deseja imprimir o comprovante?</p>
-              
-              {lastSaleData.client && (
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="includeClient"
-                    checked={includeClientInPrint}
-                    onChange={(e) => setIncludeClientInPrint(e.target.checked)}
-                    className="rounded border-gray-300"
-                  />
-                  <label htmlFor="includeClient" className="text-sm text-gray-700">
-                    Incluir dados do cliente no comprovante
-                  </label>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p>Nenhum cliente cadastrado</p>
+                  <Button 
+                    onClick={() => {
+                      setShowClientModal(false);
+                      setShowAddClientModal(true);
+                    }}
+                    className="mt-2"
+                  >
+                    Cadastrar Novo Cliente
+                  </Button>
                 </div>
               )}
-              
-              <div className="border rounded-lg p-3 bg-gray-50">
-                <p className="text-sm text-gray-600">
-                  Funcionalidade de impressão será implementada em breve.
-                </p>
-                {/* <ThermalPrint
-                  sale={lastSaleData}
-                  company={{
-                    name: "Demo Restaurante Bella Vista",
-                    cnpj: "12.345.678/0001-90",
-                    address: "Rua das Flores, 123 - Centro",
-                    phone: "(11) 99999-9999"
-                  }}
-                  branch={{
-                    name: "Filial Centro",
-                    address: "Rua das Flores, 123 - Centro",
-                    phone: "(11) 99999-9999"
-                  }}
-                  includeClient={includeClientInPrint}
-                /> */}
-              </div>
             </div>
             
-            <div className="flex gap-3 pt-4 border-t mt-4">
+            <div className="flex gap-3 pt-4 border-t">
               <button
-                onClick={() => setShowPrintModal(false)}
+                onClick={() => setShowClientModal(false)}
                 className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Fechar
               </button>
+              <Button
+                onClick={() => {
+                  setShowClientModal(false);
+                  setShowAddClientModal(true);
+                }}
+                className="flex-1"
+              >
+                Novo Cliente
+              </Button>
             </div>
           </div>
         </div>
@@ -1391,7 +807,7 @@ const VendasSection = () => {
                 onClick={() => setShowSellersModal(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
             
@@ -1399,7 +815,7 @@ const VendasSection = () => {
             <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
               {companyProfiles.length > 0 ? (
                 companyProfiles.map((seller) => (
-                  <div key={seller.id} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
+                  <div key={seller.id} className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
@@ -1430,7 +846,6 @@ const VendasSection = () => {
                 <div className="text-center py-8 text-gray-500">
                   <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
                   <p>Nenhum vendedor cadastrado</p>
-                  <p className="text-sm mt-1">Cadastre clientes individuais na seção Cadastros</p>
                 </div>
               )}
             </div>
@@ -1455,6 +870,89 @@ const VendasSection = () => {
         </div>
       )}
 
+      {/* Modal de Método de Pagamento */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
+              <button 
+                onClick={() => setShowPaymentModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-3 mb-4">
+              {[
+                { value: 'dinheiro', label: '💵 Dinheiro' },
+                { value: 'pix', label: '📱 PIX' },
+                { value: 'cartao_credito', label: '💳 Cartão de Crédito' },
+                { value: 'cartao_debito', label: '💳 Cartão de Débito' },
+                { value: 'boleto', label: '📄 Boleto' }
+              ].map((method) => (
+                <button
+                  key={method.value}
+                  onClick={() => setPaymentMethod(method.value)}
+                  className={`w-full p-3 text-left border rounded-lg transition-colors ${
+                    paymentMethod === method.value
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                >
+                  {method.label}
+                </button>
+              ))}
+            </div>
+            
+            {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
+              <div className="mb-4">
+                <Label htmlFor="installments">Número de Parcelas</Label>
+                <Select value={installments.toString()} onValueChange={(value) => setInstallments(Number(value))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecionar parcelas" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
+                      <SelectItem key={num} value={num.toString()}>
+                        {num}x de R$ {(totalAmount / num).toFixed(2)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-gray-500 mt-2">
+                  {paymentMethod === 'cartao_credito' 
+                    ? 'Selecione o número de parcelas para o cartão de crédito'
+                    : 'Selecione o número de parcelas para o boleto bancário'
+                  }
+                </p>
+              </div>
+            )}
+            
+            <div className="flex gap-3 pt-4 border-t">
+              <button
+                onClick={() => {
+                  setShowPaymentModal(false);
+                  setPaymentMethod("");
+                  setInstallments(1);
+                }}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <Button
+                onClick={() => setShowPaymentModal(false)}
+                disabled={!paymentMethod}
+                className="flex-1"
+              >
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Cadastro de Novo Cliente */}
       {showAddClientModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
@@ -1468,7 +966,7 @@ const VendasSection = () => {
                 }}
                 className="text-gray-400 hover:text-gray-600"
               >
-                ✕
+                <X className="h-5 w-5" />
               </button>
             </div>
             
@@ -1486,42 +984,9 @@ const VendasSection = () => {
                 />
               </div>
 
-              {/* Tipo de Cliente */}
-              <div>
-                <Label htmlFor="client-type">Tipo de Cliente</Label>
-                <Select 
-                  value={clientForm.client_type} 
-                  onValueChange={(value: 'individual' | 'company') => 
-                    setClientForm({...clientForm, client_type: value})
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="individual">Pessoa Física</SelectItem>
-                    <SelectItem value="company">Pessoa Jurídica</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Documento */}
-              <div>
-                <Label htmlFor="client-document">
-                  {clientForm.client_type === 'individual' ? 'CPF' : 'CNPJ'}
-                </Label>
-                <Input
-                  id="client-document"
-                  type="text"
-                  value={clientForm.document}
-                  onChange={(e) => setClientForm({...clientForm, document: e.target.value})}
-                  placeholder={clientForm.client_type === 'individual' ? '000.000.000-00' : '00.000.000/0000-00'}
-                />
-              </div>
-
               {/* Email */}
               <div>
-                <Label htmlFor="client-email">Email</Label>
+                <Label htmlFor="client-email">E-mail</Label>
                 <Input
                   id="client-email"
                   type="email"
@@ -1543,15 +1008,27 @@ const VendasSection = () => {
                 />
               </div>
 
+              {/* Documento */}
+              <div>
+                <Label htmlFor="client-document">CPF/CNPJ</Label>
+                <Input
+                  id="client-document"
+                  type="text"
+                  value={clientForm.document}
+                  onChange={(e) => setClientForm({...clientForm, document: e.target.value})}
+                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                />
+              </div>
+
               {/* Endereço */}
               <div>
                 <Label htmlFor="client-address">Endereço</Label>
-                <Textarea
+                <Input
                   id="client-address"
+                  type="text"
                   value={clientForm.address}
                   onChange={(e) => setClientForm({...clientForm, address: e.target.value})}
-                  placeholder="Rua, número, bairro, cidade, CEP"
-                  rows={2}
+                  placeholder="Rua, número, bairro, cidade"
                 />
               </div>
 
@@ -1590,35 +1067,41 @@ const VendasSection = () => {
         </div>
       )}
 
-      {/* Retorno do componente principal */}
-      <div className="app-section">
-        {/* Header */}
-        <div className="section-header">
-          <h1 className="section-title">Sistema de Vendas</h1>
-          <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
+      {/* Modal de Impressão */}
+      {showPrintModal && lastSaleData && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Venda Processada!</h3>
+              <button 
+                onClick={() => setShowPrintModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-gray-600">Venda processada com sucesso! Deseja imprimir o comprovante?</p>
+              
+              <div className="border rounded-lg p-3 bg-gray-50">
+                <p className="text-sm text-gray-600">
+                  Funcionalidade de impressão será implementada em breve.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t mt-4">
+              <button
+                onClick={() => setShowPrintModal(false)}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
         </div>
-
-        {/* Navegação por Abas */}
-        <div className="tab-navigation">
-          <button
-            onClick={() => setActiveTab('vendas')}
-            className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Nova Venda
-          </button>
-          <button
-            onClick={() => setActiveTab('caixa')}
-            className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
-          >
-            <CreditCard className="w-4 h-4" />
-            Caixa
-          </button>
-        </div>
-
-        {/* Conteúdo das Abas */}
-        {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
-      </div>
+      )}
     </div>
   );
 };
