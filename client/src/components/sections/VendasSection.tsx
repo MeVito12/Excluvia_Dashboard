@@ -472,7 +472,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
+                  className="w-full justify-start text-gray-500 hover:bg-[hsl(158,89%,53%)] hover:text-white hover:border-[hsl(158,89%,53%)]"
                   onClick={() => {
                     console.log('Vendedores button clicked');
                     setShowSellersModal(true);
@@ -493,7 +493,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
+                  className="w-full justify-start text-gray-500 hover:bg-[hsl(158,89%,53%)] hover:text-white hover:border-[hsl(158,89%,53%)]"
                   onClick={() => {
                     console.log('Clientes button clicked');
                     setShowClientModal(true);
@@ -514,7 +514,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
+                  className="w-full justify-start text-gray-500 hover:bg-[hsl(158,89%,53%)] hover:text-white hover:border-[hsl(158,89%,53%)]"
                   onClick={() => setShowPaymentModal(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -541,7 +541,7 @@ const VendasSection = () => {
                     variant="outline"
                     onClick={() => {/* Lógica do cupom */}}
                     disabled={!couponCode.trim() || validatingCoupon}
-                    className="px-6 hover:bg-green-600 hover:text-white hover:border-green-600"
+                    className="px-6 hover:bg-[hsl(158,89%,53%)] hover:text-white hover:border-[hsl(158,89%,53%)]"
                   >
                     {validatingCoupon ? "..." : "Aplicar"}
                   </Button>
@@ -577,7 +577,7 @@ const VendasSection = () => {
 
               {/* Botão Finalizar */}
               <Button 
-                className="w-full py-3 text-lg bg-green-600 hover:bg-green-700 text-white"
+                className="w-full py-3 text-lg bg-[hsl(158,89%,53%)] hover:bg-[hsl(158,89%,48%)] text-white"
                 onClick={handleProcessSale}
                 disabled={cart.length === 0 || processSaleMutation.isPending}
               >
