@@ -73,26 +73,26 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async loginUser(email: string, password: string): Promise<AuthUser | null> {
     try {
-      console.log('🔍 Buscando usuário:', email);
+      console.log('🔍 Buscando usuário UUID:', email);
       
-      // Buscar usuário por email na tabela auth_users
+      // Buscar usuário por email na tabela auth_users (corrigido)
       const users = await this.request(`auth_users?email=eq.${email}&select=*`);
       
-      console.log('📊 Usuários encontrados:', users?.length || 0);
+      console.log('📊 Usuários UUID encontrados:', users?.length || 0);
       
       if (!users || users.length === 0) {
-        console.log('❌ Nenhum usuário encontrado para:', email);
+        console.log('❌ Nenhum usuário UUID encontrado para:', email);
         return null;
       }
 
       const user = users[0];
-      console.log('✅ Usuário encontrado:', { id: user.id, email: user.email, name: user.name });
+      console.log('✅ Usuário UUID encontrado:', { id: user.id, email: user.email, name: user.name });
       
-      // Verificação de senha
+      // Verificação de senha real
       if (user.password_hash) {
         const isValid = await comparePassword(password, user.password_hash);
         if (!isValid) {
-          console.log('❌ Senha inválida para usuário:', email);
+          console.log('❌ Senha inválida para usuário UUID:', email);
           return null;
         }
       } else {
@@ -100,7 +100,7 @@ export class SupabaseAuthStorage implements AuthStorage {
         return null;
       }
 
-      console.log('🎯 Login realizado com sucesso:', email);
+      console.log('🎯 Login UUID realizado com sucesso:', email);
 
       return {
         id: user.id,
@@ -112,8 +112,9 @@ export class SupabaseAuthStorage implements AuthStorage {
         business_category: user.business_category
       };
 
+
     } catch (error) {
-      console.error('❌ Erro no login:', error);
+      console.error('❌ Erro no login UUID:', error);
       return null;
     }
   }
@@ -130,9 +131,9 @@ export class SupabaseAuthStorage implements AuthStorage {
   }): Promise<AuthUser> {
     const passwordHash = await hashPassword(userData.password);
     
-    console.log('🔐 Criando usuário:', userData.email);
+    console.log('🔐 Criando usuário autenticado:', userData.email);
     
-    // Criar na tabela auth_users
+    // Criar primeiro na tabela auth_users (UUID)
     const authUsers = await this.request('auth_users', {
       method: 'POST',
       body: JSON.stringify({
@@ -148,11 +149,22 @@ export class SupabaseAuthStorage implements AuthStorage {
     });
 
     if (!authUsers || authUsers.length === 0) {
-      throw new Error('Falha ao criar usuário');
+      throw new Error('Falha ao criar usuário na autenticação');
     }
 
     const created = authUsers[0];
-    console.log('✅ Usuário criado:', created.id);
+    console.log('✅ Usuário UUID criado:', created.id);
+          branch_id: userData.branch_id,
+          role: userData.role || 'user',
+          business_category: userData.business_category,
+          uuid_reference: created.id // Referência UUID
+        }),
+      });
+      console.log('✅ Usuario sincronizado em ambas as tabelas');
+    } catch (syncError) {
+      console.warn('⚠️ Erro na sincronização com users:', syncError);
+      // Não falhar a criação se houver erro na sincronização
+    }
 
     return {
       id: created.id,
@@ -167,7 +179,7 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserById(id: string): Promise<AuthUser | null> {
     try {
-      // Buscar na tabela auth_users
+      // Buscar primeiro na tabela auth_users (UUID)
       const users = await this.request(`auth_users?id=eq.${id}&select=*`);
       
       if (!users || users.length === 0) {
@@ -192,7 +204,7 @@ export class SupabaseAuthStorage implements AuthStorage {
 
   async getUserByEmail(email: string): Promise<AuthUser | null> {
     try {
-      // Buscar na tabela auth_users
+      // Buscar primeiro na tabela auth_users (UUID)
       const users = await this.request(`auth_users?email=eq.${email}&select=*`);
       
       if (!users || users.length === 0) {
@@ -225,7 +237,7 @@ export class SupabaseAuthStorage implements AuthStorage {
     email?: string;
     created_by: string;
   }): Promise<any> {
-    const [created] = await this.request('companies', {
+    const [created] = await this.request('auth_companies', {
       method: 'POST',
       body: JSON.stringify(companyData),
     });
@@ -242,7 +254,7 @@ export class SupabaseAuthStorage implements AuthStorage {
     is_main?: boolean;
     manager_id?: string;
   }): Promise<any> {
-    const [created] = await this.request('branches', {
+    const [created] = await this.request('auth_branches', {
       method: 'POST',
       body: JSON.stringify(branchData),
     });
