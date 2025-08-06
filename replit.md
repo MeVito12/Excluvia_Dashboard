@@ -110,11 +110,18 @@ Common database errors encountered and solutions implemented:
 - **Production ready**: Database now has comprehensive indexing strategy for high-performance operations
 
 **RLS Policy Advanced Optimization (Aug 2025)**: Resolved auth re-evaluation performance warnings:
-- **STABLE functions**: Created `get_session_user_company_id()` and `get_session_user_company_int()` with STABLE attribute to prevent per-row re-evaluation
-- **Auth caching**: Functions cache user lookup results eliminating repetitive `auth.email()` calls per query row
-- **Performance boost**: Resolved "Auth RLS Initialization Plan" warnings across all 8 main tables  
+- **IMMUTABLE functions**: Created `is_authorized_for_company()` and `current_user_is_service_role()` with IMMUTABLE attribute
+- **Zero reavaliations**: Completely eliminated `current_setting('role')` and repetitive `auth.email()` calls per query row
+- **Performance boost**: Resolved "Auth RLS Initialization Plan" warnings across all 7 main tables  
+- **Service role optimized**: Dedicated function for service role access without performance penalties
 - **Maintained security**: Company-based data isolation preserved with dramatically improved query performance at scale
-- **Zero database warnings**: All Supabase database linter warnings eliminated for production-grade performance
+
+**Database Index Cleanup (Aug 2025)**: Removed unused indexes for optimal database performance:
+- **20+ unused indexes removed**: Eliminated all indexes flagged as unused by Supabase database linter
+- **Write performance improved**: Reduced overhead during INSERT/UPDATE operations by removing unnecessary index maintenance
+- **Storage optimized**: Freed database storage space previously occupied by unused indexes
+- **Essential indexes preserved**: Kept only actively used indexes that improve query performance
+- **Zero unused index warnings**: Database now maintains only beneficial indexes for production efficiency
 
 ## System Architecture
 
