@@ -48,6 +48,7 @@ Product registration should include: name, minimum stock, current stock, for sal
 
 ## Recent Changes and Updates  
 - **Database Security Enhancement (Aug 2025)**: Implemented Row Level Security (RLS) policies on auth_users and users tables following Supabase security best practices, ensuring data isolation by company with proper access controls
+- **PostgreSQL Function Security Fix (Aug 2025)**: Fixed all PostgreSQL functions with mutable search_path warnings by adding `SET search_path = public` to all security-sensitive functions, eliminating security vulnerabilities reported by Supabase linter
 - **User Authentication Database Fix (Aug 2025)**: Fixed critical database error in user creation by restructuring auth_users and users tables, implementing proper dual-table synchronization for authentication system, ensuring seamless user registration and login functionality
 - **Pagination System Implementation (Aug 2025)**: Implemented comprehensive pagination system across all major lists (vendas, atividades, estoque, cadastros) with 10 items per page, improving performance and user experience with large datasets
 - **Financial Transfer Integration (Aug 2025)**: Implemented automatic revenue deduction from origin branch when money transfers are completed - transfer amounts are automatically deducted from sender branch revenue and added to receiver branch revenue through automatic financial entries
