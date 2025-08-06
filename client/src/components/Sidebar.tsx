@@ -103,12 +103,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       icon: Settings,
       description: 'Configuração de permissões'
     },
-    {
-      id: 'cadastros',
-      label: 'Cadastros',
-      icon: UserPlus,
-      description: 'Clientes, categorias e subcategorias'
-    }
+
   ];
 
   // Filtra itens baseado em permissões e categoria

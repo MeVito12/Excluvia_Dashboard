@@ -73,13 +73,7 @@ export const availableSections: SectionPermission[] = [
     icon: 'Settings',
     defaultEnabled: false
   },
-  {
-    id: 'cadastros',
-    label: 'Cadastros',
-    description: 'Cadastros de clientes, categorias e subcategorias',
-    icon: 'UserPlus',
-    defaultEnabled: true
-  }
+
 ];
 
 interface PermissionsContextType {
