@@ -44,40 +44,59 @@
   z-index: 50001 !important;
 }
 
-/* Forçar sobre todos os outros elementos Radix */
+/* === MODAL SYSTEM - FORÇA TOTAL === */
+/* Portal principal */
 [data-radix-portal] {
-  z-index: 49999 !important;
+  z-index: 999999 !important;
 }
 
+/* Overlay - DEVE ficar atrás mas visível */
 [data-radix-dialog-overlay] {
-  z-index: 50000 !important;
+  z-index: 1000000 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px !important;
+}
+
+/* Conteúdo do modal - DEVE ficar na frente */
+[data-radix-dialog-content] {
+  z-index: 1000001 !important;
+  position: relative !important;
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4) !important;
+  max-width: 32rem !important;
+  max-height: 85vh !important;
+  width: 100% !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+}
+
+/* FORÇA MÁXIMA - Sobrescreve TUDO */
+div[data-radix-dialog-overlay] {
+  z-index: 1000000 !important;
   position: fixed !important;
   inset: 0 !important;
-  background-color: rgba(0, 0, 0, 0.5) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
 
-[data-radix-dialog-content] {
-  z-index: 50001 !important;
+div[data-radix-dialog-content] {
+  z-index: 1000001 !important;
   position: relative !important;
   background: white !important;
-  border-radius: 8px !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-  max-width: min(calc(100vw - 32px), 32rem) !important;
-  max-height: min(calc(100vh - 32px), 85vh) !important;
+  border-radius: 12px !important;
+  max-width: 32rem !important;
   width: 100% !important;
-  margin: 16px !important;
-  overflow-y: auto !important;
-}
-
-/* Força centralização absoluta para todos os modais */
-.fixed[data-radix-dialog-content] {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
 }
 
 /* Modal de recuperação de senha - força z-index máximo */
