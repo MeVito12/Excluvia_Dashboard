@@ -472,7 +472,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500"
+                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
                   onClick={() => {
                     console.log('Vendedores button clicked');
                     setShowSellersModal(true);
@@ -493,7 +493,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500"
+                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
                   onClick={() => {
                     console.log('Clientes button clicked');
                     setShowClientModal(true);
@@ -514,7 +514,7 @@ const VendasSection = () => {
                 </Label>
                 <Button
                   variant="outline"
-                  className="w-full justify-start text-gray-500"
+                  className="w-full justify-start text-gray-500 hover:bg-green-600 hover:text-white hover:border-green-600"
                   onClick={() => setShowPaymentModal(true)}
                 >
                   <Plus className="h-4 w-4 mr-2" />
@@ -541,7 +541,7 @@ const VendasSection = () => {
                     variant="outline"
                     onClick={() => {/* Lógica do cupom */}}
                     disabled={!couponCode.trim() || validatingCoupon}
-                    className="px-6"
+                    className="px-6 hover:bg-green-600 hover:text-white hover:border-green-600"
                   >
                     {validatingCoupon ? "..." : "Aplicar"}
                   </Button>
@@ -577,7 +577,7 @@ const VendasSection = () => {
 
               {/* Botão Finalizar */}
               <Button 
-                className="w-full py-3 text-lg bg-purple-600 hover:bg-purple-700"
+                className="w-full py-3 text-lg bg-green-600 hover:bg-green-700 text-white"
                 onClick={handleProcessSale}
                 disabled={cart.length === 0 || processSaleMutation.isPending}
               >
@@ -727,24 +727,10 @@ const VendasSection = () => {
             {/* Opção venda sem cliente */}
             <div className="mb-4">
               <div 
-                className="border rounded-lg p-3 hover:bg-blue-500 cursor-pointer transition-all duration-200"
+                className="border rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition-colors"
                 onClick={() => {
                   setSelectedClient(null);
                   setShowClientModal(false);
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#3b82f6';
-                  e.currentTarget.style.color = 'white';
-                  const texts = e.currentTarget.querySelectorAll('p');
-                  texts.forEach(text => text.style.color = 'white');
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '';
-                  e.currentTarget.style.color = '';
-                  const texts = e.currentTarget.querySelectorAll('p');
-                  texts.forEach((text, index) => {
-                    text.style.color = index === 0 ? '#1f2937' : '#6b7280';
-                  });
                 }}
               >
                 <p className="font-medium text-gray-800">Venda sem cliente</p>
@@ -776,25 +762,11 @@ const VendasSection = () => {
                 .map(client => (
                   <div
                     key={client.id}
-                    className="p-3 border rounded-lg cursor-pointer transition-all duration-200"
+                    className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                     onClick={() => {
                       setSelectedClient(client.id);
                       setShowClientModal(false);
                       setClientSearchTerm("");
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#3b82f6';
-                      e.currentTarget.style.color = 'white';
-                      const texts = e.currentTarget.querySelectorAll('p');
-                      texts.forEach(text => text.style.color = 'white');
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '';
-                      e.currentTarget.style.color = '';
-                      const texts = e.currentTarget.querySelectorAll('p');
-                      texts.forEach((text, index) => {
-                        text.style.color = index === 0 ? '#1f2937' : '#6b7280';
-                      });
                     }}
                   >
                     <p className="font-medium text-gray-800">{client.name}</p>
@@ -843,18 +815,10 @@ const VendasSection = () => {
               ].map((method) => (
                 <button
                   key={method.value}
-                  className="w-full p-3 text-left border rounded-lg transition-all duration-200 text-gray-800"
+                  className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors text-gray-800"
                   onClick={() => {
                     setPaymentMethod(method.value);
                     setShowPaymentModal(false);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#3b82f6';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '';
-                    e.currentTarget.style.color = '#1f2937';
                   }}
                 >
                   {method.label}
@@ -883,21 +847,7 @@ const VendasSection = () => {
               {companyProfiles.map((profile) => (
                 <label
                   key={profile.id}
-                  className="flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200"
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#3b82f6';
-                    e.currentTarget.style.color = 'white';
-                    const texts = e.currentTarget.querySelectorAll('p');
-                    texts.forEach(text => text.style.color = 'white');
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '';
-                    e.currentTarget.style.color = '';
-                    const texts = e.currentTarget.querySelectorAll('p');
-                    texts.forEach((text, index) => {
-                      text.style.color = index === 0 ? '#1f2937' : '#6b7280';
-                    });
-                  }}
+                  className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
                 >
                   <input
                     type="checkbox"
