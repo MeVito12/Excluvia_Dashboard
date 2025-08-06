@@ -17,7 +17,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Autenticação unificada - UUID primeiro, integer como fallback
+  // Autenticação unificada - APENAS UUID (Supabase)
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -134,8 +134,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log(`[ROUTES] ❌ UserId vazio ou inválido: "${userId}"`);
       }
       
-      // FALLBACK: Método tradicional (não deveria ser usado mais)
-      console.log(`[ROUTES] Fallback: userId não encontrado no header`);
+      // OBRIGATÓRIO: User ID deve estar presente
+      console.log(`[ROUTES] ERRO: userId não encontrado no header`);
       return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar produtos:', error);
@@ -152,19 +152,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Vendas (UUID-aware)
+  // Vendas (apenas Supabase UUID)
   app.get("/api/sales", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       
-      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId && userId.trim() !== '') {
-        const sales = await storage.getSalesUuidAware(userId);
-        return res.json(sales);
+      if (!userId || userId.trim() === '') {
+        return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
       }
       
-      // FALLBACK: Método tradicional
-      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
+      const sales = await storage.getSalesUuidAware(userId);
+      return res.json(sales);
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar vendas:', error);
       res.status(500).json({ error: error.message });
@@ -204,19 +202,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Clientes (UUID-aware)
+  // Clientes (apenas Supabase UUID)
   app.get("/api/clients", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       
-      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId && userId.trim() !== '') {
-        const clients = await storage.getClientsUuidAware(userId);
-        return res.json(clients);
+      if (!userId || userId.trim() === '') {
+        return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
       }
       
-      // FALLBACK: Método tradicional
-      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
+      const clients = await storage.getClientsUuidAware(userId);
+      return res.json(clients);
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar clientes:', error);
       res.status(500).json({ error: error.message });
@@ -232,19 +228,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Agendamentos (UUID-aware)
+  // Agendamentos (apenas Supabase UUID)
   app.get("/api/appointments", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       
-      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId && userId.trim() !== '') {
-        const appointments = await storage.getAppointmentsUuidAware(userId);
-        return res.json(appointments);
+      if (!userId || userId.trim() === '') {
+        return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
       }
       
-      // FALLBACK: Método tradicional
-      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
+      const appointments = await storage.getAppointmentsUuidAware(userId);
+      return res.json(appointments);
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar agendamentos:', error);
       res.status(500).json({ error: error.message });
@@ -260,19 +254,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Financeiro (UUID-aware)
+  // Financeiro (apenas Supabase UUID)
   app.get("/api/financial", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       
-      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId && userId.trim() !== '') {
-        const entries = await storage.getFinancialEntriesUuidAware(userId);
-        return res.json(entries);
+      if (!userId || userId.trim() === '') {
+        return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
       }
       
-      // FALLBACK: Método tradicional
-      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
+      const entries = await storage.getFinancialEntriesUuidAware(userId);
+      return res.json(entries);
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar financeiro:', error);
       res.status(500).json({ error: error.message });
@@ -288,19 +280,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Transferências (UUID-aware)
+  // Transferências (apenas Supabase UUID)
   app.get("/api/transfers", async (req, res) => {
     try {
       const userId = req.headers['x-user-id'] as string;
       
-      // PRIORIDADE 1: Usar método UUID-aware se tiver userId
-      if (userId && userId.trim() !== '') {
-        const transfers = await storage.getTransfersUuidAware(userId);
-        return res.json(transfers);
+      if (!userId || userId.trim() === '') {
+        return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
       }
       
-      // FALLBACK: Método tradicional
-      return res.status(400).json({ error: 'User ID é obrigatório no header x-user-id' });
+      const transfers = await storage.getTransfersUuidAware(userId);
+      return res.json(transfers);
     } catch (error: any) {
       console.error('[ROUTES] Erro ao buscar transferências:', error);
       res.status(500).json({ error: error.message });
@@ -404,15 +394,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Usuário não encontrado" });
       }
       
-      // FALLBACK: Sistema antigo (integer IDs)
-      console.log(`[USER-COMPANY] Usando sistema legacy para: ${userId}`);
-      const userIdInt = parseInt(userId);
-      const user = await storage.getUserById(userIdInt);
-      if (!user) {
-        return res.status(404).json({ error: "Usuário não encontrado" });
-      }
-      const company = await storage.getCompanyById(user.company_id || 1);
-      res.json({ user, company });
+      // ERRO: User ID inválido ou não encontrado no sistema UUID
+      console.log(`[USER-COMPANY] ❌ User ID inválido ou não encontrado: ${userId}`);
+      return res.status(404).json({ error: "Usuário não encontrado no sistema" });
       
     } catch (error: any) {
       console.error('[USER-COMPANY] Erro:', error);

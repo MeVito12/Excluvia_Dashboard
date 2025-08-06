@@ -529,7 +529,7 @@ export class SupabaseStorage implements Storage {
   async getTransfers(companyId?: number): Promise<Transfer[]> {
     const filter = companyId ? `company_id=eq.${companyId}&` : '';
     
-    // Fallback para JOIN manual por enquanto - PostgREST syntax complexa
+    // JOIN manual - PostgREST syntax complexa
     const transfersQuery = `transfers?${filter}select=*&order=transfer_date.desc`;
     const productsQuery = 'products?select=id,name';
     

@@ -88,23 +88,30 @@ export class SupabaseAuthStorage implements AuthStorage {
       const user = users[0];
       console.log('✅ Usuário UUID encontrado:', { id: user.id, email: user.email, name: user.name });
       
-      // Por enquanto, vamos aceitar login sem verificação de senha para teste
-      // TODO: Implementar hash de senha quando necessário
-      if (password === 'demo123' || !user.password_hash) {
-        console.log('🎯 Senha aceita para usuário UUID:', email);
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          company_id: user.company_id,
-          branch_id: user.branch_id,
-          role: user.role,
-          business_category: user.business_category
-        };
+      // Verificação de senha real
+      if (user.password_hash) {
+        const isValid = await comparePassword(password, user.password_hash);
+        if (!isValid) {
+          console.log('❌ Senha inválida para usuário UUID:', email);
+          return null;
+        }
+      } else {
+        console.log('❌ Usuário sem senha definida:', email);
+        return null;
       }
 
-      console.log('❌ Senha rejeitada para usuário UUID:', email);
-      return null;
+      console.log('🎯 Login UUID realizado com sucesso:', email);
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        company_id: user.company_id,
+        branch_id: user.branch_id,
+        role: user.role,
+        business_category: user.business_category
+      };
+
+
     } catch (error) {
       console.error('❌ Erro no login UUID:', error);
       return null;

@@ -7,8 +7,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useUuidAuth } from '@/contexts/UuidAuthContext';
 
 export function UuidLoginForm() {
-  const [email, setEmail] = useState('junior@mercadocentral.com.br');
-  const [password, setPassword] = useState('demo123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login, isLoading } = useUuidAuth();
 
@@ -74,11 +74,10 @@ export function UuidLoginForm() {
             </Button>
           </form>
 
-          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-            <p className="text-sm text-amber-800 font-medium mb-2">🧪 Modo UUID Demo</p>
-            <p className="text-xs text-amber-700">
-              Email: <code>junior@mercadocentral.com.br</code><br/>
-              Senha: <code>demo123</code>
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 font-medium">Sistema de Autenticação UUID</p>
+            <p className="text-xs text-blue-700 mt-1">
+              Entre com suas credenciais reais do sistema.
             </p>
           </div>
         </CardContent>

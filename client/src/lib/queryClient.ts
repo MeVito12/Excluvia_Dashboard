@@ -7,29 +7,9 @@ export const queryClient = new QueryClient({
         console.log('[QUERY-CLIENT] 🚀 === STARTING REQUEST ===');
         console.log('[QUERY-CLIENT] 🔗 QueryKey:', queryKey);
         
-        // Fallback direto - se a função falhar, uso direto do localStorage
-        let userId = null;
-        try {
-          userId = getCurrentUserId();
-          console.log('[QUERY-CLIENT] 📋 getUserId result:', userId);
-        } catch (e) {
-          console.error('[QUERY-CLIENT] ❌ getUserId failed:', e);
-        }
-        
-        // Fallback absoluto
-        if (!userId) {
-          console.log('[QUERY-CLIENT] 🔄 Using fallback method');
-          try {
-            const raw = localStorage.getItem('currentUser');
-            if (raw) {
-              const parsed = JSON.parse(raw);
-              userId = parsed.id;
-              console.log('[QUERY-CLIENT] 🎯 Fallback userId:', userId);
-            }
-          } catch (e) {
-            console.error('[QUERY-CLIENT] ❌ Fallback failed:', e);
-          }
-        }
+        // Obter User ID do localStorage DIRETAMENTE
+        const userId = getCurrentUserId();
+        console.log('[QUERY-CLIENT] 📋 getUserId result:', userId);
         
         // Para arrays, primeiro item é base URL, demais são query params
         let url = Array.isArray(queryKey) ? queryKey[0] : queryKey;

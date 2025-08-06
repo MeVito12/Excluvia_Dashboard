@@ -45,7 +45,7 @@ const Index = () => {
           import('./TestUuidRoute').then(m => ({ default: m.TestUuidRoute }))
         );
         return (
-          <React.Suspense fallback={<div className="p-8 text-center">Carregando teste UUID...</div>}>
+          <React.Suspense fallback={<div className="p-8 text-center">Carregando...</div>}>
             <TestUuidRoute />
           </React.Suspense>
         );

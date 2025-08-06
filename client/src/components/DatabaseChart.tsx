@@ -10,23 +10,13 @@ interface DatabaseChartProps {
   data?: any[];
 }
 
-// Função para gerar dados de fallback quando não há dados reais
-const generateFallbackData = (type: string) => {
-  if (type === 'pie') {
-    return [
-      { name: 'Produtos', value: 65, color: 'hsl(var(--accent))' },
-      { name: 'Vendas', value: 25, color: 'hsl(var(--primary))' },
-      { name: 'Clientes', value: 10, color: 'hsl(var(--muted-foreground))' },
-    ];
-  }
-  
-  return [
-    { name: 'Sem dados disponíveis', value: 0 }
-  ];
+// Exibe mensagem quando não há dados do Supabase
+const getEmptyStateData = (type: string) => {
+  return [{ name: 'Sem dados disponíveis', value: 0 }];
 };
 
 const DatabaseChart = ({ type, title, data: propData }: DatabaseChartProps) => {
-  const data = propData && propData.length > 0 ? propData : generateFallbackData(type);
+  const data = propData && propData.length > 0 ? propData : getEmptyStateData(type);
 
   const renderChart = () => {
     switch (type) {

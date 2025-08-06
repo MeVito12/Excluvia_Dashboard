@@ -27,11 +27,7 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const [resetSuccess, setResetSuccess] = useState(false);
 
 
-  // Sistema de usuários mantidos
-  const categoryUsers = {
-    'master': { email: 'master@sistema.com', password: 'master2025', name: 'Administrador Master', business: 'Sistema Central', userType: 'master' },
-    'junior': { email: 'junior@mercadocentral.com.br', password: 'junior2025', name: 'Junior Coordenador', business: 'Mercado Central', userType: 'gestao' }
-  };
+  // REMOVIDO: Sistema de usuários hardcodados - apenas autenticação via Supabase
 
 
 
@@ -102,16 +98,8 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Verificar se o email existe no sistema
-    const emailExists = Object.values(categoryUsers).some(user => user.email === resetEmail);
-    
-    if (emailExists) {
-      // Simular envio de email
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setResetSuccess(true);
-    } else {
-      setError('Email não encontrado no sistema.');
-    }
+    // Implementar recuperação de senha real via Supabase (se necessário)
+    setError('Recuperação de senha: Entre em contato com o administrador do sistema.');
   };
 
   const openForgotPassword = () => {

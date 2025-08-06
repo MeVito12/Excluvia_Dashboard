@@ -17,8 +17,8 @@ interface UuidUser {
 }
 
 export function TestUuidRoute() {
-  const [email, setEmail] = useState('junior@mercadocentral.com.br');
-  const [password, setPassword] = useState('demo123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [user, setUser] = useState<UuidUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -111,11 +111,10 @@ export function TestUuidRoute() {
                 {isLoading ? 'Testando...' : 'Testar Login UUID'}
               </Button>
 
-              <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                <p className="text-sm text-amber-800 font-medium mb-1">🧪 Credenciais de Teste</p>
-                <p className="text-xs text-amber-700">
-                  Email: junior@mercadocentral.com.br<br/>
-                  Senha: demo123
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800 font-medium mb-1">Teste de Autenticação UUID</p>
+                <p className="text-xs text-blue-700">
+                  Utilize credenciais reais do sistema para testar.
                 </p>
               </div>
             </CardContent>

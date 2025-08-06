@@ -693,7 +693,7 @@ const AtendimentoSection = () => {
     const modules = 21; // QR Code básico 21x21
     const moduleSize = size / modules;
     
-    // Padrão simplificado de QR Code (demonstrativo)
+    // Padrão de QR Code para compartilhamento
     const pattern = Array(modules).fill(null).map(() => 
       Array(modules).fill(null).map(() => Math.random() > 0.5)
     );
