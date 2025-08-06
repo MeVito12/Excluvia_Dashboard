@@ -654,16 +654,7 @@ export default function VendasSection() {
 
       {/* Modal de Vendedores */}
       <Dialog open={showSellersModal} onOpenChange={setShowSellersModal}>
-        <DialogContent 
-          className="max-w-2xl"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 100
-          }}
-        >
+        <DialogContent className="max-w-2xl">
           <DialogTitle>Selecionar Vendedores</DialogTitle>
           <DialogDescription>Escolha os vendedores responsáveis por esta venda</DialogDescription>
           <div className="space-y-4">
@@ -724,16 +715,7 @@ export default function VendasSection() {
 
       {/* Modal de Clientes */}
       <Dialog open={showClientModal} onOpenChange={setShowClientModal}>
-        <DialogContent 
-          className="max-w-2xl"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 100
-          }}
-        >
+        <DialogContent className="max-w-2xl">
           <DialogTitle>Selecionar Cliente</DialogTitle>
           <DialogDescription>Escolha um cliente existente ou cadastre um novo</DialogDescription>
           <div className="space-y-4">
@@ -817,16 +799,7 @@ export default function VendasSection() {
 
       {/* Modal de Método de Pagamento */}
       <Dialog open={showPaymentModal} onOpenChange={setShowPaymentModal}>
-        <DialogContent 
-          className="max-w-md"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 100
-          }}
-        >
+        <DialogContent className="max-w-md">
           <DialogTitle>Método de Pagamento</DialogTitle>
           <DialogDescription>Selecione como o cliente irá pagar</DialogDescription>
           <div className="space-y-3">
@@ -921,16 +894,7 @@ export default function VendasSection() {
           resetClientForm();
         }
       }}>
-        <DialogContent 
-          className="max-w-2xl"
-          style={{
-            position: 'fixed',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            zIndex: 100
-          }}
-        >
+        <DialogContent className="max-w-2xl">
           <DialogTitle>Cadastrar Novo Cliente</DialogTitle>
           <DialogDescription>Preencha os dados do cliente</DialogDescription>
         <div className="space-y-4">
