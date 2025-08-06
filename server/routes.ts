@@ -364,59 +364,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (typeof userId === 'string' && userId.includes('-')) {
         console.log(`[USER-COMPANY] Usando sistema UUID para: ${userId}`);
         
-        // Retornar dados baseados no userId UUID
-        let userData, companyData;
+        // BUSCAR DADOS REAIS DO SUPABASE
+        const { SupabaseAuthStorage } = await import('./auth-storage.js');
+        const authStorage = new SupabaseAuthStorage();
         
-        if (userId === "0421fa78-361a-4d1c-a28a-94d793d08b6b") {
-          // Dados para Junior Coordenador
-          userData = {
-            id: userId,
-            name: "Junior Coordenador",
-            email: "junior@mercadocentral.com.br",
-            company_id: "44444444-4444-4444-4444-444444444444"
-          };
+        try {
+          const userResult = await authStorage.getUserById(userId);
           
-          companyData = {
-            id: "44444444-4444-4444-4444-444444444444",
-            name: "Mercado Central",
-            category: "Alimentício",
-            description: "Sistema de gestão para mercado"
-          };
-        } else if (userId === "d870d0b5-5c7d-418e-95b9-03faf10e83d8") {
-          // Dados para Demo Farmácia
-          userData = {
-            id: userId,
-            name: "Demo Farmácia Central",
-            email: "demo.farmacia@sistema.com",
-            company_id: "11111111-1111-1111-1111-111111111111"
-          };
-          
-          companyData = {
-            id: "11111111-1111-1111-1111-111111111111",
-            name: "Farmácia Central",
-            category: "Farmácia",
-            description: "Sistema de gestão farmacêutica"
-          };
-        } else {
-          // Default para outros UUIDs
-          userData = {
-            id: userId,
-            name: "Usuário Sistema",
-            email: "usuario@sistema.com",
-            company_id: "11111111-1111-1111-1111-111111111111"
-          };
-          
-          companyData = {
-            id: "11111111-1111-1111-1111-111111111111",
-            name: "Sistema Demo",
-            category: "Sistema",
-            description: "Sistema de gestão"
-          };
+          if (userResult) {
+            console.log(`[USER-COMPANY] ✅ Usuário encontrado no Supabase: ${userResult.email}`);
+            
+            const userData = {
+              id: userResult.id,
+              name: userResult.name,
+              email: userResult.email,
+              role: userResult.role,
+              business_category: userResult.business_category,
+              company_id: userResult.company_id,
+              permissions: userResult.permissions
+            };
+            
+            const companyData = {
+              id: userResult.company_id,
+              name: userResult.business_category === "Sistema" ? "Sistema de Gestão" : "Empresa Demo",
+              category: userResult.business_category || "Sistema",
+              description: "Sistema de gestão empresarial"
+            };
+            
+            console.log(`[USER-COMPANY] ✅ Retornando dados reais para: ${userData.email}`);
+            res.json({ user: userData, company: companyData });
+            return;
+          }
+        } catch (error) {
+          console.log(`[USER-COMPANY] ❌ Erro ao buscar no Supabase: ${error}`);
         }
         
-        console.log(`[USER-COMPANY] ✅ Retornando dados para: ${userData.email}`);
-        res.json({ user: userData, company: companyData });
-        return;
+        // Se não encontrar no Supabase, retornar erro
+        console.log(`[USER-COMPANY] ❌ Usuário UUID não encontrado: ${userId}`);
+        return res.status(404).json({ error: "Usuário não encontrado" });
       }
       
       // FALLBACK: Sistema antigo (integer IDs)
