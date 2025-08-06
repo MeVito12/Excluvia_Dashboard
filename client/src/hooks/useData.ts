@@ -175,6 +175,18 @@ export const useCreateMoneyTransfer = () => {
   });
 };
 
+export const useUpdateMoneyTransfer = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, transfer }: { id: number, transfer: Partial<MoneyTransfer> }) => 
+      apiRequest(`/api/money-transfers/${id}`, { method: 'PATCH', body: JSON.stringify(transfer) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/money-transfers'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/financial'] }); // Invalidar também entradas financeiras
+    }
+  });
+};
+
 // Função para simplificar operações de venda do carrinho 
 export const useCreateCartSale = () => {
   const queryClient = useQueryClient();

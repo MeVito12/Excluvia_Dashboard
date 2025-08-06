@@ -618,10 +618,67 @@ export class SupabaseStorage implements Storage {
   }
 
   async updateMoneyTransfer(id: number, transfer: Partial<MoneyTransfer>): Promise<MoneyTransfer | null> {
+    // Primeiro, buscar a transferência atual para verificar mudanças de status
+    const currentTransfers = await this.request(`money_transfers?id=eq.${id}&select=*`);
+    if (!currentTransfers || currentTransfers.length === 0) {
+      throw new Error('Transferência não encontrada');
+    }
+    
+    const currentTransfer = currentTransfers[0];
+    
+    // Atualizar a transferência
     const [updated] = await this.request(`money_transfers?id=eq.${id}`, {
       method: 'PATCH',
       body: JSON.stringify(transfer),
     });
+    
+    // Se a transferência foi marcada como concluída, criar entrada financeira de saída
+    if (transfer.status === 'completed' && currentTransfer.status !== 'completed') {
+      console.log(`💰 Transferência ${id} concluída - criando entrada financeira de saída`);
+      
+      try {
+        // Criar entrada financeira negativa (saída) para a filial de origem
+        const financialEntry = {
+          type: 'expense' as const,
+          amount: currentTransfer.amount,
+          description: `Transferência enviada para filial - ${currentTransfer.description || 'Transferência entre filiais'}`,
+          status: 'paid' as const,
+          category: 'transferencias',
+          reference_id: currentTransfer.id,
+          reference_type: 'money_transfer',
+          company_id: currentTransfer.company_id,
+          branch_id: currentTransfer.from_branch_id, // Filial de origem
+          created_by: currentTransfer.created_by,
+          entry_date: new Date().toISOString()
+        };
+        
+        await this.createFinancialEntry(financialEntry);
+        console.log(`✅ Entrada financeira de saída criada para transferência ${id}`);
+        
+        // Também criar entrada positiva (receita) para a filial de destino
+        const incomeEntry = {
+          type: 'income' as const,
+          amount: currentTransfer.amount,
+          description: `Transferência recebida de filial - ${currentTransfer.description || 'Transferência entre filiais'}`,
+          status: 'paid' as const,
+          category: 'transferencias',
+          reference_id: currentTransfer.id,
+          reference_type: 'money_transfer',
+          company_id: currentTransfer.company_id,
+          branch_id: currentTransfer.to_branch_id, // Filial de destino
+          created_by: currentTransfer.created_by,
+          entry_date: new Date().toISOString()
+        };
+        
+        await this.createFinancialEntry(incomeEntry);
+        console.log(`✅ Entrada financeira de entrada criada para transferência ${id}`);
+        
+      } catch (finError) {
+        console.error(`❌ Erro ao criar entradas financeiras para transferência ${id}:`, finError);
+        // Não falhar a atualização da transferência se houver erro nas entradas financeiras
+      }
+    }
+    
     return updated || null;
   }
 

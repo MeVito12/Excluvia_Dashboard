@@ -323,6 +323,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/money-transfers/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      console.log(`💰 Atualizando transferência ${id} com dados:`, req.body);
+      
+      // Se está marcando como concluída, adicionar data de conclusão
+      if (req.body.status === 'completed' && !req.body.completed_date) {
+        req.body.completed_date = new Date().toISOString();
+      }
+      
+      const transfer = await storage.updateMoneyTransfer(id, req.body);
+      
+      if (!transfer) {
+        return res.status(404).json({ error: "Transferência não encontrada" });
+      }
+      
+      console.log(`✅ Transferência ${id} atualizada com sucesso`);
+      res.json(transfer);
+    } catch (error: any) {
+      console.error(`❌ Erro ao atualizar transferência:`, error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  app.delete("/api/money-transfers/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteMoneyTransfer(id);
+      
+      if (success) {
+        res.json({ success: true, message: "Transferência deletada com sucesso" });
+      } else {
+        res.status(404).json({ error: "Transferência não encontrada" });
+      }
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Filiais
   app.get("/api/branches", async (req, res) => {
     try {

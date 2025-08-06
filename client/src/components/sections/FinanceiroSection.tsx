@@ -1,4 +1,4 @@
-import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
+import { useProducts, useSales, useClients, useAppointments, useFinancial, useTransfers, useMoneyTransfers, useBranches, useCreateProduct, useCreateSale, useCreateClient, useCreateAppointment, useCreateFinancial, useCreateTransfer, useCreateMoneyTransfer, useUpdateMoneyTransfer, useCreateBranch, useCreateCartSale } from "@/hooks/useData";
 import { useUnifiedMetrics } from "@/hooks/useUnifiedMetrics";
 import React, { useState, useMemo } from 'react';
 import { useCategory } from '@/contexts/CategoryContext';
@@ -86,6 +86,7 @@ const FinanceiroSection = () => {
   
   const createFinancialEntry = useCreateFinancial();
   const createMoneyTransfer = useCreateMoneyTransfer();
+  const updateMoneyTransfer = useUpdateMoneyTransfer();
 
   // Função auxiliar para obter nome da filial
   const getBranchName = (branchId: number) => {
