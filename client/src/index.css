@@ -545,6 +545,22 @@ All colors MUST be HSL.
     @apply bg-blue-100 text-blue-800;
   }
 
+  /* Fix para centralização forçada dos modais Dialog */
+  [data-radix-dialog-content] {
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 100 !important;
+  }
+
+  [data-radix-dialog-overlay] {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99 !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+  }
+
   .status-pending {
     @apply bg-orange-100 text-orange-800;
   }
