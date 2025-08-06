@@ -727,14 +727,28 @@ const VendasSection = () => {
             {/* Opção venda sem cliente */}
             <div className="mb-4">
               <div 
-                className="border rounded-lg p-3 hover:border-gray-300 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
+                className="border rounded-lg p-3 hover:bg-blue-500 cursor-pointer transition-all duration-200"
                 onClick={() => {
                   setSelectedClient(null);
                   setShowClientModal(false);
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#3b82f6';
+                  e.currentTarget.style.color = 'white';
+                  const texts = e.currentTarget.querySelectorAll('p');
+                  texts.forEach(text => text.style.color = 'white');
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '';
+                  e.currentTarget.style.color = '';
+                  const texts = e.currentTarget.querySelectorAll('p');
+                  texts.forEach((text, index) => {
+                    text.style.color = index === 0 ? '#1f2937' : '#6b7280';
+                  });
+                }}
               >
-                <p className="font-medium text-gray-800 group-hover:text-white">Venda sem cliente</p>
-                <p className="text-sm text-gray-600 group-hover:text-white">Continuar sem identificar cliente</p>
+                <p className="font-medium text-gray-800">Venda sem cliente</p>
+                <p className="text-sm text-gray-600">Continuar sem identificar cliente</p>
               </div>
             </div>
             
@@ -762,16 +776,30 @@ const VendasSection = () => {
                 .map(client => (
                   <div
                     key={client.id}
-                    className="p-3 border rounded-lg hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
+                    className="p-3 border rounded-lg cursor-pointer transition-all duration-200"
                     onClick={() => {
                       setSelectedClient(client.id);
                       setShowClientModal(false);
                       setClientSearchTerm("");
                     }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#3b82f6';
+                      e.currentTarget.style.color = 'white';
+                      const texts = e.currentTarget.querySelectorAll('p');
+                      texts.forEach(text => text.style.color = 'white');
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '';
+                      e.currentTarget.style.color = '';
+                      const texts = e.currentTarget.querySelectorAll('p');
+                      texts.forEach((text, index) => {
+                        text.style.color = index === 0 ? '#1f2937' : '#6b7280';
+                      });
+                    }}
                   >
-                    <p className="font-medium text-gray-800 group-hover:text-white">{client.name}</p>
-                    {client.email && <p className="text-sm text-gray-600 group-hover:text-white">{client.email}</p>}
-                    {client.phone && <p className="text-sm text-gray-600 group-hover:text-white">{client.phone}</p>}
+                    <p className="font-medium text-gray-800">{client.name}</p>
+                    {client.email && <p className="text-sm text-gray-600">{client.email}</p>}
+                    {client.phone && <p className="text-sm text-gray-600">{client.phone}</p>}
                   </div>
                 ))}
             </div>
@@ -815,10 +843,18 @@ const VendasSection = () => {
               ].map((method) => (
                 <button
                   key={method.value}
-                  className="w-full p-3 text-left border rounded-lg hover:bg-blue-500 hover:text-white transition-colors text-gray-800"
+                  className="w-full p-3 text-left border rounded-lg transition-all duration-200 text-gray-800"
                   onClick={() => {
                     setPaymentMethod(method.value);
                     setShowPaymentModal(false);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#3b82f6';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '';
+                    e.currentTarget.style.color = '#1f2937';
                   }}
                 >
                   {method.label}
@@ -847,7 +883,21 @@ const VendasSection = () => {
               {companyProfiles.map((profile) => (
                 <label
                   key={profile.id}
-                  className="flex items-center p-3 border rounded-lg hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
+                  className="flex items-center p-3 border rounded-lg cursor-pointer transition-all duration-200"
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#3b82f6';
+                    e.currentTarget.style.color = 'white';
+                    const texts = e.currentTarget.querySelectorAll('p');
+                    texts.forEach(text => text.style.color = 'white');
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '';
+                    e.currentTarget.style.color = '';
+                    const texts = e.currentTarget.querySelectorAll('p');
+                    texts.forEach((text, index) => {
+                      text.style.color = index === 0 ? '#1f2937' : '#6b7280';
+                    });
+                  }}
                 >
                   <input
                     type="checkbox"
@@ -862,8 +912,8 @@ const VendasSection = () => {
                     className="mr-3"
                   />
                   <div>
-                    <p className="font-medium text-gray-800 group-hover:text-white">{profile.name}</p>
-                    <p className="text-sm text-gray-600 group-hover:text-white">{profile.email}</p>
+                    <p className="font-medium text-gray-800">{profile.name}</p>
+                    <p className="text-sm text-gray-600">{profile.email}</p>
                   </div>
                 </label>
               ))}
