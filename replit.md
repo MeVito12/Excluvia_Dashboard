@@ -106,7 +106,15 @@ Common database errors encountered and solutions implemented:
 - **Query performance**: Eliminated "unindexed foreign keys" warnings from Supabase database linter
 - **Multi-field coverage**: Indexed company_id, branch_id, created_by, client_id, and loyalty system relationships
 - **B-tree indexes**: All indexes use optimized B-tree structure for fast lookup and JOIN operations
+- **Duplicates removed**: Eliminated duplicate indexes to prevent redundant maintenance overhead
 - **Production ready**: Database now has comprehensive indexing strategy for high-performance operations
+
+**RLS Policy Advanced Optimization (Aug 2025)**: Resolved auth re-evaluation performance warnings:
+- **STABLE functions**: Created `get_session_user_company_id()` and `get_session_user_company_int()` with STABLE attribute to prevent per-row re-evaluation
+- **Auth caching**: Functions cache user lookup results eliminating repetitive `auth.email()` calls per query row
+- **Performance boost**: Resolved "Auth RLS Initialization Plan" warnings across all 8 main tables  
+- **Maintained security**: Company-based data isolation preserved with dramatically improved query performance at scale
+- **Zero database warnings**: All Supabase database linter warnings eliminated for production-grade performance
 
 ## System Architecture
 
