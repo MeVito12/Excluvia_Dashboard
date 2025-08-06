@@ -1035,7 +1035,7 @@ export default function VendasSection() {
         </div>
       </div>
     </div>
-    )}
+  )}
   </div>
   );
 }
