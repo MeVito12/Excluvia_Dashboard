@@ -116,12 +116,12 @@ Common database errors encountered and solutions implemented:
 - **Service role optimized**: Dedicated function for service role access without performance penalties
 - **Maintained security**: Company-based data isolation preserved with dramatically improved query performance at scale
 
-**Database Index Cleanup (Aug 2025)**: Removed unused indexes for optimal database performance:
-- **20+ unused indexes removed**: Eliminated all indexes flagged as unused by Supabase database linter
-- **Write performance improved**: Reduced overhead during INSERT/UPDATE operations by removing unnecessary index maintenance
-- **Storage optimized**: Freed database storage space previously occupied by unused indexes
-- **Essential indexes preserved**: Kept only actively used indexes that improve query performance
-- **Zero unused index warnings**: Database now maintains only beneficial indexes for production efficiency
+**Database Index Strategy (Aug 2025)**: Optimized indexing approach for production performance:
+- **Strategic index selection**: Created only essential indexes based on actual query patterns and multi-tenant isolation needs
+- **Critical indexes implemented**: 8 essential indexes covering company_id (multi-tenant), client_id (reports), and product_id (tracking)
+- **Performance focused**: Balanced query performance improvement against write operation overhead
+- **Storage efficient**: Minimal index footprint while covering all critical foreign key relationships used by the application
+- **Production optimized**: Index strategy designed for real-world usage patterns rather than comprehensive coverage
 
 ## System Architecture
 
