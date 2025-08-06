@@ -652,66 +652,81 @@ export default function VendasSection() {
       {/* Conteúdo da aba selecionada */}
       {renderTabContent()}
 
-      {/* Modal de Vendedores */}
-      <Dialog open={showSellersModal} onOpenChange={setShowSellersModal}>
-        <DialogContent className="max-w-2xl">
-          <DialogTitle>Selecionar Vendedores</DialogTitle>
-          <DialogDescription>Escolha os vendedores responsáveis por esta venda</DialogDescription>
-          <div className="space-y-4">
-          {companyProfiles.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Nenhum vendedor cadastrado</p>
-              <p className="text-sm">Cadastre vendedores na seção Controle primeiro</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
-              {companyProfiles.map((seller) => (
-                <div
-                  key={seller.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                    selectedSellers.includes(Number(seller.id))
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => {
-                    if (selectedSellers.includes(Number(seller.id))) {
-                      setSelectedSellers(selectedSellers.filter(id => id !== Number(seller.id)));
-                    } else {
-                      setSelectedSellers([...selectedSellers, Number(seller.id)]);
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">{seller.name}</p>
-                      <p className="text-sm text-gray-500">{seller.email}</p>
-                    </div>
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                      selectedSellers.includes(Number(seller.id))
-                        ? 'border-purple-500 bg-purple-500'
-                        : 'border-gray-300'
-                    }`}>
-                      {selectedSellers.includes(Number(seller.id)) && (
-                        <span className="text-white text-xs">✓</span>
-                      )}
-                    </div>
-                  </div>
+      {/* Modal de Vendedores - SIMPLES E DIRETO */}
+      {showSellersModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/50" onClick={() => setShowSellersModal(false)}></div>
+          <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-lg font-semibold">Selecionar Vendedores</h2>
+                  <p className="text-sm text-gray-600">Escolha os vendedores responsáveis por esta venda</p>
                 </div>
-              ))}
+                <button 
+                  onClick={() => setShowSellersModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                {companyProfiles.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>Nenhum vendedor cadastrado</p>
+                    <p className="text-sm">Cadastre vendedores na seção Controle primeiro</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
+                    {companyProfiles.map((seller) => (
+                      <div
+                        key={seller.id}
+                        className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                          selectedSellers.includes(Number(seller.id))
+                            ? 'border-purple-500 bg-purple-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => {
+                          if (selectedSellers.includes(Number(seller.id))) {
+                            setSelectedSellers(selectedSellers.filter(id => id !== Number(seller.id)));
+                          } else {
+                            setSelectedSellers([...selectedSellers, Number(seller.id)]);
+                          }
+                        }}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">{seller.name}</p>
+                            <p className="text-sm text-gray-500">{seller.email}</p>
+                          </div>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            selectedSellers.includes(Number(seller.id))
+                              ? 'border-purple-500 bg-purple-500'
+                              : 'border-gray-300'
+                          }`}>
+                            {selectedSellers.includes(Number(seller.id)) && (
+                              <span className="text-white text-xs">✓</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-3 justify-end pt-4 border-t">
+                <Button variant="outline" onClick={() => setShowSellersModal(false)}>
+                  Cancelar
+                </Button>
+                <Button onClick={() => setShowSellersModal(false)}>
+                  Confirmar Seleção
+                </Button>
+              </div>
             </div>
-          )}
           </div>
-          <div className="flex gap-3 justify-end pt-4">
-            <Button variant="outline" onClick={() => setShowSellersModal(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
-              Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* Modal de Clientes */}
       <Dialog open={showClientModal} onOpenChange={setShowClientModal}>
