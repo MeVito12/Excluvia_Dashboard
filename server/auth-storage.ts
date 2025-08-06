@@ -75,31 +75,32 @@ export class SupabaseAuthStorage implements AuthStorage {
     try {
       console.log('🔍 Buscando usuário:', email);
       
-      // Buscar usuário por email na tabela auth_users
-      const users = await this.request(`auth_users?email=eq.${email}&select=*`);
+      // Buscar senha na tabela profiles (Supabase Auth)
+      const profiles = await this.request(`profiles?email=eq.${email}&select=id,email,senha`);
       
-      console.log('📊 Usuários encontrados:', users?.length || 0);
+      if (!profiles || profiles.length === 0) {
+        console.log('❌ Nenhum usuário encontrado em profiles para:', email);
+        return null;
+      }
+
+      const profile = profiles[0];
+      console.log('✅ Profile encontrado:', { id: profile.id, email: profile.email });
+      
+      // Verificar senha (assumindo que está em texto plano na tabela profiles)
+      if (profile.senha !== password) {
+        console.log('❌ Senha inválida para usuário:', email);
+        return null;
+      }
+
+      // Buscar dados do usuário na tabela auth_users
+      const users = await this.request(`auth_users?id=eq.${profile.id}&select=*`);
       
       if (!users || users.length === 0) {
-        console.log('❌ Nenhum usuário encontrado para:', email);
+        console.log('❌ Usuário não encontrado em auth_users para ID:', profile.id);
         return null;
       }
 
       const user = users[0];
-      console.log('✅ Usuário encontrado:', { id: user.id, email: user.email, name: user.name });
-      
-      // Verificação de senha
-      if (user.password_hash) {
-        const isValid = await comparePassword(password, user.password_hash);
-        if (!isValid) {
-          console.log('❌ Senha inválida para usuário:', email);
-          return null;
-        }
-      } else {
-        console.log('❌ Usuário sem senha definida:', email);
-        return null;
-      }
-
       console.log('🎯 Login realizado com sucesso:', email);
 
       return {
