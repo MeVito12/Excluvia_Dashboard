@@ -45,35 +45,7 @@
 }
 
 /* Forçar sobre todos os outros elementos Radix */
-/* MODAL CORREÇÃO DEFINITIVA - Sobrescreve tudo */
-[data-radix-dialog-overlay] {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  z-index: 9998 !important;
-}
-
-[data-radix-dialog-content] {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  background: white !important;
-  border-radius: 8px !important;
-  padding: 24px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  z-index: 9999 !important;
-  max-width: 90vw !important;
-  max-height: 90vh !important;
-  overflow-y: auto !important;
-}
-
-[data-radix-portal] {
-  z-index: 9997 !important;
-}
+/* Remove CSS conflitante - deixa Tailwind trabalhar */
 
 
 
