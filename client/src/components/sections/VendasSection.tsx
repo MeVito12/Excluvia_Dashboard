@@ -46,7 +46,7 @@ const VendasSection = () => {
     email: '',
     phone: '',
     address: '',
-    client_type: 'individual' as 'individual' | 'company',
+    clientType: 'individual' as 'individual' | 'company',
     document: '',
     notes: ''
   });
@@ -114,20 +114,21 @@ const VendasSection = () => {
   // Adicionar produto ao carrinho
   const addToCart = (product: Product) => {
     setCart(prev => {
-      const existing = prev.find(item => item.product_id === product.id);
+      const existing = prev.find(item => item.productId === product.id);
       if (existing) {
         return prev.map(item =>
-          item.product_id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + 1, totalPrice: item.unitPrice * (item.quantity + 1) }
             : item
         );
       }
       return [...prev, {
-        product_id: product.id,
-        product_name: product.name,
+        productId: product.id,
+        productName: product.name,
         quantity: 1,
-        unit_price: product.price,
-        total_price: product.price
+        unitPrice: product.price,
+        totalPrice: product.price,
+        barcode: product.barcode
       }];
     });
     setSearchTerm("");
@@ -137,7 +138,7 @@ const VendasSection = () => {
 
   // Remover item do carrinho
   const removeFromCart = (productId: number) => {
-    setCart(prev => prev.filter(item => item.product_id !== productId));
+    setCart(prev => prev.filter(item => item.productId !== productId));
   };
 
   // Atualizar quantidade no carrinho
@@ -148,14 +149,14 @@ const VendasSection = () => {
     }
     
     setCart(prev => prev.map(item =>
-      item.product_id === productId
-        ? { ...item, quantity, total_price: item.unit_price * quantity }
+      item.productId === productId
+        ? { ...item, quantity, totalPrice: item.unitPrice * quantity }
         : item
     ));
   };
 
   // Calcular totais
-  const subtotal = cart.reduce((sum, item) => sum + item.total_price, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.totalPrice, 0);
   const totalDiscount = discount + couponDiscount;
   const totalAmount = subtotal - totalDiscount;
 
@@ -190,14 +191,14 @@ const VendasSection = () => {
 
     try {
       const saleData: SaleCart = {
-        client_id: selectedClient,
+        clientId: selectedClient,
         items: cart,
-        payment_method: paymentMethod,
+        paymentMethod: paymentMethod,
         installments: installments,
         discount: totalDiscount,
-        total_amount: totalAmount,
+        totalAmount: totalAmount,
         sellers: selectedSellers,
-        coupon_code: appliedCoupon?.code || null
+        couponCode: appliedCoupon?.code || null
       };
 
       await processSaleMutation.mutateAsync(saleData);
@@ -238,7 +239,7 @@ const VendasSection = () => {
       email: '',
       phone: '',
       address: '',
-      client_type: 'individual',
+      clientType: 'individual',
       document: '',
       notes: ''
     });
@@ -407,11 +408,11 @@ const VendasSection = () => {
               ) : (
                 <div className="space-y-3">
                   {cart.map((item) => (
-                    <div key={item.product_id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={item.productId} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div className="flex-1">
-                        <p className="font-medium text-gray-800">{item.product_name}</p>
+                        <p className="font-medium text-gray-800">{item.productName}</p>
                         <p className="text-sm text-gray-600">
-                          R$ {item.unit_price.toFixed(2)} cada
+                          R$ {item.unitPrice.toFixed(2)} cada
                         </p>
                       </div>
                       
@@ -419,7 +420,7 @@ const VendasSection = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => updateCartQuantity(item.product_id, item.quantity - 1)}
+                          onClick={() => updateCartQuantity(item.productId, item.quantity - 1)}
                         >
                           <Minus className="h-3 w-3" />
                         </Button>
@@ -427,14 +428,14 @@ const VendasSection = () => {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => updateCartQuantity(item.product_id, item.quantity + 1)}
+                          onClick={() => updateCartQuantity(item.productId, item.quantity + 1)}
                         >
                           <Plus className="h-3 w-3" />
                         </Button>
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => removeFromCart(item.product_id)}
+                          onClick={() => removeFromCart(item.productId)}
                         >
                           <Trash2 className="h-3 w-3" />
                         </Button>
@@ -442,7 +443,7 @@ const VendasSection = () => {
                       
                       <div className="ml-4 text-right">
                         <p className="font-semibold text-gray-800">
-                          R$ {item.total_price.toFixed(2)}
+                          R$ {item.totalPrice.toFixed(2)}
                         </p>
                       </div>
                     </div>
