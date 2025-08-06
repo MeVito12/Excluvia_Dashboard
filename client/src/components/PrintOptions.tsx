@@ -64,14 +64,20 @@ const PrintOptions: React.FC<PrintOptionsProps> = ({
           <Button
             variant={selectedPrinterType === 'thermal' ? 'default' : 'outline'}
             onClick={() => setSelectedPrinterType('thermal')}
-            className="h-auto p-2 justify-start text-left"
+            className={`h-auto p-2 justify-start text-left ${
+              selectedPrinterType === 'thermal' 
+                ? 'text-white hover:text-white' 
+                : 'text-gray-700 hover:text-gray-800'
+            }`}
             size="sm"
           >
             <div className="flex items-center gap-2">
               <Printer className="w-3 h-3" />
               <div>
                 <div className="font-medium text-xs">Térmica (80mm)</div>
-                <div className="text-xs opacity-70">Cupom fiscal</div>
+                <div className={`text-xs ${
+                  selectedPrinterType === 'thermal' ? 'text-white/70' : 'opacity-70'
+                }`}>Cupom fiscal</div>
               </div>
             </div>
           </Button>
@@ -79,14 +85,20 @@ const PrintOptions: React.FC<PrintOptionsProps> = ({
           <Button
             variant={selectedPrinterType === 'conventional' ? 'default' : 'outline'}
             onClick={() => setSelectedPrinterType('conventional')}
-            className="h-auto p-2 justify-start text-left"
+            className={`h-auto p-2 justify-start text-left ${
+              selectedPrinterType === 'conventional' 
+                ? 'text-white hover:text-white' 
+                : 'text-gray-700 hover:text-gray-800'
+            }`}
             size="sm"
           >
             <div className="flex items-center gap-2">
               <FileText className="w-3 h-3" />
               <div>
                 <div className="font-medium text-xs">Convencional (A4)</div>
-                <div className="text-xs opacity-70">Papel A4</div>
+                <div className={`text-xs ${
+                  selectedPrinterType === 'conventional' ? 'text-white/70' : 'opacity-70'
+                }`}>Papel A4</div>
               </div>
             </div>
           </Button>
