@@ -40,15 +40,7 @@ const StandardModal: React.FC<StandardModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent 
-        className={`${sizeClasses[size]} max-h-[90vh] overflow-y-auto p-0`}
-        style={{ 
-          zIndex: 1000001, 
-          position: 'relative',
-          background: 'white',
-          borderRadius: '12px'
-        }}
-      >
+      <DialogContent className={`${sizeClasses[size]} max-h-[90vh] overflow-y-auto p-0`}>
         <VisuallyHidden>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{subtitle || 'Modal do sistema'}</DialogDescription>
