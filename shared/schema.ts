@@ -43,7 +43,7 @@ export interface User {
   phone?: string;
   company_id?: string; // UUID
   branch_id?: string; // UUID
-  role: 'master' | 'manager' | 'supervisor' | 'user';
+  role: 'master' | 'user';
   business_category?: string;
   is_active: boolean;
   created_by?: string; // UUID
@@ -292,7 +292,7 @@ export const UserSchema = z.object({
   phone: z.string().optional(),
   companyId: z.number().positive().optional(),
   branchId: z.number().positive().optional(),
-  role: z.enum(['master', 'manager', 'supervisor', 'user']),
+  role: z.enum(['master', 'user']),
 });
 
 export const CategorySchema = z.object({
@@ -458,7 +458,7 @@ export const BUSINESS_CATEGORIES = [
   'sites'
 ] as const;
 
-export const USER_ROLES = ['master', 'manager', 'supervisor', 'user'] as const;
+export const USER_ROLES = ['master', 'user'] as const;
 export const PAYMENT_METHODS = ['dinheiro', 'pix', 'cartao_credito', 'cartao_debito', 'boleto'] as const;
 export const APPOINTMENT_STATUSES = ['scheduled', 'completed', 'cancelled'] as const;
 export const FINANCIAL_STATUSES = ['paid', 'pending', 'overdue'] as const;

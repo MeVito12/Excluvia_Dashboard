@@ -1284,14 +1284,9 @@ const CadastroSection = () => {
                           <div className="text-right">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
                               user.role === 'master' ? 'bg-purple-100 text-purple-800' :
-                              user.role === 'manager' ? 'bg-blue-100 text-blue-800' :
-                              user.role === 'supervisor' ? 'bg-green-100 text-green-800' :
                               'bg-gray-100 text-black'
                             }`}>
-                              {user.role === 'master' ? 'Master' : 
-                               user.role === 'manager' ? 'Gerente' :
-                               user.role === 'supervisor' ? 'Supervisor' :
-                               'Usuário'}
+                              {user.role === 'master' ? 'Master' : 'Usuário'}
                             </span>
                           </div>
                         </div>
@@ -1321,9 +1316,7 @@ const CadastroSection = () => {
                               <SelectValue placeholder="Selecione a role" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="user">Usuário Comum</SelectItem>
-                              <SelectItem value="supervisor">Supervisor</SelectItem>
-                              <SelectItem value="manager">Gerente</SelectItem>
+                              <SelectItem value="user">Usuário</SelectItem>
                               <SelectItem value="master">Master</SelectItem>
                             </SelectContent>
                           </Select>
