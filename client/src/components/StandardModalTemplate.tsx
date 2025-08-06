@@ -2,8 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { X } from 'lucide-react';
@@ -41,10 +40,6 @@ const StandardModal: React.FC<StandardModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className={`${sizeClasses[size]} max-h-[90vh] overflow-y-auto p-0`}>
-        <VisuallyHidden>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{subtitle || 'Modal do sistema'}</DialogDescription>
-        </VisuallyHidden>
         <Card className={`border-0 shadow-none ${variant === 'glass' ? 'glassmorphism border-primary/20' : ''}`}>
           <CardHeader className="pb-3">
             <CardTitle className="text-lg font-semibold text-foreground flex items-center gap-2">

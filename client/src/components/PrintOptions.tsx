@@ -48,36 +48,29 @@ const PrintOptions: React.FC<PrintOptionsProps> = ({
   const [selectedPrinterType, setSelectedPrinterType] = useState<'thermal' | 'conventional'>('thermal');
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
-        <Printer className="w-4 h-4 text-primary" />
-        <h4 className="text-base font-medium text-foreground">Opções de Impressão</h4>
+      <div className="flex items-center gap-2 mb-4">
+        <Printer className="w-5 h-5 text-primary" />
+        <h3 className="text-lg font-semibold text-foreground">Opções de Impressão</h3>
       </div>
 
       {/* Printer Type Selection */}
-      <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">
+      <div className="space-y-3">
+        <h4 className="text-sm font-medium text-muted-foreground">
           Escolha o tipo de impressora:
-        </p>
-        <div className="grid grid-cols-2 gap-2">
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
           <Button
             variant={selectedPrinterType === 'thermal' ? 'default' : 'outline'}
             onClick={() => setSelectedPrinterType('thermal')}
-            className={`h-auto p-2 justify-start text-left ${
-              selectedPrinterType === 'thermal' 
-                ? 'text-white hover:text-white' 
-                : 'text-gray-700 hover:text-gray-800'
-            }`}
-            size="sm"
+            className="h-auto p-3 justify-start text-left"
           >
             <div className="flex items-center gap-2">
-              <Printer className="w-3 h-3" />
+              <Printer className="w-4 h-4" />
               <div>
-                <div className="font-medium text-xs">Térmica (80mm)</div>
-                <div className={`text-xs ${
-                  selectedPrinterType === 'thermal' ? 'text-white/70' : 'opacity-70'
-                }`}>Cupom fiscal</div>
+                <div className="font-medium text-sm">Térmica (80mm)</div>
+                <div className="text-xs opacity-70">Cupom fiscal</div>
               </div>
             </div>
           </Button>
@@ -85,20 +78,13 @@ const PrintOptions: React.FC<PrintOptionsProps> = ({
           <Button
             variant={selectedPrinterType === 'conventional' ? 'default' : 'outline'}
             onClick={() => setSelectedPrinterType('conventional')}
-            className={`h-auto p-2 justify-start text-left ${
-              selectedPrinterType === 'conventional' 
-                ? 'text-white hover:text-white' 
-                : 'text-gray-700 hover:text-gray-800'
-            }`}
-            size="sm"
+            className="h-auto p-3 justify-start text-left"
           >
             <div className="flex items-center gap-2">
-              <FileText className="w-3 h-3" />
+              <FileText className="w-4 h-4" />
               <div>
-                <div className="font-medium text-xs">Convencional (A4)</div>
-                <div className={`text-xs ${
-                  selectedPrinterType === 'conventional' ? 'text-white/70' : 'opacity-70'
-                }`}>Papel A4</div>
+                <div className="font-medium text-sm">Convencional (A4)</div>
+                <div className="text-xs opacity-70">Papel A4</div>
               </div>
             </div>
           </Button>

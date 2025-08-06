@@ -56,19 +56,19 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Preview Header */}
       <div className="flex items-center gap-2">
-        <Download className="w-3 h-3 text-primary" />
-        <h5 className="text-sm font-medium text-foreground">Preview da Impressão</h5>
+        <Download className="w-4 h-4 text-primary" />
+        <h4 className="text-sm font-medium text-foreground">Preview da Impressão</h4>
       </div>
 
       {/* Preview da impressão */}
-      <div className={`bg-white text-black p-3 rounded border border-gray-200 ${
-        printerType === 'thermal' ? 'max-w-72 mx-auto' : 'max-w-80 mx-auto'
+      <div className={`bg-white text-black p-4 rounded-lg border border-gray-200 shadow-sm ${
+        printerType === 'thermal' ? 'max-w-80 mx-auto' : 'max-w-96 mx-auto'
       }`}>
         <div className="text-center space-y-1">
-          <h3 className="font-bold text-xs">{company.name}</h3>
+          <h3 className="font-bold text-sm">{company.name}</h3>
           {company.cnpj && <p className="text-xs">CNPJ: {company.cnpj}</p>}
           {company.address && <p className="text-xs">{company.address}</p>}
           {company.phone && <p className="text-xs">Tel: {company.phone}</p>}
@@ -104,7 +104,7 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
         
         <div className="border-t border-gray-300 my-2"></div>
         
-        <div className="space-y-1 max-h-24 overflow-y-auto">
+        <div className="space-y-1 max-h-32 overflow-y-auto">
           {sale.products.map((product, index) => (
             <div key={index} className="flex justify-between text-xs">
               <div className="flex-1 pr-2">
@@ -120,25 +120,25 @@ const ThermalPrint: React.FC<ThermalPrintProps> = ({
         
         <div className="border-t border-gray-300 my-2"></div>
         
-        <div className="flex justify-between text-xs font-bold">
+        <div className="flex justify-between text-sm font-bold">
           <span>TOTAL:</span>
           <span>R$ {sale.total.toFixed(2)}</span>
         </div>
         
-        <div className="text-center mt-2 space-y-1">
+        <div className="text-center mt-3 space-y-1">
           <p className="text-xs">Obrigado pela preferência!</p>
           <p className="text-xs">Volte sempre!</p>
         </div>
       </div>
 
       {/* Botões de ação */}
-      <div className="flex gap-2 justify-center">
-        <Button onClick={handlePrint} size="sm" className="flex items-center gap-1 text-xs px-3 py-1">
-          <Printer className="w-3 h-3" />
+      <div className="flex gap-3 justify-center">
+        <Button onClick={handlePrint} size="sm" className="flex items-center gap-2">
+          <Printer className="w-4 h-4" />
           Imprimir
         </Button>
-        <Button variant="outline" onClick={handleDownload} size="sm" className="flex items-center gap-1 text-xs px-3 py-1">
-          <Download className="w-3 h-3" />
+        <Button variant="outline" onClick={handleDownload} size="sm" className="flex items-center gap-2">
+          <Download className="w-4 h-4" />
           Baixar PDF
         </Button>
       </div>

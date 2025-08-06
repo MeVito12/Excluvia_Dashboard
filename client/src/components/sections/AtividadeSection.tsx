@@ -693,10 +693,10 @@ const AtividadeSection = () => {
 
       {/* Modal de Impressão Térmica */}
       {showPrintModal && printSaleData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
-          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] flex flex-col mx-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg w-full max-w-5xl max-h-[95vh] flex flex-col">
             {/* Header */}
-            <div className="flex justify-between items-center p-4 border-b">
+            <div className="flex justify-between items-center p-6 border-b">
               <h3 className="text-lg font-semibold text-gray-800">
                 Imprimir Comprovante - Venda #{printSaleData.id}
               </h3>
@@ -709,7 +709,7 @@ const AtividadeSection = () => {
             </div>
             
             {/* Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-6">
               <PrintOptions
                 sale={printSaleData}
                 company={{
@@ -728,10 +728,10 @@ const AtividadeSection = () => {
             </div>
             
             {/* Footer */}
-            <div className="flex gap-3 p-4 border-t bg-gray-50">
+            <div className="flex gap-3 p-6 border-t bg-gray-50">
               <button
                 onClick={() => setShowPrintModal(false)}
-                className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Fechar
               </button>
