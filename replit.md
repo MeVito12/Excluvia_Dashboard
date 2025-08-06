@@ -94,6 +94,13 @@ Common database errors encountered and solutions implemented:
 - Performance optimized with proper indexing on foreign keys
 - Automatic data filtering ensures users only see their company's data
 
+**RLS Performance Optimization (Aug 2025)**: Eliminated multiple permissive policies warnings:
+- **Consolidated policies**: Removed all duplicate `temp_allow_all` policies causing performance warnings
+- **Unified approach**: Each table now has exactly one optimized policy covering all operations (SELECT, INSERT, UPDATE, DELETE)
+- **Type-aware functions**: Created both `get_user_company_uuid()` and `get_user_company_optimized()` for proper UUID/integer mapping
+- **Zero warnings**: Database now runs without "multiple permissive policies" performance alerts
+- **Maintained security**: All company-based data isolation preserved while improving query performance
+
 ## System Architecture
 
 ### Frontend Architecture
