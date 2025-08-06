@@ -15,7 +15,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // import ThermalPrint from "@/components/ThermalPrint"; // Comentado temporariamente
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
-const VendasSection = () => {
+export default function VendasSection() {
   const { user } = useAuth();
   const { toast } = useToast();
   // Usando toast para notificações
@@ -1621,6 +1621,4 @@ const VendasSection = () => {
       </div>
     </div>
   );
-};
-
-export default VendasSection;
+}
