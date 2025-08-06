@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import StandardModal from "@/components/StandardModalTemplate";
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -83,7 +84,9 @@ export default function VendasSection() {
 
   // Função para adicionar produto ao carrinho
   const addToCart = (product: Product) => {
-    if (!product.current_stock || product.current_stock <= 0) {
+    const currentStock = (product as any).current_stock || 0;
+    
+    if (!currentStock || currentStock <= 0) {
       toast({
         title: "Produto sem estoque",
         description: `"${product.name}" não possui estoque disponível`,
@@ -95,10 +98,10 @@ export default function VendasSection() {
     const existingItem = cart.find(item => item.productId === product.id);
     
     if (existingItem) {
-      if (existingItem.quantity >= product.current_stock) {
+      if (existingItem.quantity >= currentStock) {
         toast({
           title: "Estoque insuficiente",
-          description: `Só há ${product.current_stock} unidades disponíveis`,
+          description: `Só há ${currentStock} unidades disponíveis`,
           variant: "destructive",
         });
         return;
@@ -130,10 +133,12 @@ export default function VendasSection() {
     }
 
     const product = products.find((p: Product) => p.id === productId);
-    if (product && newQuantity > product.current_stock) {
+    const currentStock = (product as any)?.current_stock || 0;
+    
+    if (product && newQuantity > currentStock) {
       toast({
         title: "Estoque insuficiente",
-        description: `Só há ${product.current_stock} unidades disponíveis`,
+        description: `Só há ${currentStock} unidades disponíveis`,
         variant: "destructive",
       });
       return;
@@ -272,12 +277,11 @@ export default function VendasSection() {
     try {
       const clientData = {
         name: clientForm.name,
-        email: clientForm.email || null,
-        phone: clientForm.phone || null,
-        address: clientForm.address || null,
-        client_type: clientForm.client_type,
-        document: clientForm.document || null,
-        notes: clientForm.notes || null
+        email: clientForm.email || undefined,
+        phone: clientForm.phone || undefined,
+        address: clientForm.address || undefined,
+        clientType: clientForm.client_type,
+        document: clientForm.document || undefined
       };
 
       const newClient = await createClientMutation.mutateAsync(clientData);
@@ -379,7 +383,7 @@ export default function VendasSection() {
                             <div>
                               <p className="font-medium">{product.name}</p>
                               <p className="text-sm text-gray-500">
-                                R$ {Number(product.price || 0).toFixed(2)} • Estoque: {product.current_stock || 0}
+                                R$ {Number(product.price || 0).toFixed(2)} • Estoque: {(product as any).current_stock || 0}
                               </p>
                             </div>
                             <Plus className="h-4 w-4 text-emerald-600" />
@@ -487,7 +491,7 @@ export default function VendasSection() {
                   {selectedSellers.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {selectedSellers.map(sellerId => {
-                        const seller = companyProfiles.find(p => p.id === sellerId);
+                        const seller = companyProfiles.find(p => p.id === Number(sellerId));
                         return seller ? (
                           <span key={sellerId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                             {seller.name}
@@ -603,62 +607,369 @@ export default function VendasSection() {
     </div>
   );
 
+  // Definição das abas
+  const tabs = [
+    { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
+    { id: 'caixa', label: 'Caixa', icon: CreditCard }
+  ];
+
+  // Função para renderizar o conteúdo da aba selecionada
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'vendas':
+        return renderVendasTab();
+      case 'caixa':
+        return renderCaixaTab();
+      default:
+        return renderVendasTab();
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Navegação por Abas */}
-      <div className="flex border-b mb-6">
-        <button
-          onClick={() => setActiveTab('vendas')}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'vendas'
-              ? 'border-purple-500 text-purple-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          🛒 Vendas
-        </button>
-        <button
-          onClick={() => setActiveTab('caixa')}
-          className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
-            activeTab === 'caixa'
-              ? 'border-purple-500 text-purple-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          💰 Caixa
-        </button>
+    <div className="app-section">
+      {/* Header Padrão */}
+      <div className="section-header">
+        <h1 className="section-title">Vendas</h1>
+        <p className="section-subtitle">
+          Gerencie vendas, carrinho de compras e processamento no caixa
+        </p>
       </div>
 
-      {/* Conteúdo das Abas */}
-      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
+      {/* Navegação por Abas - Padrão do Sistema */}
+      <div className="tab-navigation">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as 'vendas' | 'caixa')}
+            className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+          >
+            <tab.icon className="w-4 h-4" />
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-      {/* Modais básicos (implementar os modais específicos depois) */}
-      {showSellersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md">
-            <p>Modal de vendedores em desenvolvimento</p>
-            <Button onClick={() => setShowSellersModal(false)}>Fechar</Button>
+      {/* Conteúdo da aba selecionada */}
+      {renderTabContent()}
+
+      {/* Modal de Vendedores */}
+      <StandardModal
+        isOpen={showSellersModal}
+        onClose={() => setShowSellersModal(false)}
+        title="Selecionar Vendedores"
+        subtitle="Escolha os vendedores responsáveis por esta venda"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
+        <div className="space-y-4">
+          {companyProfiles.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>Nenhum vendedor cadastrado</p>
+              <p className="text-sm">Cadastre vendedores na seção Controle primeiro</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 max-h-60 overflow-y-auto">
+              {companyProfiles.map((seller) => (
+                <div
+                  key={seller.id}
+                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                    selectedSellers.includes(Number(seller.id))
+                      ? 'border-purple-500 bg-purple-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => {
+                    if (selectedSellers.includes(Number(seller.id))) {
+                      setSelectedSellers(selectedSellers.filter(id => id !== Number(seller.id)));
+                    } else {
+                      setSelectedSellers([...selectedSellers, Number(seller.id)]);
+                    }
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium">{seller.name}</p>
+                      <p className="text-sm text-gray-500">{seller.email}</p>
+                    </div>
+                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                      selectedSellers.includes(Number(seller.id))
+                        ? 'border-purple-500 bg-purple-500'
+                        : 'border-gray-300'
+                    }`}>
+                      {selectedSellers.includes(Number(seller.id)) && (
+                        <span className="text-white text-xs">✓</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowSellersModal(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
+            Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
+          </Button>
+        </div>
+      </StandardModal>
+
+      {/* Modal de Clientes */}
+      <StandardModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        title="Selecionar Cliente"
+        subtitle="Escolha um cliente existente ou cadastre um novo"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
+        <div className="space-y-4">
+          {/* Busca de clientes */}
+          <div>
+            <Input
+              placeholder="Buscar cliente..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="mb-3"
+            />
+          </div>
+
+          {/* Lista de clientes */}
+          <div className="max-h-60 overflow-y-auto space-y-2">
+            {clients.filter((client: Client) => 
+              client.name.toLowerCase().includes(searchTerm.toLowerCase())
+            ).map((client) => (
+              <div
+                key={client.id}
+                className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                  selectedClient === client.id
+                    ? 'border-purple-500 bg-purple-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => {
+                  setSelectedClient(client.id);
+                  setShowClientModal(false);
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{client.name}</p>
+                    {client.email && <p className="text-sm text-gray-500">{client.email}</p>}
+                    {client.phone && <p className="text-sm text-gray-500">{client.phone}</p>}
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {clients.filter((client: Client) => 
+              client.name.toLowerCase().includes(searchTerm.toLowerCase())
+            ).length === 0 && (
+              <div className="text-center py-8 text-gray-500">
+                <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                <p>Nenhum cliente encontrado</p>
+              </div>
+            )}
+          </div>
+
+          {/* Botão para novo cliente */}
+          <div className="pt-4 border-t">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowClientModal(false);
+                setShowAddClientModal(true);
+              }}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Cadastrar Novo Cliente
+            </Button>
           </div>
         </div>
-      )}
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowClientModal(false)}>
+            Cancelar
+          </Button>
+          <Button 
+            onClick={() => {
+              setSelectedClient(null);
+              setShowClientModal(false);
+            }}
+          >
+            Venda Avulsa (Sem Cliente)
+          </Button>
+        </div>
+      </StandardModal>
 
-      {showClientModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md">
-            <p>Modal de clientes em desenvolvimento</p>
-            <Button onClick={() => setShowClientModal(false)}>Fechar</Button>
+      {/* Modal de Método de Pagamento */}
+      <StandardModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        title="Método de Pagamento"
+        subtitle="Selecione como o cliente irá pagar"
+        icon={<CreditCard className="h-5 w-5" />}
+        size="md"
+      >
+        <div className="space-y-3">
+          {[
+            { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
+            { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
+            { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
+            { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
+            { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
+          ].map((method) => (
+            <div
+              key={method.value}
+              className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                paymentMethod === method.value
+                  ? 'border-purple-500 bg-purple-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => {
+                setPaymentMethod(method.value);
+                if (method.value !== 'cartao_credito' && method.value !== 'boleto') {
+                  setInstallments(1);
+                  setShowPaymentModal(false);
+                }
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">{method.label}</p>
+                  <p className="text-sm text-gray-500">{method.description}</p>
+                </div>
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                  paymentMethod === method.value
+                    ? 'border-purple-500 bg-purple-500'
+                    : 'border-gray-300'
+                }`}>
+                  {paymentMethod === method.value && (
+                    <span className="text-white text-xs">✓</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Opções de parcelamento */}
+          {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
+            <div className="pt-4 border-t">
+              <h4 className="font-medium mb-3">Parcelamento</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((parcela) => (
+                  <button
+                    key={parcela}
+                    onClick={() => {
+                      setInstallments(parcela);
+                      setShowPaymentModal(false);
+                    }}
+                    className={`p-2 border rounded text-sm transition-all ${
+                      installments === parcela 
+                        ? 'border-purple-500 bg-purple-50 text-purple-700' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="font-medium">
+                      {parcela === 1 ? 'À vista' : `${parcela}x`}
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      R$ {(totalAmount / parcela).toFixed(2)}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
+            Cancelar
+          </Button>
+        </div>
+      </StandardModal>
+
+      {/* Modal de Cadastro de Cliente */}
+      <StandardModal
+        isOpen={showAddClientModal}
+        onClose={() => {
+          setShowAddClientModal(false);
+          resetClientForm();
+        }}
+        title="Cadastrar Novo Cliente"
+        subtitle="Preencha os dados do cliente"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="client-name">Nome *</Label>
+            <Input
+              id="client-name"
+              value={clientForm.name}
+              onChange={(e) => setClientForm({...clientForm, name: e.target.value})}
+              placeholder="Nome completo ou razão social"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="client-email">Email</Label>
+            <Input
+              id="client-email"
+              type="email"
+              value={clientForm.email}
+              onChange={(e) => setClientForm({...clientForm, email: e.target.value})}
+              placeholder="email@exemplo.com"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="client-phone">Telefone</Label>
+            <Input
+              id="client-phone"
+              value={clientForm.phone}
+              onChange={(e) => setClientForm({...clientForm, phone: e.target.value})}
+              placeholder="(11) 99999-9999"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="client-type">Tipo</Label>
+            <Select 
+              value={clientForm.client_type} 
+              onValueChange={(value: 'individual' | 'company') => 
+                setClientForm({...clientForm, client_type: value})
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="individual">Pessoa Física</SelectItem>
+                <SelectItem value="company">Pessoa Jurídica</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
-      )}
-
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 max-w-md">
-            <p>Modal de pagamento em desenvolvimento</p>
-            <Button onClick={() => setShowPaymentModal(false)}>Fechar</Button>
-          </div>
+        <div className="flex gap-3 justify-end">
+          <Button 
+            variant="outline" 
+            onClick={() => {
+              setShowAddClientModal(false);
+              resetClientForm();
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            onClick={handleClientSubmit}
+            disabled={!clientForm.name.trim()}
+          >
+            Cadastrar
+          </Button>
         </div>
-      )}
+      </StandardModal>
     </div>
   );
 }
