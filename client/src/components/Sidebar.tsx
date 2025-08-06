@@ -103,7 +103,12 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       icon: Settings,
       description: 'Configuração de permissões'
     },
-
+    {
+      id: 'cadastros',
+      label: 'Cadastros',
+      icon: UserPlus,
+      description: 'Clientes, categorias e subcategorias'
+    }
   ];
 
   // Filtra itens baseado em permissões e categoria
@@ -114,10 +119,7 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
       return isMasterUser;
     }
 
-    // Cadastros acessível para usuários com permissão
-    if (item.id === 'cadastros') {
-      return canAccessSection(item.id);
-    }
+
     
     // Estoque e vendas não aparecem para design e sites
     if ((item.id === 'estoque' || item.id === 'vendas') && (selectedCategory === 'design' || selectedCategory === 'sites')) {

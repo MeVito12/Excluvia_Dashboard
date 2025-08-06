@@ -602,7 +602,7 @@ const CadastroSection = () => {
               Acesso Restrito
             </h2>
             <p className="text-gray-700">
-              Apenas usuários Master podem acessar o cadastro de empresas e gerenciamento de usuários.
+              Apenas usuários Master podem acessar o cadastro de clientes, categorias e subcategorias.
             </p>
           </div>
         </div>
@@ -614,31 +614,37 @@ const CadastroSection = () => {
     <div className="app-section">
       <div className="section-header">
         <h1 className="section-title">Cadastro</h1>
-        <p className="section-subtitle">Cadastro de empresas e gerenciamento de usuários</p>
+        <p className="section-subtitle">Cadastro de clientes, categorias e subcategorias</p>
       </div>
 
       {/* Navegação por Abas */}
       <div className="tab-navigation">
         <button
           onClick={() => {
-            setActiveTab('cadastro');
-            setCurrentStep('company');
+            setActiveTab('clientes');
           }}
-          className={`tab-button ${activeTab === 'cadastro' ? 'tab-active' : 'tab-inactive'}`}
+          className={`tab-button ${activeTab === 'clientes' ? 'tab-active' : 'tab-inactive'}`}
         >
-          <Building2 className="w-4 h-4" />
-          <span>Cadastro</span>
+          <Users className="w-4 h-4" />
+          <span>Clientes</span>
         </button>
         <button
           onClick={() => {
-            setActiveTab('gestao');
-            fetchExistingCompanies();
-            fetchExistingUsers();
+            setActiveTab('categorias');
           }}
-          className={`tab-button ${activeTab === 'gestao' ? 'tab-active' : 'tab-inactive'}`}
+          className={`tab-button ${activeTab === 'categorias' ? 'tab-active' : 'tab-inactive'}`}
         >
-          <Users className="w-4 h-4" />
-          <span>Gestão</span>
+          <Building2 className="w-4 h-4" />
+          <span>Categorias</span>
+        </button>
+        <button
+          onClick={() => {
+            setActiveTab('subcategorias');
+          }}
+          className={`tab-button ${activeTab === 'subcategorias' ? 'tab-active' : 'tab-inactive'}`}
+        >
+          <Settings className="w-4 h-4" />
+          <span>Subcategorias</span>
         </button>
       </div>
 
