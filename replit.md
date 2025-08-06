@@ -116,12 +116,12 @@ Common database errors encountered and solutions implemented:
 - **Service role optimized**: Dedicated function for service role access without performance penalties
 - **Maintained security**: Company-based data isolation preserved with dramatically improved query performance at scale
 
-**Database Index Strategy (Aug 2025)**: Optimized indexing approach for production performance:
-- **Strategic index selection**: Created only essential indexes based on actual query patterns and multi-tenant isolation needs
-- **Critical indexes implemented**: 8 essential indexes covering company_id (multi-tenant), client_id (reports), and product_id (tracking)
-- **Performance focused**: Balanced query performance improvement against write operation overhead
-- **Storage efficient**: Minimal index footprint while covering all critical foreign key relationships used by the application
-- **Production optimized**: Index strategy designed for real-world usage patterns rather than comprehensive coverage
+**Database Index Strategy (Aug 2025)**: Pragmatic indexing approach for production:
+- **Unused indexes removed**: Eliminated indexes flagged as unused by database statistics to reduce maintenance overhead
+- **Minimal footprint**: Only essential indexes remain based on actual application query patterns and usage
+- **Foreign key warnings accepted**: Some "unindexed foreign keys" warnings are informational only - not all foreign keys need indexes if not queried frequently
+- **Performance balanced**: Optimized for write performance by avoiding unnecessary index maintenance
+- **Production pragmatic**: Focus on real performance impact rather than eliminating all database linter warnings
 
 ## System Architecture
 
