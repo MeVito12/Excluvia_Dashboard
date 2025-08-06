@@ -75,8 +75,8 @@ export class SupabaseAuthStorage implements AuthStorage {
     try {
       console.log('🔍 Buscando usuário UUID:', email);
       
-      // Buscar usuário por email na tabela users (após limpeza)
-      const users = await this.request(`users?email=eq.${email}&select=*`);
+      // Buscar usuário por email na tabela auth_users (corrigido)
+      const users = await this.request(`auth_users?email=eq.${email}&select=*`);
       
       console.log('📊 Usuários UUID encontrados:', users?.length || 0);
       
