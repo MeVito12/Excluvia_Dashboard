@@ -1056,161 +1056,11 @@ export default function VendasSection() {
           </div>
         </div>
       </div>
-    </div>
-  );
 
-      {/* Modal de Seleção de Cliente */}
-      {showClientModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
-              <button 
-                onClick={() => {
-                  setShowClientModal(false);
-                  setClientSearchTerm("");
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            {/* Campo de pesquisa por CPF/CNPJ */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Digite o CPF ou CNPJ do cliente
-              </label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                  value={clientSearchTerm}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setClientSearchTerm(value);
-                    
-                    // Limpar números apenas
-                    const cleanValue = value.replace(/\D/g, '');
-                    
-                    // Buscar cliente por CPF/CNPJ
-                    if (cleanValue.length >= 11) {
-                      const client = clients.find(c => c.document && c.document.replace(/\D/g, '') === cleanValue);
-                      setFoundClient(client || null);
-                    } else {
-                      setFoundClient(null);
-                    }
-                  }}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-            </div>
+      {/* Conteúdo das Abas */}
+      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
 
-            {/* Opção venda sem cliente */}
-            <div className="mb-4">
-              <div className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => {
-                          setSelectedClient(null);
-                          setShowClientModal(false);
-                          setClientSearchTerm("");
-                          setFoundClient(null);
-                        }}
-                        className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                      >
-                        {selectedClient === null && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
-                      </button>
-                      <div>
-                        <h4 className="font-medium text-gray-800">Venda sem cliente</h4>
-                        <p className="text-sm text-gray-600">Venda avulsa</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Cliente encontrado */}
-            {foundClient && (
-              <div className="mb-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Cliente encontrado:</h4>
-                <div className="border rounded-lg p-3 bg-green-50 border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => {
-                            if (foundClient?.id) {
-                              setSelectedClient(foundClient.id);
-                              setShowClientModal(false);
-                              setClientSearchTerm("");
-                              setFoundClient(null);
-                            }
-                          }}
-                          className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-green-400 hover:border-green-500"
-                        >
-                          <div className="w-3 h-3 bg-green-600 rounded"></div>
-                        </button>
-                        <div>
-                          <h4 className="font-medium text-gray-800">{foundClient?.name}</h4>
-                          <p className="text-sm text-gray-600">
-                            {foundClient?.document && `${foundClient.document.length === 11 ? 'CPF' : 'CNPJ'}: ${foundClient.document}`}
-                            {foundClient?.email && ` • ${foundClient.email}`}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-green-600 mt-2">Clique no cliente para confirmar a seleção</p>
-              </div>
-            )}
-
-            {/* Mensagem quando não encontra cliente */}
-            {clientSearchTerm && clientSearchTerm.replace(/\D/g, '').length >= 11 && !foundClient && (
-              <div className="text-center py-8 text-gray-500">
-                <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p>Cliente não encontrado</p>
-                <p className="text-sm mt-1">Verifique o CPF/CNPJ digitado</p>
-                <button
-                  onClick={() => {
-                    // Pre-preencher o documento no formulário
-                    const cleanDocument = clientSearchTerm.replace(/\D/g, '');
-                    setClientForm({
-                      ...clientForm,
-                      document: cleanDocument,
-                      client_type: cleanDocument.length === 11 ? 'individual' : 'company'
-                    });
-                    setShowAddClientModal(true);
-                  }}
-                  className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm"
-                >
-                  + Cadastrar Novo Cliente
-                </button>
-              </div>
-            )}
-            
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowClientModal(false);
-                  setClientSearchTerm("");
-                  setFoundClient(null);
-                }}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Seleção de Método de Pagamento */}
+      {/* Modais */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
@@ -1383,79 +1233,7 @@ export default function VendasSection() {
         </div>
       )}
 
-      {/* Modal de Seleção de Vendedores */}
-      {showSellersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
-              <button 
-                onClick={() => setShowSellersModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            {/* Lista de vendedores */}
-            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
-              {companyProfiles.length > 0 ? (
-                companyProfiles.map((seller) => (
-                  <div key={seller.id} className="border rounded-lg p-3 transition-all border-gray-200 hover:border-gray-300">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              if (selectedSellers.includes(seller.id)) {
-                                setSelectedSellers(selectedSellers.filter(id => id !== seller.id));
-                              } else {
-                                setSelectedSellers([...selectedSellers, seller.id]);
-                              }
-                            }}
-                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                          >
-                            {selectedSellers.includes(seller.id) && (
-                              <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                            )}
-                          </button>
-                          <div>
-                            <h4 className="font-medium text-gray-800">{seller.name}</h4>
-                            <p className="text-sm text-gray-600">{seller.email || 'Vendedor'}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>Nenhum vendedor cadastrado</p>
-                  <p className="text-sm mt-1">Cadastre clientes individuais na seção Cadastros</p>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => setShowSellersModal(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Fechar
-              </button>
-              {selectedSellers.length > 0 && (
-                <button
-                  onClick={() => setShowSellersModal(false)}
-                  className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-                >
-                  Confirmar ({selectedSellers.length} selecionado{selectedSellers.length > 1 ? 's' : ''})
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+
 
       {/* Modal de Cadastro de Novo Cliente */}
       {showAddClientModal && (
@@ -1592,34 +1370,140 @@ export default function VendasSection() {
         </div>
       )}
 
-  return (
-    <div className="app-section">
-      {/* Header */}
-      <div className="section-header">
-        <h1 className="section-title">Sistema de Vendas</h1>
-        <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
-      </div>
+      {/* Modal de Cadastro de Novo Cliente */}
+      {showAddClientModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Cadastrar Novo Cliente</h3>
+              <button 
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Nome */}
+              <div>
+                <Label htmlFor="client-name">Nome *</Label>
+                <Input
+                  id="client-name"
+                  type="text"
+                  value={clientForm.name}
+                  onChange={(e) => setClientForm({...clientForm, name: e.target.value})}
+                  placeholder="Nome completo ou razão social"
+                  required
+                />
+              </div>
 
-      {/* Navegação por Abas */}
-      <div className="tab-navigation">
-        <button
-          onClick={() => setActiveTab('vendas')}
-          className={`tab-button ${activeTab === 'vendas' ? 'active' : ''}`}
-        >
-          <ShoppingCart className="w-4 h-4" />
-          Nova Venda
-        </button>
-        <button
-          onClick={() => setActiveTab('caixa')}
-          className={`tab-button ${activeTab === 'caixa' ? 'active' : ''}`}
-        >
-          <CreditCard className="w-4 h-4" />
-          Caixa
-        </button>
-      </div>
+              {/* Tipo de Cliente */}
+              <div>
+                <Label htmlFor="client-type">Tipo de Cliente</Label>
+                <Select 
+                  value={clientForm.client_type} 
+                  onValueChange={(value: 'individual' | 'company') => 
+                    setClientForm({...clientForm, client_type: value})
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione o tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="individual">Pessoa Física</SelectItem>
+                    <SelectItem value="company">Pessoa Jurídica</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-      {/* Conteúdo das Abas */}
-      {activeTab === 'vendas' ? renderVendasTab() : renderCaixaTab()}
+              {/* Documento */}
+              <div>
+                <Label htmlFor="client-document">
+                  {clientForm.client_type === 'individual' ? 'CPF' : 'CNPJ'}
+                </Label>
+                <Input
+                  id="client-document"
+                  type="text"
+                  value={clientForm.document}
+                  onChange={(e) => setClientForm({...clientForm, document: e.target.value})}
+                  placeholder={clientForm.client_type === 'individual' ? '000.000.000-00' : '00.000.000/0000-00'}
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <Label htmlFor="client-email">Email</Label>
+                <Input
+                  id="client-email"
+                  type="email"
+                  value={clientForm.email}
+                  onChange={(e) => setClientForm({...clientForm, email: e.target.value})}
+                  placeholder="email@exemplo.com"
+                />
+              </div>
+
+              {/* Telefone */}
+              <div>
+                <Label htmlFor="client-phone">Telefone</Label>
+                <Input
+                  id="client-phone"
+                  type="tel"
+                  value={clientForm.phone}
+                  onChange={(e) => setClientForm({...clientForm, phone: e.target.value})}
+                  placeholder="(11) 99999-9999"
+                />
+              </div>
+
+              {/* Endereço */}
+              <div>
+                <Label htmlFor="client-address">Endereço</Label>
+                <Input
+                  id="client-address"
+                  type="text"
+                  value={clientForm.address}
+                  onChange={(e) => setClientForm({...clientForm, address: e.target.value})}
+                  placeholder="Rua, número, bairro"
+                />
+              </div>
+
+              {/* Observações */}
+              <div>
+                <Label htmlFor="client-notes">Observações</Label>
+                <Textarea
+                  id="client-notes"
+                  value={clientForm.notes}
+                  onChange={(e) => setClientForm({...clientForm, notes: e.target.value})}
+                  placeholder="Informações adicionais sobre o cliente"
+                  rows={2}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 pt-4 border-t mt-6">
+              <button
+                onClick={() => {
+                  setShowAddClientModal(false);
+                  resetClientForm();
+                }}
+                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleClientSubmit}
+                disabled={!clientForm.name.trim()}
+                className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              >
+                Cadastrar Cliente
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
