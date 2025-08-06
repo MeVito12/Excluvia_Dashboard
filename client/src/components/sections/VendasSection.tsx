@@ -191,14 +191,13 @@ const VendasSection = () => {
 
     try {
       const saleData: SaleCart = {
-        clientId: selectedClient,
+        clientId: selectedClient || undefined,
         items: cart,
-        paymentMethod: paymentMethod,
-        installments: installments,
+        paymentMethod: paymentMethod as "pix" | "cartao_credito" | "dinheiro" | "cartao_debito" | "boleto",
         discount: totalDiscount,
         totalAmount: totalAmount,
         sellers: selectedSellers,
-        couponCode: appliedCoupon?.code || null
+        couponCode: appliedCoupon?.code || undefined
       };
 
       await processSaleMutation.mutateAsync(saleData);
@@ -312,47 +311,57 @@ const VendasSection = () => {
     { id: 3, name: "Ana Costa", email: "ana@empresa.com" }
   ];
 
-  // Renderizar aba de vendas
+  // Renderizar aba de vendas com design original
   const renderVendasTab = () => (
     <div className="animate-fade-in">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Coluna da Esquerda - Busca de Produtos */}
+        {/* Coluna da Esquerda */}
         <div className="space-y-6">
-          {/* Card de Busca de Produtos */}
+          {/* Card Adicionar Produtos */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Package className="h-5 w-5" />
-                Buscar Produtos
+                Adicionar Produtos
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* Campo de busca */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              {/* Código de Barras (Bip) */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Código de Barras (Bip)
+                </Label>
                 <Input
-                  placeholder="Buscar produtos..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setShowProductSearch(e.target.value.length > 0);
-                  }}
-                  className="pl-10"
-                />
-              </div>
-
-              {/* Campo código de barras */}
-              <div className="relative">
-                <Scan className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  placeholder="Código de barras"
+                  placeholder="Digite ou escaneie o código de barras..."
                   value={barcodeInput}
                   onChange={(e) => {
                     setBarcodeInput(e.target.value);
                     setShowProductSearch(e.target.value.length > 0);
                   }}
-                  className="pl-10"
+                  className="w-full"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Digite o código e pressione Enter, ou use um leitor de código de barras
+                </p>
+              </div>
+
+              {/* Busca Manual */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Busca Manual
+                </Label>
+                <div className="relative">
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="Buscar Produtos"
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setShowProductSearch(e.target.value.length > 0);
+                    }}
+                    className="w-full pr-10"
+                  />
+                </div>
               </div>
 
               {/* Lista de produtos filtrados */}
@@ -369,9 +378,7 @@ const VendasSection = () => {
                           <div>
                             <p className="font-medium text-gray-800">{product.name}</p>
                             <p className="text-sm text-gray-600">{product.description}</p>
-                            <p className="text-sm text-green-600 font-semibold">
-                              R$ {product.price.toFixed(2)}
-                            </p>
+                            <p className="text-sm font-semibold text-green-600">R$ {product.price.toFixed(2)}</p>
                           </div>
                           <Button size="sm" variant="outline">
                             <Plus className="h-4 w-4" />
@@ -390,20 +397,17 @@ const VendasSection = () => {
             </CardContent>
           </Card>
 
-          {/* Card do Carrinho */}
+          {/* Carrinho de Compras */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5" />
-                Carrinho ({cart.length} {cart.length === 1 ? 'item' : 'itens'})
-              </CardTitle>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">Carrinho de Compras</CardTitle>
             </CardHeader>
             <CardContent>
               {cart.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <ShoppingCart className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>Carrinho vazio</p>
-                  <p className="text-sm mt-1">Adicione produtos para começar</p>
+                <div className="text-center py-12 text-gray-400">
+                  <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                  <p className="text-lg font-medium mb-2">Carrinho vazio</p>
+                  <p className="text-sm">Adicione produtos usando o código de barras ou busca manual</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -454,116 +458,137 @@ const VendasSection = () => {
           </Card>
         </div>
 
-        {/* Coluna da Direita - Checkout */}
+        {/* Coluna da Direita - Finalizar Venda */}
         <div className="space-y-6">
-          {/* Seleção de Cliente */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Cliente
-              </CardTitle>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg">Finalizar Venda</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  console.log('Clientes button clicked');
-                  setShowClientModal(true);
-                }}
-              >
-                <User className="h-4 w-4 mr-2" />
-                {selectedClient 
-                  ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
-                  : "Selecionar Cliente"
-                }
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Seleção de Vendedores */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Vendedores
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => {
-                  console.log('Vendedores button clicked');
-                  setShowSellersModal(true);
-                }}
-              >
-                <User className="h-4 w-4 mr-2" />
-                {selectedSellers.length > 0
-                  ? `${selectedSellers.length} vendedor${selectedSellers.length > 1 ? 'es' : ''} selecionado${selectedSellers.length > 1 ? 's' : ''}`
-                  : "Selecionar Vendedores"
-                }
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Método de Pagamento */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                Pagamento
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => setShowPaymentModal(true)}
-              >
-                <CreditCard className="h-4 w-4 mr-2" />
-                {paymentMethod 
-                  ? getPaymentMethodLabel(paymentMethod)
-                  : "Selecionar Método"
-                }
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Resumo da Venda */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Resumo</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
-                <span>R$ {subtotal.toFixed(2)}</span>
+            <CardContent className="space-y-6">
+              {/* Vendedores */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Vendedores *
+                </Label>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-gray-500"
+                  onClick={() => {
+                    console.log('Vendedores button clicked');
+                    setShowSellersModal(true);
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {selectedSellers.length > 0
+                    ? `${selectedSellers.length} vendedor${selectedSellers.length > 1 ? 'es' : ''} selecionado${selectedSellers.length > 1 ? 's' : ''}`
+                    : "Selecionar Vendedores"
+                  }
+                </Button>
               </div>
-              
-              {totalDiscount > 0 && (
-                <div className="flex justify-between text-green-600 font-medium">
-                  <span>Total de Descontos:</span>
-                  <span>- R$ {totalDiscount.toFixed(2)}</span>
+
+              {/* Cliente */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Cliente (Opcional)
+                </Label>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-gray-500"
+                  onClick={() => {
+                    console.log('Clientes button clicked');
+                    setShowClientModal(true);
+                  }}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {selectedClient 
+                    ? clients.find(c => c.id === selectedClient)?.name || "Cliente selecionado"
+                    : "Selecionar Cliente"
+                  }
+                </Button>
+              </div>
+
+              {/* Método de Pagamento */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Método de Pagamento *
+                </Label>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-gray-500"
+                  onClick={() => setShowPaymentModal(true)}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  {paymentMethod 
+                    ? getPaymentMethodLabel(paymentMethod)
+                    : "Selecionar Método"
+                  }
+                </Button>
+              </div>
+
+              {/* Cupom de Desconto */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Cupom de Desconto
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="CÓDIGO DO CUPOM"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    className="flex-1 uppercase"
+                  />
+                  <Button 
+                    variant="outline"
+                    onClick={() => {/* Lógica do cupom */}}
+                    disabled={!couponCode.trim() || validatingCoupon}
+                    className="px-6"
+                  >
+                    {validatingCoupon ? "..." : "Aplicar"}
+                  </Button>
                 </div>
-              )}
+              </div>
               
-              <Separator />
-              
-              <div className="flex justify-between text-lg font-bold">
-                <span>Total:</span>
-                <span>R$ {totalAmount.toFixed(2)}</span>
+              {/* Desconto Manual */}
+              <div>
+                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Desconto Manual (%)
+                </Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={discount}
+                  onChange={(e) => setDiscount(Number(e.target.value))}
+                  placeholder="0"
+                />
               </div>
 
-              <Button
+              {/* Totais */}
+              <div className="space-y-3 pt-4 border-t">
+                <div className="flex justify-between text-lg">
+                  <span>Subtotal:</span>
+                  <span>R$ {subtotal.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-2xl font-bold">
+                  <span>Total:</span>
+                  <span>R$ {totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Botão Finalizar */}
+              <Button 
+                className="w-full py-3 text-lg bg-purple-600 hover:bg-purple-700"
                 onClick={handleProcessSale}
-                disabled={cart.length === 0 || !paymentMethod || selectedSellers.length === 0}
-                className="w-full"
-                size="lg"
+                disabled={cart.length === 0 || processSaleMutation.isPending}
               >
-                <CreditCard className="h-4 w-4 mr-2" />
-                Enviar para Caixa - R$ {totalAmount.toFixed(2)}
+                {processSaleMutation.isPending ? (
+                  "Processando..."
+                ) : (
+                  <>
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Enviar para Caixa - R$ {totalAmount.toFixed(2)}
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -572,7 +597,6 @@ const VendasSection = () => {
     </div>
   );
 
-  // Renderizar aba do caixa
   const renderCaixaTab = () => (
     <div className="animate-fade-in">
       <div className="main-card p-6">
@@ -632,24 +656,25 @@ const VendasSection = () => {
                       </div>
                     ))}
                   </div>
+                  <div className="flex justify-between text-lg font-semibold mt-2 pt-2 border-t">
+                    <span>Total:</span>
+                    <span>R$ {sale.total_amount.toFixed(2)}</span>
+                  </div>
                 </div>
                 
-                <div className="flex items-center justify-between mt-4">
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline">
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <Printer className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-900">R$ {sale.total_amount.toFixed(2)}</p>
-                  </div>
+                <div className="flex gap-2 mt-4">
+                  <Button size="sm" className="flex-1">
+                    <CreditCard className="h-4 w-4 mr-2" />
+                    Processar Pagamento
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Ver Detalhes
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <Printer className="h-4 w-4 mr-2" />
+                    Imprimir
+                  </Button>
                 </div>
               </div>
             ))
@@ -660,14 +685,8 @@ const VendasSection = () => {
   );
 
   return (
-    <div className="app-section">
-      {/* Header */}
-      <div className="section-header">
-        <h1 className="section-title">Sistema de Vendas</h1>
-        <p className="section-subtitle">Gerenciamento completo de vendas e caixa</p>
-      </div>
-
-      {/* Navegação por Abas */}
+    <div className="p-6">
+      {/* Navegação de Abas */}
       <div className="tab-navigation">
         <button
           onClick={() => setActiveTab('vendas')}
@@ -707,166 +726,67 @@ const VendasSection = () => {
             
             {/* Opção venda sem cliente */}
             <div className="mb-4">
-              <div className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <button
-                        onClick={() => {
-                          setSelectedClient(null);
-                          setShowClientModal(false);
-                          setClientSearchTerm("");
-                          setFoundClient(null);
-                        }}
-                        className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                      >
-                        {selectedClient === null && <div className="w-3 h-3 bg-purple-600 rounded"></div>}
-                      </button>
-                      <div>
-                        <h4 className="font-medium text-gray-800">Venda sem cliente</h4>
-                        <p className="text-sm text-gray-600">Venda avulsa</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div 
+                className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer"
+                onClick={() => {
+                  setSelectedClient(null);
+                  setShowClientModal(false);
+                }}
+              >
+                <p className="font-medium">Venda sem cliente</p>
+                <p className="text-sm text-gray-600">Continuar sem identificar cliente</p>
+              </div>
+            </div>
+            
+            <Separator className="my-4" />
+            
+            {/* Busca de cliente */}
+            <div className="mb-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Buscar cliente por nome..."
+                  value={clientSearchTerm}
+                  onChange={(e) => setClientSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
               </div>
             </div>
             
             {/* Lista de clientes */}
-            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
-              {clients.length > 0 ? (
-                clients.slice(0, 10).map((client) => (
-                  <div key={client.id} className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              setSelectedClient(client.id);
-                              setShowClientModal(false);
-                            }}
-                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                          >
-                            {selectedClient === client.id && (
-                              <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                            )}
-                          </button>
-                          <div>
-                            <h4 className="font-medium text-gray-800">{client.name}</h4>
-                            <p className="text-sm text-gray-600">{client.email || 'Sem email'}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>Nenhum cliente cadastrado</p>
-                  <Button 
+            <div className="space-y-2 max-h-60 overflow-y-auto mb-4">
+              {clients
+                .filter(client => 
+                  client.name.toLowerCase().includes(clientSearchTerm.toLowerCase())
+                )
+                .map(client => (
+                  <div
+                    key={client.id}
+                    className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
                     onClick={() => {
+                      setSelectedClient(client.id);
                       setShowClientModal(false);
-                      setShowAddClientModal(true);
+                      setClientSearchTerm("");
                     }}
-                    className="mt-2"
                   >
-                    Cadastrar Novo Cliente
-                  </Button>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => setShowClientModal(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Fechar
-              </button>
-              <Button
-                onClick={() => {
-                  setShowClientModal(false);
-                  setShowAddClientModal(true);
-                }}
-                className="flex-1"
-              >
-                Novo Cliente
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Seleção de Vendedores */}
-      {showSellersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
-              <button 
-                onClick={() => setShowSellersModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {/* Lista de vendedores */}
-            <div className="max-h-96 overflow-y-auto mb-4 space-y-2">
-              {companyProfiles.length > 0 ? (
-                companyProfiles.map((seller) => (
-                  <div key={seller.id} className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              if (selectedSellers.includes(seller.id)) {
-                                setSelectedSellers(selectedSellers.filter(id => id !== seller.id));
-                              } else {
-                                setSelectedSellers([...selectedSellers, seller.id]);
-                              }
-                            }}
-                            className="w-5 h-5 rounded border-2 flex items-center justify-center transition-colors border-gray-300 hover:border-purple-400"
-                          >
-                            {selectedSellers.includes(seller.id) && (
-                              <div className="w-3 h-3 bg-purple-600 rounded"></div>
-                            )}
-                          </button>
-                          <div>
-                            <h4 className="font-medium text-gray-800">{seller.name}</h4>
-                            <p className="text-sm text-gray-600">{seller.email || 'Vendedor'}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    <p className="font-medium">{client.name}</p>
+                    {client.email && <p className="text-sm text-gray-600">{client.email}</p>}
+                    {client.phone && <p className="text-sm text-gray-600">{client.phone}</p>}
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <User className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                  <p>Nenhum vendedor cadastrado</p>
-                </div>
-              )}
+                ))}
             </div>
             
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => setShowSellersModal(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Fechar
-              </button>
-              {selectedSellers.length > 0 && (
-                <button
-                  onClick={() => setShowSellersModal(false)}
-                  className="flex-1 py-2 px-4 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-                >
-                  Confirmar ({selectedSellers.length} selecionado{selectedSellers.length > 1 ? 's' : ''})
-                </button>
-              )}
-            </div>
+            {/* Botão para adicionar novo cliente */}
+            <Button 
+              className="w-full"
+              onClick={() => {
+                setShowClientModal(false);
+                setShowAddClientModal(true);
+              }}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Cadastrar Novo Cliente
+            </Button>
           </div>
         </div>
       )}
@@ -885,7 +805,7 @@ const VendasSection = () => {
               </button>
             </div>
             
-            <div className="space-y-3 mb-4">
+            <div className="space-y-3">
               {[
                 { value: 'dinheiro', label: '💵 Dinheiro' },
                 { value: 'pix', label: '📱 PIX' },
@@ -895,71 +815,86 @@ const VendasSection = () => {
               ].map((method) => (
                 <button
                   key={method.value}
-                  onClick={() => setPaymentMethod(method.value)}
-                  className={`w-full p-3 text-left border rounded-lg transition-colors ${
-                    paymentMethod === method.value
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
+                  className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    setPaymentMethod(method.value);
+                    setShowPaymentModal(false);
+                  }}
                 >
                   {method.label}
                 </button>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Vendedores */}
+      {showSellersModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
+              <button 
+                onClick={() => setShowSellersModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
             
-            {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
-              <div className="mb-4">
-                <Label htmlFor="installments">Número de Parcelas</Label>
-                <Select value={installments.toString()} onValueChange={(value) => setInstallments(Number(value))}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Selecionar parcelas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                      <SelectItem key={num} value={num.toString()}>
-                        {num}x de R$ {(totalAmount / num).toFixed(2)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-gray-500 mt-2">
-                  {paymentMethod === 'cartao_credito' 
-                    ? 'Selecione o número de parcelas para o cartão de crédito'
-                    : 'Selecione o número de parcelas para o boleto bancário'
-                  }
-                </p>
-              </div>
-            )}
+            <div className="space-y-3">
+              {companyProfiles.map((profile) => (
+                <label
+                  key={profile.id}
+                  className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedSellers.includes(profile.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedSellers(prev => [...prev, profile.id]);
+                      } else {
+                        setSelectedSellers(prev => prev.filter(id => id !== profile.id));
+                      }
+                    }}
+                    className="mr-3"
+                  />
+                  <div>
+                    <p className="font-medium">{profile.name}</p>
+                    <p className="text-sm text-gray-600">{profile.email}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
             
-            <div className="flex gap-3 pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowPaymentModal(false);
-                  setPaymentMethod("");
-                  setInstallments(1);
-                }}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            <div className="flex gap-2 mt-4">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowSellersModal(false)}
               >
                 Cancelar
-              </button>
-              <Button
-                onClick={() => setShowPaymentModal(false)}
-                disabled={!paymentMethod}
+              </Button>
+              <Button 
                 className="flex-1"
+                onClick={() => setShowSellersModal(false)}
+                disabled={selectedSellers.length === 0}
               >
-                Confirmar
+                Confirmar ({selectedSellers.length})
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal de Cadastro de Novo Cliente */}
+      {/* Modal de Adicionar Cliente */}
       {showAddClientModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Cadastrar Novo Cliente</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Cadastrar Cliente</h3>
               <button 
                 onClick={() => {
                   setShowAddClientModal(false);
@@ -972,133 +907,77 @@ const VendasSection = () => {
             </div>
             
             <div className="space-y-4">
-              {/* Nome */}
               <div>
                 <Label htmlFor="client-name">Nome *</Label>
                 <Input
                   id="client-name"
-                  type="text"
                   value={clientForm.name}
-                  onChange={(e) => setClientForm({...clientForm, name: e.target.value})}
-                  placeholder="Nome completo ou razão social"
-                  required
+                  onChange={(e) => setClientForm(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Nome do cliente"
                 />
               </div>
-
-              {/* Email */}
+              
               <div>
-                <Label htmlFor="client-email">E-mail</Label>
+                <Label htmlFor="client-email">Email</Label>
                 <Input
                   id="client-email"
                   type="email"
                   value={clientForm.email}
-                  onChange={(e) => setClientForm({...clientForm, email: e.target.value})}
+                  onChange={(e) => setClientForm(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="email@exemplo.com"
                 />
               </div>
-
-              {/* Telefone */}
+              
               <div>
                 <Label htmlFor="client-phone">Telefone</Label>
                 <Input
                   id="client-phone"
-                  type="tel"
                   value={clientForm.phone}
-                  onChange={(e) => setClientForm({...clientForm, phone: e.target.value})}
+                  onChange={(e) => setClientForm(prev => ({ ...prev, phone: e.target.value }))}
                   placeholder="(11) 99999-9999"
                 />
               </div>
-
-              {/* Documento */}
+              
               <div>
-                <Label htmlFor="client-document">CPF/CNPJ</Label>
+                <Label htmlFor="client-document">Documento</Label>
                 <Input
                   id="client-document"
-                  type="text"
                   value={clientForm.document}
-                  onChange={(e) => setClientForm({...clientForm, document: e.target.value})}
-                  placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                  onChange={(e) => setClientForm(prev => ({ ...prev, document: e.target.value }))}
+                  placeholder="CPF/CNPJ"
                 />
               </div>
-
-              {/* Endereço */}
+              
               <div>
                 <Label htmlFor="client-address">Endereço</Label>
-                <Input
-                  id="client-address"
-                  type="text"
-                  value={clientForm.address}
-                  onChange={(e) => setClientForm({...clientForm, address: e.target.value})}
-                  placeholder="Rua, número, bairro, cidade"
-                />
-              </div>
-
-              {/* Observações */}
-              <div>
-                <Label htmlFor="client-notes">Observações</Label>
                 <Textarea
-                  id="client-notes"
-                  value={clientForm.notes}
-                  onChange={(e) => setClientForm({...clientForm, notes: e.target.value})}
-                  placeholder="Informações adicionais sobre o cliente"
-                  rows={2}
+                  id="client-address"
+                  value={clientForm.address}
+                  onChange={(e) => setClientForm(prev => ({ ...prev, address: e.target.value }))}
+                  placeholder="Endereço completo"
+                  rows={3}
                 />
               </div>
             </div>
             
-            <div className="flex gap-3 pt-4 border-t mt-6">
-              <button
+            <div className="flex gap-2 mt-6">
+              <Button 
+                variant="outline" 
+                className="flex-1"
                 onClick={() => {
                   setShowAddClientModal(false);
                   resetClientForm();
                 }}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button 
+                className="flex-1"
                 onClick={handleClientSubmit}
                 disabled={!clientForm.name.trim()}
-                className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
               >
-                Cadastrar Cliente
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de Impressão */}
-      {showPrintModal && lastSaleData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Venda Processada!</h3>
-              <button 
-                onClick={() => setShowPrintModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <p className="text-gray-600">Venda processada com sucesso! Deseja imprimir o comprovante?</p>
-              
-              <div className="border rounded-lg p-3 bg-gray-50">
-                <p className="text-sm text-gray-600">
-                  Funcionalidade de impressão será implementada em breve.
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex gap-3 pt-4 border-t mt-4">
-              <button
-                onClick={() => setShowPrintModal(false)}
-                className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Fechar
-              </button>
+                Cadastrar
+              </Button>
             </div>
           </div>
         </div>
