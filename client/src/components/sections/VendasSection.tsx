@@ -1590,7 +1590,7 @@ export default function VendasSection() {
         </div>
       )}
 
-      {/* Retorno do componente principal */}
+      {/* Return do componente principal */}
       <div className="app-section">
         {/* Header */}
         <div className="section-header">
