@@ -758,7 +758,23 @@ const VendasSection = () => {
             {/* Content - Scrollable */}
             <div className="flex-1 overflow-y-auto p-6">
               <PrintOptions
-                sale={printSaleData}
+                sale={{
+                  id: printSaleData.id,
+                  total: printSaleData.total_amount,
+                  paymentMethod: printSaleData.payment_method,
+                  saleDate: printSaleData.created_at,
+                  products: printSaleData.items ? printSaleData.items.map(item => ({
+                    name: item.product_name,
+                    quantity: item.quantity,
+                    price: item.unit_price,
+                    total: item.quantity * item.unit_price
+                  })) : [],
+                  client: printSaleData.client_name ? {
+                    name: printSaleData.client_name,
+                    email: "",
+                    phone: ""
+                  } : null
+                }}
                 company={{
                   name: "Sistema de Gestão",
                   cnpj: "00.000.000/0001-00",

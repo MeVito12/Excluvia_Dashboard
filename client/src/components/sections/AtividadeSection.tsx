@@ -694,7 +694,7 @@ const AtividadeSection = () => {
       {/* Modal de Impressão Térmica */}
       {showPrintModal && printSaleData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-white rounded-lg w-full max-w-5xl max-h-[95vh] flex flex-col">
+          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] flex flex-col ml-48">
             {/* Header */}
             <div className="flex justify-between items-center p-6 border-b">
               <h3 className="text-lg font-semibold text-gray-800">
