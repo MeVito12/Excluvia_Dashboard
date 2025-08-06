@@ -110,6 +110,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   console.log('[PERMISSIONS] 🎯 isCeoUser:', isCeoUser);
   console.log('[PERMISSIONS] 📧 User email:', (user as any)?.email);
   console.log('[PERMISSIONS] 🏷️ User role:', (user as any)?.role);
+  console.log('[PERMISSIONS] ✨ localStorage check:', localStorage.getItem('currentUser'));
 
   // Carrega permissões do localStorage
   useEffect(() => {

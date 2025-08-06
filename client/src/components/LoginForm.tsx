@@ -64,13 +64,16 @@ const LoginForm = ({ onLogin }: LoginFormProps) => {
         const userData = {
           id: fullUser.id,
           name: fullUser.name,
-          email: fullUser.email,
+          email: fullUser.email, // Usar email do banco, não do formulário
           role: fullUser.role,
           businessCategory: fullUser.business_category,
           companyId: fullUser.company_id,
           company: company,
           permissions: fullUser.permissions
         };
+        
+        console.log('[LOGIN] 🔍 User role from database:', fullUser.role);
+        console.log('[LOGIN] 📧 User email from database:', fullUser.email);
         
         console.log('[LOGIN] 💾 Saving to localStorage:', userData);
         

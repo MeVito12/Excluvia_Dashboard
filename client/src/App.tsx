@@ -11,6 +11,27 @@ import NotificationSystem, { useNotifications } from "@/components/NotificationS
 import Index from "./pages/Index";
 import LoginForm from "@/components/LoginForm";
 
+// Limpeza de dados inconsistentes do localStorage
+if (typeof window !== 'undefined') {
+  const currentUser = localStorage.getItem('currentUser');
+  if (currentUser) {
+    try {
+      const userData = JSON.parse(currentUser);
+      // Se detectar dados inconsistentes (email usuario@ mas role null), limpar
+      if (userData.email === 'usuario@sistema.com' && !userData.role) {
+        console.log('[AUTH-CLEANUP] 🔄 Clearing inconsistent localStorage data...');
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('userBusinessCategory');
+        window.location.reload();
+      }
+    } catch (e) {
+      console.log('[AUTH-CLEANUP] ❌ Error parsing localStorage, clearing...');
+      localStorage.removeItem('currentUser');
+      localStorage.removeItem('userBusinessCategory');
+    }
+  }
+}
+
 const AppContent = () => {
   const { isAuthenticated, login } = useAuth();
   const { notifications, removeNotification, showSuccess, showError, showWarning, showInfo } = useNotifications();
