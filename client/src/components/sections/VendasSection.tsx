@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Plus, Minus, ShoppingCart, Scan, Search, Trash2, CreditCard, DollarSign, User, Package, X, Eye, Edit, Printer } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-
+import StandardModal from "@/components/StandardModalTemplate";
 import type { Product, Client, CartItem, SaleCart } from "@shared/schema";
 
 export default function VendasSection() {
@@ -491,7 +491,7 @@ export default function VendasSection() {
                   {selectedSellers.length > 0 ? (
                     <div className="flex flex-wrap gap-1">
                       {selectedSellers.map(sellerId => {
-                        const seller = companyProfiles.find(p => Number(p.id) === Number(sellerId));
+                        const seller = companyProfiles.find(p => p.id === Number(sellerId));
                         return seller ? (
                           <span key={sellerId} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                             {seller.name}
@@ -653,24 +653,14 @@ export default function VendasSection() {
       {renderTabContent()}
 
       {/* Modal de Vendedores */}
-      {showSellersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-purple-600" />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Selecionar Vendedores</h3>
-                  <p className="text-sm text-gray-500">Escolha os vendedores responsáveis por esta venda</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowSellersModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
+      <StandardModal
+        isOpen={showSellersModal}
+        onClose={() => setShowSellersModal(false)}
+        title="Selecionar Vendedores"
+        subtitle="Escolha os vendedores responsáveis por esta venda"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
         <div className="space-y-4">
           {companyProfiles.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
@@ -716,44 +706,25 @@ export default function VendasSection() {
             </div>
           )}
         </div>
-            <div className="flex gap-3 justify-end mt-6">
-              <button 
-                onClick={() => setShowSellersModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button 
-                onClick={() => setShowSellersModal(false)} 
-                disabled={selectedSellers.length === 0}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
-              >
-                Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
-              </button>
-            </div>
-          </div>
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowSellersModal(false)}>
+            Cancelar
+          </Button>
+          <Button onClick={() => setShowSellersModal(false)} disabled={selectedSellers.length === 0}>
+            Confirmar ({selectedSellers.length} selecionado{selectedSellers.length !== 1 ? 's' : ''})
+          </Button>
         </div>
-      )}
+      </StandardModal>
 
       {/* Modal de Clientes */}
-      {showClientModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-purple-600" />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Selecionar Cliente</h3>
-                  <p className="text-sm text-gray-500">Escolha um cliente existente ou cadastre um novo</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => setShowClientModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
+      <StandardModal
+        isOpen={showClientModal}
+        onClose={() => setShowClientModal(false)}
+        title="Selecionar Cliente"
+        subtitle="Escolha um cliente existente ou cadastre um novo"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
         <div className="space-y-4">
           {/* Busca de clientes */}
           <div>
@@ -802,171 +773,138 @@ export default function VendasSection() {
             )}
           </div>
 
-            {/* Botão para novo cliente */}
-            <div className="pt-4 border-t">
-              <button
-                onClick={() => {
-                  setShowClientModal(false);
-                  setShowAddClientModal(true);
-                }}
-                className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Cadastrar Novo Cliente
-              </button>
-            </div>
-            
-            <div className="flex gap-3 justify-end mt-6">
-              <button 
-                onClick={() => setShowClientModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button 
-                onClick={() => {
-                  setSelectedClient(null);
-                  setShowClientModal(false);
-                }}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-              >
-                Venda Avulsa (Sem Cliente)
-              </button>
-            </div>
+          {/* Botão para novo cliente */}
+          <div className="pt-4 border-t">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowClientModal(false);
+                setShowAddClientModal(true);
+              }}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Cadastrar Novo Cliente
+            </Button>
           </div>
         </div>
-      )}
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowClientModal(false)}>
+            Cancelar
+          </Button>
+          <Button 
+            onClick={() => {
+              setSelectedClient(null);
+              setShowClientModal(false);
+            }}
+          >
+            Venda Avulsa (Sem Cliente)
+          </Button>
+        </div>
+      </StandardModal>
 
       {/* Modal de Método de Pagamento */}
-      {showPaymentModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-purple-600" />
+      <StandardModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        title="Método de Pagamento"
+        subtitle="Selecione como o cliente irá pagar"
+        icon={<CreditCard className="h-5 w-5" />}
+        size="md"
+      >
+        <div className="space-y-3">
+          {[
+            { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
+            { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
+            { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
+            { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
+            { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
+          ].map((method) => (
+            <div
+              key={method.value}
+              className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                paymentMethod === method.value
+                  ? 'border-purple-500 bg-purple-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => {
+                setPaymentMethod(method.value);
+                if (method.value !== 'cartao_credito' && method.value !== 'boleto') {
+                  setInstallments(1);
+                  setShowPaymentModal(false);
+                }
+              }}
+            >
+              <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Método de Pagamento</h3>
-                  <p className="text-sm text-gray-500">Selecione como o cliente irá pagar</p>
+                  <p className="font-medium">{method.label}</p>
+                  <p className="text-sm text-gray-500">{method.description}</p>
+                </div>
+                <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                  paymentMethod === method.value
+                    ? 'border-purple-500 bg-purple-500'
+                    : 'border-gray-300'
+                }`}>
+                  {paymentMethod === method.value && (
+                    <span className="text-white text-xs">✓</span>
+                  )}
                 </div>
               </div>
-              <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
             </div>
-            
-            <div className="space-y-3">
-              {[
-                { value: "dinheiro", label: "💵 Dinheiro", description: "Pagamento em espécie" },
-                { value: "pix", label: "📱 PIX", description: "Transferência instantânea" },
-                { value: "cartao_credito", label: "💳 Cartão de Crédito", description: "Parcelamento disponível" },
-                { value: "cartao_debito", label: "💳 Cartão de Débito", description: "Débito em conta" },
-                { value: "boleto", label: "📄 Boleto", description: "Boleto bancário" }
-              ].map((method) => (
-                <div
-                  key={method.value}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                    paymentMethod === method.value
-                      ? 'border-purple-500 bg-purple-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                  onClick={() => {
-                    setPaymentMethod(method.value);
-                    if (method.value !== 'cartao_credito' && method.value !== 'boleto') {
-                      setInstallments(1);
-                      setShowPaymentModal(false);
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium">{method.label}</p>
-                      <p className="text-sm text-gray-500">{method.description}</p>
-                    </div>
-                    <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                      paymentMethod === method.value
-                        ? 'border-purple-500 bg-purple-500'
-                        : 'border-gray-300'
-                    }`}>
-                      {paymentMethod === method.value && (
-                        <span className="text-white text-xs">✓</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+          ))}
 
-              {/* Opções de parcelamento */}
-              {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
-                <div className="pt-4 border-t">
-                  <h4 className="font-medium mb-3">Parcelamento</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((parcela) => (
-                      <button
-                        key={parcela}
-                        onClick={() => {
-                          setInstallments(parcela);
-                          setShowPaymentModal(false);
-                        }}
-                        className={`p-2 border rounded text-sm transition-all ${
-                          installments === parcela 
-                            ? 'border-purple-500 bg-purple-50 text-purple-700' 
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        <div className="font-medium">
-                          {parcela === 1 ? 'À vista' : `${parcela}x`}
-                        </div>
-                        <div className="text-xs text-gray-600">
-                          R$ {(totalAmount / parcela).toFixed(2)}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
+          {/* Opções de parcelamento */}
+          {(paymentMethod === 'cartao_credito' || paymentMethod === 'boleto') && (
+            <div className="pt-4 border-t">
+              <h4 className="font-medium mb-3">Parcelamento</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((parcela) => (
+                  <button
+                    key={parcela}
+                    onClick={() => {
+                      setInstallments(parcela);
+                      setShowPaymentModal(false);
+                    }}
+                    className={`p-2 border rounded text-sm transition-all ${
+                      installments === parcela 
+                        ? 'border-purple-500 bg-purple-50 text-purple-700' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="font-medium">
+                      {parcela === 1 ? 'À vista' : `${parcela}x`}
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      R$ {(totalAmount / parcela).toFixed(2)}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-            
-            <div className="flex gap-3 justify-end mt-6">
-              <button 
-                onClick={() => setShowPaymentModal(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
+          )}
         </div>
-      )}
+        <div className="flex gap-3 justify-end">
+          <Button variant="outline" onClick={() => setShowPaymentModal(false)}>
+            Cancelar
+          </Button>
+        </div>
+      </StandardModal>
 
       {/* Modal de Cadastro de Cliente */}
-      {showAddClientModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center" style={{ zIndex: 99999 }}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-purple-600" />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Cadastrar Novo Cliente</h3>
-                  <p className="text-sm text-gray-500">Preencha os dados do cliente</p>
-                </div>
-              </div>
-              <button 
-                onClick={() => {
-                  setShowAddClientModal(false);
-                  resetClientForm();
-                }}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="client-name">Nome *</Label>
+      <StandardModal
+        isOpen={showAddClientModal}
+        onClose={() => {
+          setShowAddClientModal(false);
+          resetClientForm();
+        }}
+        title="Cadastrar Novo Cliente"
+        subtitle="Preencha os dados do cliente"
+        icon={<User className="h-5 w-5" />}
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="client-name">Nome *</Label>
             <Input
               id="client-name"
               value={clientForm.name}
@@ -1014,28 +952,24 @@ export default function VendasSection() {
             </Select>
           </div>
         </div>
-            
-        <div className="flex gap-3 justify-end mt-6">
-          <button 
+        <div className="flex gap-3 justify-end">
+          <Button 
+            variant="outline" 
             onClick={() => {
               setShowAddClientModal(false);
               resetClientForm();
             }}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
           >
             Cancelar
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={handleClientSubmit}
             disabled={!clientForm.name.trim()}
-            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
           >
             Cadastrar
-          </button>
+          </Button>
         </div>
-      </div>
+      </StandardModal>
     </div>
-  )}
-  </div>
   );
 }

@@ -44,22 +44,40 @@
   z-index: 50001 !important;
 }
 
-/* Seguindo padrão do sistema existente no dialog.tsx */
+/* Forçar sobre todos os outros elementos Radix */
+[data-radix-portal] {
+  z-index: 49999 !important;
+}
+
 [data-radix-dialog-overlay] {
+  z-index: 50000 !important;
   position: fixed !important;
   inset: 0 !important;
-  z-index: 100 !important;
-  background-color: rgba(0, 0, 0, 0.8) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 [data-radix-dialog-content] {
-  position: fixed !important;
-  left: 50% !important;
-  top: 50% !important;
-  z-index: 110 !important;
-  transform: translate(-50%, -50%) !important;
+  z-index: 50001 !important;
+  position: relative !important;
   background: white !important;
   border-radius: 8px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  max-width: min(calc(100vw - 32px), 32rem) !important;
+  max-height: min(calc(100vh - 32px), 85vh) !important;
+  width: 100% !important;
+  margin: 16px !important;
+  overflow-y: auto !important;
+}
+
+/* Força centralização absoluta para todos os modais */
+.fixed[data-radix-dialog-content] {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Modal de recuperação de senha - força z-index máximo */
