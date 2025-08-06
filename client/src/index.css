@@ -49,27 +49,7 @@
   z-index: 49999 !important;
 }
 
-/* MODAL POSITIONING - Centralização suave como na imagem de exemplo */
-[data-radix-dialog-overlay] {
-  position: fixed !important;
-  inset: 0 !important;
-  background-color: rgba(0, 0, 0, 0.4) !important;
-  z-index: 50 !important;
-}
 
-[data-radix-dialog-content] {
-  position: fixed !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 51 !important;
-  width: 100% !important;
-  max-width: 32rem !important;
-  border-radius: 0.5rem !important;
-  background: white !important;
-  padding: 1.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-}
 
 /* Modal de recuperação de senha - força z-index máximo */
 [data-radix-dialog-content][class*="z-[60]"] {
