@@ -75,6 +75,8 @@ const VendasSection = () => {
 
   // Estados adicionais para caixa
   const [processingPayment, setProcessingPayment] = useState<number | null>(null);
+  const [showPrintOptionsModal, setShowPrintOptionsModal] = useState<boolean>(false);
+  const [selectedSaleForPrint, setSelectedSaleForPrint] = useState<any>(null);
 
   // Debug para modais
   console.log('Modal states:', { showClientModal, showPaymentModal, showSellersModal });
@@ -105,8 +107,14 @@ const VendasSection = () => {
     }
   };
 
-  // Função para imprimir comprovante
+  // Função para abrir modal de impressão
   const handlePrintReceipt = (sale: any) => {
+    setSelectedSaleForPrint(sale);
+    setShowPrintOptionsModal(true);
+  };
+
+  // Função para imprimir térmica
+  const handleThermalPrint = (sale: any) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       toast({
@@ -121,13 +129,22 @@ const VendasSection = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Comprovante de Venda #${sale.id}</title>
+          <title>Comprovante Térmica #${sale.id}</title>
           <style>
-            body { font-family: Arial, sans-serif; padding: 20px; max-width: 300px; margin: 0 auto; }
-            .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 15px; }
-            .item { display: flex; justify-content: space-between; margin: 5px 0; }
-            .total { border-top: 1px solid #000; padding-top: 10px; margin-top: 10px; font-weight: bold; }
-            .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+            body { 
+              font-family: 'Courier New', monospace; 
+              padding: 5px; 
+              max-width: 280px; 
+              margin: 0 auto; 
+              font-size: 12px;
+              line-height: 1.2;
+            }
+            .header { text-align: center; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 8px; }
+            .item { display: flex; justify-content: space-between; margin: 2px 0; font-size: 11px; }
+            .total { border-top: 1px solid #000; padding-top: 5px; margin-top: 8px; font-weight: bold; }
+            .footer { text-align: center; margin-top: 10px; font-size: 10px; }
+            h2 { margin: 0; font-size: 14px; }
+            p { margin: 2px 0; }
           </style>
         </head>
         <body>
@@ -141,10 +158,10 @@ const VendasSection = () => {
             <p><strong>Cliente:</strong> ${sale.client_name}</p>
             <p><strong>Data:</strong> ${sale.created_at}</p>
             <p><strong>Pagamento:</strong> ${getPaymentMethodLabel(sale.payment_method)}</p>
-            <p><strong>Vendedor(es):</strong> ${sale.sellers.join(", ")}</p>
+            <p><strong>Vendedor:</strong> ${sale.sellers.join(", ")}</p>
           </div>
           
-          <div style="margin: 15px 0;">
+          <div style="margin: 8px 0;">
             <p><strong>Itens:</strong></p>
             ${sale.items.map(item => `
               <div class="item">
@@ -163,7 +180,7 @@ const VendasSection = () => {
           
           <div class="footer">
             <p>Obrigado pela preferência!</p>
-            <p>---</p>
+            <p>===========================</p>
           </div>
         </body>
       </html>
@@ -172,15 +189,166 @@ const VendasSection = () => {
     printWindow.document.write(printContent);
     printWindow.document.close();
     
-    // Aguardar carregamento e imprimir
     printWindow.onload = () => {
       printWindow.print();
       printWindow.close();
     };
 
+    setShowPrintOptionsModal(false);
     toast({
-      title: "Imprimindo",
-      description: `Comprovante da venda #${sale.id} enviado para impressão.`,
+      title: "Impressão Térmica",
+      description: `Comprovante da venda #${sale.id} enviado para impressora térmica.`,
+      variant: "default"
+    });
+  };
+
+  // Função para imprimir convencional (A4)
+  const handleConventionalPrint = (sale: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      toast({
+        title: "Erro de Impressão",
+        description: "Não foi possível abrir a janela de impressão. Verifique se pop-ups estão permitidos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Comprovante A4 #${sale.id}</title>
+          <style>
+            @page { margin: 2cm; }
+            body { 
+              font-family: Arial, sans-serif; 
+              padding: 20px; 
+              max-width: 600px; 
+              margin: 0 auto; 
+              font-size: 14px;
+              line-height: 1.4;
+            }
+            .header { 
+              text-align: center; 
+              border-bottom: 2px solid #000; 
+              padding-bottom: 15px; 
+              margin-bottom: 20px; 
+            }
+            .company-info {
+              text-align: center;
+              margin-bottom: 20px;
+              border: 1px solid #ccc;
+              padding: 15px;
+              background-color: #f9f9f9;
+            }
+            .sale-info {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 20px;
+              margin-bottom: 20px;
+            }
+            .items-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 20px 0;
+            }
+            .items-table th, .items-table td {
+              border: 1px solid #ccc;
+              padding: 8px;
+              text-align: left;
+            }
+            .items-table th {
+              background-color: #f0f0f0;
+              font-weight: bold;
+            }
+            .total { 
+              border: 2px solid #000; 
+              padding: 15px; 
+              margin-top: 20px; 
+              font-weight: bold; 
+              font-size: 16px;
+              text-align: right;
+            }
+            .footer { 
+              text-align: center; 
+              margin-top: 30px; 
+              border-top: 1px solid #ccc;
+              padding-top: 15px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="company-info">
+            <h1>Sistema de Gestão</h1>
+            <p>CNPJ: 00.000.000/0001-00</p>
+            <p>Endereço: Rua Example, 123 - Cidade - UF</p>
+            <p>Telefone: (11) 99999-9999</p>
+          </div>
+
+          <div class="header">
+            <h2>COMPROVANTE DE VENDA</h2>
+            <p>Venda #${sale.id}</p>
+          </div>
+          
+          <div class="sale-info">
+            <div>
+              <h3>Dados da Venda</h3>
+              <p><strong>Data:</strong> ${sale.created_at}</p>
+              <p><strong>Método de Pagamento:</strong> ${getPaymentMethodLabel(sale.payment_method)}</p>
+              <p><strong>Vendedor(es):</strong> ${sale.sellers.join(", ")}</p>
+            </div>
+            <div>
+              <h3>Dados do Cliente</h3>
+              <p><strong>Cliente:</strong> ${sale.client_name}</p>
+            </div>
+          </div>
+          
+          <table class="items-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Qtd</th>
+                <th>Valor Unit.</th>
+                <th>Valor Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sale.items.map(item => `
+                <tr>
+                  <td>${item.product_name}</td>
+                  <td>${item.quantity}</td>
+                  <td>R$ ${item.unit_price.toFixed(2)}</td>
+                  <td>R$ ${(item.quantity * item.unit_price).toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          <div class="total">
+            <p>VALOR TOTAL: R$ ${sale.total_amount.toFixed(2)}</p>
+          </div>
+          
+          <div class="footer">
+            <p>Obrigado pela preferência!</p>
+            <p>Este documento não tem valor fiscal</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+    
+    printWindow.onload = () => {
+      printWindow.print();
+      printWindow.close();
+    };
+
+    setShowPrintOptionsModal(false);
+    toast({
+      title: "Impressão A4",
+      description: `Comprovante da venda #${sale.id} enviado para impressora convencional.`,
       variant: "default"
     });
   };
@@ -809,6 +977,70 @@ const VendasSection = () => {
           )}
         </div>
       </div>
+
+      {/* Modal de Opções de Impressão */}
+      {showPrintOptionsModal && selectedSaleForPrint && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999] p-4">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-800">Opções de Impressão</h3>
+              <button 
+                onClick={() => setShowPrintOptionsModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="text-center mb-6">
+                <p className="text-gray-600">Venda #{selectedSaleForPrint.id}</p>
+                <p className="text-sm text-gray-500">Escolha o tipo de impressão:</p>
+              </div>
+              
+              <button
+                onClick={() => handleThermalPrint(selectedSaleForPrint)}
+                className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <Printer className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-800">Impressora Térmica</h4>
+                    <p className="text-sm text-gray-600">Comprovante de 80mm para impressora térmica</p>
+                  </div>
+                </div>
+              </button>
+              
+              <button
+                onClick={() => handleConventionalPrint(selectedSaleForPrint)}
+                className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <Printer className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-800">Impressora Convencional</h4>
+                    <p className="text-sm text-gray-600">Comprovante A4 para impressora comum</p>
+                  </div>
+                </div>
+              </button>
+            </div>
+            
+            <div className="flex gap-2 mt-6">
+              <Button 
+                variant="outline" 
+                onClick={() => setShowPrintOptionsModal(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
