@@ -1033,9 +1033,9 @@ export default function VendasSection() {
             Cadastrar
           </button>
         </div>
-        </div>
       </div>
-      )}
     </div>
+    )}
+  </div>
   );
 }
