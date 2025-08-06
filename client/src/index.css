@@ -51,10 +51,20 @@
 
 [data-radix-dialog-overlay] {
   z-index: 50000 !important;
+  position: fixed !important;
+  inset: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
 [data-radix-dialog-content] {
   z-index: 50001 !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  background: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
 }
 
 /* Modal de recuperação de senha - força z-index máximo */
