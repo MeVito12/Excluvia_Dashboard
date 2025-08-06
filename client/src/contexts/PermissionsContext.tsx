@@ -85,7 +85,6 @@ export const availableSections: SectionPermission[] = [
 interface PermissionsContextType {
   userPermissions: string[];
   isMasterUser: boolean;
-  isCeoUser: boolean;
   isGestaoUser: boolean;
   canAccessSection: (sectionId: string) => boolean;
   updateUserPermissions: (userId: number, permissions: string[]) => void;
@@ -99,15 +98,13 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [allUserPermissions, setAllUserPermissions] = useState<Record<number, string[]>>({});
 
-  // Verifica se é usuário master ou CEO
+  // Verifica se é usuário master
   const isMasterUser = (user as any)?.role === 'master';
-  const isCeoUser = (user as any)?.email === 'ceo@sistema.com' || (user as any)?.role === 'ceo'; // CEO específico
-  const isGestaoUser = isCeoUser; // CEO tem acesso universal (gestão)
+  const isGestaoUser = isMasterUser; // Master tem acesso universal (gestão)
   
   // Debug para verificar detecção de usuários
   console.log('[PERMISSIONS] 🔍 User data:', user);
   console.log('[PERMISSIONS] 👑 isMasterUser:', isMasterUser);
-  console.log('[PERMISSIONS] 🎯 isCeoUser:', isCeoUser);
   console.log('[PERMISSIONS] 📧 User email:', (user as any)?.email);
   console.log('[PERMISSIONS] 🏷️ User role:', (user as any)?.role);
   console.log('[PERMISSIONS] ✨ localStorage check:', localStorage.getItem('currentUser'));
@@ -118,10 +115,10 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const savedPermissions = localStorage.getItem(`permissions_${(user as any).id}`);
       const savedAllPermissions = localStorage.getItem('all_user_permissions');
       
-      if (isMasterUser || isCeoUser) {
-        // Master e CEO têm acesso a tudo, incluindo controle
+      if (isMasterUser) {
+        // Master tem acesso a tudo, incluindo controle
         const allPermissions = [...availableSections.map(s => s.id), 'controle'];
-        console.log('[PERMISSIONS] ✅ Setting master/CEO permissions:', allPermissions);
+        console.log('[PERMISSIONS] ✅ Setting master permissions:', allPermissions);
         setUserPermissions(allPermissions);
       } else if (savedPermissions) {
         setUserPermissions(JSON.parse(savedPermissions));
@@ -144,7 +141,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   const updateUserPermissions = (userId: number, permissions: string[]) => {
-    if (!isMasterUser && !isCeoUser) return;
+    if (!isMasterUser) return;
 
     const newAllPermissions = {
       ...allUserPermissions,
@@ -170,7 +167,6 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
       value={{
         userPermissions,
         isMasterUser,
-        isCeoUser,
         isGestaoUser,
         canAccessSection,
         updateUserPermissions,

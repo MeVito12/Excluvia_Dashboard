@@ -56,7 +56,7 @@ interface Company {
 
 const ControleSection = () => {
   const { user } = useAuth();
-  const { updateUserPermissions, getAllUserPermissions, isMasterUser, isCeoUser, isGestaoUser } = usePermissions();
+  const { updateUserPermissions, getAllUserPermissions, isMasterUser, isGestaoUser } = usePermissions();
 
   const queryClient = useQueryClient();
   

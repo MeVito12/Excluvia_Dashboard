@@ -585,15 +585,15 @@ const CadastroSection = () => {
     }
   });
 
-  // Verificar se é CEO (por role ou email específico)
-  const isCeoUser = (user as any)?.role === 'ceo' || (user as any)?.email === 'ceo@sistema.com';
+  // Verificar se é usuário Master
+  const isMasterUser = (user as any)?.role === 'master';
   
-  if (!isCeoUser) {
+  if (!isMasterUser) {
     return (
       <div className="app-section">
         <div className="section-header">
           <h1 className="section-title">Acesso Negado</h1>
-          <p className="section-subtitle">Área restrita para CEOs</p>
+          <p className="section-subtitle">Área restrita para usuários Master</p>
         </div>
         <div className="main-card">
           <div className="text-center py-12">
@@ -602,7 +602,7 @@ const CadastroSection = () => {
               Acesso Restrito
             </h2>
             <p className="text-gray-700">
-              Apenas CEOs podem acessar o cadastro de empresas e usuários master.
+              Apenas usuários Master podem acessar o cadastro de empresas e gerenciamento de usuários.
             </p>
           </div>
         </div>
@@ -1283,12 +1283,14 @@ const CadastroSection = () => {
                           </div>
                           <div className="text-right">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                              user.role === 'ceo' ? 'bg-blue-100 text-blue-800' :
                               user.role === 'master' ? 'bg-purple-100 text-purple-800' :
+                              user.role === 'manager' ? 'bg-blue-100 text-blue-800' :
+                              user.role === 'supervisor' ? 'bg-green-100 text-green-800' :
                               'bg-gray-100 text-black'
                             }`}>
-                              {user.role === 'ceo' ? 'Gestão' : 
-                               user.role === 'master' ? 'Master' : 
+                              {user.role === 'master' ? 'Master' : 
+                               user.role === 'manager' ? 'Gerente' :
+                               user.role === 'supervisor' ? 'Supervisor' :
                                'Usuário'}
                             </span>
                           </div>
@@ -1320,8 +1322,9 @@ const CadastroSection = () => {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="user">Usuário Comum</SelectItem>
+                              <SelectItem value="supervisor">Supervisor</SelectItem>
+                              <SelectItem value="manager">Gerente</SelectItem>
                               <SelectItem value="master">Master</SelectItem>
-                              {selectedUser.role === 'ceo' && <SelectItem value="ceo">CEO</SelectItem>}
                             </SelectContent>
                           </Select>
                         </div>

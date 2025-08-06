@@ -34,7 +34,7 @@ interface SidebarProps {
 const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapsed, onToggleCollapse }: SidebarProps) => {
   const { user, logout } = useAuth();
   const { selectedCategory } = useCategory();
-  const { canAccessSection, isMasterUser, isCeoUser } = usePermissions();
+  const { canAccessSection, isMasterUser } = usePermissions();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   
   const isCollapsed = externalCollapsed !== undefined ? externalCollapsed : internalCollapsed;
@@ -115,8 +115,8 @@ const Sidebar = ({ activeSection, onSectionChange, isCollapsed: externalCollapse
   const menuItems = allMenuItems.filter(item => {
     // Controle só para usuários master ou CEO
     if (item.id === 'controle') {
-      console.log('[SIDEBAR] 🔍 Checking controle access - isMasterUser:', isMasterUser, 'isCeoUser:', isCeoUser);
-      return isMasterUser || isCeoUser;
+      console.log('[SIDEBAR] 🔍 Checking controle access - isMasterUser:', isMasterUser);
+      return isMasterUser;
     }
 
     // Cadastros acessível para usuários com permissão
