@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Centralizado</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        /* OVERLAY - Fundo escuro que cobre toda a tela */
+        .modal-overlay {
+            position: fixed;           /* Fixa em relação à viewport */
+            top: 0;                    /* Cola no topo */
+            left: 0;                   /* Cola na esquerda */
+            width: 100vw;              /* 100% da largura da viewport */
+            height: 100vh;             /* 100% da altura da viewport */
+            background-color: rgba(0, 0, 0, 0.8);  /* Fundo escuro semi-transparente */
+            z-index: 999;              /* Fica acima de tudo */
+            display: none;             /* Inicialmente escondido */
+        }
+
+        /* MODAL - Container centralizado */
+        .modal-content {
+            position: fixed;           /* Fixa em relação à viewport */
+            top: 50%;                  /* Posiciona 50% do topo */
+            left: 50%;                 /* Posiciona 50% da esquerda */
+            transform: translate(-50%, -50%);  /* Move -50% de sua própria altura/largura */
+            background: white;         /* Fundo branco */
+            padding: 30px;             /* Espaçamento interno */
+            border-radius: 8px;        /* Bordas arredondadas */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);  /* Sombra */
+            z-index: 1000;             /* Acima do overlay */
+            max-width: 90vw;           /* Máximo 90% da largura da tela */
+            max-height: 90vh;          /* Máximo 90% da altura da tela */
+            overflow-y: auto;          /* Scroll vertical se necessário */
+        }
+
+        /* Quando modal está ativo */
+        .modal-overlay.active {
+            display: block;
+        }
+
+        /* Botão de exemplo */
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        /* Botão fechar */
+        .close-btn {
+            background: #dc3545;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exemplo de Modal Centralizado</h1>
+    <p>Clique no botão para abrir o modal:</p>
+    
+    <button class="btn" onclick="openModal()">Abrir Modal</button>
+
+    <!-- ESTRUTURA DO MODAL -->
+    <!-- Overlay - fundo escuro -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <!-- Modal content - não propaga o click para o overlay -->
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>Modal Centralizado</h2>
+            <p>Este modal está perfeitamente centralizado na tela!</p>
+            <p>O overlay cobre toda a tela e o modal fica sempre no centro.</p>
+            <br>
+            <button class="btn close-btn" onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
