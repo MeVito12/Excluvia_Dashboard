@@ -412,10 +412,9 @@ const AtendimentoSection = () => {
       isCustom: true // Marca como item personalizado do cardápio
     };
 
-    setCategoryItems(prev => ({
-      ...prev,
-      [selectedCategory]: [...(prev[selectedCategory as keyof typeof prev] || []), menuItem]
-    }));
+    // Note: This would integrate with the real API to save the menu item
+    // For now, just show success feedback
+    console.log('Menu item to save:', menuItem);
 
     // Reset dos campos
     setNewItem({ name: '', description: '', price: '', category: 'pratos' });
@@ -1541,7 +1540,7 @@ const AtendimentoSection = () => {
                 onClick={() => setShowNewCampaignModal(false)}
                 className="btn btn-outline p-2"
               >
-                <X className="w-4 h-4" />
+                <XCircle className="w-4 h-4" />
               </button>
             </div>
 

@@ -41,24 +41,22 @@ const AppContent = () => {
     return <LoginForm onLogin={login} />;
   }
 
-  return (
-    <NotificationProvider>
-      <Index />
-    </NotificationProvider>
-  );
+  return <Index />;
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <CategoryProvider>
       <AuthProvider>
-        <TooltipProvider>
-          <PermissionsProvider>
-            <Toaster />
-            <Sonner />
-            <AppContent />
-          </PermissionsProvider>
-        </TooltipProvider>
+        <NotificationProvider>
+          <TooltipProvider>
+            <PermissionsProvider>
+              <Toaster />
+              <Sonner />
+              <AppContent />
+            </PermissionsProvider>
+          </TooltipProvider>
+        </NotificationProvider>
       </AuthProvider>
     </CategoryProvider>
   </QueryClientProvider>
