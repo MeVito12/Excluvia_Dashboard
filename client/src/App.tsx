@@ -34,20 +34,15 @@ if (typeof window !== 'undefined') {
 
 const AppContent = () => {
   const { isAuthenticated, login } = useAuth();
-  const { notifications, removeNotification, showSuccess, showError, showWarning, showInfo } = useNotifications();
+  const { notifications, removeNotification } = useNotifications();
 
   if (!isAuthenticated) {
     return <LoginForm onLogin={login} />;
   }
 
   return (
-    <NotificationProvider notificationFunctions={{ showSuccess, showError, showWarning, showInfo }}>
+    <NotificationProvider>
       <Index />
-
-      <NotificationSystem 
-        notifications={notifications} 
-        onRemove={removeNotification} 
-      />
     </NotificationProvider>
   );
 };

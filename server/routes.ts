@@ -57,55 +57,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      console.log('❌ Usuário não encontrado para:', email);
-      
-      if (user) {
-        console.log(`Usuário integer encontrado: ${user.email}, empresa: ${user.companyId || 'não definida'}`);
-      }
-      
-      // Se não encontrar, criar usuário de desenvolvimento
-      if (!user) {
-        console.log('Usuário não encontrado, criando usuário de desenvolvimento...');
-        
-        const devUserData = {
-          email: email,
-          name: email === 'junior@mercadocentral.com.br' ? 'Junior Coordenador' : 'Usuário Demo',
-          role: (email === 'junior@mercadocentral.com.br' ? 'master' : 'user') as 'user' | 'ceo' | 'master',
-          password: 'dev_password',
-          companyId: 1
-        };
-        
-        try {
-          user = await storage.createUser(devUserData);
-          console.log('Usuário criado com sucesso:', user.email);
-        } catch (createError: any) {
-          console.log('Erro ao criar usuário, usando dados fallback');
-          user = {
-            id: 1,
-            email: email,
-            name: devUserData.name,
-            role: devUserData.role,
-            companyId: 1,
-            password: 'dev_password',
-            isActive: true,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-        }
-      }
-
-      // Garantir companyId válido para o usuário
-      if (!user.companyId && user.company_id) {
-        user = { ...user, companyId: user.company_id };
-      } else if (!user.companyId) {
-        user = { ...user, companyId: 1 };
-      }
-      
-      console.log('Login integer realizado com sucesso para:', user.email);
-      res.json({ 
-        user, 
-        success: true,
-        authType: 'integer'
+      console.log('❌ Usuário não encontrado no Supabase:', email);
+      return res.status(401).json({ 
+        error: "Usuário não encontrado. Verifique se o email está cadastrado no sistema." 
       });
     } catch (error: any) {
       console.error('Erro no login unificado:', error);
