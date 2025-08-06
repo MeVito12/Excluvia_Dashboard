@@ -727,14 +727,14 @@ const VendasSection = () => {
             {/* Opção venda sem cliente */}
             <div className="mb-4">
               <div 
-                className="border rounded-lg p-3 hover:border-gray-300 cursor-pointer"
+                className="border rounded-lg p-3 hover:border-gray-300 hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
                 onClick={() => {
                   setSelectedClient(null);
                   setShowClientModal(false);
                 }}
               >
-                <p className="font-medium text-gray-800">Venda sem cliente</p>
-                <p className="text-sm text-gray-600">Continuar sem identificar cliente</p>
+                <p className="font-medium text-gray-800 group-hover:text-white">Venda sem cliente</p>
+                <p className="text-sm text-gray-600 group-hover:text-white">Continuar sem identificar cliente</p>
               </div>
             </div>
             
@@ -762,16 +762,16 @@ const VendasSection = () => {
                 .map(client => (
                   <div
                     key={client.id}
-                    className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                    className="p-3 border rounded-lg hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
                     onClick={() => {
                       setSelectedClient(client.id);
                       setShowClientModal(false);
                       setClientSearchTerm("");
                     }}
                   >
-                    <p className="font-medium text-gray-800">{client.name}</p>
-                    {client.email && <p className="text-sm text-gray-600">{client.email}</p>}
-                    {client.phone && <p className="text-sm text-gray-600">{client.phone}</p>}
+                    <p className="font-medium text-gray-800 group-hover:text-white">{client.name}</p>
+                    {client.email && <p className="text-sm text-gray-600 group-hover:text-white">{client.email}</p>}
+                    {client.phone && <p className="text-sm text-gray-600 group-hover:text-white">{client.phone}</p>}
                   </div>
                 ))}
             </div>
@@ -815,7 +815,7 @@ const VendasSection = () => {
               ].map((method) => (
                 <button
                   key={method.value}
-                  className="w-full p-3 text-left border rounded-lg hover:bg-gray-50 transition-colors text-gray-800"
+                  className="w-full p-3 text-left border rounded-lg hover:bg-blue-500 hover:text-white transition-colors text-gray-800"
                   onClick={() => {
                     setPaymentMethod(method.value);
                     setShowPaymentModal(false);
@@ -847,7 +847,7 @@ const VendasSection = () => {
               {companyProfiles.map((profile) => (
                 <label
                   key={profile.id}
-                  className="flex items-center p-3 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center p-3 border rounded-lg hover:bg-blue-500 hover:text-white cursor-pointer transition-colors group"
                 >
                   <input
                     type="checkbox"
@@ -862,8 +862,8 @@ const VendasSection = () => {
                     className="mr-3"
                   />
                   <div>
-                    <p className="font-medium text-gray-800">{profile.name}</p>
-                    <p className="text-sm text-gray-600">{profile.email}</p>
+                    <p className="font-medium text-gray-800 group-hover:text-white">{profile.name}</p>
+                    <p className="text-sm text-gray-600 group-hover:text-white">{profile.email}</p>
                   </div>
                 </label>
               ))}
