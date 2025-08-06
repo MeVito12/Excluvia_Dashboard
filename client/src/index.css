@@ -2,60 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hierarquia de z-index organizada */
-.modal-overlay {
-  z-index: 9999 !important;
+/* MODAL GLOBAL FIX - MAIS LIMPO POSSÍVEL */
+[data-radix-dialog-overlay] {
+  background-color: rgba(0, 0, 0, 0.5) !important;
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  inset: 0 !important;
+  z-index: 50 !important;
 }
 
-.modal-content {
-  z-index: 10000 !important;
-  position: relative !important;
-}
-
-/* Modal de demonstração específico - força posicionamento correto */
-.demo-modal-overlay {
+[data-radix-dialog-content] {
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  z-index: 50000 !important;
-  background-color: rgba(0, 0, 0, 0.7) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 16px !important;
-}
-
-.demo-modal-content {
-  background: white !important;
-  border-radius: 12px !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-  max-width: 64rem !important;
-  width: 90vw !important;
-  max-height: 85vh !important;
-  overflow-y: auto !important;
-  position: relative !important;
-  z-index: 50001 !important;
-}
-
-/* Forçar sobre todos os outros elementos Radix */
-/* Remove CSS conflitante - deixa Tailwind trabalhar */
-
-
-
-/* Modal de recuperação de senha - força z-index máximo */
-[data-radix-dialog-content][class*="z-[60]"] {
-  z-index: 60000 !important;
-}
-
-[data-radix-dialog-overlay] + [data-radix-dialog-content][class*="z-[60]"] {
-  z-index: 60001 !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 51 !important;
 }
 
 .sheets-integration-panel {
